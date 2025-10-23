@@ -1060,7 +1060,7 @@ INSERT INTO `typhoonnames` (`id`, `name`, `meaning`, `position`, `isRetired`, `i
 (46, 'Lingling', 'Name of young girls', 46, 0, 0, 0, '', 'Cantonese'),
 (47, 'Kajiki', 'Dorado, spearfish', 47, 0, 0, 0, '', 'Japanese'),
 (48, 'Faxai', 'Lady name', 48, 1, 1, 0, '', 'Laotian'),
-(49, 'Vamei', 'A song bird with white feathers, popular to feeders', 49, 0, 1, 0, 'closest storm to the equator in history', 'Cantonese'),
+(49, 'Vamei', 'A song bird with white feathers, popular to feeders', 49, 1, 1, 0, 'closest storm to the equator in history', 'Cantonese'),
 (50, 'Tapah', 'A giant fresh water catfish', 50, 0, 0, 0, '', 'Bahasa Malaysia'),
 (51, 'Mitag', 'Yap woman\'s name, \"My eyes\"', 51, 0, 0, 0, '', 'Yap'),
 (52, 'Hagibis', 'Swift, fast', 52, 1, 1, 0, '', 'Tagalog'),
