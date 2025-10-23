@@ -25,7 +25,11 @@ class TyphoonNameController
                   INNER JOIN Positions p ON tn.position = p.id";
 
         if ($isRetired !== null) {
-            $query .= " WHERE tn.isRetired = :isRetired";
+            if ($isRetired == 1) {
+                $query .= " WHERE tn.isRetired = :isRetired";
+            } else {
+                $query .= " WHERE tn.isRetired = :isRetired OR tn.isReplaced = 0";
+            }
         }
 
         $query .= " ORDER BY tn.position, tn.name";
