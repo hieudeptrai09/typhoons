@@ -144,7 +144,7 @@ INSERT INTO `positions` (`id`, `country`) VALUES
 (105, 'Macao, China'),
 (106, 'Malaysia'),
 (107, 'Micronesia'),
-(108, 'Phillipines'),
+(108, 'Philippines'),
 (109, 'RO Korea'),
 (110, 'Thailand'),
 (111, 'U.S.A.'),
@@ -154,7 +154,7 @@ INSERT INTO `positions` (`id`, `country`) VALUES
 (115, 'DPR Korea'),
 (116, 'HK, China'),
 (117, 'Japan'),
-(118, 'Laos'),
+(118, 'Laos PDR'),
 (119, 'Macao, China'),
 (120, 'Malaysia'),
 (121, 'Micronesia'),
@@ -176,7 +176,7 @@ INSERT INTO `positions` (`id`, `country`) VALUES
 (137, 'RO Korea'),
 (138, 'Thailand'),
 (139, 'U.S.A.'),
-(140, 'Viet Nam'),
+(140, 'Vietnam'),
 (141, 'CPHC (U.S.A)'),
 (142, 'NHC (U.S.A)');
 
