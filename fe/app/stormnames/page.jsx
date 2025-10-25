@@ -92,14 +92,12 @@ const CurrentNamesPage = () => {
                 </span>
               </div>
 
-              {selectedName.language && (
-                <div>
-                  <span className="font-semibold text-gray-700">Language:</span>
-                  <span className="text-gray-600 ml-2">
-                    {selectedName.language}
-                  </span>
-                </div>
-              )}
+              <div>
+                <span className="font-semibold text-gray-700">Language:</span>
+                <span className="text-gray-600 ml-2">
+                  {selectedName.language}
+                </span>
+              </div>
             </div>
           </div>
         </div>
