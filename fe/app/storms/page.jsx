@@ -10,7 +10,6 @@ const TyphoonListPage = () => {
   const [selectedCell, setSelectedCell] = useState(null);
   const [cellHistory, setCellHistory] = useState({});
   const [currentIndices, setCurrentIndices] = useState({});
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData("/storms").then((data) => {
@@ -68,89 +67,85 @@ const TyphoonListPage = () => {
   const cols = 14;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-sky-100">
       <Navbar />
       <div className="p-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
           Typhoon History List
         </h1>
 
-        {loading ? (
-          <div className="text-center py-20">Loading...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="border-collapse mx-auto">
-              <tbody>
-                {[...Array(rows)].map((_, row) => (
-                  <tr key={row}>
-                    {[...Array(cols)].map((_, col) => {
-                      const position = row * cols + col + 1;
-                      const key = `${position}`;
-                      const history = cellHistory[key] || [];
-                      const currentIdx = currentIndices[key] || 0;
-                      const currentStorm = history[currentIdx];
+        <div className="overflow-x-auto">
+          <table className="border-collapse mx-auto">
+            <tbody>
+              {[...Array(rows)].map((_, row) => (
+                <tr key={row}>
+                  {[...Array(cols)].map((_, col) => {
+                    const position = row * cols + col + 1;
+                    const key = `${position}`;
+                    const history = cellHistory[key] || [];
+                    const currentIdx = currentIndices[key] || 0;
+                    const currentStorm = history[currentIdx];
 
-                      return (
-                        <td
-                          key={col}
-                          className="relative w-24 h-24 border-2 border-gray-300 cursor-pointer"
-                          onClick={() => currentStorm && setSelectedCell(key)}
+                    return (
+                      <td
+                        key={col}
+                        className="relative w-24 h-24 border-2 border-gray-300 cursor-pointer"
+                        onClick={() => currentStorm && setSelectedCell(key)}
+                      >
+                        <div
+                          className={`w-full h-full flex items-center justify-center ${
+                            currentStorm
+                              ? getIntensityColor(currentStorm.intensity)
+                              : "bg-gray-100"
+                          }`}
                         >
-                          <div
-                            className={`w-full h-full flex items-center justify-center ${
-                              currentStorm
-                                ? getIntensityColor(currentStorm.intensity)
-                                : "bg-gray-100"
-                            }`}
-                          >
-                            <div className="text-center">
-                              <div className="text-xs font-semibold text-gray-600">
-                                #{position}
-                              </div>
-                              {currentStorm && (
-                                <>
-                                  <div className="text-sm font-bold">
-                                    {currentStorm.name}
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    {currentStorm.country}
-                                  </div>
-                                </>
-                              )}
+                          <div className="text-center">
+                            <div className="text-xs font-semibold text-gray-600">
+                              #{position}
                             </div>
+                            {currentStorm && (
+                              <>
+                                <div className="text-sm font-bold">
+                                  {currentStorm.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {currentStorm.country}
+                                </div>
+                              </>
+                            )}
                           </div>
+                        </div>
 
-                          {history.length > 1 && (
-                            <div className="absolute bottom-1 left-0 right-0 flex justify-center space-x-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePrev(position);
-                                }}
-                                className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                              >
-                                <ChevronLeft size={12} />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleNext(position);
-                                }}
-                                className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                              >
-                                <ChevronRight size={12} />
-                              </button>
-                            </div>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                        {history.length > 1 && (
+                          <div className="absolute bottom-1 left-0 right-0 flex justify-center space-x-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePrev(position);
+                              }}
+                              className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                            >
+                              <ChevronLeft size={12} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNext(position);
+                              }}
+                              className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                            >
+                              <ChevronRight size={12} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}

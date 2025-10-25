@@ -137,7 +137,7 @@ const RetiredNamesPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-sky-100">
       <Navbar />
       <div className="p-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
@@ -225,127 +225,123 @@ const RetiredNamesPage = () => {
           )}
         </div>
 
-        {loading ? (
-          <div className="text-center py-20">Loading...</div>
-        ) : (
-          <div className="max-w-4xl mx-auto">
-            {selectedCountry ? (
-              // Show filtered results when country is selected
-              <div className="space-y-4">
-                {filteredNames.length > 0 ? (
-                  filteredNames.map((name, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                      onClick={() => handleNameClick(name)}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h3 className="text-2xl font-bold text-red-600 mb-2">
-                            {name.name}
-                          </h3>
-                          <p className="text-gray-700 mb-2">
-                            <span className="font-semibold">Meaning:</span>{" "}
-                            {name.meaning}
+        <div className="max-w-4xl mx-auto">
+          {selectedCountry ? (
+            // Show filtered results when country is selected
+            <div className="space-y-4">
+              {filteredNames.length > 0 ? (
+                filteredNames.map((name, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                    onClick={() => handleNameClick(name)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-red-600 mb-2">
+                          {name.name}
+                        </h3>
+                        <p className="text-gray-700 mb-2">
+                          <span className="font-semibold">Meaning:</span>{" "}
+                          {name.meaning}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-semibold">Country:</span>{" "}
+                          {name.country}
+                        </p>
+                        {name.note && (
+                          <p className="text-gray-600 mt-2">
+                            <span className="font-semibold">Note:</span>{" "}
+                            {name.note}
                           </p>
-                          <p className="text-gray-600">
-                            <span className="font-semibold">Country:</span>{" "}
-                            {name.country}
-                          </p>
-                          {name.note && (
-                            <p className="text-gray-600 mt-2">
-                              <span className="font-semibold">Note:</span>{" "}
-                              {name.note}
-                            </p>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-20 text-gray-500">
-                    No results found
                   </div>
-                )}
-              </div>
-            ) : (
-              // Show paginated results grouped by country
-              <div className="space-y-8">
-                {getPaginatedData().map((group, gidx) => (
-                  <div key={gidx}>
-                    <h2 className="text-2xl font-bold text-blue-600 mb-4 pb-2 border-b-2 border-blue-200">
-                      {group.country}
-                    </h2>
-                    <div className="space-y-4">
-                      {group.items.map((name, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                          onClick={() => handleNameClick(name)}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <h3 className="text-2xl font-bold text-red-600 mb-2">
-                                {name.name}
-                              </h3>
-                              <p className="text-gray-700 mb-2">
-                                <span className="font-semibold">Meaning:</span>{" "}
-                                {name.meaning}
+                ))
+              ) : (
+                <div className="text-center py-20 text-gray-500">
+                  No results found
+                </div>
+              )}
+            </div>
+          ) : (
+            // Show paginated results grouped by country
+            <div className="space-y-8">
+              {getPaginatedData().map((group, gidx) => (
+                <div key={gidx}>
+                  <h2 className="text-2xl font-bold text-blue-600 mb-4 pb-2 border-b-2 border-blue-200">
+                    {group.country}
+                  </h2>
+                  <div className="space-y-4">
+                    {group.items.map((name, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => handleNameClick(name)}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="text-2xl font-bold text-red-600 mb-2">
+                              {name.name}
+                            </h3>
+                            <p className="text-gray-700 mb-2">
+                              <span className="font-semibold">Meaning:</span>{" "}
+                              {name.meaning}
+                            </p>
+                            <p className="text-gray-600">
+                              <span className="font-semibold">Country:</span>{" "}
+                              {name.country}
+                            </p>
+                            {name.note && (
+                              <p className="text-gray-600 mt-2">
+                                <span className="font-semibold">Note:</span>{" "}
+                                {name.note}
                               </p>
-                              <p className="text-gray-600">
-                                <span className="font-semibold">Country:</span>{" "}
-                                {name.country}
-                              </p>
-                              {name.note && (
-                                <p className="text-gray-600 mt-2">
-                                  <span className="font-semibold">Note:</span>{" "}
-                                  {name.note}
-                                </p>
-                              )}
-                            </div>
+                            )}
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              ))}
 
-                {filteredNames.length === 0 && (
-                  <div className="text-center py-20 text-gray-500">
-                    No results found
-                  </div>
-                )}
-              </div>
-            )}
+              {filteredNames.length === 0 && (
+                <div className="text-center py-20 text-gray-500">
+                  No results found
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Pagination */}
-            {!selectedCountry && totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-8">
-                <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-                >
-                  Previous
-                </button>
+          {/* Pagination */}
+          {!selectedCountry && totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-8">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+              >
+                Previous
+              </button>
 
-                <span className="px-4 py-2 text-gray-700">
-                  Page {currentPage} of {totalPages}
-                </span>
+              <span className="px-4 py-2 text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
 
-                <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
