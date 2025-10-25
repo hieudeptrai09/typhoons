@@ -112,15 +112,17 @@ const RetiredNamesPage = () => {
     retiredNames,
   ]);
 
+  const activeFilterCount = [
+    searchName,
+    selectedYear,
+    selectedCountry,
+    languageProblemFilter !== "all" ? languageProblemFilter : "",
+  ].filter(Boolean).length;
+
   // Paginate by country
   const getPaginatedData = () => {
     let result = [];
-    if (
-      searchName ||
-      selectedYear ||
-      selectedCountry ||
-      languageProblemFilter !== "all"
-    ) {
+    if (activeFilterCount > 0) {
       // If a condition is applied, show all items
       result.push({
         country: "",
@@ -199,13 +201,6 @@ const RetiredNamesPage = () => {
     year.toString().includes(yearSearch)
   );
 
-  const activeFilterCount = [
-    searchName,
-    selectedYear,
-    selectedCountry,
-    languageProblemFilter !== "all" ? languageProblemFilter : "",
-  ].filter(Boolean).length;
-
   return (
     <div className="min-h-screen bg-sky-100">
       <Navbar />
@@ -279,6 +274,8 @@ const RetiredNamesPage = () => {
                               className={`text-lg font-bold ${
                                 name.isLanguageProblem
                                   ? "text-green-600"
+                                  : name.name === "Vamei"
+                                  ? "text-purple-600"
                                   : "text-red-600"
                               }`}
                             >
@@ -303,37 +300,31 @@ const RetiredNamesPage = () => {
             ))}
           </div>
           {/* Pagination */}
-          {!(
-            selectedCountry ||
-            searchName ||
-            selectedYear ||
-            languageProblemFilter !== "all"
-          ) &&
-            totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-8">
-                <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-                >
-                  Previous
-                </button>
+          {activeFilterCount === 0 && totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-8">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+              >
+                Previous
+              </button>
 
-                <span className="px-4 py-2 text-gray-700">
-                  Page {currentPage} of {totalPages}
-                </span>
+              <span className="px-4 py-2 text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
 
-                <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -543,6 +534,8 @@ const RetiredNamesPage = () => {
                     className={`text-3xl font-bold mb-2 ${
                       selectedName.isLanguageProblem
                         ? "text-green-600"
+                        : selectedName.name === "Vamei"
+                        ? "text-purple-600"
                         : "text-red-600"
                     }`}
                   >
