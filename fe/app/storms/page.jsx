@@ -69,7 +69,7 @@ const TyphoonListPage = () => {
                     return (
                       <td
                         key={col}
-                        className="relative w-24 h-24 border-2 border-gray-300 cursor-pointer"
+                        className="relative w-24 h-24 border-2 border-sky-200 hover:bg-sky-200 cursor-pointer"
                         onClick={() => setSelectedCell(key)}
                       >
                         <div className="w-full h-full flex items-center justify-center">

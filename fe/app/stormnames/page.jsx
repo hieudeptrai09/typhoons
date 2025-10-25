@@ -26,7 +26,7 @@ const CurrentNamesPage = () => {
           Current Typhoon Names
         </h1>
 
-        <table className="min-w-full bg-white border-2 border-gray-300 shadow-lg">
+        <table className="min-w-full border-collapse">
           <tbody>
             {[...Array(rows)].map((_, row) => (
               <tr key={row}>
@@ -35,10 +35,13 @@ const CurrentNamesPage = () => {
                   const dataNow = names.find((n) => n.position === position);
 
                   return (
-                    <td key={col} className="border border-gray-300 p-0">
+                    <td
+                      key={col}
+                      className="border border-sky-200 hover:bg-sky-200 p-0"
+                    >
                       <button
                         onClick={() => dataNow && setSelectedName(dataNow)}
-                        className="w-full h-16 flex items-center justify-center transition-all bg-gray-50 hover:bg-gray-100"
+                        className="w-full h-16 flex items-center justify-center transition-all"
                       >
                         <div className="text-sm font-semibold text-gray-700">
                           {dataNow?.name || ""}
