@@ -4,12 +4,11 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Wind, List, Archive } from "lucide-react";
 
-// Navbar Component
 const Navbar = () => {
   const pathName = usePathname();
 
   return (
-    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+    <nav className="bg-blue-600">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link
