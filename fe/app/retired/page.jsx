@@ -15,6 +15,7 @@ const RetiredNamesPage = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [languageProblemFilter, setLanguageProblemFilter] = useState("all"); // "all", "true", "false"
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [yearSearch, setYearSearch] = useState("");
   const yearDropdownRef = useRef(null);
@@ -83,13 +84,35 @@ const RetiredNamesPage = () => {
       filtered = filtered.filter((name) => name.country === selectedCountry);
     }
 
+    // Filter by language problem
+    if (languageProblemFilter === "true") {
+      filtered = filtered.filter(
+        (name) => Boolean(name.isLanguageProblem) === true
+      );
+    } else if (languageProblemFilter === "false") {
+      filtered = filtered.filter(
+        (name) => Boolean(name.isLanguageProblem) === false
+      );
+    }
+
     setFilteredNames(filtered);
-  }, [searchName, selectedYear, selectedCountry, retiredNames]);
+  }, [
+    searchName,
+    selectedYear,
+    selectedCountry,
+    languageProblemFilter,
+    retiredNames,
+  ]);
 
   // Paginate by country
   const getPaginatedData = () => {
     let result = [];
-    if (searchName || selectedYear || selectedCountry) {
+    if (
+      searchName ||
+      selectedYear ||
+      selectedCountry ||
+      languageProblemFilter !== "all"
+    ) {
       // If a condition is applied, show all items
       result.push({
         country: "",
@@ -146,15 +169,19 @@ const RetiredNamesPage = () => {
     setSearchName("");
     setSelectedYear("");
     setSelectedCountry("");
+    setLanguageProblemFilter("all");
   };
 
   const filteredYears = years.filter((year) =>
     year.toString().includes(yearSearch)
   );
 
-  const activeFilterCount = [searchName, selectedYear, selectedCountry].filter(
-    Boolean
-  ).length;
+  const activeFilterCount = [
+    searchName,
+    selectedYear,
+    selectedCountry,
+    languageProblemFilter !== "all" ? languageProblemFilter : "",
+  ].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -253,7 +280,12 @@ const RetiredNamesPage = () => {
             ))}
           </div>
           {/* Pagination */}
-          {!(selectedCountry || searchName || selectedYear) &&
+          {!(
+            selectedCountry ||
+            searchName ||
+            selectedYear ||
+            languageProblemFilter !== "all"
+          ) &&
             totalPages > 1 && (
               <div className="flex justify-center items-center gap-2 mt-8">
                 <button
@@ -396,6 +428,58 @@ const RetiredNamesPage = () => {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                {/* Language Problem Filter - Radio Buttons */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Filter by Retirement Reason
+                  </label>
+                  <div className="space-y-2">
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="languageProblem"
+                        value="all"
+                        checked={languageProblemFilter === "all"}
+                        onChange={(e) =>
+                          setLanguageProblemFilter(e.target.value)
+                        }
+                        className="w-4 h-4 text-blue-500 cursor-pointer"
+                      />
+                      <span className="ml-2 text-gray-700">All Names</span>
+                    </label>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="languageProblem"
+                        value="true"
+                        checked={languageProblemFilter === "true"}
+                        onChange={(e) =>
+                          setLanguageProblemFilter(e.target.value)
+                        }
+                        className="w-4 h-4 text-blue-500 cursor-pointer"
+                      />
+                      <span className="ml-2 text-green-600">
+                        Language Problem (Green)
+                      </span>
+                    </label>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="languageProblem"
+                        value="false"
+                        checked={languageProblemFilter === "false"}
+                        onChange={(e) =>
+                          setLanguageProblemFilter(e.target.value)
+                        }
+                        className="w-4 h-4 text-blue-500 cursor-pointer"
+                      />
+                      <span className="ml-2 text-red-600">
+                        Destructive Storm (Red)
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
