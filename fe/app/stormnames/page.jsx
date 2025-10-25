@@ -80,13 +80,8 @@ const CurrentNamesPage = () => {
             <div className="space-y-3">
               <div>
                 <span className="font-semibold text-gray-700">Meaning:</span>
-                <p className="text-gray-600">{selectedName.meaning}</p>
-              </div>
-
-              <div>
-                <span className="font-semibold text-gray-700">Position:</span>
                 <span className="text-gray-600 ml-2">
-                  {selectedName.position}
+                  {selectedName.meaning}
                 </span>
               </div>
 
