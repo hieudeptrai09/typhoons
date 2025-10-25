@@ -1096,7 +1096,7 @@ INSERT INTO `typhoonnames` (`id`, `name`, `meaning`, `position`, `isRetired`, `i
 (82, 'Morakot', 'Emerald', 82, 1, 1, 0, '', 'Thai'),
 (83, 'Etau', 'Palauan word for \"storm cloud\"', 83, 0, 0, 0, '', 'Palau'),
 (84, 'Vamco', 'A river in southern Vietnam', 84, 1, 1, 0, '', 'Vietnamese'),
-(85, 'KrovEnglish', 'A kind of tree', 85, 0, 0, 0, '', 'Khmer'),
+(85, 'Krovanh', 'A kind of tree', 85, 0, 0, 0, '', 'Khmer'),
 (86, 'Dujuan', 'Azalea', 86, 0, 0, 0, '', 'Mandarin Chinese'),
 (87, 'Maemi', 'Cicada', 87, 1, 1, 0, '', 'Korean'),
 (88, 'Choi-wan', 'Colorful cloud', 88, 0, 0, 0, '', 'Cantonese'),
