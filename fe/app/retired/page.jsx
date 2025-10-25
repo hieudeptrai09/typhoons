@@ -11,11 +11,19 @@ const RetiredNamesPage = () => {
   const [selectedName, setSelectedName] = useState(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // Filter states
+  // Applied filter states (what's currently filtering the data)
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [languageProblemFilter, setLanguageProblemFilter] = useState("all"); // "all", "true", "false"
+  const [languageProblemFilter, setLanguageProblemFilter] = useState("all");
+
+  // Temporary filter states (what's being edited in the modal)
+  const [tempSearchName, setTempSearchName] = useState("");
+  const [tempSelectedYear, setTempSelectedYear] = useState("");
+  const [tempSelectedCountry, setTempSelectedCountry] = useState("");
+  const [tempLanguageProblemFilter, setTempLanguageProblemFilter] =
+    useState("all");
+
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [yearSearch, setYearSearch] = useState("");
   const yearDropdownRef = useRef(null);
@@ -61,7 +69,7 @@ const RetiredNamesPage = () => {
     ...new Set(retiredNames.map((name) => name.country)),
   ].sort();
 
-  // Apply filters
+  // Apply filters (only runs when applied filter states change)
   useEffect(() => {
     let filtered = [...retiredNames];
 
@@ -157,19 +165,34 @@ const RetiredNamesPage = () => {
     setSelectedName(null);
   };
 
+  const openFilterModal = () => {
+    // Copy current applied filters to temporary states
+    setTempSearchName(searchName);
+    setTempSelectedYear(selectedYear);
+    setTempSelectedCountry(selectedCountry);
+    setTempLanguageProblemFilter(languageProblemFilter);
+    setIsFilterModalOpen(true);
+  };
+
   const closeFilterModal = () => {
     setIsFilterModalOpen(false);
   };
 
   const applyFilters = () => {
+    // Apply the temporary filters to the actual filter states
+    setSearchName(tempSearchName);
+    setSelectedYear(tempSelectedYear);
+    setSelectedCountry(tempSelectedCountry);
+    setLanguageProblemFilter(tempLanguageProblemFilter);
     setIsFilterModalOpen(false);
   };
 
   const clearAllFilters = () => {
-    setSearchName("");
-    setSelectedYear("");
-    setSelectedCountry("");
-    setLanguageProblemFilter("all");
+    // Clear only temporary filters (not applied until "Apply Filters" is clicked)
+    setTempSearchName("");
+    setTempSelectedYear("");
+    setTempSelectedCountry("");
+    setTempLanguageProblemFilter("all");
   };
 
   const filteredYears = years.filter((year) =>
@@ -194,7 +217,7 @@ const RetiredNamesPage = () => {
         {/* Filter Button */}
         <div className="max-w-4xl mx-auto mb-6">
           <button
-            onClick={() => setIsFilterModalOpen(true)}
+            onClick={openFilterModal}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
           >
             <svg
@@ -348,8 +371,8 @@ const RetiredNamesPage = () => {
                   <input
                     type="text"
                     placeholder="Enter typhoon name..."
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
+                    value={tempSearchName}
+                    onChange={(e) => setTempSearchName(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
                   />
                 </div>
@@ -365,7 +388,7 @@ const RetiredNamesPage = () => {
                       onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
                       className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-left"
                     >
-                      {selectedYear || "All Years"}
+                      {tempSelectedYear || "All Years"}
                     </button>
 
                     {isYearDropdownOpen && (
@@ -384,7 +407,7 @@ const RetiredNamesPage = () => {
                         <div className="max-h-60 overflow-y-auto">
                           <div
                             onClick={() => {
-                              setSelectedYear("");
+                              setTempSelectedYear("");
                               setIsYearDropdownOpen(false);
                               setYearSearch("");
                             }}
@@ -396,7 +419,7 @@ const RetiredNamesPage = () => {
                             <div
                               key={year}
                               onClick={() => {
-                                setSelectedYear(year);
+                                setTempSelectedYear(year);
                                 setIsYearDropdownOpen(false);
                                 setYearSearch("");
                               }}
@@ -417,8 +440,8 @@ const RetiredNamesPage = () => {
                     Filter by Country
                   </label>
                   <select
-                    value={selectedCountry}
-                    onChange={(e) => setSelectedCountry(e.target.value)}
+                    value={tempSelectedCountry}
+                    onChange={(e) => setTempSelectedCountry(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
                   >
                     <option value="">All Countries</option>
@@ -441,9 +464,9 @@ const RetiredNamesPage = () => {
                         type="radio"
                         name="languageProblem"
                         value="all"
-                        checked={languageProblemFilter === "all"}
+                        checked={tempLanguageProblemFilter === "all"}
                         onChange={(e) =>
-                          setLanguageProblemFilter(e.target.value)
+                          setTempLanguageProblemFilter(e.target.value)
                         }
                         className="w-4 h-4 text-blue-500 cursor-pointer"
                       />
@@ -454,9 +477,9 @@ const RetiredNamesPage = () => {
                         type="radio"
                         name="languageProblem"
                         value="true"
-                        checked={languageProblemFilter === "true"}
+                        checked={tempLanguageProblemFilter === "true"}
                         onChange={(e) =>
-                          setLanguageProblemFilter(e.target.value)
+                          setTempLanguageProblemFilter(e.target.value)
                         }
                         className="w-4 h-4 text-blue-500 cursor-pointer"
                       />
@@ -469,9 +492,9 @@ const RetiredNamesPage = () => {
                         type="radio"
                         name="languageProblem"
                         value="false"
-                        checked={languageProblemFilter === "false"}
+                        checked={tempLanguageProblemFilter === "false"}
                         onChange={(e) =>
-                          setLanguageProblemFilter(e.target.value)
+                          setTempLanguageProblemFilter(e.target.value)
                         }
                         className="w-4 h-4 text-blue-500 cursor-pointer"
                       />
