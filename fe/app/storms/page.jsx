@@ -87,13 +87,13 @@ const TyphoonListPage = () => {
           <div className="mt-4 flex justify-evenly">
             <button
               onClick={() => setSelectedCell("141")}
-              className="relative w-24 h-24 border-2 border-gray-300 cursor-pointer text-center text-xs font-semibold text-gray-600"
+              className="relative w-24 h-24 border-2 border-sky-200 hover:bg-sky-200 cursor-pointer text-center text-xs font-semibold text-gray-600"
             >
               CPHC
             </button>
             <button
               onClick={() => setSelectedCell("142")}
-              className="relative w-24 h-24 border-2 border-gray-300 cursor-pointer text-center text-xs font-semibold text-gray-600"
+              className="relative w-24 h-24 border-2 border-sky-200 hover:bg-sky-200 cursor-pointer text-center text-xs font-semibold text-gray-600"
             >
               NHC
             </button>
