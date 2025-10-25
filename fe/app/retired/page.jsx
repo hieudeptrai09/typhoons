@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
 
@@ -9,17 +9,17 @@ const RetiredNamesPage = () => {
   const [filteredNames, setFilteredNames] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // Filter states
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [yearSearch, setYearSearch] = useState("");
+  const yearDropdownRef = useRef(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   // Generate years from 2000 to current year
   const currentYear = new Date().getFullYear();
@@ -34,8 +34,24 @@ const RetiredNamesPage = () => {
         setRetiredNames(data.data);
         setFilteredNames(data.data);
       }
-      setLoading(false);
     });
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        yearDropdownRef.current &&
+        !yearDropdownRef.current.contains(event.target)
+      ) {
+        setIsYearDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   // Get unique countries for pagination
@@ -69,18 +85,21 @@ const RetiredNamesPage = () => {
     }
 
     setFilteredNames(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
   }, [searchName, selectedYear, selectedCountry, retiredNames]);
 
   // Paginate by country
   const getPaginatedData = () => {
-    if (selectedCountry) {
-      // If a country is selected, show all items from that country
-      return filteredNames;
+    let result = [];
+    if (searchName || selectedYear || selectedCountry) {
+      // If a condition is applied, show all items
+      result.push({
+        country: "",
+        items: filteredNames,
+      });
     } else {
       // Group by country and paginate
       const groupedByCountry = {};
-      filteredNames.forEach((name) => {
+      retiredNames.forEach((name) => {
         if (!groupedByCountry[name.country]) {
           groupedByCountry[name.country] = [];
         }
@@ -88,32 +107,16 @@ const RetiredNamesPage = () => {
       });
 
       const countryKeys = Object.keys(groupedByCountry).sort();
-      const startIdx = (currentPage - 1) * itemsPerPage;
-      const endIdx = startIdx + itemsPerPage;
 
-      let result = [];
-      let currentCount = 0;
-
-      for (const country of countryKeys) {
-        const countryItems = groupedByCountry[country];
-        if (currentCount >= endIdx) break;
-
-        if (currentCount + countryItems.length > startIdx) {
-          result.push({
-            country,
-            items: countryItems,
-          });
-        }
-        currentCount += countryItems.length;
-      }
-
-      return result;
+      result.push({
+        country: countryKeys[currentPage - 1],
+        items: groupedByCountry[countryKeys[currentPage - 1]],
+      });
     }
+    return result;
   };
 
-  const totalPages = selectedCountry
-    ? 1
-    : Math.ceil(filteredNames.length / itemsPerPage);
+  const totalPages = 14;
 
   const loadSuggestions = async (nameId) => {
     fetchData(`/suggested-names?nameId=${nameId}`).then((data) => {
@@ -145,7 +148,7 @@ const RetiredNamesPage = () => {
         </h1>
 
         {/* Filters */}
-        <div className="max-w-4xl mx-auto mb-6 bg-white rounded-lg shadow-md p-6">
+        <div className="max-w-4xl mx-auto mb-6 rounded-lg p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Name Search */}
             <div>
@@ -157,35 +160,67 @@ const RetiredNamesPage = () => {
                 placeholder="Enter typhoon name..."
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
               />
             </div>
-
             {/* Year Select with Search */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Filter by Year
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search year..."
-                  value={yearSearch}
-                  onChange={(e) => setYearSearch(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2"
-                />
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              <div className="relative" ref={yearDropdownRef}>
+                {/* Trigger button */}
+                <button
+                  type="button"
+                  onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
+                  className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-left"
                 >
-                  <option value="">All Years</option>
-                  {filteredYears.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
+                  {selectedYear || "All Years"}
+                </button>
+
+                {/* Dropdown with search input and options */}
+                {isYearDropdownOpen && (
+                  <div className="absolute z-10 w-full mt-1 bg-yellow-50 border border-gray-400 rounded-lg shadow-lg">
+                    {/* Search input inside dropdown */}
+                    <div className="p-2 border-b border-gray-200">
+                      <input
+                        type="text"
+                        placeholder="Search year..."
+                        value={yearSearch}
+                        onChange={(e) => setYearSearch(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 text-orange-600 outline-none"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+
+                    {/* Options list */}
+                    <div className="max-h-60 overflow-y-auto">
+                      <div
+                        onClick={() => {
+                          setSelectedYear("");
+                          setIsYearDropdownOpen(false);
+                          setYearSearch("");
+                        }}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
+                      >
+                        All Years
+                      </div>
+                      {filteredYears.map((year) => (
+                        <div
+                          key={year}
+                          onClick={() => {
+                            setSelectedYear(year);
+                            setIsYearDropdownOpen(false);
+                            setYearSearch("");
+                          }}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
+                        >
+                          {year}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -197,7 +232,7 @@ const RetiredNamesPage = () => {
               <select
                 value={selectedCountry}
                 onChange={(e) => setSelectedCountry(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
               >
                 <option value="">All Countries</option>
                 {countries.map((country) => (
@@ -216,9 +251,8 @@ const RetiredNamesPage = () => {
                 setSearchName("");
                 setSelectedYear("");
                 setSelectedCountry("");
-                setYearSearch("");
               }}
-              className="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              className="mt-4 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
             >
               Clear All Filters
             </button>
@@ -226,121 +260,92 @@ const RetiredNamesPage = () => {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {selectedCountry ? (
-            // Show filtered results when country is selected
-            <div className="space-y-4">
-              {filteredNames.length > 0 ? (
-                filteredNames.map((name, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => handleNameClick(name)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-red-600 mb-2">
-                          {name.name}
-                        </h3>
-                        <p className="text-gray-700 mb-2">
-                          <span className="font-semibold">Meaning:</span>{" "}
-                          {name.meaning}
-                        </p>
-                        <p className="text-gray-600">
-                          <span className="font-semibold">Country:</span>{" "}
-                          {name.country}
-                        </p>
-                        {name.note && (
-                          <p className="text-gray-600 mt-2">
-                            <span className="font-semibold">Note:</span>{" "}
-                            {name.note}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-20 text-gray-500">
-                  No results found
-                </div>
-              )}
-            </div>
-          ) : (
-            // Show paginated results grouped by country
-            <div className="space-y-8">
-              {getPaginatedData().map((group, gidx) => (
-                <div key={gidx}>
-                  <h2 className="text-2xl font-bold text-blue-600 mb-4 pb-2 border-b-2 border-blue-200">
-                    {group.country}
-                  </h2>
-                  <div className="space-y-4">
-                    {group.items.map((name, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => handleNameClick(name)}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h3 className="text-2xl font-bold text-red-600 mb-2">
+          <div className="space-y-8">
+            {getPaginatedData().map((group, gidx) => (
+              <div key={gidx}>
+                <h2 className="text-2xl font-bold text-blue-600 mb-4 pb-2 border-b-2 border-blue-200">
+                  {group.country}
+                </h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                          Meaning
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                          Country
+                        </th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                          Note
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {group.items?.map((name, idx) => (
+                        <tr
+                          key={idx}
+                          className="hover:bg-gray-50 transition-colors cursor-pointer"
+                          onClick={() => handleNameClick(name)}
+                        >
+                          <td className="px-6 py-4">
+                            <span
+                              className={`text-lg font-bold ${
+                                name.isLanguageProblem
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
                               {name.name}
-                            </h3>
-                            <p className="text-gray-700 mb-2">
-                              <span className="font-semibold">Meaning:</span>{" "}
-                              {name.meaning}
-                            </p>
-                            <p className="text-gray-600">
-                              <span className="font-semibold">Country:</span>{" "}
-                              {name.country}
-                            </p>
-                            {name.note && (
-                              <p className="text-gray-600 mt-2">
-                                <span className="font-semibold">Note:</span>{" "}
-                                {name.note}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">
+                            {name.meaning}
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {name.country}
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {name.note || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              ))}
-
-              {filteredNames.length === 0 && (
-                <div className="text-center py-20 text-gray-500">
-                  No results found
-                </div>
-              )}
-            </div>
-          )}
-
+              </div>
+            ))}
+          </div>
           {/* Pagination */}
-          {!selectedCountry && totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-8">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-              >
-                Previous
-              </button>
+          {!(selectedCountry || searchName || selectedYear) &&
+            totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-8">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                >
+                  Previous
+                </button>
 
-              <span className="px-4 py-2 text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
+                <span className="px-4 py-2 text-gray-700">
+                  Page {currentPage} of {totalPages}
+                </span>
 
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-              >
-                Next
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
         </div>
       </div>
 
@@ -354,10 +359,16 @@ const RetiredNamesPage = () => {
             className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 pb-4 border-b border-gray-300">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-3xl font-bold text-red-600 mb-2">
+                  <h2
+                    className={`text-3xl font-bold mb-2 ${
+                      selectedName.isLanguageProblem
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
                     {selectedName.name}
                   </h2>
                   <p className="text-gray-700">
@@ -382,36 +393,30 @@ const RetiredNamesPage = () => {
               <h3 className="font-bold text-xl mb-4 text-gray-800">
                 Suggested Replacements
               </h3>
-              {suggestions ? (
-                <div className="space-y-3">
-                  {suggestions.map((suggestion, sidx) => (
-                    <div
-                      key={sidx}
-                      className={`p-4 rounded-lg ${
-                        suggestion.isChosen
-                          ? "bg-blue-100 border-2 border-blue-500"
-                          : "bg-gray-50"
-                      }`}
-                    >
-                      <div className="font-semibold text-gray-800 mb-1">
-                        {suggestion.replacementName}
-                        {suggestion.isChosen && (
-                          <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
-                            CHOSEN
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {suggestion.replacementMeaning}
-                      </div>
+              <div className="space-y-3">
+                {suggestions.map((suggestion, sidx) => (
+                  <div
+                    key={sidx}
+                    className={`p-4 rounded-lg ${
+                      suggestion.isChosen
+                        ? "bg-blue-100 border-2 border-blue-500"
+                        : "bg-gray-50"
+                    }`}
+                  >
+                    <div className="font-semibold text-gray-800 mb-1">
+                      {suggestion.replacementName}
+                      {Boolean(suggestion.isChosen) && (
+                        <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
+                          CHOSEN
+                        </span>
+                      )}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  Loading suggestions...
-                </div>
-              )}
+                    <div className="text-sm text-gray-600">
+                      {suggestion.replacementMeaning}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
