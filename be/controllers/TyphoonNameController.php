@@ -20,7 +20,8 @@ class TyphoonNameController
                     tn.isReplaced,
                     tn.isLanguageProblem,
                     tn.note,
-                    tn.language
+                    tn.language,
+                    tn.lastYear
                   FROM TyphoonNames tn
                   INNER JOIN Positions p ON tn.position = p.id";
 
@@ -32,7 +33,7 @@ class TyphoonNameController
             }
         }
 
-        $query .= " ORDER BY tn.position, tn.name";
+        $query .= " ORDER BY tn.lastYear, tn.position, tn.name";
 
         $stmt = $this->conn->prepare($query);
 

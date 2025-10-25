@@ -82,9 +82,7 @@ const RetiredNamesPage = () => {
 
     // Filter by year
     if (selectedYear) {
-      filtered = filtered.filter((name) => {
-        return name.note && name.note.includes(selectedYear);
-      });
+      filtered = filtered.filter((name) => name.lastYear === selectedYear);
     }
 
     // Filter by country
