@@ -9,6 +9,7 @@ const RetiredNamesPage = () => {
   const [filteredNames, setFilteredNames] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Filter states
   const [searchName, setSearchName] = useState("");
@@ -70,11 +71,9 @@ const RetiredNamesPage = () => {
       );
     }
 
-    // Filter by year (assuming there's a year field or we can extract from note)
+    // Filter by year
     if (selectedYear) {
       filtered = filtered.filter((name) => {
-        // You may need to adjust this based on your data structure
-        // This assumes year info might be in the note field
         return name.note && name.note.includes(selectedYear);
       });
     }
@@ -135,9 +134,27 @@ const RetiredNamesPage = () => {
     setSelectedName(null);
   };
 
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  const applyFilters = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  const clearAllFilters = () => {
+    setSearchName("");
+    setSelectedYear("");
+    setSelectedCountry("");
+  };
+
   const filteredYears = years.filter((year) =>
     year.toString().includes(yearSearch)
   );
+
+  const activeFilterCount = [searchName, selectedYear, selectedCountry].filter(
+    Boolean
+  ).length;
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -147,116 +164,32 @@ const RetiredNamesPage = () => {
           Retired Typhoon Names
         </h1>
 
-        {/* Filters */}
-        <div className="max-w-4xl mx-auto mb-6 rounded-lg p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Name Search */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Search by Name
-              </label>
-              <input
-                type="text"
-                placeholder="Enter typhoon name..."
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
-              />
-            </div>
-            {/* Year Select with Search */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Filter by Year
-              </label>
-              <div className="relative" ref={yearDropdownRef}>
-                {/* Trigger button */}
-                <button
-                  type="button"
-                  onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
-                  className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-left"
-                >
-                  {selectedYear || "All Years"}
-                </button>
-
-                {/* Dropdown with search input and options */}
-                {isYearDropdownOpen && (
-                  <div className="absolute z-10 w-full mt-1 bg-yellow-50 border border-gray-400 rounded-lg shadow-lg">
-                    {/* Search input inside dropdown */}
-                    <div className="p-2 border-b border-gray-200">
-                      <input
-                        type="text"
-                        placeholder="Search year..."
-                        value={yearSearch}
-                        onChange={(e) => setYearSearch(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 text-orange-600 outline-none"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </div>
-
-                    {/* Options list */}
-                    <div className="max-h-60 overflow-y-auto">
-                      <div
-                        onClick={() => {
-                          setSelectedYear("");
-                          setIsYearDropdownOpen(false);
-                          setYearSearch("");
-                        }}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
-                      >
-                        All Years
-                      </div>
-                      {filteredYears.map((year) => (
-                        <div
-                          key={year}
-                          onClick={() => {
-                            setSelectedYear(year);
-                            setIsYearDropdownOpen(false);
-                            setYearSearch("");
-                          }}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
-                        >
-                          {year}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Country Select */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Filter by Country
-              </label>
-              <select
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
-              >
-                <option value="">All Countries</option>
-                {countries.map((country) => (
-                  <option key={country} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Clear Filters */}
-          {(searchName || selectedYear || selectedCountry) && (
-            <button
-              onClick={() => {
-                setSearchName("");
-                setSelectedYear("");
-                setSelectedCountry("");
-              }}
-              className="mt-4 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+        {/* Filter Button */}
+        <div className="max-w-4xl mx-auto mb-6">
+          <button
+            onClick={() => setIsFilterModalOpen(true)}
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              Clear All Filters
-            </button>
-          )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="bg-white text-blue-500 rounded-full px-2 py-0.5 text-sm font-bold">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -349,7 +282,144 @@ const RetiredNamesPage = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Filter Modal */}
+      {isFilterModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={closeFilterModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-2xl max-w-2xl w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 pb-4 border-b border-gray-300">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Filter Options
+                </h2>
+                <button
+                  onClick={closeFilterModal}
+                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="space-y-4">
+                {/* Name Search */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Search by Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter typhoon name..."
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
+                  />
+                </div>
+
+                {/* Year Select with Search */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Filter by Year
+                  </label>
+                  <div className="relative" ref={yearDropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
+                      className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-left"
+                    >
+                      {selectedYear || "All Years"}
+                    </button>
+
+                    {isYearDropdownOpen && (
+                      <div className="absolute z-10 w-full mt-1 bg-yellow-50 border border-gray-400 rounded-lg shadow-lg">
+                        <div className="p-2 border-b border-gray-200">
+                          <input
+                            type="text"
+                            placeholder="Search year..."
+                            value={yearSearch}
+                            onChange={(e) => setYearSearch(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 text-orange-600 outline-none"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        <div className="max-h-60 overflow-y-auto">
+                          <div
+                            onClick={() => {
+                              setSelectedYear("");
+                              setIsYearDropdownOpen(false);
+                              setYearSearch("");
+                            }}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
+                          >
+                            All Years
+                          </div>
+                          {filteredYears.map((year) => (
+                            <div
+                              key={year}
+                              onClick={() => {
+                                setSelectedYear(year);
+                                setIsYearDropdownOpen(false);
+                                setYearSearch("");
+                              }}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
+                            >
+                              {year}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Country Select */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Filter by Country
+                  </label>
+                  <select
+                    value={selectedCountry}
+                    onChange={(e) => setSelectedCountry(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
+                  >
+                    <option value="">All Countries</option>
+                    {countries.map((country) => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={clearAllFilters}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-semibold"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={applyFilters}
+                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Name Details Modal */}
       {selectedName && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
