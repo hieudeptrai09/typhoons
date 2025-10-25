@@ -38,11 +38,7 @@ const CurrentNamesPage = () => {
                     <td key={col} className="border border-gray-300 p-0">
                       <button
                         onClick={() => dataNow && setSelectedName(dataNow)}
-                        className={`w-full h-16 flex items-center justify-center transition-all ${
-                          dataNow
-                            ? "bg-gradient-to-br from-blue-100 to-purple-100 hover:from-blue-200 hover:to-purple-200 hover:scale-105"
-                            : "bg-gray-100"
-                        }`}
+                        className="w-full h-16 flex items-center justify-center transition-all bg-gray-50 hover:bg-gray-100"
                       >
                         <div className="text-sm font-semibold text-gray-700">
                           {dataNow?.name || ""}
