@@ -26,7 +26,7 @@ class StormController
             $query .= " WHERE s.position = :position";
         }
 
-        $query .= " ORDER BY s.year DESC, s.position";
+        $query .= " ORDER BY s.year ASC, s.position";
 
         $stmt = $this->conn->prepare($query);
 
