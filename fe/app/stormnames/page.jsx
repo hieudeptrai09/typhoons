@@ -100,13 +100,6 @@ const CurrentNamesPage = () => {
                   </span>
                 </div>
               )}
-
-              {selectedName.note && (
-                <div>
-                  <span className="font-semibold text-gray-700">Note:</span>
-                  <p className="text-gray-600">{selectedName.note}</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
