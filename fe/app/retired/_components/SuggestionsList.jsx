@@ -1,5 +1,5 @@
 import SuggestionCard from "./SuggestionCard";
-import EmptySuggestions from "./EmptySuggestions";
+import EmptySuggestions from "./EmptySuggestions.jsx";
 
 const SuggestionsList = ({ suggestions }) => {
   if (suggestions.length === 0) {
