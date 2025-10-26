@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
 import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
+import FilterIcon from "./assets/filter-icon.svg";
 
 const RetiredNamesPage = () => {
   const [retiredNames, setRetiredNames] = useState([]);
@@ -162,19 +164,7 @@ const RetiredNamesPage = () => {
             onClick={openFilterModal}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-              />
-            </svg>
+            <Image src={FilterIcon} alt="Filter" width={20} height={20} />
             Filters
             {activeFilterCount > 0 && (
               <span className="bg-white text-blue-500 rounded-full px-2 py-0.5 text-sm font-bold">
@@ -207,6 +197,9 @@ const RetiredNamesPage = () => {
                         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                           Note
                         </th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                          Year of last storm
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -237,6 +230,9 @@ const RetiredNamesPage = () => {
                           </td>
                           <td className="px-6 py-4 text-gray-600">
                             {name.note || "-"}
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {name.lastYear}
                           </td>
                         </tr>
                       ))}
