@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
-import FilterModal from "./_components/FilterModal";
-import NameDetailsModal from "./_components/NameDetailsModal";
-import FilterButton from "./_components/FilterButton";
-import RetiredNamesTable from "./_components/RetiredNamesTable";
-import Pagination from "./_components/Pagination";
-import { useFilteredNames } from "./_hooks/useFilteredNames.js";
+import FilterModal from "./_components/FilterModal/FilterModal";
+import NameDetailsModal from "./_components/NameDetailsModal/NameDetailsModal";
+import FilterButton from "./_components/MainPage/FilterButton";
+import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
+import Pagination from "./_components/MainPage/Pagination";
+import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 
 const RetiredNamesPage = () => {

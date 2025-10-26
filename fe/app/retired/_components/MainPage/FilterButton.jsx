@@ -1,5 +1,5 @@
 import Image from "next/image";
-import FilterIcon from "../assets/filter-icon.svg";
+import FilterIcon from "../../assets/filter-icon.svg";
 
 const FilterButton = ({ activeFilterCount, onClick }) => {
   return (
