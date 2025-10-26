@@ -246,9 +246,16 @@ const RetiredNamesPage = () => {
           {activeFilterCount === 0 && totalPages > 1 && (
             <div className="flex justify-center items-center gap-2 mt-8">
               <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                onClick={() =>
+                  setCurrentPage((p) =>
+                    p === 1 ? totalPages : Math.max(1, p - 1)
+                  )
+                }
+                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                  currentPage === 1
+                    ? "bg-gray-300 hover:bg-gray-400"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
               >
                 Previous
               </button>
@@ -259,10 +266,15 @@ const RetiredNamesPage = () => {
 
               <button
                 onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  setCurrentPage((p) =>
+                    p === totalPages ? 1 : Math.min(totalPages, p + 1)
+                  )
                 }
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 hover:bg-gray-400"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
               >
                 Next
               </button>
