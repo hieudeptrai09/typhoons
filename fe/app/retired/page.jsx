@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
+import FilterModal from "./_components/FilterModal";
+import NameDetailsModal from "./_components/NameDetailsModal";
 
 const RetiredNamesPage = () => {
   const [retiredNames, setRetiredNames] = useState([]);
@@ -17,26 +19,8 @@ const RetiredNamesPage = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [languageProblemFilter, setLanguageProblemFilter] = useState("all");
 
-  // Temporary filter states (what's being edited in the modal)
-  const [tempSearchName, setTempSearchName] = useState("");
-  const [tempSelectedYear, setTempSelectedYear] = useState("");
-  const [tempSelectedCountry, setTempSelectedCountry] = useState("");
-  const [tempLanguageProblemFilter, setTempLanguageProblemFilter] =
-    useState("all");
-
-  const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
-  const [yearSearch, setYearSearch] = useState("");
-  const yearDropdownRef = useRef(null);
-
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Generate years from 2000 to current year
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - 2000 + 1 },
-    (_, i) => 2000 + i
-  );
 
   useEffect(() => {
     fetchData("/typhoon-names?isRetired=1").then((data) => {
@@ -45,23 +29,6 @@ const RetiredNamesPage = () => {
         setFilteredNames(data.data);
       }
     });
-  }, []);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        yearDropdownRef.current &&
-        !yearDropdownRef.current.contains(event.target)
-      ) {
-        setIsYearDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   // Get unique countries for pagination
@@ -161,16 +128,11 @@ const RetiredNamesPage = () => {
     await loadSuggestions(name.id);
   };
 
-  const closeModal = () => {
+  const closeNameModal = () => {
     setSelectedName(null);
   };
 
   const openFilterModal = () => {
-    // Copy current applied filters to temporary states
-    setTempSearchName(searchName);
-    setTempSelectedYear(selectedYear);
-    setTempSelectedCountry(selectedCountry);
-    setTempLanguageProblemFilter(languageProblemFilter);
     setIsFilterModalOpen(true);
   };
 
@@ -178,26 +140,13 @@ const RetiredNamesPage = () => {
     setIsFilterModalOpen(false);
   };
 
-  const applyFilters = () => {
-    // Apply the temporary filters to the actual filter states
-    setSearchName(tempSearchName);
-    setSelectedYear(tempSelectedYear);
-    setSelectedCountry(tempSelectedCountry);
-    setLanguageProblemFilter(tempLanguageProblemFilter);
+  const handleApplyFilters = (filters) => {
+    setSearchName(filters.searchName);
+    setSelectedYear(filters.selectedYear);
+    setSelectedCountry(filters.selectedCountry);
+    setLanguageProblemFilter(filters.languageProblemFilter);
     setIsFilterModalOpen(false);
   };
-
-  const clearAllFilters = () => {
-    // Clear only temporary filters (not applied until "Apply Filters" is clicked)
-    setTempSearchName("");
-    setTempSelectedYear("");
-    setTempSelectedCountry("");
-    setTempLanguageProblemFilter("all");
-  };
-
-  const filteredYears = years.filter((year) =>
-    year.toString().includes(yearSearch)
-  );
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -327,268 +276,25 @@ const RetiredNamesPage = () => {
       </div>
 
       {/* Filter Modal */}
-      {isFilterModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={closeFilterModal}
-        >
-          <div
-            className="bg-white rounded-lg shadow-2xl max-w-2xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6 pb-4 border-b border-gray-300">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Filter Options
-                </h2>
-                <button
-                  onClick={closeFilterModal}
-                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6">
-              <div className="space-y-4">
-                {/* Name Search */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Search by Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter typhoon name..."
-                    value={tempSearchName}
-                    onChange={(e) => setTempSearchName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
-                  />
-                </div>
-
-                {/* Year Select with Search */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Filter by Year
-                  </label>
-                  <div className="relative" ref={yearDropdownRef}>
-                    <button
-                      type="button"
-                      onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}
-                      className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-left"
-                    >
-                      {tempSelectedYear || "All Years"}
-                    </button>
-
-                    {isYearDropdownOpen && (
-                      <div className="absolute z-10 w-full mt-1 bg-yellow-50 border border-gray-400 rounded-lg shadow-lg">
-                        <div className="p-2 border-b border-gray-200">
-                          <input
-                            type="text"
-                            placeholder="Search year..."
-                            value={yearSearch}
-                            onChange={(e) => setYearSearch(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 text-orange-600 outline-none"
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                        </div>
-
-                        <div className="max-h-60 overflow-y-auto">
-                          <div
-                            onClick={() => {
-                              setTempSelectedYear("");
-                              setIsYearDropdownOpen(false);
-                              setYearSearch("");
-                            }}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
-                          >
-                            All Years
-                          </div>
-                          {filteredYears.map((year) => (
-                            <div
-                              key={year}
-                              onClick={() => {
-                                setTempSelectedYear(year);
-                                setIsYearDropdownOpen(false);
-                                setYearSearch("");
-                              }}
-                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-orange-600"
-                            >
-                              {year}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Country Select */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Filter by Country
-                  </label>
-                  <select
-                    value={tempSelectedCountry}
-                    onChange={(e) => setTempSelectedCountry(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none"
-                  >
-                    <option value="">All Countries</option>
-                    {countries.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Language Problem Filter - Radio Buttons */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Filter by Retirement Reason
-                  </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name="languageProblem"
-                        value="all"
-                        checked={tempLanguageProblemFilter === "all"}
-                        onChange={(e) =>
-                          setTempLanguageProblemFilter(e.target.value)
-                        }
-                        className="w-4 h-4 text-blue-500 cursor-pointer"
-                      />
-                      <span className="ml-2 text-gray-700">All Names</span>
-                    </label>
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name="languageProblem"
-                        value="true"
-                        checked={tempLanguageProblemFilter === "true"}
-                        onChange={(e) =>
-                          setTempLanguageProblemFilter(e.target.value)
-                        }
-                        className="w-4 h-4 text-blue-500 cursor-pointer"
-                      />
-                      <span className="ml-2 text-green-600">
-                        Language Problem (Green)
-                      </span>
-                    </label>
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name="languageProblem"
-                        value="false"
-                        checked={tempLanguageProblemFilter === "false"}
-                        onChange={(e) =>
-                          setTempLanguageProblemFilter(e.target.value)
-                        }
-                        className="w-4 h-4 text-blue-500 cursor-pointer"
-                      />
-                      <span className="ml-2 text-red-600">
-                        Destructive Storm (Red)
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Modal Actions */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={clearAllFilters}
-                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-semibold"
-                >
-                  Clear All
-                </button>
-                <button
-                  onClick={applyFilters}
-                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
-                >
-                  Apply Filters
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={closeFilterModal}
+        onApply={handleApplyFilters}
+        countries={countries}
+        initialFilters={{
+          searchName,
+          selectedYear,
+          selectedCountry,
+          languageProblemFilter,
+        }}
+      />
 
       {/* Name Details Modal */}
-      {selectedName && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6 pb-4 border-b border-gray-300">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2
-                    className={`text-3xl font-bold mb-2 ${
-                      selectedName.isLanguageProblem
-                        ? "text-green-600"
-                        : selectedName.name === "Vamei"
-                        ? "text-purple-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {selectedName.name}
-                  </h2>
-                  <p className="text-gray-700">
-                    <span className="font-semibold">Meaning:</span>{" "}
-                    {selectedName.meaning}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Country:</span>{" "}
-                    {selectedName.country}
-                  </p>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]">
-              <h3 className="font-bold text-xl mb-4 text-gray-800">
-                Suggested Replacements
-              </h3>
-              <div className="space-y-3">
-                {suggestions.map((suggestion, sidx) => (
-                  <div
-                    key={sidx}
-                    className={`p-4 rounded-lg ${
-                      suggestion.isChosen
-                        ? "bg-blue-100 border-2 border-blue-500"
-                        : "bg-gray-50"
-                    }`}
-                  >
-                    <div className="font-semibold text-gray-800 mb-1">
-                      {suggestion.replacementName}
-                      {Boolean(suggestion.isChosen) && (
-                        <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
-                          CHOSEN
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {suggestion.replacementMeaning}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <NameDetailsModal
+        selectedName={selectedName}
+        suggestions={suggestions}
+        onClose={closeNameModal}
+      />
     </div>
   );
 };
