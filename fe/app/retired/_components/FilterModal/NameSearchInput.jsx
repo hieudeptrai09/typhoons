@@ -2,7 +2,7 @@ const NameSearchInput = ({ value, onChange }) => {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Search by Name
+        Filter by Name
       </label>
       <input
         type="text"
