@@ -30,7 +30,7 @@ const YearDigitSelector = ({ value, onChange }) => {
               key={index}
               value={digit}
               onChange={(e) => handleDigitChange(index, e.target.value)}
-              className="w-16 px-2 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-orange-600 outline-none text-center font-mono text-lg"
+              className="w-16 px-2 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none text-center font-mono text-lg"
             >
               {digitOptions.map((option) => (
                 <option key={option} value={option}>
