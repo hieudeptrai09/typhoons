@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ModalHeader from "./FilterModalHeader";
 import NameSearchInput from "./NameSearchInput";
-import YearDropdown from "./YearDropdown";
+import YearDigitSelector from "./YearDigitSelector";
 import CountrySelect from "./CountrySelect";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import ModalActions from "./ModalActions";
@@ -74,7 +74,7 @@ const FilterModal = ({
               onChange={setTempSearchName}
             />
 
-            <YearDropdown
+            <YearDigitSelector
               value={tempSelectedYear}
               onChange={setTempSelectedYear}
             />
