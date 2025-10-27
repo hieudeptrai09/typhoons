@@ -13,6 +13,7 @@ const NameDetailsHeader = ({ selectedName, onClose }) => {
           <NameInfo
             meaning={selectedName.meaning}
             country={selectedName.country}
+            position={selectedName.position}
           />
         </div>
         <button
