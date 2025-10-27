@@ -3,7 +3,7 @@ import ModalHeader from "./FilterModalHeader";
 import NameSearchInput from "./NameSearchInput";
 import YearDropdown from "./YearDropdown";
 import CountrySelect from "./CountrySelect";
-import RetirementReasonRadio from "./RetirementReasonRadio";
+import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import ModalActions from "./ModalActions";
 
 const FilterModal = ({
@@ -15,7 +15,7 @@ const FilterModal = ({
     searchName: "",
     selectedYear: "",
     selectedCountry: "",
-    languageProblemFilter: "all",
+    retirementReasons: [],
   },
 }) => {
   const [tempSearchName, setTempSearchName] = useState(
@@ -27,16 +27,15 @@ const FilterModal = ({
   const [tempSelectedCountry, setTempSelectedCountry] = useState(
     initialFilters.selectedCountry
   );
-  const [tempLanguageProblemFilter, setTempLanguageProblemFilter] = useState(
-    initialFilters.languageProblemFilter
+  const [tempRetirementReasons, setTempRetirementReasons] = useState(
+    initialFilters.retirementReasons
   );
 
-  // Update temp filters when initialFilters change
   useEffect(() => {
     setTempSearchName(initialFilters.searchName);
     setTempSelectedYear(initialFilters.selectedYear);
     setTempSelectedCountry(initialFilters.selectedCountry);
-    setTempLanguageProblemFilter(initialFilters.languageProblemFilter);
+    setTempRetirementReasons(initialFilters.retirementReasons);
   }, [initialFilters]);
 
   const handleApply = () => {
@@ -44,7 +43,7 @@ const FilterModal = ({
       searchName: tempSearchName,
       selectedYear: tempSelectedYear,
       selectedCountry: tempSelectedCountry,
-      languageProblemFilter: tempLanguageProblemFilter,
+      retirementReasons: tempRetirementReasons,
     });
   };
 
@@ -52,7 +51,7 @@ const FilterModal = ({
     setTempSearchName("");
     setTempSelectedYear("");
     setTempSelectedCountry("");
-    setTempLanguageProblemFilter("all");
+    setTempRetirementReasons([]);
   };
 
   if (!isOpen) return null;
@@ -86,9 +85,9 @@ const FilterModal = ({
               countries={countries}
             />
 
-            <RetirementReasonRadio
-              value={tempLanguageProblemFilter}
-              onChange={setTempLanguageProblemFilter}
+            <RetirementReasonCheckbox
+              value={tempRetirementReasons}
+              onChange={setTempRetirementReasons}
             />
           </div>
 

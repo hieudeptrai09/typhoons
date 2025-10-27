@@ -5,7 +5,7 @@ export const useFilteredNames = ({
   searchName,
   selectedYear,
   selectedCountry,
-  languageProblemFilter,
+  retirementReasons,
 }) => {
   const filteredNames = useMemo(() => {
     let filtered = [...retiredNames];
@@ -24,14 +24,19 @@ export const useFilteredNames = ({
       filtered = filtered.filter((name) => name.country === selectedCountry);
     }
 
-    if (languageProblemFilter === "true") {
-      filtered = filtered.filter(
-        (name) => Boolean(name.isLanguageProblem) === true
-      );
-    } else if (languageProblemFilter === "false") {
-      filtered = filtered.filter(
-        (name) => Boolean(name.isLanguageProblem) === false
-      );
+    if (retirementReasons.length > 0) {
+      filtered = filtered.filter((name) => {
+        const isLanguageProblem = Boolean(name.isLanguageProblem);
+
+        // Check if name matches any selected reason
+        if (retirementReasons.includes("language") && isLanguageProblem) {
+          return true;
+        }
+        if (retirementReasons.includes("destructive") && !isLanguageProblem) {
+          return true;
+        }
+        return false;
+      });
     }
 
     return filtered;
@@ -40,14 +45,14 @@ export const useFilteredNames = ({
     searchName,
     selectedYear,
     selectedCountry,
-    languageProblemFilter,
+    retirementReasons,
   ]);
 
   const activeFilterCount = [
     searchName,
     selectedYear,
     selectedCountry,
-    languageProblemFilter !== "all" ? languageProblemFilter : "",
+    retirementReasons.length > 0 ? "reasons" : "",
   ].filter(Boolean).length;
 
   return { filteredNames, activeFilterCount };

@@ -1,17 +1,24 @@
-const RetirementReasonRadio = ({ value, onChange }) => {
+const RetirementReasonCheckbox = ({ value, onChange }) => {
   const options = [
-    { value: "all", label: "All Names", colorClass: "text-gray-700" },
     {
-      value: "true",
+      value: "language",
       label: "Language Problem (Green)",
       colorClass: "text-green-600",
     },
     {
-      value: "false",
+      value: "destructive",
       label: "Destructive Storm (Red)",
       colorClass: "text-red-600",
     },
   ];
+
+  const handleCheckboxChange = (optionValue) => {
+    if (value.includes(optionValue)) {
+      onChange(value.filter((v) => v !== optionValue));
+    } else {
+      onChange([...value, optionValue]);
+    }
+  };
 
   return (
     <div>
@@ -25,12 +32,11 @@ const RetirementReasonRadio = ({ value, onChange }) => {
             className="flex items-center cursor-pointer"
           >
             <input
-              type="radio"
-              name="languageProblem"
+              type="checkbox"
               value={option.value}
-              checked={value === option.value}
-              onChange={(e) => onChange(e.target.value)}
-              className="w-4 h-4 text-blue-500 cursor-pointer"
+              checked={value.includes(option.value)}
+              onChange={() => handleCheckboxChange(option.value)}
+              className="w-4 h-4 text-blue-500 cursor-pointer rounded border-gray-300"
             />
             <span className={`ml-2 ${option.colorClass}`}>{option.label}</span>
           </label>
@@ -40,4 +46,4 @@ const RetirementReasonRadio = ({ value, onChange }) => {
   );
 };
 
-export default RetirementReasonRadio;
+export default RetirementReasonCheckbox;

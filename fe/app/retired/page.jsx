@@ -21,7 +21,7 @@ const RetiredNamesPage = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [languageProblemFilter, setLanguageProblemFilter] = useState("all");
+  const [retirementReasons, setRetirementReasons] = useState([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +43,7 @@ const RetiredNamesPage = () => {
     searchName,
     selectedYear,
     selectedCountry,
-    languageProblemFilter,
+    retirementReasons,
   });
 
   const { paginatedData, totalPages } = usePagination({
@@ -70,7 +70,7 @@ const RetiredNamesPage = () => {
     setSearchName(filters.searchName);
     setSelectedYear(filters.selectedYear);
     setSelectedCountry(filters.selectedCountry);
-    setLanguageProblemFilter(filters.languageProblemFilter);
+    setRetirementReasons(filters.retirementReasons);
     setIsFilterModalOpen(false);
   };
 
@@ -111,7 +111,7 @@ const RetiredNamesPage = () => {
           searchName,
           selectedYear,
           selectedCountry,
-          languageProblemFilter,
+          retirementReasons,
         }}
       />
 
