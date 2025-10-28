@@ -1,21 +1,39 @@
-const YearDigitSelector = ({ value, onChange }) => {
-  // Parse current year value into digits
-  const yearString = value ? value.toString().padStart(4, "0") : "0000";
-  const digits = yearString.split("");
+import { useState, useEffect } from "react";
 
-  const digitOptions = Array.from({ length: 10 }, (_, i) => i.toString());
+const YearDigitSelector = ({ value, onChange }) => {
+  // Local state to track individual digits (including "-")
+  const [digits, setDigits] = useState(["−", "−", "−", "−"]);
+
+  // Digit options including "-" for "any"
+  const digitOptions = [
+    "−",
+    ...Array.from({ length: 10 }, (_, i) => i.toString()),
+  ];
+
+  // Initialize digits from value prop
+  useEffect(() => {
+    if (value && value !== "") {
+      const yearString = value.toString().padStart(4, "0");
+      setDigits(yearString.split(""));
+    } else {
+      setDigits(["−", "−", "−", "−"]);
+    }
+  }, [value]);
 
   const handleDigitChange = (position, newDigit) => {
     const newDigits = [...digits];
     newDigits[position] = newDigit;
-    const newYear = newDigits.join("");
+    setDigits(newDigits);
 
-    // If all zeros, return empty string
-    if (newYear === "0000") {
+    // Check if any digit is "−"
+    if (newDigits.some((d) => d === "−")) {
       onChange("");
-    } else {
-      onChange(parseInt(newYear, 10));
+      return;
     }
+
+    // All digits are numbers, convert to year
+    const newYear = newDigits.join("");
+    onChange(parseInt(newYear, 10));
   };
 
   return (
