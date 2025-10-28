@@ -7,9 +7,13 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-sky-100 flex flex-col justify-between">
       <div className="flex-grow flex flex-col items-center justify-center p-8">
-        <div className="mb-12">
+        <a
+          href="https://www.youtube.com/watch?v=5LtFOkH9zwU"
+          target="_blank"
+          className="mb-12"
+        >
           <Image src="/logo.png" alt="web logo" width={500} height={250} />
-        </div>
+        </a>
 
         <div className="flex flex-col gap-6 w-full max-w-md">
           <Menu href="storms" icon="🌊" label="Typhoon List" />
