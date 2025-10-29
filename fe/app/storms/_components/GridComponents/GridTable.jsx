@@ -1,12 +1,6 @@
 import GridRow from "./GridRow";
 
-const GridTable = ({
-  rows,
-  cols,
-  onCellClick,
-  mode = "normal",
-  highlightData = {},
-}) => {
+const GridTable = ({ rows, cols, onCellClick }) => {
   return (
     <div className="overflow-x-auto">
       <table className="border-collapse mx-auto">
@@ -17,8 +11,6 @@ const GridTable = ({
               rowIndex={row}
               cols={cols}
               onCellClick={onCellClick}
-              mode={mode}
-              highlightData={highlightData}
             />
           ))}
         </tbody>
