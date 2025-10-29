@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 
-const YearDigitSelector = ({ value, onChange }) => {
-  // Local state to track individual digits (including "-")
-  const [digits, setDigits] = useState(["−", "−", "−", "−"]);
+const NULL_DIGIT = "−";
 
-  // Digit options including "-" for "any"
+const YearDigitSelector = ({ value, onChange }) => {
+  // Local state to track individual digits (including NULL_DIGIT)
+  const [digits, setDigits] = useState([
+    NULL_DIGIT,
+    NULL_DIGIT,
+    NULL_DIGIT,
+    NULL_DIGIT,
+  ]);
+
+  // Digit options including NULL_DIGIT for "any"
   const digitOptions = [
-    "−",
+    NULL_DIGIT,
     ...Array.from({ length: 10 }, (_, i) => i.toString()),
   ];
 
@@ -16,7 +23,7 @@ const YearDigitSelector = ({ value, onChange }) => {
       const yearString = value.toString().padStart(4, "0");
       setDigits(yearString.split(""));
     } else {
-      setDigits(["−", "−", "−", "−"]);
+      setDigits([NULL_DIGIT, NULL_DIGIT, NULL_DIGIT, NULL_DIGIT]);
     }
   }, [value]);
 
@@ -25,8 +32,8 @@ const YearDigitSelector = ({ value, onChange }) => {
     newDigits[position] = newDigit;
     setDigits(newDigits);
 
-    // Check if any digit is "−"
-    if (newDigits.some((d) => d === "−")) {
+    // Check if any digit is NULL_DIGIT
+    if (newDigits.some((d) => d === NULL_DIGIT)) {
       onChange("");
       return;
     }
@@ -51,7 +58,11 @@ const YearDigitSelector = ({ value, onChange }) => {
               className="w-16 px-2 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none text-center font-mono text-lg"
             >
               {digitOptions.map((option) => (
-                <option key={option} value={option}>
+                <option
+                  key={option}
+                  value={option}
+                  disabled={option === NULL_DIGIT}
+                >
                   {option}
                 </option>
               ))}
