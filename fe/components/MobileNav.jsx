@@ -1,4 +1,4 @@
-import { Wind, List, Archive } from "lucide-react";
+import { Wind, List, Archive, BarChart3 } from "lucide-react";
 import NavLink from "./NavLink";
 
 const MobileNav = ({ currentPath, isOpen, onClose }) => {
@@ -14,6 +14,14 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
           icon={Wind}
           label="Typhoon List"
           isActive={currentPath === "/storms"}
+          onClick={onClose}
+        />
+
+        <NavLink
+          href="/stats"
+          icon={BarChart3}
+          label="Stats"
+          isActive={currentPath === "/stats"}
           onClick={onClose}
         />
 

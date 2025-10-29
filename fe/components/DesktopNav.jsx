@@ -1,4 +1,4 @@
-import { Wind, List, Archive } from "lucide-react";
+import { Wind, List, Archive, BarChart3 } from "lucide-react";
 import NavLink from "./NavLink";
 
 const DesktopNav = ({ currentPath }) => {
@@ -9,6 +9,13 @@ const DesktopNav = ({ currentPath }) => {
         icon={Wind}
         label="Typhoon List"
         isActive={currentPath === "/storms"}
+      />
+
+      <NavLink
+        href="/stats"
+        icon={BarChart3}
+        label="Stats"
+        isActive={currentPath === "/stats"}
       />
 
       <NavLink
