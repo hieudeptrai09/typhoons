@@ -1,6 +1,6 @@
 const NameTitle = ({ name, isLanguageProblem }) => {
   const getNameColor = () => {
-    if (Border(Number(isLanguageProblem))) return "text-green-600";
+    if (Boolean(Number(isLanguageProblem))) return "text-green-600";
     if (name === "Vamei") return "text-purple-600";
     return "text-red-600";
   };
