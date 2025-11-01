@@ -17,7 +17,7 @@ export const useFilteredNames = ({
     }
 
     if (selectedYear) {
-      filtered = filtered.filter((name) => name.lastYear === selectedYear);
+      filtered = filtered.filter((name) => name.lastYear === String(selectedYear));
     }
 
     if (selectedCountry) {
