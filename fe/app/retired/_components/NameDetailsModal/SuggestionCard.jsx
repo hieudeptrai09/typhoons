@@ -1,5 +1,5 @@
 const SuggestionCard = ({ suggestion }) => {
-  const cardClasses = suggestion.isChosen
+  const cardClasses = Border(Number(suggestion.isChosen))
     ? "bg-blue-100 border-2 border-blue-500"
     : "bg-gray-50";
 
@@ -7,7 +7,7 @@ const SuggestionCard = ({ suggestion }) => {
     <div className={`p-4 rounded-lg ${cardClasses}`}>
       <div className="font-semibold text-gray-800 mb-1">
         {suggestion.replacementName}
-        {Boolean(suggestion.isChosen) && (
+        {Boolean(Number(suggestion.isChosen)) && (
           <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
             CHOSEN
           </span>

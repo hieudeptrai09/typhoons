@@ -1,6 +1,6 @@
 const NameRow = ({ name, onClick }) => {
   const getNameColor = () => {
-    if (name.isLanguageProblem) return "text-green-600";
+    if (Boolean(Number(name.isLanguageProblem))) return "text-green-600";
     if (name.name === "Vamei") return "text-purple-600";
     return "text-red-600";
   };

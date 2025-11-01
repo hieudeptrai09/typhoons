@@ -26,7 +26,7 @@ export const useFilteredNames = ({
 
     if (retirementReasons.length > 0) {
       filtered = filtered.filter((name) => {
-        const isLanguageProblem = Boolean(name.isLanguageProblem);
+        const isLanguageProblem = Boolean(Number(name.isLanguageProblem));
 
         // Check if name matches any selected reason
         if (retirementReasons.includes("language") && isLanguageProblem) {

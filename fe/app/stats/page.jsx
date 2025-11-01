@@ -38,12 +38,12 @@ export default function TyphoonListPage() {
           const key = `${storm.position}`;
 
           // Get strongest storms
-          if (storm.isStrongest === 1) {
+          if (Boolean(Number(storm.isStrongest))) {
             strongestByPosition[key] = { name: storm.name, year: storm.year };
           }
 
           // Get first storms
-          if (storm.isFirst === 1) {
+          if (Boolean(Number(storm.isFirst))) {
             firstByPosition[key] = { name: storm.name, year: storm.year };
           }
         });
