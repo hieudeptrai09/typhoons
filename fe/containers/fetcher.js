@@ -1,7 +1,8 @@
 const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost/typhoon/be/api.php"
-    : "http://typhoons-catfish.atwebpages.com/api.php";
+  import.meta.env.VITE_API_BASE ||
+  process.env.REACT_APP_API_BASE ||
+  process.env.NEXT_PUBLIC_API_BASE ||
+  "http://typhoons-catfish.atwebpages.com/api.php";
 
 const fetchData = async (endpoint) => {
   try {
