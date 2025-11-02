@@ -24,7 +24,7 @@ const GridCell = ({ mode, highlightInfo }) => {
     return null;
   };
 
-  const baseClasses = "relative w-24 h-24 border-2 border-sky-200";
+  const baseClasses = "relative w-24 h-24 p-2 border-2 border-sky-200";
   const bgClasses = getBackgroundColor();
 
   return (

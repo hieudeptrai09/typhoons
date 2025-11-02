@@ -28,7 +28,7 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
             {countries.map((country, index) => (
               <th
                 key={index}
-                className="border border-sky-300 bg-sky-600 text-white font-semibold p-3 text-sm"
+                className="border border-sky-300 bg-sky-600 text-white font-semibold p-2 text-sm"
               >
                 {country}
               </th>
@@ -47,7 +47,7 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
                 return (
                   <td
                     key={col}
-                    className="border border-sky-200 hover:bg-sky-200 p-0"
+                    className="border border-sky-200 hover:bg-sky-200 p-2"
                   >
                     <button
                       onClick={() => dataNow && onNameClick(dataNow)}
