@@ -21,7 +21,8 @@ class TyphoonNameController
                     tn.isLanguageProblem,
                     tn.note,
                     tn.language,
-                    tn.lastYear
+                    tn.lastYear,
+                    tn.image
                   FROM typhoonnames tn
                   INNER JOIN positions p ON tn.position = p.id";
 

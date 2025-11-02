@@ -5,7 +5,7 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={onClose}
     >
       <div
@@ -24,21 +24,35 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
           </button>
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <span className="font-semibold text-gray-700">Meaning:</span>
-            <span className="text-gray-600 ml-2">{selectedName.meaning}</span>
+        <div className="flex gap-6 items-center">
+          <div className="flex-1 space-y-3">
+            <div>
+              <span className="font-semibold text-gray-700">Meaning:</span>
+              <span className="text-gray-600 ml-2">{selectedName.meaning}</span>
+            </div>
+
+            <div>
+              <span className="font-semibold text-gray-700">Country:</span>
+              <span className="text-gray-600 ml-2">{selectedName.country}</span>
+            </div>
+
+            <div>
+              <span className="font-semibold text-gray-700">Language:</span>
+              <span className="text-gray-600 ml-2">
+                {selectedName.language}
+              </span>
+            </div>
           </div>
 
-          <div>
-            <span className="font-semibold text-gray-700">Country:</span>
-            <span className="text-gray-600 ml-2">{selectedName.country}</span>
-          </div>
-
-          <div>
-            <span className="font-semibold text-gray-700">Language:</span>
-            <span className="text-gray-600 ml-2">{selectedName.language}</span>
-          </div>
+          {selectedName.image && (
+            <div className="flex-shrink-0">
+              <img
+                src={selectedName.image}
+                alt={selectedName.name}
+                className="w-48 h-48 object-cover rounded-lg shadow-md"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -17,7 +17,8 @@ class SuggestedNameController
                     tn.meaning as originalMeaning,
                     sn.replacementName,
                     sn.meaning as replacementMeaning,
-                    sn.isChosen
+                    sn.isChosen,
+                    sn.image
                   FROM suggestednames sn
                   INNER JOIN typhoonnames tn ON sn.nameId = tn.id";
 
