@@ -2,32 +2,42 @@
 
 import { useState, useEffect } from "react";
 import TyphoonGrid from "./_components/TyphoonGrid";
+import ListView from "./_components/ListView";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
 
 export default function TyphoonListPage() {
   const [viewMode, setViewMode] = useState(null);
+  const [showMode, setShowMode] = useState("table");
   const [strongestData, setStrongestData] = useState({});
   const [firstStormData, setFirstStormData] = useState({});
 
-  // Get view mode from URL query parameter
+  // Get parameters from URL
   useEffect(() => {
-    const updateViewMode = () => {
+    const updateFromUrl = () => {
       const params = new URLSearchParams(window.location.search);
       const type = params.get("type");
+      const show = params.get("show");
+
       if (type === "strongest" || type === "first") {
         setViewMode(type);
       } else {
         setViewMode(null);
       }
+
+      if (show === "list" || show === "table") {
+        setShowMode(show);
+      } else {
+        setShowMode("table");
+      }
     };
 
-    updateViewMode();
-    window.addEventListener("popstate", updateViewMode);
-    return () => window.removeEventListener("popstate", updateViewMode);
+    updateFromUrl();
+    window.addEventListener("popstate", updateFromUrl);
+    return () => window.removeEventListener("popstate", updateFromUrl);
   }, []);
 
-  // Mock data for demo
+  // Fetch data from server
   useEffect(() => {
     fetchData("/storms").then((data) => {
       if (data) {
@@ -39,12 +49,20 @@ export default function TyphoonListPage() {
 
           // Get strongest storms
           if (Boolean(Number(storm.isStrongest))) {
-            strongestByPosition[key] = { name: storm.name, year: storm.year };
+            strongestByPosition[key] = {
+              name: storm.name,
+              year: storm.year,
+              intensity: storm.intensity,
+            };
           }
 
           // Get first storms
           if (Boolean(Number(storm.isFirst))) {
-            firstByPosition[key] = { name: storm.name, year: storm.year };
+            firstByPosition[key] = {
+              name: storm.name,
+              year: storm.year,
+              intensity: storm.intensity,
+            };
           }
         });
 
@@ -54,10 +72,30 @@ export default function TyphoonListPage() {
     });
   }, []);
 
-  const getHighlightData = () => {
+  const getDisplayData = () => {
     if (viewMode === "strongest") return strongestData;
     if (viewMode === "first") return firstStormData;
     return {};
+  };
+
+  const updateUrl = (type, show) => {
+    const params = new URLSearchParams();
+    if (type) params.set("type", type);
+    if (show) params.set("show", show);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    setViewMode(newType || null);
+    updateUrl(newType, showMode);
+  };
+
+  const handleShowChange = (e) => {
+    const newShow = e.target.value;
+    setShowMode(newShow);
+    updateUrl(viewMode, newShow);
   };
 
   return (
@@ -68,44 +106,40 @@ export default function TyphoonListPage() {
           Statistics Data List
         </h1>
 
-        {/* Radio Button Links */}
+        {/* Select Boxes */}
         <div className="flex justify-center gap-6 mb-6">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="viewMode"
-              value="strongest"
-              checked={viewMode === "strongest"}
-              onChange={() => {
-                const newUrl = `${window.location.pathname}?type=strongest`;
-                window.history.pushState({}, "", newUrl);
-                setViewMode("strongest");
-              }}
-              className="w-4 h-4"
-            />
-            <span className="text-gray-700 font-medium">
-              Strongest Per Year
-            </span>
-          </label>
+          <div className="flex items-center gap-2">
+            <label className="text-gray-700 font-medium">Type:</label>
+            <select
+              value={viewMode || ""}
+              onChange={handleTypeChange}
+              className="px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-700 font-medium cursor-pointer hover:border-sky-400 focus:outline-none focus:border-sky-500"
+            >
+              <option value="">Select...</option>
+              <option value="strongest">Strongest Per Year</option>
+              <option value="first">First of Season</option>
+            </select>
+          </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="viewMode"
-              value="first"
-              checked={viewMode === "first"}
-              onChange={() => {
-                const newUrl = `${window.location.pathname}?type=first`;
-                window.history.pushState({}, "", newUrl);
-                setViewMode("first");
-              }}
-              className="w-4 h-4"
-            />
-            <span className="text-gray-700 font-medium">First of Season</span>
-          </label>
+          <div className="flex items-center gap-2">
+            <label className="text-gray-700 font-medium">Show:</label>
+            <select
+              value={showMode}
+              onChange={handleShowChange}
+              className="px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-gray-700 font-medium cursor-pointer hover:border-sky-400 focus:outline-none focus:border-sky-500"
+            >
+              <option value="table">Table</option>
+              <option value="list">List</option>
+            </select>
+          </div>
         </div>
 
-        <TyphoonGrid mode={viewMode} highlightData={getHighlightData()} />
+        {/* Content Display */}
+        {showMode === "table" ? (
+          <TyphoonGrid mode={viewMode} highlightData={getDisplayData()} />
+        ) : (
+          <ListView data={Object.values(getDisplayData())} />
+        )}
       </div>
     </div>
   );
