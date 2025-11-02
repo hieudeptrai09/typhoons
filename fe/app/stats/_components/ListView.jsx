@@ -1,30 +1,8 @@
 import { useState } from "react";
+import IntensityBadge from "../../../components/IntensityBadge";
 
 const ListView = ({ data }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-
-  const getIntensityColor = (intensity) => {
-    switch (intensity) {
-      case "TD":
-        return "#00CCFF";
-      case "TS":
-        return "#00FF00";
-      case "STS":
-        return "#C0FFC0";
-      case "1":
-        return "#FFFF00";
-      case "2":
-        return "#FFCC00";
-      case "3":
-        return "#FF6600";
-      case "4":
-        return "#FF0000";
-      case "5":
-        return "#CC00CC";
-      default:
-        return "#333333";
-    }
-  };
 
   const getIntensityValue = (intensity) => {
     const values = { 5: 5, 4: 4, 3: 3, 2: 2, 1: 1, STS: 0, TS: -1, TD: -2 };
@@ -32,37 +10,41 @@ const ListView = ({ data }) => {
   };
 
   const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === "asc") {
+        setSortConfig({ key, direction: "desc" });
+      } else if (sortConfig.direction === "desc") {
+        setSortConfig({ key: null, direction: null });
+      }
+    } else {
+      setSortConfig({ key, direction: "asc" });
     }
-    setSortConfig({ key, direction });
   };
 
-  const sortedData = [...data].sort((a, b) => {
-    if (!sortConfig.key) return 0;
+  const sortedData = !sortConfig.key
+    ? data
+    : [...data].sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
 
-    let aValue = a[sortConfig.key];
-    let bValue = b[sortConfig.key];
+        // Special handling for intensity
+        if (sortConfig.key === "intensity") {
+          aValue = getIntensityValue(aValue);
+          bValue = getIntensityValue(bValue);
+        }
 
-    // Special handling for intensity
-    if (sortConfig.key === "intensity") {
-      aValue = getIntensityValue(aValue);
-      bValue = getIntensityValue(bValue);
-    }
-
-    if (aValue < bValue) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
+        if (aValue < bValue) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
 
   const getSortIndicator = (key) => {
     if (sortConfig.key !== key) {
-      return <span className="ml-1 text-gray-400">⇅</span>;
+      return <span className="ml-1 text-white">⇅</span>;
     }
     return sortConfig.direction === "asc" ? (
       <span className="ml-1">↑</span>
@@ -109,14 +91,7 @@ const ListView = ({ data }) => {
                 {storm.name}
               </td>
               <td className="px-6 py-4">
-                <span
-                  className="px-3 py-1 rounded text-white font-semibold"
-                  style={{
-                    backgroundColor: getIntensityColor(storm.intensity),
-                  }}
-                >
-                  {storm.intensity}
-                </span>
+                <IntensityBadge intensity={storm.intensity} />
               </td>
             </tr>
           ))}
