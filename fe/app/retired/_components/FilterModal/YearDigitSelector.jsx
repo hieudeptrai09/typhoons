@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import FilterSection from "./FilterSection";
 
 const NULL_DIGIT = "−";
 
@@ -43,11 +44,17 @@ const YearDigitSelector = ({ value, onChange }) => {
     onChange(parseInt(newYear, 10));
   };
 
+  const handleClear = () => {
+    setDigits([NULL_DIGIT, NULL_DIGIT, NULL_DIGIT, NULL_DIGIT]);
+    onChange("");
+  };
+
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Filter by Year
-      </label>
+    <FilterSection
+      label="Filter by Year"
+      hasValue={Boolean(value)}
+      onClear={handleClear}
+    >
       <div className="flex items-center gap-2">
         <div className="flex gap-1">
           {digits.map((digit, index) => (
@@ -70,7 +77,7 @@ const YearDigitSelector = ({ value, onChange }) => {
           ))}
         </div>
       </div>
-    </div>
+    </FilterSection>
   );
 };
 

@@ -1,9 +1,12 @@
+import FilterSection from "./FilterSection";
+
 const CountrySelect = ({ value, onChange, countries }) => {
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Filter by Country
-      </label>
+    <FilterSection
+      label="Filter by Country"
+      hasValue={Boolean(value)}
+      onClear={() => onChange("")}
+    >
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -16,7 +19,7 @@ const CountrySelect = ({ value, onChange, countries }) => {
           </option>
         ))}
       </select>
-    </div>
+    </FilterSection>
   );
 };
 

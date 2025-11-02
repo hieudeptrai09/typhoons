@@ -1,3 +1,5 @@
+import FilterSection from "./FilterSection";
+
 const RetirementReasonCheckbox = ({ value, onChange }) => {
   const options = [
     {
@@ -14,17 +16,20 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
 
   const handleCheckboxChange = (optionValue) => {
     if (value.includes(optionValue)) {
+      // Remove from array
       onChange(value.filter((v) => v !== optionValue));
     } else {
+      // Add to array
       onChange([...value, optionValue]);
     }
   };
 
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Filter by Retirement Reason
-      </label>
+    <FilterSection
+      label="Filter by Retirement Reason"
+      hasValue={value.length > 0}
+      onClear={() => onChange([])}
+    >
       <div className="space-y-2">
         {options.map((option) => (
           <label
@@ -42,7 +47,7 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
           </label>
         ))}
       </div>
-    </div>
+    </FilterSection>
   );
 };
 
