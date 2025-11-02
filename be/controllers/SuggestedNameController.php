@@ -18,8 +18,8 @@ class SuggestedNameController
                     sn.replacementName,
                     sn.meaning as replacementMeaning,
                     sn.isChosen
-                  FROM SuggestedNames sn
-                  INNER JOIN TyphoonNames tn ON sn.nameId = tn.id";
+                  FROM suggestednames sn
+                  INNER JOIN typhoonnames tn ON sn.nameId = tn.id";
 
         if ($nameId !== null) {
             $query .= " WHERE sn.nameId = :nameId";

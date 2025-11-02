@@ -22,8 +22,8 @@ class TyphoonNameController
                     tn.note,
                     tn.language,
                     tn.lastYear
-                  FROM TyphoonNames tn
-                  INNER JOIN Positions p ON tn.position = p.id";
+                  FROM typhoonnames tn
+                  INNER JOIN positions p ON tn.position = p.id";
 
         if ($isRetired !== null) {
             if ($isRetired == 1) {

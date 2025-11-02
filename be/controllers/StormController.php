@@ -19,8 +19,8 @@ class StormController
                     s.year,
                     s.isStrongest,
                     s.isFirst
-                  FROM Storms s
-                  INNER JOIN Positions p ON s.position = p.id";
+                  FROM storms s
+                  INNER JOIN positions p ON s.position = p.id";
 
         if ($position !== null) {
             $query .= " WHERE s.position = :position";
