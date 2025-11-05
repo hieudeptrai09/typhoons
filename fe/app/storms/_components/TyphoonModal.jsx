@@ -5,6 +5,29 @@ import IntensityBadge from "../../../components/IntensityBadge";
 const TyphoonModal = ({ selectedCell, history, onClose }) => {
   if (!selectedCell) return null;
 
+  const getIntensityTextColorForWhiteBg = (intensity) => {
+    switch (intensity) {
+      case "TD":
+        return "#0099CC"; // Darker cyan
+      case "TS":
+        return "#00AA00"; // Darker green
+      case "STS":
+        return "#009900"; // Dark green (was very light)
+      case "1":
+        return "#CC9900"; // Dark yellow/gold
+      case "2":
+        return "#CC8800"; // Darker orange
+      case "3":
+        return "#CC4400"; // Darker orange-red
+      case "4":
+        return "#CC0000"; // Darker red
+      case "5":
+        return "#990099"; // Darker magenta
+      default:
+        return "#333333";
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto"
@@ -28,12 +51,7 @@ const TyphoonModal = ({ selectedCell, history, onClose }) => {
             <div key={index} className="flex items-center">
               <IntensityBadge intensity={storm.intensity} />
               <span
-                style={{
-                  color:
-                    storm.intensity === "1" || storm.intensity === "STS"
-                      ? "gray"
-                      : getIntensityColor(storm.intensity),
-                }}
+                style={{color: getIntensityTextColorForWhiteBg(storm.intensity)}}
               >
                 {`${storm.name} (${storm.year})`}
               </span>
