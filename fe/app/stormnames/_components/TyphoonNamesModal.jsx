@@ -44,15 +44,15 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
             </div>
           </div>
 
-          {selectedName.image && (
-            <div className="flex-shrink-0">
-              <img
-                src={selectedName.image}
-                alt={selectedName.name}
-                className="w-48 h-48 object-cover rounded-lg shadow-md"
-              />
-            </div>
-          )}
+          <div className="shrink-0">
+            <img
+              src={selectedName.image}
+              alt={selectedName.name}
+              className={`w-36 h-28 object-cover rounded-lg shadow-md ${
+                selectedName.image ? "block" : "hidden"
+              }`}
+            />
+          </div>
         </div>
       </div>
     </div>
