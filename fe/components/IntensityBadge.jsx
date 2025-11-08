@@ -24,14 +24,14 @@ export const getIntensityColor = (intensity) => {
 export const getIntensityTextColor = (intensity) => {
   switch (intensity) {
     case "TD":
+    case "TS":
+    case "2":
     case "3":
     case "4":
     case "5":
       return "white"; // White for dark backgrounds
-    case "TS":
     case "STS":
     case "1":
-    case "2":
       return "gray"; // Black for light backgrounds
     default:
       return "white";
