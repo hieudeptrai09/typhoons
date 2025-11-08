@@ -1,8 +1,11 @@
 const API_BASE =
-  import.meta?.env?.VITE_API_BASE ||
-  process?.env?.REACT_APP_API_BASE ||
-  process?.env?.NEXT_PUBLIC_API_BASE ||
-  "https://aolang.edu.vn/tybe/api.php";
+  process.env.NEXT_PUBLIC_API_BASE || "https://aolang.edu.vn/tybe/api.php";
+console.log("Environment check:", {
+  vite: import.meta?.env?.VITE_API_BASE,
+  react: process?.env?.REACT_APP_API_BASE,
+  next: process?.env?.NEXT_PUBLIC_API_BASE,
+  final: API_BASE,
+}); // Debug log
 
 const fetchData = async (endpoint) => {
   try {
