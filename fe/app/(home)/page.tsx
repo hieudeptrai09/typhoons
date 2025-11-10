@@ -13,7 +13,13 @@ const HomePage = () => {
           rel="noopener noreferrer"
           className="mb-12"
         >
-          <Image src="/logo.png" alt="web logo" width={500} height={250} />
+          <Image
+            src="/logo.png"
+            alt="web logo"
+            loading="eager"
+            width={500}
+            height={500}
+          />
         </a>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
