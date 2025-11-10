@@ -1,5 +1,4 @@
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://aolang.edu.vn/tybe/api.php";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 console.log("Environment check:", {
   vite: import.meta?.env?.VITE_API_BASE,
   react: process?.env?.REACT_APP_API_BASE,
