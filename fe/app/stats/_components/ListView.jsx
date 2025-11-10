@@ -5,8 +5,8 @@ const ListView = ({ data }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const getIntensityValue = (intensity) => {
-    const values = { 5: 5, 4: 4, 3: 3, 2: 2, 1: 1, STS: 0, TS: -1, TD: -2 };
-    return values[intensity] || -3;
+    const values = { 5: 5, 4: 4, 3: 3, 2: 2, 1: 1, STS: -1, TS: -2, TD: -3 };
+    return values[intensity] || -4;
   };
 
   const handleSort = (key) => {

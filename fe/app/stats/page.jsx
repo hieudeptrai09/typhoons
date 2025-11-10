@@ -47,22 +47,28 @@ export default function TyphoonListPage() {
         data.data.forEach((storm) => {
           const key = `${storm.position}`;
 
-          // Get strongest storms
+          // Get strongest storms - store as array to handle multiple storms at same position
           if (Boolean(Number(storm.isStrongest))) {
-            strongestByPosition[key] = {
+            if (!strongestByPosition[key]) {
+              strongestByPosition[key] = [];
+            }
+            strongestByPosition[key].push({
               name: storm.name,
               year: storm.year,
               intensity: storm.intensity,
-            };
+            });
           }
 
-          // Get first storms
+          // Get first storms - store as array to handle multiple storms at same position
           if (Boolean(Number(storm.isFirst))) {
-            firstByPosition[key] = {
+            if (!firstByPosition[key]) {
+              firstByPosition[key] = [];
+            }
+            firstByPosition[key].push({
               name: storm.name,
               year: storm.year,
               intensity: storm.intensity,
-            };
+            });
           }
         });
 
@@ -138,7 +144,7 @@ export default function TyphoonListPage() {
         {showMode === "table" ? (
           <TyphoonGrid mode={viewMode} highlightData={getDisplayData()} />
         ) : (
-          <ListView data={Object.values(getDisplayData())} />
+          <ListView data={Object.values(getDisplayData()).flat()} />
         )}
       </div>
     </div>

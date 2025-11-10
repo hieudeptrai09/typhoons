@@ -8,14 +8,7 @@ const GridRow = ({ rowIndex, cols, mode, highlightData = {} }) => {
         const key = `${position}`;
         const highlightInfo = highlightData[key];
 
-        return (
-          <GridCell
-            key={col}
-            position={position}
-            mode={mode}
-            highlightInfo={highlightInfo}
-          />
-        );
+        return <GridCell key={col} mode={mode} highlightInfo={highlightInfo} />;
       })}
     </tr>
   );

@@ -1,6 +1,6 @@
 const GridCell = ({ mode, highlightInfo }) => {
   const getBackgroundColor = () => {
-    if (!highlightInfo) return "";
+    if (!highlightInfo || highlightInfo.length === 0) return "";
 
     if (mode === "strongest") {
       return "bg-red-300";
@@ -11,12 +11,17 @@ const GridCell = ({ mode, highlightInfo }) => {
   };
 
   const getCellContent = () => {
-    // Only show content if highlighted
-    if (highlightInfo) {
+    if (highlightInfo && highlightInfo.length > 0) {
       return (
-        <div className="flex flex-col items-center justify-center">
-          <div className="font-bold text-xs">{highlightInfo.name}</div>
-          <div className="text-[10px]">({highlightInfo.year})</div>
+        <div className="flex flex-col items-center justify-center gap-1">
+          {highlightInfo.map((storm, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="font-bold text-xs text-gray-800">
+                {storm.name}
+              </div>
+              <div className="text-[10px] text-gray-600">({storm.year})</div>
+            </div>
+          ))}
         </div>
       );
     }
