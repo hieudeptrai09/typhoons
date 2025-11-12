@@ -7,6 +7,7 @@ import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
 import { intensityRank } from "./utils/fns";
 import fetchData from "../../containers/fetcher";
+import Navbar from "../../components/NavBar";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -57,6 +58,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-sky-100">
+      <Navbar />
       <div className="p-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-bold text-gray-800">
