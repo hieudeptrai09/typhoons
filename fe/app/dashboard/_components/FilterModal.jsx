@@ -1,6 +1,25 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const FilterSection = ({ label, hasValue, onClear, children }) => {
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-2">
+        <label className="text-sm font-semibold text-gray-700">{label}</label>
+        {hasValue && (
+          <button
+            onClick={onClear}
+            className="text-sm text-blue-500 hover:text-blue-600 hover:underline"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+};
+
 export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
@@ -66,79 +85,58 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
         </div>
 
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              View
-            </label>
-            <div className="flex gap-2">
-              <select
-                value={view}
-                onChange={(e) => setView(e.target.value)}
-                className="flex-1 border border-gray-300 rounded px-3 py-2"
-              >
-                <option value="storms">Storms</option>
-                <option value="highlights">Highlights</option>
-                <option value="average">Average</option>
-              </select>
-              <button
-                onClick={() => handleClear("view")}
-                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
+          <FilterSection
+            label="View"
+            hasValue={view !== "storms"}
+            onClear={() => handleClear("view")}
+          >
+            <select
+              value={view}
+              onChange={(e) => setView(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+            >
+              <option value="storms">Storms</option>
+              <option value="highlights">Highlights</option>
+              <option value="average">Average</option>
+            </select>
+          </FilterSection>
 
           {filterOptions.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter
-              </label>
-              <div className="flex gap-2">
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded px-3 py-2"
-                >
-                  <option value="">Select filter...</option>
-                  {filterOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => handleClear("filter")}
-                  className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded"
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
+            <FilterSection
+              label="Filter"
+              hasValue={Boolean(filter)}
+              onClear={() => handleClear("filter")}
+            >
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+              >
+                <option value="">Select filter...</option>
+                {filterOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </FilterSection>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Mode
-            </label>
-            <div className="flex gap-2">
-              <select
-                value={mode}
-                onChange={(e) => setMode(e.target.value)}
-                className="flex-1 border border-gray-300 rounded px-3 py-2"
-                disabled={view === "average" && filter === "by name"}
-              >
-                <option value="table">Table</option>
-                <option value="list">List</option>
-              </select>
-              <button
-                onClick={() => handleClear("mode")}
-                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
+          <FilterSection
+            label="Mode"
+            hasValue={mode !== "table"}
+            onClear={() => handleClear("mode")}
+          >
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+              disabled={view === "average" && filter === "by name"}
+            >
+              <option value="table">Table</option>
+              <option value="list">List</option>
+            </select>
+          </FilterSection>
         </div>
 
         <div className="flex gap-3 mt-6">
