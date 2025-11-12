@@ -1,12 +1,18 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const FilterSection = ({ label, hasValue, onClear, children }) => {
+const FilterSection = ({
+  label,
+  hasValue,
+  onClear,
+  children,
+  disabled = false,
+}) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
         <label className="text-sm font-semibold text-gray-700">{label}</label>
-        {hasValue && (
+        {hasValue && !disabled && (
           <button
             onClick={onClear}
             className="text-sm text-blue-500 hover:text-blue-600 hover:underline"
@@ -36,6 +42,10 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     if (view === "average") return ["by name", "by position"];
     return [];
   };
+
+  const isFilterDisabled = view === "storms";
+  const isModeDisabled = view === "storms";
+  const isModeTableOptionDisabled = view === "average" && filter === "by name";
 
   const handleClear = (field) => {
     if (field === "view") setView("storms");
@@ -101,39 +111,49 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
             </select>
           </FilterSection>
 
-          {filterOptions.length > 0 && (
-            <FilterSection
-              label="Filter"
-              hasValue={Boolean(filter)}
-              onClear={() => handleClear("filter")}
+          <FilterSection
+            label="Filter"
+            hasValue={Boolean(filter)}
+            onClear={() => handleClear("filter")}
+            disabled={isFilterDisabled}
+          >
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              disabled={isFilterDisabled}
+              className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
+                isFilterDisabled
+                  ? "bg-gray-100 cursor-not-allowed opacity-60"
+                  : ""
+              }`}
             >
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
-              >
-                <option value="">Select filter...</option>
-                {filterOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </FilterSection>
-          )}
+              {filterOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </FilterSection>
 
           <FilterSection
             label="Mode"
             hasValue={mode !== "table"}
             onClear={() => handleClear("mode")}
+            disabled={isModeDisabled}
           >
             <select
               value={mode}
               onChange={(e) => setMode(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
-              disabled={view === "average" && filter === "by name"}
+              disabled={isModeDisabled}
+              className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
+                isModeDisabled
+                  ? "bg-gray-100 cursor-not-allowed opacity-60"
+                  : ""
+              }`}
             >
-              <option value="table">Table</option>
+              <option value="table" disabled={isModeTableOptionDisabled}>
+                Table
+              </option>
               <option value="list">List</option>
             </select>
           </FilterSection>

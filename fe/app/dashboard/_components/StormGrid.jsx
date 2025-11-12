@@ -1,6 +1,12 @@
 import { GridCell } from "./GridCell";
 
-export const StormGrid = ({ cellData, onCellClick }) => {
+export const StormGrid = ({
+  cellData,
+  onCellClick,
+  highlightType,
+  showPosition = true,
+  isClickable = true,
+}) => {
   const rows = 10;
   const cols = 14;
 
@@ -18,8 +24,11 @@ export const StormGrid = ({ cellData, onCellClick }) => {
                     key={col}
                     position={position}
                     onClick={() => onCellClick(position)}
-                    content={data?.content || `#${position}`}
+                    content={data?.content}
                     highlighted={data?.highlighted}
+                    highlightType={highlightType}
+                    showPosition={showPosition}
+                    isClickable={isClickable}
                   />
                 );
               })}

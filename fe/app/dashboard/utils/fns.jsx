@@ -10,29 +10,13 @@ export const intensityRank = {
 };
 
 export const getStrongestPerYear = (stormsData) => {
-  const yearlyData = {};
-  stormsData.forEach((storm) => {
-    const year = storm.year;
-    if (
-      !yearlyData[year] ||
-      (intensityRank[storm.intensity] || 0) >
-        (intensityRank[yearlyData[year].intensity] || 0)
-    ) {
-      yearlyData[year] = storm;
-    }
-  });
-  return Object.values(yearlyData);
+  // Filter storms that are marked as strongest
+  return stormsData.filter((storm) => storm.isStrongest);
 };
 
 export const getFirstPerYear = (stormsData) => {
-  const yearlyData = {};
-  stormsData.forEach((storm) => {
-    const year = storm.year;
-    if (!yearlyData[year] || storm.date < yearlyData[year].date) {
-      yearlyData[year] = storm;
-    }
-  });
-  return Object.values(yearlyData);
+  // Filter storms that are marked as first
+  return stormsData.filter((storm) => storm.isFirst);
 };
 
 export const getAverageByPosition = (stormsData) => {

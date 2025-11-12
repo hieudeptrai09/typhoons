@@ -10,7 +10,14 @@ import {
 
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   if (params.view === "storms" && params.mode === "table") {
-    return <StormGrid cellData={{}} onCellClick={onCellClick} />;
+    return (
+      <StormGrid
+        cellData={{}}
+        onCellClick={onCellClick}
+        showPosition={true}
+        isClickable={true}
+      />
+    );
   }
 
   if (params.view === "highlights") {
@@ -21,18 +28,42 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
 
     if (params.mode === "table") {
       const cellData = {};
+
+      // Group storms by position to handle multiple storms in same cell
+      const stormsByPosition = {};
       highlights.forEach((storm) => {
-        cellData[storm.position] = {
+        if (!stormsByPosition[storm.position]) {
+          stormsByPosition[storm.position] = [];
+        }
+        stormsByPosition[storm.position].push(storm);
+      });
+
+      // Create cell data with all storms at each position
+      Object.entries(stormsByPosition).forEach(([position, storms]) => {
+        cellData[position] = {
           content: (
-            <div className="flex flex-col items-center">
-              <div className="font-bold">{storm.name}</div>
-              <div className="text-[10px]">({storm.year})</div>
+            <div className="flex flex-col items-center gap-1">
+              {storms.map((storm, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                  <div className="font-bold">{storm.name}</div>
+                  <div className="text-[10px]">({storm.year})</div>
+                </div>
+              ))}
             </div>
           ),
           highlighted: true,
         };
       });
-      return <StormGrid cellData={cellData} onCellClick={onCellClick} />;
+
+      return (
+        <StormGrid
+          cellData={cellData}
+          onCellClick={onCellClick}
+          highlightType={params.filter}
+          showPosition={false}
+          isClickable={false}
+        />
+      );
     } else {
       return (
         <SortableTable
@@ -56,7 +87,14 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       const positionAvg = getAverageByPosition(stormsData);
 
       if (params.mode === "table") {
-        return <StormGrid cellData={{}} onCellClick={onCellClick} />;
+        return (
+          <StormGrid
+            cellData={{}}
+            onCellClick={onCellClick}
+            showPosition={true}
+            isClickable={true}
+          />
+        );
       } else {
         const data = Object.entries(positionAvg).map(([pos, storms]) => ({
           position: parseInt(pos),
