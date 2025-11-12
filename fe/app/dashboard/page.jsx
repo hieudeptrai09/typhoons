@@ -15,23 +15,11 @@ export default function Dashboard() {
   const [selectedData, setSelectedData] = useState(null);
   const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadStorms = async () => {
-      setLoading(true);
-      setError(null);
-
       const result = await fetchData("/storms");
-
-      if (result && result.data) {
-        setStormsData(result.data);
-      } else {
-        setError("Failed to load storms data");
-      }
-
-      setLoading(false);
+      setStormsData(result.data);
     };
 
     loadStorms();
@@ -80,16 +68,6 @@ export default function Dashboard() {
           >
             Open Filters
           </button>
-        </div>
-
-        <div className="mb-4 text-center text-sm text-gray-600">
-          Current: View: <span className="font-semibold">{params.view}</span>
-          {params.filter && (
-            <>
-              , Filter: <span className="font-semibold">{params.filter}</span>
-            </>
-          )}
-          , Mode: <span className="font-semibold">{params.mode}</span>
         </div>
 
         <DashboardContent
