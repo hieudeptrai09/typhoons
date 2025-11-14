@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Modal } from "../../../components/Modal";
 import { useState, useEffect } from "react";
 
 const FilterSection = ({
@@ -71,109 +71,92 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     }
   }, [view, filter]);
 
-  if (!isOpen) return null;
-
   const filterOptions = getFilterOptions();
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-      onClick={onClose}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Filter Dashboard"
+      wrapperClassName="max-w-lg"
     >
-      <div
-        className="bg-white rounded-lg p-6 shadow-2xl max-w-lg w-full mx-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Filter Dashboard</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+      <div className="space-y-4 mb-6">
+        <FilterSection
+          label="View"
+          hasValue={view !== "storms"}
+          onClear={() => handleClear("view")}
+        >
+          <select
+            value={view}
+            onChange={(e) => setView(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
           >
-            <X size={24} />
-          </button>
-        </div>
+            <option value="storms">Storms</option>
+            <option value="highlights">Highlights</option>
+            <option value="average">Average</option>
+          </select>
+        </FilterSection>
 
-        <div className="space-y-4">
-          <FilterSection
-            label="View"
-            hasValue={view !== "storms"}
-            onClear={() => handleClear("view")}
-          >
-            <select
-              value={view}
-              onChange={(e) => setView(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
-            >
-              <option value="storms">Storms</option>
-              <option value="highlights">Highlights</option>
-              <option value="average">Average</option>
-            </select>
-          </FilterSection>
-
-          <FilterSection
-            label="Filter"
-            hasValue={Boolean(filter)}
-            onClear={() => handleClear("filter")}
+        <FilterSection
+          label="Filter"
+          hasValue={Boolean(filter)}
+          onClear={() => handleClear("filter")}
+          disabled={isFilterDisabled}
+        >
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
             disabled={isFilterDisabled}
+            className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
+              isFilterDisabled
+                ? "bg-gray-100 cursor-not-allowed opacity-60"
+                : ""
+            }`}
           >
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              disabled={isFilterDisabled}
-              className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
-                isFilterDisabled
-                  ? "bg-gray-100 cursor-not-allowed opacity-60"
-                  : ""
-              }`}
-            >
-              {filterOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </FilterSection>
-
-          <FilterSection
-            label="Mode"
-            hasValue={mode !== "table"}
-            onClear={() => handleClear("mode")}
-            disabled={isModeDisabled}
-          >
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value)}
-              disabled={isModeDisabled}
-              className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
-                isModeDisabled
-                  ? "bg-gray-100 cursor-not-allowed opacity-60"
-                  : ""
-              }`}
-            >
-              <option value="table" disabled={isModeTableOptionDisabled}>
-                Table
+            {filterOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
               </option>
-              <option value="list">List</option>
-            </select>
-          </FilterSection>
-        </div>
+            ))}
+          </select>
+        </FilterSection>
 
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={handleClearAll}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
+        <FilterSection
+          label="Mode"
+          hasValue={mode !== "table"}
+          onClear={() => handleClear("mode")}
+          disabled={isModeDisabled}
+        >
+          <select
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+            disabled={isModeDisabled}
+            className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
+              isModeDisabled ? "bg-gray-100 cursor-not-allowed opacity-60" : ""
+            }`}
           >
-            Clear All
-          </button>
-          <button
-            onClick={handleApply}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Apply
-          </button>
-        </div>
+            <option value="table" disabled={isModeTableOptionDisabled}>
+              Table
+            </option>
+            <option value="list">List</option>
+          </select>
+        </FilterSection>
       </div>
-    </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={handleClearAll}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
+        >
+          Clear All
+        </button>
+        <button
+          onClick={handleApply}
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Apply
+        </button>
+      </div>
+    </Modal>
   );
 };

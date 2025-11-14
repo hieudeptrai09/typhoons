@@ -1,28 +1,46 @@
-import NameDetailsHeader from "./NameDetailsHeader";
+import { Modal } from "../../../../components/Modal";
+import NameInfo from "./NameInfo";
+import NameImage from "./NameImage";
 import SuggestionsList from "./SuggestionsList";
 
 const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
   if (!selectedName) return null;
 
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <NameDetailsHeader selectedName={selectedName} onClose={onClose} />
+  const getNameColor = (selectedName) => {
+    if (Boolean(Number(selectedName.isLanguageProblem)))
+      return "!text-green-600";
+    if (selectedName.name === "Vamei") return "!text-purple-600";
+    return "!text-red-600";
+  };
 
-        <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]">
-          <h3 className="font-bold text-xl mb-4 text-gray-800">
-            Suggested Replacements
-          </h3>
-          <SuggestionsList suggestions={suggestions} />
+  return (
+    <Modal
+      isOpen={!!selectedName}
+      onClose={onClose}
+      title={selectedName.name}
+      wrapperClassName="max-w-2xl max-h-[80vh] overflow-hidden"
+      specialStyles={{
+        titleClassName: `!text-3xl ${getNameColor(selectedName)}`,
+      }}
+    >
+      <div className="flex gap-6 mb-6 pb-4 border-b border-gray-200">
+        <div className="flex-1">
+          <NameInfo
+            meaning={selectedName.meaning}
+            country={selectedName.country}
+            position={selectedName.position}
+          />
         </div>
+        <NameImage src={selectedName.image} alt={selectedName.name} />
       </div>
-    </div>
+
+      <div className="overflow-y-auto max-h-[calc(80vh-200px)] pb-6">
+        <h3 className="font-bold text-xl mb-4 text-gray-800">
+          Suggested Replacements
+        </h3>
+        <SuggestionsList suggestions={suggestions} />
+      </div>
+    </Modal>
   );
 };
 

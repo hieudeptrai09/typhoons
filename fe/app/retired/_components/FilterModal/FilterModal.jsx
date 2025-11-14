@@ -1,5 +1,5 @@
+import { Modal } from "../../../../components/Modal";
 import { useState, useEffect } from "react";
-import ModalHeader from "./FilterModalHeader";
 import NameSearchInput from "./NameSearchInput";
 import YearDigitSelector from "./YearDigitSelector";
 import CountrySelect from "./CountrySelect";
@@ -54,47 +54,35 @@ const FilterModal = ({
     setTempRetirementReasons([]);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
-      onClick={onClose}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Filter Options"
+      wrapperClassName="max-w-2xl"
     >
-      <div
-        className="bg-white rounded-lg shadow-2xl max-w-2xl w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <ModalHeader onClose={onClose} />
+      <div className="space-y-4">
+        <NameSearchInput value={tempSearchName} onChange={setTempSearchName} />
 
-        <div className="p-6">
-          <div className="space-y-4">
-            <NameSearchInput
-              value={tempSearchName}
-              onChange={setTempSearchName}
-            />
+        <YearDigitSelector
+          value={tempSelectedYear}
+          onChange={setTempSelectedYear}
+        />
 
-            <YearDigitSelector
-              value={tempSelectedYear}
-              onChange={setTempSelectedYear}
-            />
+        <CountrySelect
+          value={tempSelectedCountry}
+          onChange={setTempSelectedCountry}
+          countries={countries}
+        />
 
-            <CountrySelect
-              value={tempSelectedCountry}
-              onChange={setTempSelectedCountry}
-              countries={countries}
-            />
-
-            <RetirementReasonCheckbox
-              value={tempRetirementReasons}
-              onChange={setTempRetirementReasons}
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </div>
+        <RetirementReasonCheckbox
+          value={tempRetirementReasons}
+          onChange={setTempRetirementReasons}
+        />
       </div>
-    </div>
+
+      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+    </Modal>
   );
 };
 

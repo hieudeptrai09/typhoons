@@ -4,7 +4,7 @@ const NameInfo = ({ meaning, country, position }) => {
       <p className="text-gray-700">
         <span className="font-semibold">Meaning:</span> {meaning}
       </p>
-      <p className="text-gray-600">
+      <p className="text-gray-700">
         <span className="font-semibold">Country:</span> {country}
       </p>
       <p className="text-gray-700">
