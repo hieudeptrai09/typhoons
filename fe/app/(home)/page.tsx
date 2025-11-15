@@ -6,7 +6,7 @@ import Menu from "./_components/Menu";
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-sky-100 flex flex-col justify-between">
-      <div className="flex-grow flex flex-col items-center justify-center p-8">
+      <div className="grow flex flex-col items-center justify-center p-8">
         <a
           href="https://www.youtube.com/watch?v=5LtFOkH9zwU"
           target="_blank"
