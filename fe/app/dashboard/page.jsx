@@ -51,17 +51,19 @@ export default function Dashboard() {
     );
   };
 
-  const handleCellClick = (position) => {
-    const storms = stormsData.filter((s) => s.position === position);
-
-    if (params.view === "average") {
+  const handleCellClick = (data, key) => {
+    const storms = stormsData.filter((s) => s[key] === data);
+    if (params.view === "average" && params.filter === "by name") {
+      setSelectedData({ title: data, storms });
+      setDetailModalOpen(true);
+    } else if (params.view === "average" && params.filter === "by position") {
       const avg =
         storms.reduce((sum, s) => sum + (intensityRank[s.intensity] || 0), 0) /
         storms.length;
-      setSelectedData({ position, average: avg, storms });
+      setSelectedData({ position: data, average: avg, storms });
       setAverageModalOpen(true);
     } else {
-      setSelectedData({ title: `#${position}`, storms });
+      setSelectedData({ title: `#${data}`, storms });
       setDetailModalOpen(true);
     }
   };

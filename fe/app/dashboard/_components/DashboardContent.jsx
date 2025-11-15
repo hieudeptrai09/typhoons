@@ -135,7 +135,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
               { key: "count", label: "Count" },
               { key: "average", label: "Average Intensity" },
             ]}
-            onRowClick={(row) => onCellClick(row.position)}
+            onRowClick={(row) => onCellClick(row.position, "position")}
             renderCell={(row, col) => {
               if (col.key === "average") {
                 const intensityLabel = getIntensityFromNumber(row.avgNumber);
@@ -179,6 +179,9 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             { key: "position", label: "Position" },
             { key: "average", label: "Average Intensity" },
           ]}
+          onRowClick={(row) => {
+            onCellClick(row.name, "name");
+          }}
           renderCell={(row, col) => {
             if (col.key === "average") {
               const intensityLabel = getIntensityFromNumber(row.avgNumber);

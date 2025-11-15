@@ -24,7 +24,7 @@ export const StormGrid = ({
                 return (
                   <GridCell
                     key={col}
-                    onClick={() => onCellClick(position)}
+                    onClick={() => onCellClick(position, "position")}
                     content={content}
                     highlighted={data?.highlighted}
                     highlightType={highlightType}
