@@ -1,6 +1,7 @@
 const SortableTableHeader = ({
   label,
   columnKey,
+  columnTitle,
   currentSortColumn,
   currentSortDirection,
   onSort,
@@ -34,6 +35,7 @@ const SortableTableHeader = ({
       <button
         onClick={() => onSort(columnKey)}
         className="flex items-center gap-1 hover:text-blue-600 transition-colors w-full"
+        title={columnTitle}
       >
         <span>{label}</span>
         <span className="text-lg">{getSortIcon()}</span>

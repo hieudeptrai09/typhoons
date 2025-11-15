@@ -4,6 +4,7 @@ import {
   getBadgeTextcolor,
   getRank,
   getWhiteTextcolor,
+  intensityRank,
 } from "../../../containers/utils/intensity";
 import { getIntensityFromNumber } from "../utils/fns";
 
@@ -38,7 +39,7 @@ export const AverageModal = ({
       wrapperClassName="max-w-md"
     >
       <div className="space-y-3">
-        <div className="text-lg">
+        <div className="text-lg" title={JSON.stringify(intensityRank)}>
           <span className="font-semibold text-purple-700">
             Overall Average Intensity:{" "}
           </span>

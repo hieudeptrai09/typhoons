@@ -12,6 +12,7 @@ import IntensityBadge from "../../../components/IntensityBadge";
 import {
   getRank,
   getWhiteTextcolor,
+  intensityRank,
 } from "../../../containers/utils/intensity";
 
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
@@ -86,7 +87,11 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
           columns={[
             { key: "name", label: "Name" },
             { key: "year", label: "Year" },
-            { key: "intensity", label: "Intensity" },
+            {
+              key: "intensity",
+              label: "Intensity",
+              title: JSON.stringify(intensityRank),
+            },
             { key: "position", label: "Position" },
           ]}
           renderCell={(row, col) => {
@@ -133,7 +138,11 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             columns={[
               { key: "position", label: "Position" },
               { key: "count", label: "Count" },
-              { key: "average", label: "Average Intensity" },
+              {
+                key: "average",
+                label: "Average Intensity",
+                title: JSON.stringify(intensityRank),
+              },
             ]}
             onRowClick={(row) => onCellClick(row.position, "position")}
             renderCell={(row, col) => {
@@ -175,7 +184,11 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             { key: "name", label: "Name" },
             { key: "count", label: "Count" },
             { key: "position", label: "Position" },
-            { key: "average", label: "Average Intensity" },
+            {
+              key: "average",
+              label: "Average Intensity",
+              title: JSON.stringify(intensityRank),
+            },
           ]}
           onRowClick={(row) => {
             onCellClick(row.name, "name");

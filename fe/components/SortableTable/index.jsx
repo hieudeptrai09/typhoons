@@ -21,6 +21,7 @@ const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
                 key={col.key}
                 label={col.label}
                 columnKey={col.key}
+                columnTitle={col.title}
                 isSortable={col.isSortable !== false}
                 currentSortColumn={sortColumn}
                 currentSortDirection={sortDirection}
