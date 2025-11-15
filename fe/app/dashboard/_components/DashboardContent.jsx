@@ -11,12 +11,7 @@ import {
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   if (params.view === "storms" && params.mode === "table") {
     return (
-      <StormGrid
-        cellData={{}}
-        onCellClick={onCellClick}
-        showPosition={true}
-        isClickable={true}
-      />
+      <StormGrid cellData={{}} onCellClick={onCellClick} isClickable={true} />
     );
   }
 
@@ -28,6 +23,11 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
 
     if (params.mode === "table") {
       const cellData = {};
+
+      // First, set all cells to empty string
+      for (let i = 1; i <= 140; i++) {
+        cellData[i] = { content: "", highlighted: false };
+      }
 
       // Group storms by position to handle multiple storms in same cell
       const stormsByPosition = {};
@@ -62,7 +62,6 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
           cellData={cellData}
           onCellClick={onCellClick}
           highlightType={params.filter}
-          showPosition={false}
           isClickable={false}
         />
       );
@@ -93,7 +92,6 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
           <StormGrid
             cellData={{}}
             onCellClick={onCellClick}
-            showPosition={true}
             isClickable={true}
           />
         );

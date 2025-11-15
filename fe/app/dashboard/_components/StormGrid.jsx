@@ -4,7 +4,6 @@ export const StormGrid = ({
   cellData,
   onCellClick,
   highlightType,
-  showPosition = true,
   isClickable = true,
 }) => {
   const rows = 10;
@@ -19,15 +18,16 @@ export const StormGrid = ({
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
                 const data = cellData[position];
+                const content =
+                  data !== undefined ? data.content : `#${position}`;
+
                 return (
                   <GridCell
                     key={col}
-                    position={position}
                     onClick={() => onCellClick(position)}
-                    content={data?.content}
+                    content={content}
                     highlighted={data?.highlighted}
                     highlightType={highlightType}
-                    showPosition={showPosition}
                     isClickable={isClickable}
                   />
                 );

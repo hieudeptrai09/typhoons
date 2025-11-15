@@ -1,10 +1,8 @@
 export const GridCell = ({
-  position,
   onClick,
   content,
   highlighted,
   highlightType,
-  showPosition = true,
   isClickable = true,
 }) => {
   const getHighlightColor = () => {
@@ -12,12 +10,6 @@ export const GridCell = ({
     if (highlightType === "strongest") return "bg-red-300";
     if (highlightType === "first") return "bg-blue-300";
     return "bg-yellow-200";
-  };
-
-  const displayContent = () => {
-    if (content) return content;
-    if (showPosition) return `#${position}`;
-    return null;
   };
 
   const handleClick = () => {
@@ -35,7 +27,7 @@ export const GridCell = ({
     >
       <div className="w-full h-full flex items-center justify-center">
         <div className="text-center text-xs font-semibold text-gray-600">
-          {displayContent()}
+          {content}
         </div>
       </div>
     </td>
