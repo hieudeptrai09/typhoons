@@ -45,8 +45,10 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             <div className="flex flex-col items-center gap-1">
               {storms.map((storm, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <div className="font-bold">{storm.name}</div>
-                  <div className="text-[10px]">({storm.year})</div>
+                  <div className="font-bold text-gray-800">{storm.name}</div>
+                  <div className="text-[10px] text-gray-600">
+                    ({storm.year})
+                  </div>
                 </div>
               ))}
             </div>
