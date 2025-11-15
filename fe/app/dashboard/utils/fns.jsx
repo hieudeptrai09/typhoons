@@ -19,12 +19,12 @@ export const getPositionTitle = (position) => {
 
 export const getStrongestPerYear = (stormsData) => {
   // Filter storms that are marked as strongest
-  return stormsData.filter((storm) => storm.isStrongest);
+  return stormsData.filter((storm) => Boolean(Number(storm.isStrongest)));
 };
 
 export const getFirstPerYear = (stormsData) => {
   // Filter storms that are marked as first
-  return stormsData.filter((storm) => storm.isFirst);
+  return stormsData.filter((storm) => Boolean(Number(storm.isFirst)));
 };
 
 export const getAverageByPosition = (stormsData) => {

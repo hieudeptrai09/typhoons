@@ -53,7 +53,7 @@ export default function Dashboard() {
   };
 
   const handleCellClick = (data, key) => {
-    const storms = stormsData.filter((s) => s[key] === data);
+    const storms = stormsData.filter((s) => s[key] === String(data));
     if (params.view === "average" && params.filter === "by name") {
       setSelectedData({ title: data, storms });
       setDetailModalOpen(true);
