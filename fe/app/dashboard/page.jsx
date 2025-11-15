@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Settings } from "lucide-react";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
@@ -60,15 +61,17 @@ export default function Dashboard() {
     <div className="min-h-screen bg-sky-100">
       <Navbar />
       <div className="p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-bold text-gray-800">
-            Typhoon Dashboard
-          </h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
+          Typhoon Dashboard
+        </h1>
+
+        <div className="max-w-4xl mx-auto mb-6">
           <button
             onClick={() => setFilterModalOpen(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto "
           >
-            Open Filters
+            <Settings size={24} />
+            View Options
           </button>
         </div>
 
