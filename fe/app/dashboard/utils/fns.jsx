@@ -1,14 +1,3 @@
-export const intensityRank = {
-  5: 5,
-  4: 4,
-  3: 3,
-  2: 2,
-  1: 1,
-  STS: 0,
-  TS: -1,
-  TD: -2,
-};
-
 export const getIntensityFromNumber = (avgNumber) => {
   const rounded = Math.round(avgNumber);
   if (rounded >= 5) return "5";

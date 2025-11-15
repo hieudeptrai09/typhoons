@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { getRank } from "../utils/intensity";
 
 export const useTableSort = (data) => {
   const [sortColumn, setSortColumn] = useState(null);
@@ -28,6 +29,11 @@ export const useTableSort = (data) => {
     const sorted = [...data].sort((a, b) => {
       let aValue = a[sortColumn];
       let bValue = b[sortColumn];
+
+      if (sortColumn === "intensity") {
+        aValue = getRank(aValue);
+        bValue = getRank(bValue);
+      }
 
       // Handle null/undefined values
       if (aValue == null) aValue = "";

@@ -6,11 +6,13 @@ import {
   getFirstPerYear,
   getAverageByPosition,
   getAverageByName,
-  intensityRank,
   getIntensityFromNumber,
 } from "../utils/fns";
 import IntensityBadge from "../../../components/IntensityBadge";
-import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+import {
+  getRank,
+  getWhiteTextcolor,
+} from "../../../containers/utils/intensity";
 
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   if (params.view === "storms" && params.mode === "table") {
@@ -116,10 +118,8 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       } else {
         const data = Object.entries(positionAvg).map(([pos, storms]) => {
           const avgValue =
-            storms.reduce(
-              (sum, s) => sum + (intensityRank[s.intensity] || 0),
-              0
-            ) / storms.length;
+            storms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
+            storms.length;
           return {
             position: parseInt(pos),
             count: storms.length,
@@ -157,10 +157,8 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
         // All storms with the same name have the same position
         const position = storms[0].position;
         const avgValue =
-          storms.reduce(
-            (sum, s) => sum + (intensityRank[s.intensity] || 0),
-            0
-          ) / storms.length;
+          storms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
+          storms.length;
         return {
           name,
           count: storms.length,

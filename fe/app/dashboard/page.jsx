@@ -6,9 +6,9 @@ import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
-import { intensityRank } from "./utils/fns";
 import fetchData from "../../containers/utils/fetcher";
 import Navbar from "../../components/NavBar";
+import { getRank } from "../../containers/utils/intensity";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function Dashboard() {
       setDetailModalOpen(true);
     } else if (params.view === "average" && params.filter === "by position") {
       const avg =
-        storms.reduce((sum, s) => sum + (intensityRank[s.intensity] || 0), 0) /
+        storms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
         storms.length;
       setSelectedData({ position: data, average: avg, storms });
       setAverageModalOpen(true);
