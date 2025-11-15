@@ -39,17 +39,38 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const getFilterOptions = () => {
     if (view === "highlights") return ["strongest", "first"];
-    if (view === "average") return ["by name", "by position"];
+    if (view === "average") return ["by position", "by name"];
     return [];
   };
 
+  const getDefaultFilter = (viewType) => {
+    if (viewType === "highlights") return "strongest";
+    if (viewType === "average") return "by position";
+    return "";
+  };
+
   const isFilterDisabled = view === "storms";
-  const isModeDisabled = view === "storms";
   const isModeTableOptionDisabled = view === "average" && filter === "by name";
+  const isModeListOptionDisabled = view === "storms";
+
+  const handleViewChange = (newView) => {
+    setView(newView);
+    // Auto-set default filter when view changes
+    if (newView === "highlights" || newView === "average") {
+      setFilter(getDefaultFilter(newView));
+    } else {
+      setFilter("");
+    }
+  };
 
   const handleClear = (field) => {
-    if (field === "view") setView("storms");
-    if (field === "filter") setFilter("");
+    if (field === "view") {
+      setView("storms");
+      setFilter("");
+    }
+    if (field === "filter") {
+      setFilter(getDefaultFilter(view));
+    }
     if (field === "mode") setMode("table");
   };
 
@@ -68,8 +89,12 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   useEffect(() => {
     if (view === "average" && filter === "by name") {
       setMode("list");
+    } else if (view === "storms") {
+      setMode("table");
     }
   }, [view, filter]);
+
+  if (!isOpen) return null;
 
   const filterOptions = getFilterOptions();
 
@@ -77,7 +102,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Filter Dashboard"
+      title="Dashboard View Options"
       wrapperClassName="max-w-lg"
     >
       <div className="space-y-4 mb-6">
@@ -88,7 +113,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
         >
           <select
             value={view}
-            onChange={(e) => setView(e.target.value)}
+            onChange={(e) => handleViewChange(e.target.value)}
             className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
           >
             <option value="storms">Storms</option>
@@ -99,7 +124,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
         <FilterSection
           label="Filter"
-          hasValue={Boolean(filter)}
+          hasValue={Boolean(filter) && filter !== getDefaultFilter(view)}
           onClear={() => handleClear("filter")}
           disabled={isFilterDisabled}
         >
@@ -125,34 +150,32 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
           label="Mode"
           hasValue={mode !== "table"}
           onClear={() => handleClear("mode")}
-          disabled={isModeDisabled}
         >
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value)}
-            disabled={isModeDisabled}
-            className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
-              isModeDisabled ? "bg-gray-100 cursor-not-allowed opacity-60" : ""
-            }`}
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
           >
             <option value="table" disabled={isModeTableOptionDisabled}>
               Table
             </option>
-            <option value="list">List</option>
+            <option value="list" disabled={isModeListOptionDisabled}>
+              List
+            </option>
           </select>
         </FilterSection>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-6">
         <button
           onClick={handleClearAll}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
+          className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-semibold"
         >
           Clear All
         </button>
         <button
           onClick={handleApply}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
         >
           Apply
         </button>
