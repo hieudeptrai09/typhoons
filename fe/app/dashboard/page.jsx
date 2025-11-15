@@ -19,6 +19,15 @@ export default function Dashboard() {
   const [stormsData, setStormsData] = useState([]);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const view = urlParams.get("view") || "storms";
+    const mode = urlParams.get("mode") || "table";
+    const filter = urlParams.get("filter") || "";
+
+    setParams({ view, mode, filter });
+  }, []);
+
+  useEffect(() => {
     const loadStorms = async () => {
       const result = await fetchData("/storms");
       setStormsData(result.data);

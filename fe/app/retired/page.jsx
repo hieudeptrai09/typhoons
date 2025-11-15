@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../components/NavBar";
 import fetchData from "../../containers/fetcher";
 import FilterModal from "./_components/FilterModal/FilterModal";
@@ -12,12 +13,15 @@ import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 
 const RetiredNamesPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [retiredNames, setRetiredNames] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // Applied filter states
+  // Applied filter states - initialized from URL
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -25,6 +29,57 @@ const RetiredNamesPage = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Initialize filters from URL parameters
+  useEffect(() => {
+    const name = searchParams.get("name") || "";
+    const year = searchParams.get("year") || "";
+    const country = searchParams.get("country") || "";
+    const lang = searchParams.get("lang");
+
+    setSearchName(name);
+    setSelectedYear(year ? parseInt(year) : "");
+    setSelectedCountry(country);
+
+    // Parse lang parameter to array
+    const reasons = [];
+    if (lang === "true") {
+      reasons.push("language");
+    } else if (lang === "false") {
+      reasons.push("destructive");
+    } else if (lang === "both") {
+      reasons.push("language", "destructive");
+    }
+    setRetirementReasons(reasons);
+  }, [searchParams]);
+
+  // Update URL when filters change
+  const updateURL = (filters) => {
+    const params = new URLSearchParams();
+
+    if (filters.searchName) {
+      params.set("name", filters.searchName);
+    }
+    if (filters.selectedYear) {
+      params.set("year", filters.selectedYear.toString());
+    }
+    if (filters.selectedCountry) {
+      params.set("country", filters.selectedCountry);
+    }
+
+    // Convert retirement reasons array to lang parameter
+    if (filters.retirementReasons.length === 2) {
+      params.set("lang", "both");
+    } else if (filters.retirementReasons.includes("language")) {
+      params.set("lang", "true");
+    } else if (filters.retirementReasons.includes("destructive")) {
+      params.set("lang", "false");
+    }
+
+    const queryString = params.toString();
+    const newURL = queryString ? `/retired?${queryString}` : "/retired";
+    router.push(newURL);
+  };
 
   useEffect(() => {
     fetchData("/typhoon-names?isRetired=1").then((data) => {
@@ -72,6 +127,7 @@ const RetiredNamesPage = () => {
     setSelectedCountry(filters.selectedCountry);
     setRetirementReasons(filters.retirementReasons);
     setIsFilterModalOpen(false);
+    updateURL(filters);
   };
 
   return (
