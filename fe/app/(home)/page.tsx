@@ -10,7 +10,6 @@ const HomePage = () => {
         <a
           href="https://www.youtube.com/watch?v=5LtFOkH9zwU"
           target="_blank"
-          rel="noopener noreferrer"
           className="mb-12"
         >
           <Image
@@ -18,39 +17,31 @@ const HomePage = () => {
             alt="web logo"
             loading="eager"
             width={500}
-            height={500}
+            height={250}
           />
         </a>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+        <div className="flex flex-col gap-6 w-full max-w-md">
           <Menu
-            href="storms"
-            icon="🌊"
-            label="Typhoon List"
-            color="bg-red-500"
-            hoverColor="hover:bg-red-600"
-          />
-          <Menu
-            href="stats"
+            href="dashboard"
             icon="📊"
-            label="Stats"
-            color="bg-blue-500"
-            hoverColor="hover:bg-blue-600"
+            label="Dashboard"
+            color="bg-purple-800"
+            hoverColor="hover:bg-purple-900"
           />
           <Menu
             href="stormnames"
             icon="📋"
             label="Current Names"
-            color="bg-yellow-500"
-            hoverColor="hover:bg-yellow-600"
+            color="bg-purple-800"
+            hoverColor="hover:bg-purple-900"
           />
-
           <Menu
             href="retired"
             icon="🗃️"
             label="Retired Names"
-            color="bg-green-500"
-            hoverColor="hover:bg-green-600"
+            color="bg-purple-800"
+            hoverColor="hover:bg-purple-900"
           />
         </div>
       </div>
