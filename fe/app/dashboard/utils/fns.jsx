@@ -4,9 +4,22 @@ export const intensityRank = {
   3: 3,
   2: 2,
   1: 1,
-  STS: 0.5,
-  TS: 0.3,
-  TD: 0.1,
+  STS: 0,
+  TS: -1,
+  TD: -2,
+};
+
+export const getIntensityFromNumber = (avgNumber) => {
+  const rounded = Math.round(avgNumber);
+  if (rounded >= 5) return "5";
+  if (rounded === 4) return "4";
+  if (rounded === 3) return "3";
+  if (rounded === 2) return "2";
+  if (rounded === 1) return "1";
+  if (rounded === 0) return "STS";
+  if (rounded === -1) return "TS";
+  if (rounded <= -2) return "TD";
+  return "TD";
 };
 
 export const getStrongestPerYear = (stormsData) => {

@@ -1,17 +1,24 @@
 import { StormGrid } from "./StormGrid";
 import SortableTable from "../../../components/SortableTable";
+import { SpecialButtons } from "./SpecialButtons";
 import {
   getStrongestPerYear,
   getFirstPerYear,
   getAverageByPosition,
   getAverageByName,
   intensityRank,
+  getIntensityFromNumber,
 } from "../utils/fns";
+import IntensityBadge from "../../../components/IntensityBadge";
+import { getWhiteTextcolor } from "../../../containers/utils/intensity";
 
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   if (params.view === "storms" && params.mode === "table") {
     return (
-      <StormGrid cellData={{}} onCellClick={onCellClick} isClickable={true} />
+      <div>
+        <StormGrid cellData={{}} onCellClick={onCellClick} isClickable={true} />
+        <SpecialButtons onCellClick={onCellClick} />
+      </div>
     );
   }
 
@@ -80,6 +87,12 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             { key: "intensity", label: "Intensity" },
             { key: "position", label: "Position" },
           ]}
+          renderCell={(row, col) => {
+            if (col.key === "intensity") {
+              return <IntensityBadge intensity={row.intensity} />;
+            }
+            return row[col.key];
+          }}
         />
       );
     }
@@ -91,23 +104,29 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
 
       if (params.mode === "table") {
         return (
-          <StormGrid
-            cellData={{}}
-            onCellClick={onCellClick}
-            isClickable={true}
-          />
+          <div>
+            <StormGrid
+              cellData={{}}
+              onCellClick={onCellClick}
+              isClickable={true}
+            />
+            <SpecialButtons onCellClick={onCellClick} />
+          </div>
         );
       } else {
-        const data = Object.entries(positionAvg).map(([pos, storms]) => ({
-          position: parseInt(pos),
-          count: storms.length,
-          average: (
+        const data = Object.entries(positionAvg).map(([pos, storms]) => {
+          const avgValue =
             storms.reduce(
               (sum, s) => sum + (intensityRank[s.intensity] || 0),
               0
-            ) / storms.length
-          ).toFixed(2),
-        }));
+            ) / storms.length;
+          return {
+            position: parseInt(pos),
+            count: storms.length,
+            average: avgValue.toFixed(2),
+            avgNumber: avgValue,
+          };
+        });
         return (
           <SortableTable
             data={data}
@@ -117,6 +136,18 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
               { key: "average", label: "Average Intensity" },
             ]}
             onRowClick={(row) => onCellClick(row.position)}
+            renderCell={(row, col) => {
+              if (col.key === "average") {
+                const intensityLabel = getIntensityFromNumber(row.avgNumber);
+                const textColor = getWhiteTextcolor(intensityLabel);
+                return (
+                  <span className="font-semibold" style={{ color: textColor }}>
+                    {row.average}
+                  </span>
+                );
+              }
+              return row[col.key];
+            }}
           />
         );
       }
@@ -125,16 +156,17 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       const data = Object.entries(nameAvg).map(([name, storms]) => {
         // All storms with the same name have the same position
         const position = storms[0].position;
+        const avgValue =
+          storms.reduce(
+            (sum, s) => sum + (intensityRank[s.intensity] || 0),
+            0
+          ) / storms.length;
         return {
           name,
           count: storms.length,
           position: position,
-          average: (
-            storms.reduce(
-              (sum, s) => sum + (intensityRank[s.intensity] || 0),
-              0
-            ) / storms.length
-          ).toFixed(2),
+          average: avgValue.toFixed(2),
+          avgNumber: avgValue,
         };
       });
 
@@ -147,6 +179,18 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             { key: "position", label: "Position" },
             { key: "average", label: "Average Intensity" },
           ]}
+          renderCell={(row, col) => {
+            if (col.key === "average") {
+              const intensityLabel = getIntensityFromNumber(row.avgNumber);
+              const textColor = getWhiteTextcolor(intensityLabel);
+              return (
+                <span className="font-semibold" style={{ color: textColor }}>
+                  {row.average}
+                </span>
+              );
+            }
+            return row[col.key];
+          }}
         />
       );
     }

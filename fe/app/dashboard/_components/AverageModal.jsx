@@ -1,4 +1,10 @@
 import { Modal } from "../../../components/Modal";
+import {
+  getBackground,
+  getBadgeTextcolor,
+  getWhiteTextcolor,
+} from "../../../containers/utils/intensity";
+import { getIntensityFromNumber, intensityRank } from "../utils/fns";
 
 export const AverageModal = ({
   isOpen,
@@ -16,21 +22,10 @@ export const AverageModal = ({
     nameAverages[storm.name].push(storm);
   });
 
-  const intensityRank = {
-    5: 5,
-    4: 4,
-    3: 3,
-    2: 2,
-    1: 1,
-    STS: 0.5,
-    TS: 0.3,
-    TD: 0.1,
-  };
-
   const nameData = Object.entries(nameAverages).map(([name, nameStorms]) => {
     const avg =
       nameStorms.reduce(
-        (sum, s) => sum + (intensityRank[s.intensity] || 0),
+        (sum, s) => sum + (intensityRank[s.intensity] || -3),
         0
       ) / nameStorms.length;
     return { name, average: avg, count: nameStorms.length };
@@ -45,32 +40,51 @@ export const AverageModal = ({
     >
       <div className="space-y-3">
         <div className="text-lg">
-          <span className="font-semibold text-gray-800">
+          <span className="font-semibold text-purple-700">
             Overall Average Intensity:{" "}
           </span>
-          <span className="text-blue-700 font-bold">{average.toFixed(2)}</span>
+          <span
+            className="font-bold"
+            style={{
+              color: getWhiteTextcolor(getIntensityFromNumber(average)),
+            }}
+          >
+            {average.toFixed(2)}
+          </span>
         </div>
         <div>
-          <div className="font-semibold mb-2 text-gray-800">
+          <div className="font-semibold mb-2 text-purple-700">
             Storm names at this position:
           </div>
           <div className="space-y-2">
-            {nameData.map((data, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-center bg-blue-100 px-3 py-2 rounded border border-blue-300"
-              >
-                <span className="font-medium text-gray-900">{data.name}</span>
-                <div className="flex gap-3 text-sm">
-                  <span className="text-gray-800">
-                    Count: <span className="font-semibold">{data.count}</span>
+            {nameData.map((data, idx) => {
+              const intensityLabel = getIntensityFromNumber(data.average);
+              const bgColor = getBackground(intensityLabel);
+              const textColor = getBadgeTextcolor(intensityLabel);
+
+              return (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center px-3 py-2 rounded border"
+                  style={{ backgroundColor: bgColor, borderColor: bgColor }}
+                >
+                  <span className="font-semibold" style={{ color: textColor }}>
+                    {data.name}
                   </span>
-                  <span className="text-blue-800 font-bold">
-                    Avg: {data.average.toFixed(2)}
-                  </span>
+                  <div className="flex gap-3 text-sm">
+                    <span style={{ color: textColor }}>
+                      Count: <span className="font-semibold">{data.count}</span>
+                    </span>
+                    <span style={{ color: textColor }}>
+                      Avg:{" "}
+                      <span className="font-semibold">
+                        {data.average.toFixed(2)}
+                      </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

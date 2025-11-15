@@ -1,50 +1,15 @@
-export const getIntensityColor = (intensity) => {
-  switch (intensity) {
-    case "TD":
-      return "#00CCFF";
-    case "TS":
-      return "#00FF00";
-    case "STS":
-      return "#C0FFC0";
-    case "1":
-      return "#FFFF00";
-    case "2":
-      return "#FFCC00";
-    case "3":
-      return "#FF6600";
-    case "4":
-      return "#FF0000";
-    case "5":
-      return "#CC00CC";
-    default:
-      return "#333333";
-  }
-};
-
-export const getIntensityTextColor = (intensity) => {
-  switch (intensity) {
-    case "TD":
-    case "TS":
-    case "2":
-    case "3":
-    case "4":
-    case "5":
-      return "white"; // White for dark backgrounds
-    case "STS":
-    case "1":
-      return "gray"; // Black for light backgrounds
-    default:
-      return "white";
-  }
-};
+import {
+  getBackground,
+  getBadgeTextcolor,
+} from "../../containers/utils/intensity";
 
 const IntensityBadge = ({ intensity }) => {
   return (
     <span
-      className="font-semibold w-10 h-10 flex items-center justify-center mr-1.5"
+      className="font-semibold w-10 h-10 flex items-center justify-center"
       style={{
-        backgroundColor: getIntensityColor(intensity),
-        color: getIntensityTextColor(intensity),
+        backgroundColor: getBackground(intensity),
+        color: getBadgeTextcolor(intensity),
       }}
     >
       {intensity}
