@@ -15,7 +15,7 @@ const NameRow = ({ name, onClick }) => {
           {name.name}
         </span>
       </td>
-      <td className="px-6 py-4 text-gray-700">{name.meaning}</td>
+      <td className="px-6 py-4 text-gray-600">{name.meaning}</td>
       <td className="px-6 py-4 text-gray-600">{name.country}</td>
       <td className="px-6 py-4 text-gray-600">{name.note || "-"}</td>
       <td className="px-6 py-4 text-gray-600">{name.lastYear}</td>

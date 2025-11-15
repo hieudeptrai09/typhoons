@@ -1,50 +1,24 @@
-import { useState, useMemo } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTableSort } from "../_hooks/useTableSort";
+import SortableTableHeader from "./SortableTableHeader";
 
 export const SortableTable = ({ data, columns, onRowClick }) => {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-
-  const sortedData = useMemo(() => {
-    if (!sortConfig.key) return data;
-
-    return [...data].sort((a, b) => {
-      const aVal = a[sortConfig.key];
-      const bVal = b[sortConfig.key];
-
-      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [data, sortConfig]);
-
-  const handleSort = (key) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-    }));
-  };
+  const { sortedData, sortColumn, sortDirection, handleSort } =
+    useTableSort(data);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="overflow-x-auto max-w-4xl mx-auto">
+      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
             {columns.map((col) => (
-              <th
+              <SortableTableHeader
                 key={col.key}
-                onClick={() => handleSort(col.key)}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-200"
-              >
-                <div className="flex items-center gap-2">
-                  {col.label}
-                  {sortConfig.key === col.key &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={16} />
-                    ) : (
-                      <ChevronDown size={16} />
-                    ))}
-                </div>
-              </th>
+                label={col.label}
+                columnKey={col.key}
+                currentSortColumn={sortColumn}
+                currentSortDirection={sortDirection}
+                onSort={handleSort}
+              />
             ))}
           </tr>
         </thead>
@@ -53,13 +27,14 @@ export const SortableTable = ({ data, columns, onRowClick }) => {
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className={onRowClick ? "cursor-pointer hover:bg-gray-50" : ""}
+              className={
+                onRowClick
+                  ? "hover:bg-gray-50 transition-colors cursor-pointer"
+                  : ""
+              }
             >
               {columns.map((col) => (
-                <td
-                  key={col.key}
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                >
+                <td key={col.key} className="px-6 py-4 text-gray-600">
                   {row[col.key]}
                 </td>
               ))}

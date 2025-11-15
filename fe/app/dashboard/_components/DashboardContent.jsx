@@ -72,11 +72,13 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             name: s.name,
             year: s.year,
             intensity: s.intensity,
+            position: s.position,
           }))}
           columns={[
             { key: "name", label: "Name" },
             { key: "year", label: "Year" },
             { key: "intensity", label: "Intensity" },
+            { key: "position", label: "Position" },
           ]}
         />
       );
@@ -98,6 +100,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       } else {
         const data = Object.entries(positionAvg).map(([pos, storms]) => ({
           position: parseInt(pos),
+          count: storms.length,
           average: (
             storms.reduce(
               (sum, s) => sum + (intensityRank[s.intensity] || 0),
@@ -110,6 +113,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
             data={data}
             columns={[
               { key: "position", label: "Position" },
+              { key: "count", label: "Count" },
               { key: "average", label: "Average Intensity" },
             ]}
             onRowClick={(row) => onCellClick(row.position)}
@@ -118,21 +122,29 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       }
     } else if (params.filter === "by name") {
       const nameAvg = getAverageByName(stormsData);
-      const data = Object.entries(nameAvg).map(([name, storms]) => ({
-        name,
-        average: (
-          storms.reduce(
-            (sum, s) => sum + (intensityRank[s.intensity] || 0),
-            0
-          ) / storms.length
-        ).toFixed(2),
-      }));
+      const data = Object.entries(nameAvg).map(([name, storms]) => {
+        // All storms with the same name have the same position
+        const position = storms[0].position;
+        return {
+          name,
+          count: storms.length,
+          position: position,
+          average: (
+            storms.reduce(
+              (sum, s) => sum + (intensityRank[s.intensity] || 0),
+              0
+            ) / storms.length
+          ).toFixed(2),
+        };
+      });
 
       return (
         <SortableTable
           data={data}
           columns={[
             { key: "name", label: "Name" },
+            { key: "count", label: "Count" },
+            { key: "position", label: "Position" },
             { key: "average", label: "Average Intensity" },
           ]}
         />
