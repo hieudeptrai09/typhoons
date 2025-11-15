@@ -4,6 +4,7 @@ const SortableTableHeader = ({
   currentSortColumn,
   currentSortDirection,
   onSort,
+  isSortable,
 }) => {
   const isActive = currentSortColumn === columnKey;
 
@@ -19,6 +20,14 @@ const SortableTableHeader = ({
     }
     return null;
   };
+
+  if (!isSortable) {
+    return (
+      <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+        <span>{label}</span>
+      </th>
+    );
+  }
 
   return (
     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">

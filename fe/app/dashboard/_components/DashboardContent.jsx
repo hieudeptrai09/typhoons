@@ -1,5 +1,5 @@
 import { StormGrid } from "./StormGrid";
-import { SortableTable } from "./SortableTable";
+import SortableTable from "../../../components/SortableTable";
 import {
   getStrongestPerYear,
   getFirstPerYear,

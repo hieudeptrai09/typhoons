@@ -1,9 +1,15 @@
-import { useTableSort } from "../_hooks/useTableSort";
+import { useTableSort } from "../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
 
-export const SortableTable = ({ data, columns, onRowClick }) => {
+const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
   const { sortedData, sortColumn, sortDirection, handleSort } =
     useTableSort(data);
+
+  const defaultRenderCell = (row, column) => {
+    return row[column.key];
+  };
+
+  const getCellRenderer = renderCell || defaultRenderCell;
 
   return (
     <div className="overflow-x-auto max-w-4xl mx-auto">
@@ -15,6 +21,7 @@ export const SortableTable = ({ data, columns, onRowClick }) => {
                 key={col.key}
                 label={col.label}
                 columnKey={col.key}
+                isSortable={col.isSortable !== false}
                 currentSortColumn={sortColumn}
                 currentSortDirection={sortDirection}
                 onSort={handleSort}
@@ -27,15 +34,11 @@ export const SortableTable = ({ data, columns, onRowClick }) => {
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className={
-                onRowClick
-                  ? "hover:bg-gray-50 transition-colors cursor-pointer"
-                  : ""
-              }
+              className="hover:bg-gray-50 transition-colors cursor-pointer"
             >
               {columns.map((col) => (
                 <td key={col.key} className="px-6 py-4 text-gray-600">
-                  {row[col.key]}
+                  {getCellRenderer(row, col)}
                 </td>
               ))}
             </tr>
@@ -45,3 +48,5 @@ export const SortableTable = ({ data, columns, onRowClick }) => {
     </div>
   );
 };
+
+export default SortableTable;
