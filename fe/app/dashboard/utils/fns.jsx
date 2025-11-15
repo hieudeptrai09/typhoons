@@ -11,6 +11,12 @@ export const getIntensityFromNumber = (avgNumber) => {
   return "TD";
 };
 
+export const getPositionTitle = (position) => {
+  if (position === 141) return "CPHC";
+  if (position === 142) return "NHC";
+  return `#${position}`;
+};
+
 export const getStrongestPerYear = (stormsData) => {
   // Filter storms that are marked as strongest
   return stormsData.filter((storm) => storm.isStrongest);

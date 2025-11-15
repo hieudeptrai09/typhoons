@@ -8,13 +8,7 @@ import {
 } from "../../../containers/utils/intensity";
 import { getIntensityFromNumber } from "../utils/fns";
 
-export const AverageModal = ({
-  isOpen,
-  onClose,
-  position,
-  average,
-  storms,
-}) => {
+export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   // Group storms by name and calculate average intensity for each name
   const nameAverages = {};
   storms.forEach((storm) => {
@@ -35,7 +29,7 @@ export const AverageModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`#${position}`}
+      title={title}
       wrapperClassName="max-w-md"
     >
       <div className="space-y-3">

@@ -9,6 +9,7 @@ import { DashboardContent } from "./_components/DashboardContent";
 import fetchData from "../../containers/utils/fetcher";
 import Navbar from "../../components/NavBar";
 import { getRank } from "../../containers/utils/intensity";
+import { getPositionTitle } from "./utils/fns";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -60,10 +61,17 @@ export default function Dashboard() {
       const avg =
         storms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
         storms.length;
-      setSelectedData({ position: data, average: avg, storms });
+      setSelectedData({
+        title: getPositionTitle(data),
+        average: avg,
+        storms,
+      });
       setAverageModalOpen(true);
     } else {
-      setSelectedData({ title: `#${data}`, storms });
+      setSelectedData({
+        title: getPositionTitle(data),
+        storms,
+      });
       setDetailModalOpen(true);
     }
   };
@@ -109,7 +117,7 @@ export default function Dashboard() {
         <AverageModal
           isOpen={averageModalOpen}
           onClose={() => setAverageModalOpen(false)}
-          position={selectedData?.position}
+          title={selectedData?.title || ""}
           average={selectedData?.average || 0}
           storms={selectedData?.storms || []}
         />

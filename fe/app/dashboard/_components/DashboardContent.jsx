@@ -7,6 +7,7 @@ import {
   getAverageByPosition,
   getAverageByName,
   getIntensityFromNumber,
+  getPositionTitle,
 } from "../utils/fns";
 import IntensityBadge from "../../../components/IntensityBadge";
 import {
@@ -155,6 +156,9 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
                   </span>
                 );
               }
+              if (col.key === "position") {
+                return getPositionTitle(row.position);
+              }
               return row[col.key];
             }}
           />
@@ -202,6 +206,9 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
                   {row.average}
                 </span>
               );
+            }
+            if (col.key === "position") {
+              return getPositionTitle(row.position);
             }
             return row[col.key];
           }}
