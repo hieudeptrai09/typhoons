@@ -55,5 +55,7 @@ export const intensityRank = {
 };
 
 export const getRank = (intensity) => {
-  return intensityRank[intensity] || -3;
+  return intensityRank.hasOwnProperty(intensity)
+    ? intensityRank[intensity]
+    : -3;
 };
