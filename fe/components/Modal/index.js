@@ -5,8 +5,8 @@ export const Modal = ({
   onClose,
   title,
   children,
-  wrapperClassName = "", // Now explicit for each modal
-  specialStyles = null, // For special cases like TyphoonNameModal
+  wrapperClassName = "",
+  specialStyles = null,
 }) => {
   if (!isOpen) return null;
 
@@ -18,14 +18,14 @@ export const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className={`bg-white rounded-lg shadow-2xl w-full ${wrapperClassName}`}
+        className={`bg-white rounded-lg shadow-2xl w-full max-h-[90vh] flex flex-col ${wrapperClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-start p-6 pb-4 border-b border-gray-300">
+        <div className="flex justify-between items-start p-6 pb-4 shrink-0 border-b border-gray-300">
           <h2
             className={`text-2xl font-bold text-gray-800 ${styles.titleClassName}`}
           >
@@ -38,7 +38,7 @@ export const Modal = ({
             <X size={24} />
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
