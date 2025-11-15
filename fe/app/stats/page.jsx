@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import TyphoonGrid from "./_components/TyphoonGrid";
 import ListView from "./_components/ListView";
 import Navbar from "../../components/NavBar";
-import fetchData from "../../containers/fetcher";
+import fetchData from "../../containers/utils/fetcher";
 
 export default function TyphoonListPage() {
   const [viewMode, setViewMode] = useState(null);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar";
-import fetchData from "../../containers/fetcher";
+import fetchData from "../../containers/utils/fetcher";
 import TyphoonGrid from "./_components/TyphoonGrid";
 import TyphoonModal from "./_components/TyphoonModal";
 

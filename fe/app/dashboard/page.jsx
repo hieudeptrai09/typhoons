@@ -7,7 +7,7 @@ import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
 import { intensityRank } from "./utils/fns";
-import fetchData from "../../containers/fetcher";
+import fetchData from "../../containers/utils/fetcher";
 import Navbar from "../../components/NavBar";
 
 export default function Dashboard() {
