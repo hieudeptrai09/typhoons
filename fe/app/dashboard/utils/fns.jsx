@@ -5,9 +5,8 @@ export const getIntensityFromNumber = (avgNumber) => {
   if (rounded === 3) return "3";
   if (rounded === 2) return "2";
   if (rounded === 1) return "1";
-  if (rounded === 0) return "STS";
-  if (rounded === -1) return "TS";
-  if (rounded <= -2) return "TD";
+  if (rounded === 0) return "TS";
+  if (rounded <= -1) return "TD";
   return "TD";
 };
 
