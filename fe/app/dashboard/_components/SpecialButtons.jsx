@@ -1,10 +1,10 @@
-import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
+import { getIntensityFromNumber } from "../utils/fns";
 import { getWhiteTextcolor } from "../../../containers/utils/intensity";
 
 export const SpecialButtons = ({
   onCellClick,
   isAverageView = false,
-  averageByPosition = null,
+  averageValues = null,
 }) => {
   const buttons = [
     { id: 141, label: "CPHC" },
@@ -12,8 +12,8 @@ export const SpecialButtons = ({
   ];
 
   const getButtonStyle = (buttonId) => {
-    if (isAverageView && averageByPosition && averageByPosition[buttonId]) {
-      const avgNumber = calculateAverage(averageByPosition[buttonId]);
+    if (isAverageView && averageValues && averageValues[buttonId]) {
+      const avgNumber = averageValues[buttonId];
       const intensityLabel = getIntensityFromNumber(avgNumber);
       const textColor = getWhiteTextcolor(intensityLabel);
       return textColor;

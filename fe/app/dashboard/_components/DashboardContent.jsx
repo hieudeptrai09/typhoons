@@ -18,7 +18,7 @@ const renderStormGridWithButtons = (
   onCellClick,
   cellData,
   isAverageView,
-  averageByPosition
+  averageValues
 ) => (
   <div>
     <StormGrid
@@ -30,14 +30,15 @@ const renderStormGridWithButtons = (
     <SpecialButtons
       onCellClick={onCellClick}
       isAverageView={isAverageView}
-      averageByPosition={averageByPosition}
+      averageValues={averageValues}
     />
   </div>
 );
 
-const createCellData = (viewType, data = null, avgData = null) => {
+const createCellData = (viewType, data = null, averageValues = null) => {
   const cellData = {};
 
+  // Initialize first 140 cells based on view type
   for (let i = 1; i <= 140; i++) {
     cellData[i] = {
       content: viewType === "highlights" ? "" : `${i}`,
@@ -60,9 +61,7 @@ const createCellData = (viewType, data = null, avgData = null) => {
           <div className="flex flex-col items-center gap-1">
             {storms.map((storm, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="text-xs font-bold text-gray-800">
-                  {storm.name}
-                </div>
+                <div className="font-bold text-gray-800">{storm.name}</div>
                 <div className="text-[10px] text-gray-600">({storm.year})</div>
               </div>
             ))}
@@ -72,9 +71,8 @@ const createCellData = (viewType, data = null, avgData = null) => {
         avgNumber: null,
       };
     });
-  } else if (viewType === "average" && avgData) {
-    Object.entries(avgData).forEach(([position, storms]) => {
-      const avgValue = calculateAverage(storms);
+  } else if (viewType === "average" && averageValues) {
+    Object.entries(averageValues).forEach(([position, avgValue]) => {
       cellData[position] = {
         content: `${position}`,
         highlighted: false,
@@ -106,9 +104,16 @@ const createAverageCellRenderer = (row, col) => {
   return row[col.key];
 };
 
-const transformAverageData = (dataMap, includePosition = false) => {
+const transformAverageData = (
+  dataMap,
+  averageValues,
+  includePosition = false
+) => {
   return Object.entries(dataMap).map(([key, storms]) => {
-    const avgValue = calculateAverage(storms);
+    const avgValue = includePosition
+      ? calculateAverage(storms)
+      : averageValues[key];
+
     const baseData = {
       count: storms.length,
       average: avgValue.toFixed(2),
@@ -162,6 +167,7 @@ export const DashboardContent = ({
   stormsData,
   averageByPosition,
   averageByName,
+  averageValues,
   onCellClick,
 }) => {
   if (
@@ -171,13 +177,13 @@ export const DashboardContent = ({
     const cellData =
       params.view === "storms"
         ? createCellData("storms")
-        : createCellData("average", null, averageByPosition);
+        : createCellData("average", null, averageValues);
 
     return renderStormGridWithButtons(
       onCellClick,
       cellData,
       params.view === "average",
-      params.view === "average" ? averageByPosition : null
+      params.view === "average" ? averageValues : null
     );
   }
 
@@ -237,7 +243,7 @@ export const DashboardContent = ({
   if (params.view === "average") {
     const isByPosition = params.filter === "by position";
     const avgData = isByPosition ? averageByPosition : averageByName;
-    const data = transformAverageData(avgData, !isByPosition);
+    const data = transformAverageData(avgData, averageValues, !isByPosition);
 
     return (
       <SortableTable

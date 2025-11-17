@@ -1,3 +1,5 @@
+import { getRank } from "../../../containers/utils/intensity";
+
 export const getIntensityFromNumber = (avgNumber) => {
   const rounded = Math.round(avgNumber);
   if (rounded >= 5) return "5";
@@ -45,7 +47,6 @@ export const getAverageByName = (stormsData) => {
 };
 
 export const calculateAverage = (storms) => {
-  const { getRank } = require("../../../containers/utils/intensity");
   const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
   return sum / storms.length;
 };

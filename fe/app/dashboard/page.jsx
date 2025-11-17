@@ -8,11 +8,11 @@ import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
 import fetchData from "../../containers/utils/fetcher";
 import Navbar from "../../components/NavBar";
-import { getRank } from "../../containers/utils/intensity";
 import {
   getPositionTitle,
   getAverageByPosition,
   getAverageByName,
+  calculateAverage,
 } from "./utils/fns";
 
 export default function Dashboard() {
@@ -33,6 +33,15 @@ export default function Dashboard() {
     () => getAverageByName(stormsData),
     [stormsData]
   );
+
+  // Pre-calculate average values for positions
+  const averageValues = useMemo(() => {
+    const values = {};
+    Object.entries(averageByPosition).forEach(([position, storms]) => {
+      values[position] = calculateAverage(storms);
+    });
+    return values;
+  }, [averageByPosition]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -73,9 +82,7 @@ export default function Dashboard() {
       setSelectedData({ title: data, storms });
       setDetailModalOpen(true);
     } else if (params.view === "average" && params.filter === "by position") {
-      const avg =
-        storms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
-        storms.length;
+      const avg = averageValues[data];
       setSelectedData({
         title: getPositionTitle(data),
         average: avg,
@@ -114,6 +121,7 @@ export default function Dashboard() {
           stormsData={stormsData}
           averageByPosition={averageByPosition}
           averageByName={averageByName}
+          averageValues={averageValues}
           onCellClick={handleCellClick}
         />
 
