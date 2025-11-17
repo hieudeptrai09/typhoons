@@ -20,12 +20,12 @@ export const GridCell = ({
 
   return (
     <td
-      className={`relative w-full h-16 border-2 border-sky-200 p-2 ${
+      className={`relative border-2 border-sky-200 p-2 ${
         isClickable ? "cursor-pointer hover:bg-sky-200" : "cursor-default"
       } ${getHighlightColor()}`}
       onClick={handleClick}
     >
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-16 flex items-center justify-center">
         <div className="text-center text-xs font-semibold text-gray-600">
           {content}
         </div>
