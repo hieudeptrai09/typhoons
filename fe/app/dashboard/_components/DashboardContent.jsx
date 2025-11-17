@@ -6,10 +6,10 @@ import {
   getFirstPerYear,
   getIntensityFromNumber,
   getPositionTitle,
+  calculateAverage,
 } from "../utils/fns";
 import IntensityBadge from "../../../components/IntensityBadge";
 import {
-  getRank,
   getWhiteTextcolor,
   intensityRank,
 } from "../../../containers/utils/intensity";
@@ -35,12 +35,7 @@ const renderStormGridWithButtons = (
   </div>
 );
 
-const calculateAverage = (storms) => {
-  const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
-  return sum / storms.length;
-};
-
-const createCellData = (viewType, highlightedData = null, avgData = null) => {
+const createCellData = (viewType, data = null, avgData = null) => {
   const cellData = {};
 
   for (let i = 1; i <= 140; i++) {

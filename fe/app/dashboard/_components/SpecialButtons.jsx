@@ -1,13 +1,5 @@
-import { getIntensityFromNumber } from "../utils/fns";
-import {
-  getWhiteTextcolor,
-  getRank,
-} from "../../../containers/utils/intensity";
-
-const calculateAverage = (storms) => {
-  const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
-  return sum / storms.length;
-};
+import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
+import { getWhiteTextcolor } from "../../../containers/utils/intensity";
 
 export const SpecialButtons = ({
   onCellClick,

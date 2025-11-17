@@ -2,11 +2,10 @@ import { Modal } from "../../../components/Modal";
 import {
   getBackground,
   getBadgeTextcolor,
-  getRank,
   getWhiteTextcolor,
   intensityRank,
 } from "../../../containers/utils/intensity";
-import { getIntensityFromNumber } from "../utils/fns";
+import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
 
 export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   // Group storms by name and calculate average intensity for each name
@@ -19,9 +18,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   });
 
   const nameData = Object.entries(nameAverages).map(([name, nameStorms]) => {
-    const avg =
-      nameStorms.reduce((sum, s) => sum + getRank(s.intensity), 0) /
-      nameStorms.length;
+    const avg = calculateAverage(nameStorms);
     return { name, average: avg, count: nameStorms.length };
   });
 

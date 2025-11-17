@@ -43,3 +43,9 @@ export const getAverageByName = (stormsData) => {
   });
   return nameAvg;
 };
+
+export const calculateAverage = (storms) => {
+  const { getRank } = require("../../../containers/utils/intensity");
+  const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
+  return sum / storms.length;
+};
