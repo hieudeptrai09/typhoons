@@ -31,14 +31,14 @@ export const getBadgeTextcolor = (intensity) => {
 
 export const getWhiteTextcolor = (intensity) => {
   const colors = {
-    TD: "#0099CC",
-    TS: "#00AA00",
-    STS: "#009900",
-    1: "#CC9900",
-    2: "#CC8800",
-    3: "#CC4400",
-    4: "#CC0000",
-    5: "#990099",
+    TD: "#00CCFF",
+    TS: "#00FF00",
+    STS: "#007733",
+    1: "#AA8800",
+    2: "#FFCC00",
+    3: "#FF6600",
+    4: "#FF0000",
+    5: "#CC00CC",
   };
   return colors[intensity] || "#333333";
 };
