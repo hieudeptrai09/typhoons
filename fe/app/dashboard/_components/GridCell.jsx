@@ -40,7 +40,7 @@ export const GridCell = ({
     >
       <div className="w-full h-16 flex items-center justify-center">
         <div
-          className="text-center text-xs font-semibold"
+          className="text-center text-base font-semibold"
           style={{ color: isAverageView ? getTextColor() : "#6A6E7D" }}
         >
           {content}
