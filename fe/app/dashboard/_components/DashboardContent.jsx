@@ -4,8 +4,6 @@ import { SpecialButtons } from "./SpecialButtons";
 import {
   getStrongestPerYear,
   getFirstPerYear,
-  getAverageByPosition,
-  getAverageByName,
   getIntensityFromNumber,
   getPositionTitle,
 } from "../utils/fns";
@@ -89,9 +87,8 @@ const createAverageCellRenderer = (row, col) => {
   return row[col.key];
 };
 
-const createAverageCellData = (stormsData) => {
+const createAverageCellData = (avgData) => {
   const cellData = {};
-  const avgData = getAverageByPosition(stormsData);
 
   for (let i = 1; i <= 142; i++) {
     cellData[i] = { content: "", avgNumber: null };
@@ -159,14 +156,20 @@ const getAverageColumns = (includeNameAndPosition = false) => {
   return columns;
 };
 
-export const DashboardContent = ({ params, stormsData, onCellClick }) => {
+export const DashboardContent = ({
+  params,
+  stormsData,
+  averageByPosition,
+  averageByName,
+  onCellClick,
+}) => {
   if (
     (params.view === "storms" && params.mode === "table") ||
     (params.view === "average" && params.mode === "table")
   ) {
     return renderStormGridWithButtons(
       onCellClick,
-      params.view === "storms" ? {} : createAverageCellData(stormsData),
+      params.view === "storms" ? {} : createAverageCellData(averageByPosition),
       params.view === "storms" ? false : true
     );
   }
@@ -226,9 +229,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
 
   if (params.view === "average") {
     const isByPosition = params.filter === "by position";
-    const avgData = isByPosition
-      ? getAverageByPosition(stormsData)
-      : getAverageByName(stormsData);
+    const avgData = isByPosition ? averageByPosition : averageByName;
     const data = transformAverageData(avgData, !isByPosition);
 
     return (
