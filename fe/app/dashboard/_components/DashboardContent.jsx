@@ -24,7 +24,11 @@ const renderStormGridWithButtons = (onCellClick, cellData, isAverageView) => (
       isClickable={true}
       isAverageView={isAverageView}
     />
-    <SpecialButtons onCellClick={onCellClick} />
+    <SpecialButtons
+      onCellClick={onCellClick}
+      isAverageView={isAverageView}
+      cellData={cellData}
+    />
   </div>
 );
 
@@ -89,7 +93,7 @@ const createAverageCellData = (stormsData) => {
   const cellData = {};
   const avgData = getAverageByPosition(stormsData);
 
-  for (let i = 1; i <= 140; i++) {
+  for (let i = 1; i <= 142; i++) {
     cellData[i] = { content: "", avgNumber: null };
   }
 

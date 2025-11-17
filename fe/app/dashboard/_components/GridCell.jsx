@@ -28,7 +28,7 @@ export const GridCell = ({
       const intensityLabel = getIntensityFromNumber(avgNumber);
       return getWhiteTextcolor(intensityLabel);
     }
-    return "";
+    return "#6A6E7D";
   };
 
   return (
@@ -41,7 +41,7 @@ export const GridCell = ({
       <div className="w-full h-16 flex items-center justify-center">
         <div
           className="text-center text-base font-semibold"
-          style={{ color: isAverageView ? getTextColor() : "#6A6E7D" }}
+          style={{ color: getTextColor() }}
         >
           {content}
         </div>

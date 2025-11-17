@@ -1,8 +1,27 @@
-export const SpecialButtons = ({ onCellClick }) => {
+import { getIntensityFromNumber } from "../utils/fns";
+import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+
+export const SpecialButtons = ({
+  onCellClick,
+  isAverageView = false,
+  cellData = {},
+}) => {
+  console.log(cellData);
   const buttons = [
     { id: 141, label: "CPHC" },
     { id: 142, label: "NHC" },
   ];
+
+  const getButtonStyle = (buttonId) => {
+    if (isAverageView && cellData[buttonId]) {
+      const intensityLabel = getIntensityFromNumber(
+        cellData[buttonId].avgNumber
+      );
+      const textColor = getWhiteTextcolor(intensityLabel);
+      return textColor;
+    }
+    return "#6A6E7D";
+  };
 
   return (
     <div className="mt-6 flex justify-center gap-4">
@@ -10,7 +29,8 @@ export const SpecialButtons = ({ onCellClick }) => {
         <button
           key={button.id}
           onClick={() => onCellClick(button.id, "position")}
-          className="px-8 py-4 bg-sky-100 text-gray-800 font-semibold rounded-lg hover:bg-sky-200 transition-colors border border-sky-300"
+          className="px-8 py-4 bg-sky-100 font-semibold rounded-lg hover:bg-sky-200 transition-colors border border-sky-300"
+          style={{ color: getButtonStyle(button.id) }}
         >
           {button.label}
         </button>
