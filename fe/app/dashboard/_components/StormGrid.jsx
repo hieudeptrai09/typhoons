@@ -5,6 +5,7 @@ export const StormGrid = ({
   onCellClick,
   highlightType,
   isClickable = true,
+  isAverageView = false,
 }) => {
   const rows = 10;
   const cols = 14;
@@ -29,6 +30,8 @@ export const StormGrid = ({
                     highlighted={data?.highlighted}
                     highlightType={highlightType}
                     isClickable={isClickable}
+                    isAverageView={isAverageView}
+                    avgNumber={data?.avgNumber}
                   />
                 );
               })}

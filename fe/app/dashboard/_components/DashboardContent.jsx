@@ -16,37 +16,36 @@ import {
   intensityRank,
 } from "../../../containers/utils/intensity";
 
-// Helper: Render storm grid with special buttons
-const renderStormGridWithButtons = (onCellClick) => (
+const renderStormGridWithButtons = (onCellClick, cellData, isAverageView) => (
   <div>
-    <StormGrid cellData={{}} onCellClick={onCellClick} isClickable={true} />
+    <StormGrid
+      cellData={cellData}
+      onCellClick={onCellClick}
+      isClickable={true}
+      isAverageView={isAverageView}
+    />
     <SpecialButtons onCellClick={onCellClick} />
   </div>
 );
 
-// Helper: Calculate average intensity for a group of storms
 const calculateAverage = (storms) => {
   const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
   return sum / storms.length;
 };
 
-// Helper: Create cell data for highlights grid view
 const createHighlightsCellData = (highlights) => {
   const cellData = {};
 
-  // Initialize all cells
   for (let i = 1; i <= 140; i++) {
     cellData[i] = { content: "", highlighted: false };
   }
 
-  // Group storms by position
   const stormsByPosition = highlights.reduce((acc, storm) => {
     if (!acc[storm.position]) acc[storm.position] = [];
     acc[storm.position].push(storm);
     return acc;
   }, {});
 
-  // Create cell content for each position
   Object.entries(stormsByPosition).forEach(([position, storms]) => {
     cellData[position] = {
       content: (
@@ -66,7 +65,6 @@ const createHighlightsCellData = (highlights) => {
   return cellData;
 };
 
-// Helper: Render intensity cell with colored text
 const renderIntensityCell = (avgNumber, displayValue) => {
   const intensityLabel = getIntensityFromNumber(avgNumber);
   const textColor = getWhiteTextcolor(intensityLabel);
@@ -77,7 +75,6 @@ const renderIntensityCell = (avgNumber, displayValue) => {
   );
 };
 
-// Helper: Common cell renderer for average tables
 const createAverageCellRenderer = (row, col) => {
   if (col.key === "average") {
     return renderIntensityCell(row.avgNumber, row.average);
@@ -88,7 +85,25 @@ const createAverageCellRenderer = (row, col) => {
   return row[col.key];
 };
 
-// Helper: Transform average data for table display
+const createAverageCellData = (stormsData) => {
+  const cellData = {};
+  const avgData = getAverageByPosition(stormsData);
+
+  for (let i = 1; i <= 140; i++) {
+    cellData[i] = { content: "", avgNumber: null };
+  }
+
+  Object.entries(avgData).forEach(([position, storms]) => {
+    const avgValue = calculateAverage(storms);
+    cellData[position] = {
+      content: `#${position}`,
+      avgNumber: avgValue,
+    };
+  });
+
+  return cellData;
+};
+
 const transformAverageData = (dataMap, includePosition = false) => {
   return Object.entries(dataMap).map(([key, storms]) => {
     const avgValue = calculateAverage(storms);
@@ -115,7 +130,6 @@ const transformAverageData = (dataMap, includePosition = false) => {
   });
 };
 
-// Helper: Common columns for average intensity
 const getAverageColumns = (includeNameAndPosition = false) => {
   const columns = [];
 
@@ -147,7 +161,11 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
     (params.view === "storms" && params.mode === "table") ||
     (params.view === "average" && params.mode === "table")
   ) {
-    return renderStormGridWithButtons(onCellClick);
+    return renderStormGridWithButtons(
+      onCellClick,
+      params.view === "storm" ? {} : createAverageCellData(stormsData),
+      params.view === "storm" ? false : true
+    );
   }
 
   if (params.view === "highlights" && params.mode === "table") {
