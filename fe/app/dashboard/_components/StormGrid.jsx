@@ -11,7 +11,7 @@ export const StormGrid = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="border-collapse mx-auto">
+      <table className="min-w-full border-collapse mx-auto">
         <tbody>
           {[...Array(rows)].map((_, row) => (
             <tr key={row}>
