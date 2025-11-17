@@ -43,6 +43,20 @@ export const getWhiteTextcolor = (intensity) => {
   return colors[intensity] || "#333333";
 };
 
+export const gerRankForSorting = (intensity) => {
+  const ranks = {
+    5: 5,
+    4: 4,
+    3: 3,
+    2: 2,
+    1: 1,
+    STS: 0,
+    TS: -1,
+    TD: -2,
+  };
+  return ranks.hasOwnProperty(intensity) ? ranks[intensity] : -3;
+};
+
 export const intensityRank = {
   5: 5,
   4: 4,

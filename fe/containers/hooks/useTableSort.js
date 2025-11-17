@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { getRank } from "../utils/intensity";
+import { gerRankForSorting } from "../utils/intensity";
 
 export const useTableSort = (data) => {
   const [sortColumn, setSortColumn] = useState(null);
@@ -31,8 +31,8 @@ export const useTableSort = (data) => {
       let bValue = b[sortColumn];
 
       if (sortColumn === "intensity") {
-        aValue = getRank(aValue);
-        bValue = getRank(bValue);
+        aValue = gerRankForSorting(aValue);
+        bValue = gerRankForSorting(bValue);
       }
 
       // Handle null/undefined values
