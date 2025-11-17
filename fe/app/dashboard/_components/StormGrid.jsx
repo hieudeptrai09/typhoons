@@ -3,7 +3,7 @@ import { GridCell } from "./GridCell";
 export const StormGrid = ({
   cellData,
   onCellClick,
-  highlightType,
+  highlightType = "",
   isClickable = true,
   isAverageView = false,
 }) => {
@@ -27,8 +27,7 @@ export const StormGrid = ({
                     key={col}
                     onClick={() => onCellClick(position, "position")}
                     content={content}
-                    highlighted={data?.highlighted}
-                    highlightType={highlightType}
+                    highlight={data?.highlighted ? highlightType : ""}
                     isClickable={isClickable}
                     isAverageView={isAverageView}
                     avgNumber={data?.avgNumber}

@@ -4,17 +4,16 @@ import { getIntensityFromNumber } from "../utils/fns";
 export const GridCell = ({
   onClick,
   content,
-  highlighted,
-  highlightType,
+  highlight = "",
   isClickable = true,
   isAverageView = false,
   avgNumber = null,
 }) => {
   const getHighlightColor = () => {
-    if (!highlighted) return "";
-    if (highlightType === "strongest") return "bg-red-300";
-    if (highlightType === "first") return "bg-blue-300";
-    return "bg-yellow-200";
+    if (!highlight) return "";
+    if (highlight === "strongest") return "bg-red-300";
+    if (highlight === "first") return "bg-blue-300";
+    return "bg-sky-200";
   };
 
   const handleClick = () => {
