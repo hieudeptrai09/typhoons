@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Settings } from "lucide-react";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
@@ -9,7 +9,11 @@ import { DashboardContent } from "./_components/DashboardContent";
 import fetchData from "../../containers/utils/fetcher";
 import Navbar from "../../components/NavBar";
 import { getRank } from "../../containers/utils/intensity";
-import { getPositionTitle } from "./utils/fns";
+import {
+  getPositionTitle,
+  getAverageByPosition,
+  getAverageByName,
+} from "./utils/fns";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -18,6 +22,17 @@ export default function Dashboard() {
   const [selectedData, setSelectedData] = useState(null);
   const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
+
+  // Memoize expensive calculations
+  const averageByPosition = useMemo(
+    () => getAverageByPosition(stormsData),
+    [stormsData]
+  );
+
+  const averageByName = useMemo(
+    () => getAverageByName(stormsData),
+    [stormsData]
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -97,6 +112,8 @@ export default function Dashboard() {
         <DashboardContent
           params={params}
           stormsData={stormsData}
+          averageByPosition={averageByPosition}
+          averageByName={averageByName}
           onCellClick={handleCellClick}
         />
 

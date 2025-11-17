@@ -14,7 +14,12 @@ import {
   intensityRank,
 } from "../../../containers/utils/intensity";
 
-const renderStormGridWithButtons = (onCellClick, cellData, isAverageView) => (
+const renderStormGridWithButtons = (
+  onCellClick,
+  cellData,
+  isAverageView,
+  averageByPosition
+) => (
   <div>
     <StormGrid
       cellData={cellData}
@@ -25,7 +30,7 @@ const renderStormGridWithButtons = (onCellClick, cellData, isAverageView) => (
     <SpecialButtons
       onCellClick={onCellClick}
       isAverageView={isAverageView}
-      cellData={cellData}
+      averageByPosition={averageByPosition}
     />
   </div>
 );
@@ -35,34 +40,53 @@ const calculateAverage = (storms) => {
   return sum / storms.length;
 };
 
-const createHighlightsCellData = (highlights) => {
+const createCellData = (viewType, highlightedData = null, avgData = null) => {
   const cellData = {};
 
   for (let i = 1; i <= 140; i++) {
-    cellData[i] = { content: "", highlighted: false };
+    cellData[i] = {
+      content: viewType === "highlights" ? "" : `${i}`,
+      highlighted: false,
+      avgNumber: null,
+    };
   }
 
-  const stormsByPosition = highlights.reduce((acc, storm) => {
-    if (!acc[storm.position]) acc[storm.position] = [];
-    acc[storm.position].push(storm);
-    return acc;
-  }, {});
+  // Handle different view types
+  if (viewType === "highlights" && highlightedData) {
+    const stormsByPosition = highlightedData.reduce((acc, storm) => {
+      if (!acc[storm.position]) acc[storm.position] = [];
+      acc[storm.position].push(storm);
+      return acc;
+    }, {});
 
-  Object.entries(stormsByPosition).forEach(([position, storms]) => {
-    cellData[position] = {
-      content: (
-        <div className="flex flex-col items-center gap-1">
-          {storms.map((storm, idx) => (
-            <div key={idx} className="flex flex-col items-center">
-              <div className="font-bold text-gray-800">{storm.name}</div>
-              <div className="text-[10px] text-gray-600">({storm.year})</div>
-            </div>
-          ))}
-        </div>
-      ),
-      highlighted: true,
-    };
-  });
+    Object.entries(stormsByPosition).forEach(([position, storms]) => {
+      cellData[position] = {
+        content: (
+          <div className="flex flex-col items-center gap-1">
+            {storms.map((storm, idx) => (
+              <div key={idx} className="flex flex-col items-center">
+                <div className="text-xs font-bold text-gray-800">
+                  {storm.name}
+                </div>
+                <div className="text-[10px] text-gray-600">({storm.year})</div>
+              </div>
+            ))}
+          </div>
+        ),
+        highlighted: true,
+        avgNumber: null,
+      };
+    });
+  } else if (viewType === "average" && avgData) {
+    Object.entries(avgData).forEach(([position, storms]) => {
+      const avgValue = calculateAverage(storms);
+      cellData[position] = {
+        content: `${position}`,
+        highlighted: false,
+        avgNumber: avgValue,
+      };
+    });
+  }
 
   return cellData;
 };
@@ -85,24 +109,6 @@ const createAverageCellRenderer = (row, col) => {
     return getPositionTitle(row.position);
   }
   return row[col.key];
-};
-
-const createAverageCellData = (avgData) => {
-  const cellData = {};
-
-  for (let i = 1; i <= 142; i++) {
-    cellData[i] = { content: "", avgNumber: null };
-  }
-
-  Object.entries(avgData).forEach(([position, storms]) => {
-    const avgValue = calculateAverage(storms);
-    cellData[position] = {
-      content: `#${position}`,
-      avgNumber: avgValue,
-    };
-  });
-
-  return cellData;
 };
 
 const transformAverageData = (dataMap, includePosition = false) => {
@@ -167,10 +173,16 @@ export const DashboardContent = ({
     (params.view === "storms" && params.mode === "table") ||
     (params.view === "average" && params.mode === "table")
   ) {
+    const cellData =
+      params.view === "storms"
+        ? createCellData("storms")
+        : createCellData("average", null, averageByPosition);
+
     return renderStormGridWithButtons(
       onCellClick,
-      params.view === "storms" ? {} : createAverageCellData(averageByPosition),
-      params.view === "storms" ? false : true
+      cellData,
+      params.view === "average",
+      params.view === "average" ? averageByPosition : null
     );
   }
 
@@ -180,7 +192,7 @@ export const DashboardContent = ({
         ? getStrongestPerYear(stormsData)
         : getFirstPerYear(stormsData);
 
-    const cellData = createHighlightsCellData(highlights);
+    const cellData = createCellData("highlights", highlights);
     return (
       <StormGrid
         cellData={cellData}

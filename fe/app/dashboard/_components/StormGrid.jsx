@@ -19,14 +19,12 @@ export const StormGrid = ({
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
                 const data = cellData[position];
-                const content =
-                  data !== undefined ? data.content : `#${position}`;
 
                 return (
                   <GridCell
                     key={col}
                     onClick={() => onCellClick(position, "position")}
-                    content={content}
+                    content={data?.content || ""}
                     highlight={data?.highlighted ? highlightType : ""}
                     isClickable={isClickable}
                     isAverageView={isAverageView}

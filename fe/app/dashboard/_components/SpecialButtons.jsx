@@ -1,22 +1,28 @@
 import { getIntensityFromNumber } from "../utils/fns";
-import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+import {
+  getWhiteTextcolor,
+  getRank,
+} from "../../../containers/utils/intensity";
+
+const calculateAverage = (storms) => {
+  const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
+  return sum / storms.length;
+};
 
 export const SpecialButtons = ({
   onCellClick,
   isAverageView = false,
-  cellData = {},
+  averageByPosition = null,
 }) => {
-  console.log(cellData);
   const buttons = [
     { id: 141, label: "CPHC" },
     { id: 142, label: "NHC" },
   ];
 
   const getButtonStyle = (buttonId) => {
-    if (isAverageView && cellData[buttonId]) {
-      const intensityLabel = getIntensityFromNumber(
-        cellData[buttonId].avgNumber
-      );
+    if (isAverageView && averageByPosition && averageByPosition[buttonId]) {
+      const avgNumber = calculateAverage(averageByPosition[buttonId]);
+      const intensityLabel = getIntensityFromNumber(avgNumber);
       const textColor = getWhiteTextcolor(intensityLabel);
       return textColor;
     }
