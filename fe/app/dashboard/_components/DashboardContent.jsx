@@ -156,15 +156,14 @@ const getAverageColumns = (includeNameAndPosition = false) => {
 };
 
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
-  // All conditions that render StormGrid
   if (
     (params.view === "storms" && params.mode === "table") ||
     (params.view === "average" && params.mode === "table")
   ) {
     return renderStormGridWithButtons(
       onCellClick,
-      params.view === "storm" ? {} : createAverageCellData(stormsData),
-      params.view === "storm" ? false : true
+      params.view === "storms" ? {} : createAverageCellData(stormsData),
+      params.view === "storms" ? false : true
     );
   }
 
