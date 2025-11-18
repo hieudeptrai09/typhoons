@@ -1,6 +1,5 @@
 import { Modal } from "../../../components/Modal";
 import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
   getBackground,
   getBadgeTextcolor,
@@ -8,11 +7,10 @@ import {
   intensityRank,
 } from "../../../containers/utils/intensity";
 import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
-import IntensityBadge from "../../../components/IntensityBadge";
+import { StormNamePopup } from "./StormNamePopup";
 
 export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const [selectedName, setSelectedName] = useState(null);
-  const [popupStyle, setPopupStyle] = useState({});
   const nameRefs = useRef({});
   const popupRef = useRef(null);
   const containerRef = useRef(null);
@@ -30,50 +28,6 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     const avg = calculateAverage(nameStorms);
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });
-
-  useEffect(() => {
-    if (selectedName && nameRefs.current[selectedName]) {
-      const nameElement = nameRefs.current[selectedName];
-      const nameRect = nameElement.getBoundingClientRect();
-
-      const popupMaxHeight = 320;
-      const popupWidth = nameRect.width;
-      const gap = 4;
-
-      let top = nameRect.bottom + window.scrollY + gap;
-      let left = nameRect.left + window.scrollX;
-
-      setPopupStyle({
-        position: "absolute",
-        top: `${top}px`,
-        left: `${left}px`,
-        width: `${popupWidth}px`,
-        maxHeight: `${popupMaxHeight}px`,
-      });
-    }
-  }, [selectedName]);
-
-  // Handle click outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        selectedName &&
-        popupRef.current &&
-        !popupRef.current.contains(event.target) &&
-        !nameRefs.current[selectedName]?.contains(event.target)
-      ) {
-        setSelectedName(null);
-      }
-    };
-
-    if (selectedName) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [selectedName]);
 
   // Close popup when modal closes
   useEffect(() => {
@@ -151,43 +105,13 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           </div>
         </div>
 
-        {selectedName &&
-          selectedNameData &&
-          createPortal(
-            <div
-              ref={popupRef}
-              className="bg-white border-2 border-purple-500 rounded-lg shadow-xl overflow-y-auto"
-              style={{
-                ...popupStyle,
-                display: "flex",
-                flexDirection: "column",
-                zIndex: 9999,
-              }}
-            >
-              <div className="font-semibold text-purple-700 p-4 pb-2 border-b shrink-0">
-                All {selectedName} storms:
-              </div>
-              <div
-                className="flex flex-col gap-1.5 p-4 pt-2 overflow-y-auto"
-                style={{ flex: "1 1 auto" }}
-              >
-                {selectedNameData.storms.map((storm, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <IntensityBadge intensity={storm.intensity} />
-                    <span
-                      className="text-sm"
-                      style={{
-                        color: getWhiteTextcolor(storm.intensity),
-                      }}
-                    >
-                      {storm.year}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>,
-            document.body
-          )}
+        <StormNamePopup
+          popupRef={popupRef}
+          selectedName={selectedName}
+          selectedNameData={selectedNameData}
+          nameElement={nameRefs.current[selectedName]}
+          onClose={() => setSelectedName(null)}
+        />
       </div>
     </Modal>
   );
