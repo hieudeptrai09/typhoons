@@ -15,16 +15,20 @@ export const StormNamePopup = ({
     if (selectedName && nameElement && popupRef.current) {
       const nameRect = nameElement.getBoundingClientRect();
 
-      const popupMaxHeight = 320;
+      const popupMaxHeight = 41 + getHeight(selectedNameData.storms.length);
       const popupWidth = nameRect.width;
       const gap = 4;
 
-      const top = nameRect.bottom + window.scrollY + gap;
-      const left = nameRect.left + window.scrollX;
+      let top = nameRect.bottom + gap;
+      const left = nameRect.left;
+
+      if (top + popupMaxHeight >= window.innerHeight) {
+        top = window.innerHeight - popupMaxHeight - gap;
+      }
 
       popupRef.current.style.top = `${top}px`;
       popupRef.current.style.left = `${left}px`;
-      popupRef.current.style.width = `${popupWidth}px`;
+      popupRef.current.style.width = `${popupWidth - 5}px`;
       popupRef.current.style.maxHeight = `${popupMaxHeight}px`;
     }
   }, [selectedName, nameElement, popupRef]);
@@ -55,23 +59,27 @@ export const StormNamePopup = ({
     return null;
   }
 
+  const getHeight = (length) => {
+    if (length === 1) return 56;
+    else if (length === 2) return 102;
+    else if (length === 3) return 148;
+    else return 150;
+  };
+
   return createPortal(
     <div
       ref={popupRef}
-      className="bg-white border-2 border-purple-500 rounded-lg shadow-xl overflow-y-auto"
-      style={{
-        position: "absolute",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 9999,
-      }}
+      className="bg-white border-2 border-purple-500 rounded-lg shadow-xl fixed flex flex-col z-50"
     >
-      <div className="font-semibold text-purple-700 p-4 pb-2 border-b shrink-0">
-        All {selectedName} storms:
+      <div className="font-semibold text-purple-700 px-4 py-2 border-b shrink-0">
+        All <span className="text-red-700">{selectedName} </span> storms:
       </div>
       <div
-        className="flex flex-col gap-1.5 p-4 pt-2 overflow-y-auto"
-        style={{ flex: "1 1 auto" }}
+        className="flex flex-col gap-1.5 px-4 py-2 overflow-y-auto"
+        style={{
+          flex: "1 1 0",
+          minHeight: `${getHeight(selectedNameData.storms.length)}px`,
+        }}
       >
         {selectedNameData.storms.map((storm, index) => (
           <div key={index} className="flex items-center gap-2">
