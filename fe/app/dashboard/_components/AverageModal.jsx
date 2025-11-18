@@ -1,6 +1,6 @@
-// AverageModal.jsx
 import { Modal } from "../../../components/Modal";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   getBackground,
   getBadgeTextcolor,
@@ -31,24 +31,24 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });
 
-  // Update popup position when selected name changes
   useEffect(() => {
-    if (
-      selectedName &&
-      nameRefs.current[selectedName] &&
-      containerRef.current
-    ) {
+    if (selectedName && nameRefs.current[selectedName]) {
       const nameElement = nameRefs.current[selectedName];
-      const containerElement = containerRef.current;
-
       const nameRect = nameElement.getBoundingClientRect();
-      const containerRect = containerElement.getBoundingClientRect();
+
+      const popupMaxHeight = 320;
+      const popupWidth = nameRect.width;
+      const gap = 4;
+
+      let top = nameRect.bottom + window.scrollY + gap;
+      let left = nameRect.left + window.scrollX;
 
       setPopupStyle({
         position: "absolute",
-        top: `${nameRect.bottom - containerRect.top}px`,
-        left: `${nameRect.left - containerRect.left}px`,
-        width: `${nameRect.width}px`,
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${popupWidth}px`,
+        maxHeight: `${popupMaxHeight}px`,
       });
     }
   }, [selectedName]);
@@ -151,28 +151,27 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           </div>
         </div>
 
-        {/* Popup rendered as sibling, positioned via refs */}
-        {selectedName && selectedNameData && (
-          <div
-            ref={popupRef}
-            className="bg-white border-2 border-purple-500 rounded-lg shadow-xl z-50 mt-1"
-            style={{
-              ...popupStyle,
-              display: "flex",
-              flexDirection: "column",
-              maxHeight: "320px",
-            }}
-          >
-            <div className="font-semibold text-purple-700 p-4 pb-2 border-b flex-shrink-0">
-              All {selectedName} storms:
-            </div>
+        {selectedName &&
+          selectedNameData &&
+          createPortal(
             <div
-              className="flex flex-col gap-1.5 p-4 pt-2 overflow-y-auto"
-              style={{ flex: "1 1 auto" }}
+              ref={popupRef}
+              className="bg-white border-2 border-purple-500 rounded-lg shadow-xl overflow-y-auto"
+              style={{
+                ...popupStyle,
+                display: "flex",
+                flexDirection: "column",
+                zIndex: 9999,
+              }}
             >
-              {selectedNameData.storms
-                .sort((a, b) => a.year - b.year)
-                .map((storm, index) => (
+              <div className="font-semibold text-purple-700 p-4 pb-2 border-b shrink-0">
+                All {selectedName} storms:
+              </div>
+              <div
+                className="flex flex-col gap-1.5 p-4 pt-2 overflow-y-auto"
+                style={{ flex: "1 1 auto" }}
+              >
+                {selectedNameData.storms.map((storm, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <IntensityBadge intensity={storm.intensity} />
                     <span
@@ -185,9 +184,10 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
                     </span>
                   </div>
                 ))}
-            </div>
-          </div>
-        )}
+              </div>
+            </div>,
+            document.body
+          )}
       </div>
     </Modal>
   );
