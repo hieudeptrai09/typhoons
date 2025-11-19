@@ -43,12 +43,21 @@ export default function Dashboard() {
   }, [averageByPosition]);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const view = urlParams.get("view") || "storms";
-    const mode = urlParams.get("mode") || "table";
-    const filter = urlParams.get("filter") || "";
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const view = urlParams.get("view") || "storms";
+      const mode = urlParams.get("mode") || "table";
+      const filter = urlParams.get("filter") || "";
 
-    setParams({ view, mode, filter });
+      setParams({ view, mode, filter });
+    };
+
+    handlePopState();
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, []);
 
   useEffect(() => {
