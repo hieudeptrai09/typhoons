@@ -1,5 +1,5 @@
 import { getIntensityFromNumber } from "../utils/fns";
-import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
 
 export const SpecialButtons = ({
   onCellClick,

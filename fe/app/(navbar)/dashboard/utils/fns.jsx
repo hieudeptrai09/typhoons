@@ -1,4 +1,4 @@
-import { getRank } from "../../../containers/utils/intensity";
+import { getRank } from "../../../../containers/utils/intensity";
 
 export const getIntensityFromNumber = (avgNumber) => {
   const rounded = Math.round(avgNumber);

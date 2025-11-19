@@ -6,8 +6,7 @@ import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
-import fetchData from "../../containers/utils/fetcher";
-import Navbar from "../../components/NavBar";
+import fetchData from "../../../containers/utils/fetcher";
 import {
   getPositionTitle,
   getAverageByPosition,
@@ -99,8 +98,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-sky-100">
-      <Navbar />
+    <>
       <div className="p-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
           Typhoon Dashboard
@@ -147,6 +145,6 @@ export default function Dashboard() {
           storms={selectedData?.storms || []}
         />
       </div>
-    </div>
+    </>
   );
 }

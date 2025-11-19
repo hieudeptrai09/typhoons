@@ -1,4 +1,4 @@
-import { Modal } from "../../../components/Modal";
+import { Modal } from "../../../../components/Modal";
 import { useState, useEffect } from "react";
 
 const FilterSection = ({

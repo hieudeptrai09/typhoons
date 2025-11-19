@@ -1,4 +1,4 @@
-import SortableTable from "../../../../components/SortableTable";
+import SortableTable from "../../../../../components/SortableTable";
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
   const columns = [

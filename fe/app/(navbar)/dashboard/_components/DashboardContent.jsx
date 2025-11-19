@@ -1,5 +1,5 @@
 import { StormGrid } from "./StormGrid";
-import SortableTable from "../../../components/SortableTable";
+import SortableTable from "../../../../components/SortableTable";
 import { SpecialButtons } from "./SpecialButtons";
 import {
   getStrongestPerYear,
@@ -8,11 +8,11 @@ import {
   getPositionTitle,
   calculateAverage,
 } from "../utils/fns";
-import IntensityBadge from "../../../components/IntensityBadge";
+import IntensityBadge from "../../../../components/IntensityBadge";
 import {
   getWhiteTextcolor,
   intensityRank,
-} from "../../../containers/utils/intensity";
+} from "../../../../containers/utils/intensity";
 
 const renderStormGridWithButtons = (
   onCellClick,
@@ -35,7 +35,11 @@ const renderStormGridWithButtons = (
   </div>
 );
 
-const createCellData = (viewType, data = null, averageValues = null) => {
+const createCellData = (
+  viewType,
+  highlightedData = null,
+  averageValues = null
+) => {
   const cellData = {};
 
   // Initialize first 140 cells based on view type
@@ -61,7 +65,9 @@ const createCellData = (viewType, data = null, averageValues = null) => {
           <div className="flex flex-col items-center gap-1">
             {storms.map((storm, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="font-bold text-gray-800">{storm.name}</div>
+                <div className="text-xs font-bold text-gray-800">
+                  {storm.name}
+                </div>
                 <div className="text-[10px] text-gray-600">({storm.year})</div>
               </div>
             ))}

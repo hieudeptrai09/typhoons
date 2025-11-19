@@ -1,6 +1,6 @@
-import { Modal } from "../../../components/Modal";
-import IntensityBadge from "../../../components/IntensityBadge";
-import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+import { Modal } from "../../../../components/Modal";
+import IntensityBadge from "../../../../components/IntensityBadge";
+import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
 
 export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
   return (

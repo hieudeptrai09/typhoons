@@ -1,11 +1,11 @@
-import { Modal } from "../../../components/Modal";
+import { Modal } from "../../../../components/Modal";
 import { useState, useRef, useEffect } from "react";
 import {
   getBackground,
   getBadgeTextcolor,
   getWhiteTextcolor,
   intensityRank,
-} from "../../../containers/utils/intensity";
+} from "../../../../containers/utils/intensity";
 import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
 import { StormNamePopup } from "./StormNamePopup";
 

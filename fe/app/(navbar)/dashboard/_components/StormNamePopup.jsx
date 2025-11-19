@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
-import IntensityBadge from "../../../components/IntensityBadge";
-import { getWhiteTextcolor } from "../../../containers/utils/intensity";
+import IntensityBadge from "../../../../components/IntensityBadge";
+import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
 
 export const StormNamePopup = ({
   popupRef,

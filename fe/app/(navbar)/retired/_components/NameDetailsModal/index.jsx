@@ -1,4 +1,4 @@
-import { Modal } from "../../../../components/Modal";
+import { Modal } from "../../../../../components/Modal";
 import NameInfo from "./NameInfo";
 import NameImage from "./NameImage";
 import SuggestionsList from "./SuggestionsList";

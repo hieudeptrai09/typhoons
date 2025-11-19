@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Navbar from "../../components/NavBar";
-import fetchData from "../../containers/utils/fetcher";
+import fetchData from "../../../containers/utils/fetcher";
 import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import FilterButton from "./_components/MainPage/FilterButton";
@@ -131,8 +130,7 @@ const RetiredNamesContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-sky-100">
-      <Navbar />
+    <>
       <div className="p-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
           Retired Typhoon Names
@@ -176,7 +174,7 @@ const RetiredNamesContent = () => {
         suggestions={suggestions}
         onClose={() => setSelectedName(null)}
       />
-    </div>
+    </>
   );
 };
 
