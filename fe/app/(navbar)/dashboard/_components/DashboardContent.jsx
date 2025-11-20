@@ -138,6 +138,7 @@ const transformAverageData = (
       // For "by name" view
       return {
         name: key,
+        country: storms[0].country,
         position: storms[0].position,
         ...baseData,
       };
@@ -165,6 +166,7 @@ const getAverageColumns = (
   } else if (includeNameAndPosition) {
     columns.push(
       { key: "name", label: "Name" },
+      { key: "country", label: "Country" },
       { key: "count", label: "Count" },
       { key: "position", label: "Position" }
     );
