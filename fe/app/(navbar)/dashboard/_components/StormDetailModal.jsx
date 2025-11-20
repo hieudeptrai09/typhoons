@@ -3,6 +3,18 @@ import IntensityBadge from "../../../../components/IntensityBadge";
 import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
 
 export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
+  // Group storms by name
+  const groupedByName = storms.reduce((acc, storm) => {
+    if (!acc[storm.name]) {
+      acc[storm.name] = [];
+    }
+    acc[storm.name].push(storm);
+    return acc;
+  }, {});
+
+  const nameGroups = Object.entries(groupedByName);
+  const hasMultipleNames = nameGroups.length > 1;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -10,18 +22,26 @@ export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
       title={title}
       wrapperClassName="max-w-md"
     >
-      <div className="flex gap-1.5 flex-col max-h-96 overflow-y-auto">
-        {storms.map((storm, index) => (
-          <div key={index} className="flex items-center">
-            <IntensityBadge intensity={storm.intensity} />
-            <span
-              className="ml-1.5"
-              style={{
-                color: getWhiteTextcolor(storm.intensity),
-              }}
-            >
-              {`${storm.name} (${storm.year})`}
-            </span>
+      <div className="flex flex-col max-h-96 overflow-y-auto">
+        {nameGroups.map(([name, stormGroup], groupIndex) => (
+          <div key={name} className="flex gap-1.5 flex-col">
+            {stormGroup.map((storm, index) => (
+              <div key={index} className="flex items-center">
+                <IntensityBadge intensity={storm.intensity} />
+                <span
+                  className="ml-1.5"
+                  style={{
+                    color: getWhiteTextcolor(storm.intensity),
+                  }}
+                >
+                  {storm.name} {storm.year}
+                </span>
+              </div>
+            ))}
+
+            {hasMultipleNames && groupIndex < nameGroups.length - 1 && (
+              <div className="border-b border-gray-300 my-3"></div>
+            )}
           </div>
         ))}
       </div>
