@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Settings } from "lucide-react";
+import { 
+  Settings, 
+  Cloud, 
+  Star, 
+  BarChart3, 
+  Zap, 
+  Calendar,
+  MapPin,
+  Type,
+  Grid3x3,
+  List
+} from "lucide-react";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
@@ -106,6 +117,53 @@ export default function Dashboard() {
     }
   };
 
+  const renderViewIcons = () => {
+    const icons = [];
+    const iconSize = 20;
+
+    // View icon
+    if (params.view === "storms") {
+      icons.push(<Cloud key="view" size={iconSize} />);
+    } else if (params.view === "highlights") {
+      icons.push(<Star key="view" size={iconSize} />);
+    } else if (params.view === "average") {
+      icons.push(<BarChart3 key="view" size={iconSize} />);
+    }
+
+    // Filter icon (if applicable)
+    if (params.filter) {
+      if (params.filter === "strongest") {
+        icons.push(<Zap key="filter" size={iconSize} />);
+      } else if (params.filter === "first") {
+        icons.push(<Calendar key="filter" size={iconSize} />);
+      } else if (params.filter === "by position") {
+        icons.push(<MapPin key="filter" size={iconSize} />);
+      } else if (params.filter === "by name") {
+        icons.push(<Type key="filter" size={iconSize} />);
+      }
+    }
+
+    // Mode icon
+    if (params.mode === "table") {
+      icons.push(<Grid3x3 key="mode" size={iconSize} />);
+    } else if (params.mode === "list") {
+      icons.push(<List key="mode" size={iconSize} />);
+    }
+
+    // Insert "/" separators between icons
+    return icons.reduce((acc, icon, index) => {
+      if (index > 0) {
+        acc.push(
+          <span key={`sep-${index}`} className="text-white mx-1">
+            /
+          </span>
+        );
+      }
+      acc.push(icon);
+      return acc;
+    }, []);
+  };
+
   return (
     <>
       <div className="p-8">
@@ -116,10 +174,9 @@ export default function Dashboard() {
         <div className="max-w-4xl mx-auto mb-6">
           <button
             onClick={() => setFilterModalOpen(true)}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto "
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
           >
-            <Settings size={24} />
-            View Options
+            {renderViewIcons()}
           </button>
         </div>
 
