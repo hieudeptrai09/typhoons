@@ -18,41 +18,25 @@ export const getPositionTitle = (position) => {
   return `#${position}`;
 };
 
-export const getStrongestPerYear = (stormsData) => {
-  // Filter storms that are marked as strongest
-  return stormsData.filter((storm) => Boolean(Number(storm.isStrongest)));
+export const getHighlights = (stormsData, type) => {
+  // Filter storms based on highlight type
+  if (type === "strongest") {
+    return stormsData.filter((storm) => Boolean(Number(storm.isStrongest)));
+  } else if (type === "first") {
+    return stormsData.filter((storm) => Boolean(Number(storm.isFirst)));
+  }
+  return [];
 };
 
-export const getFirstPerYear = (stormsData) => {
-  // Filter storms that are marked as first
-  return stormsData.filter((storm) => Boolean(Number(storm.isFirst)));
-};
-
-export const getAverageByPosition = (stormsData) => {
-  const positionAvg = {};
+export const getGroupedStorms = (stormsData, groupBy) => {
+  // Group storms by specified field (position, name, or country)
+  const grouped = {};
   stormsData.forEach((storm) => {
-    if (!positionAvg[storm.position]) positionAvg[storm.position] = [];
-    positionAvg[storm.position].push(storm);
+    const key = storm[groupBy];
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(storm);
   });
-  return positionAvg;
-};
-
-export const getAverageByName = (stormsData) => {
-  const nameAvg = {};
-  stormsData.forEach((storm) => {
-    if (!nameAvg[storm.name]) nameAvg[storm.name] = [];
-    nameAvg[storm.name].push(storm);
-  });
-  return nameAvg;
-};
-
-export const getAverageByCountry = (stormsData) => {
-  const countryAvg = {};
-  stormsData.forEach((storm) => {
-    if (!countryAvg[storm.country]) countryAvg[storm.country] = [];
-    countryAvg[storm.country].push(storm);
-  });
-  return countryAvg;
+  return grouped;
 };
 
 export const calculateAverage = (storms) => {

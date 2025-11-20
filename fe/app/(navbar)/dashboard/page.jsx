@@ -20,9 +20,7 @@ import { DashboardContent } from "./_components/DashboardContent";
 import fetchData from "../../../containers/utils/fetcher";
 import {
   getPositionTitle,
-  getAverageByPosition,
-  getAverageByName,
-  getAverageByCountry,
+  getGroupedStorms,
   calculateAverage,
 } from "./utils/fns";
 
@@ -36,17 +34,17 @@ export default function Dashboard() {
 
   // Memoize expensive calculations
   const averageByPosition = useMemo(
-    () => getAverageByPosition(stormsData),
+    () => getGroupedStorms(stormsData, "position"),
     [stormsData]
   );
 
   const averageByName = useMemo(
-    () => getAverageByName(stormsData),
+    () => getGroupedStorms(stormsData, "name"),
     [stormsData]
   );
 
   const averageByCountry = useMemo(
-    () => getAverageByCountry(stormsData),
+    () => getGroupedStorms(stormsData, "country"),
     [stormsData]
   );
 

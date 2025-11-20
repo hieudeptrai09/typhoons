@@ -2,8 +2,7 @@ import { StormGrid } from "./StormGrid";
 import SortableTable from "../../../../components/SortableTable";
 import { SpecialButtons } from "./SpecialButtons";
 import {
-  getStrongestPerYear,
-  getFirstPerYear,
+  getHighlights,
   getIntensityFromNumber,
   getPositionTitle,
   calculateAverage,
@@ -215,10 +214,7 @@ export const DashboardContent = ({
   }
 
   if (params.view === "highlights" && params.mode === "table") {
-    const highlights =
-      params.filter === "strongest"
-        ? getStrongestPerYear(stormsData)
-        : getFirstPerYear(stormsData);
+    const highlights = getHighlights(stormsData, params.filter);
 
     const cellData = createCellData("highlights", highlights);
     return (
@@ -233,10 +229,7 @@ export const DashboardContent = ({
 
   // All conditions that render SortableTable (list mode)
   if (params.view === "highlights") {
-    const highlights =
-      params.filter === "strongest"
-        ? getStrongestPerYear(stormsData)
-        : getFirstPerYear(stormsData);
+    const highlights = getHighlights(stormsData, params.filter);
 
     return (
       <SortableTable
