@@ -46,6 +46,15 @@ export const getAverageByName = (stormsData) => {
   return nameAvg;
 };
 
+export const getAverageByCountry = (stormsData) => {
+  const countryAvg = {};
+  stormsData.forEach((storm) => {
+    if (!countryAvg[storm.country]) countryAvg[storm.country] = [];
+    countryAvg[storm.country].push(storm);
+  });
+  return countryAvg;
+};
+
 export const calculateAverage = (storms) => {
   const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
   return sum / storms.length;

@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { 
-  Settings, 
-  Cloud, 
-  Star, 
-  BarChart3, 
-  Zap, 
+import {
+  Cloud,
+  Star,
+  BarChart3,
+  Zap,
   Calendar,
   MapPin,
   Type,
   Grid3x3,
-  List
+  List,
+  Globe,
 } from "lucide-react";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
@@ -22,6 +22,7 @@ import {
   getPositionTitle,
   getAverageByPosition,
   getAverageByName,
+  getAverageByCountry,
   calculateAverage,
 } from "./utils/fns";
 
@@ -41,6 +42,11 @@ export default function Dashboard() {
 
   const averageByName = useMemo(
     () => getAverageByName(stormsData),
+    [stormsData]
+  );
+
+  const averageByCountry = useMemo(
+    () => getAverageByCountry(stormsData),
     [stormsData]
   );
 
@@ -97,6 +103,7 @@ export default function Dashboard() {
 
   const handleCellClick = (data, key) => {
     const storms = stormsData.filter((s) => s[key] === String(data));
+
     if (params.view === "average" && params.filter === "by name") {
       setSelectedData({ title: data, storms });
       setDetailModalOpen(true);
@@ -104,6 +111,14 @@ export default function Dashboard() {
       const avg = averageValues[data];
       setSelectedData({
         title: getPositionTitle(data),
+        average: avg,
+        storms,
+      });
+      setAverageModalOpen(true);
+    } else if (params.view === "average" && params.filter === "by country") {
+      const avg = calculateAverage(storms);
+      setSelectedData({
+        title: data,
         average: avg,
         storms,
       });
@@ -140,6 +155,8 @@ export default function Dashboard() {
         icons.push(<MapPin key="filter" size={iconSize} />);
       } else if (params.filter === "by name") {
         icons.push(<Type key="filter" size={iconSize} />);
+      } else if (params.filter === "by country") {
+        icons.push(<Globe key="filter" size={iconSize} />);
       }
     }
 
@@ -185,6 +202,7 @@ export default function Dashboard() {
           stormsData={stormsData}
           averageByPosition={averageByPosition}
           averageByName={averageByName}
+          averageByCountry={averageByCountry}
           averageValues={averageValues}
           onCellClick={handleCellClick}
         />

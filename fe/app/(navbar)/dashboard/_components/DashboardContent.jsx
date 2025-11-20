@@ -113,12 +113,14 @@ const createAverageCellRenderer = (row, col) => {
 const transformAverageData = (
   dataMap,
   averageValues,
-  includePosition = false
+  includePosition = false,
+  includeCountry = false
 ) => {
   return Object.entries(dataMap).map(([key, storms]) => {
-    const avgValue = includePosition
-      ? calculateAverage(storms)
-      : averageValues[key];
+    const avgValue =
+      includePosition || includeCountry
+        ? calculateAverage(storms)
+        : averageValues[key];
 
     const baseData = {
       count: storms.length,
@@ -126,7 +128,13 @@ const transformAverageData = (
       avgNumber: avgValue,
     };
 
-    if (includePosition) {
+    if (includeCountry) {
+      // For "by country" view
+      return {
+        country: key,
+        ...baseData,
+      };
+    } else if (includePosition) {
       // For "by name" view
       return {
         name: key,
@@ -143,10 +151,18 @@ const transformAverageData = (
   });
 };
 
-const getAverageColumns = (includeNameAndPosition = false) => {
+const getAverageColumns = (
+  includeNameAndPosition = false,
+  includeCountry = false
+) => {
   const columns = [];
 
-  if (includeNameAndPosition) {
+  if (includeCountry) {
+    columns.push(
+      { key: "country", label: "Country" },
+      { key: "count", label: "Count" }
+    );
+  } else if (includeNameAndPosition) {
     columns.push(
       { key: "name", label: "Name" },
       { key: "count", label: "Count" },
@@ -173,6 +189,7 @@ export const DashboardContent = ({
   stormsData,
   averageByPosition,
   averageByName,
+  averageByCountry,
   averageValues,
   onCellClick,
 }) => {
@@ -248,18 +265,34 @@ export const DashboardContent = ({
 
   if (params.view === "average") {
     const isByPosition = params.filter === "by position";
-    const avgData = isByPosition ? averageByPosition : averageByName;
-    const data = transformAverageData(avgData, averageValues, !isByPosition);
+    const isByCountry = params.filter === "by country";
+
+    const avgData = isByPosition
+      ? averageByPosition
+      : isByCountry
+      ? averageByCountry
+      : averageByName;
+
+    const data = transformAverageData(
+      avgData,
+      averageValues,
+      !isByPosition && !isByCountry,
+      isByCountry
+    );
 
     return (
       <SortableTable
         data={data}
-        columns={getAverageColumns(!isByPosition)}
-        onRowClick={(row) =>
-          isByPosition
-            ? onCellClick(row.position, "position")
-            : onCellClick(row.name, "name")
-        }
+        columns={getAverageColumns(!isByPosition && !isByCountry, isByCountry)}
+        onRowClick={(row) => {
+          if (isByPosition) {
+            onCellClick(row.position, "position");
+          } else if (isByCountry) {
+            onCellClick(row.country, "country");
+          } else {
+            onCellClick(row.name, "name");
+          }
+        }}
         renderCell={createAverageCellRenderer}
       />
     );
