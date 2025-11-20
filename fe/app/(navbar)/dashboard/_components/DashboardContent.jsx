@@ -146,6 +146,7 @@ const transformAverageData = (
       // For "by position" view
       return {
         position: parseInt(key),
+        country: storms[0].country,
         ...baseData,
       };
     }
@@ -173,6 +174,7 @@ const getAverageColumns = (
   } else {
     columns.push(
       { key: "position", label: "Position" },
+      { key: "country", label: "Country" },
       { key: "count", label: "Count" }
     );
   }
