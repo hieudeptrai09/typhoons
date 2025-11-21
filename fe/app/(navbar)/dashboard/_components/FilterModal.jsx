@@ -152,7 +152,13 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
         <FilterSection
           label="Mode"
-          hasValue={mode !== "table"}
+          hasValue={
+            mode !== "table" &&
+            !(
+              view === "average" &&
+              (filter === "by name" || filter === "by country")
+            )
+          }
           onClear={() => handleClear("mode")}
         >
           <select
