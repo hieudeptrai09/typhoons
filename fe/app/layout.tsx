@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { TITLE_COMMON } from "../constants";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Catfish's Typhoons App",
-    default: "Catfish's Typhoons App",
+    template: `%s | ${TITLE_COMMON}`,
+    default: TITLE_COMMON,
   },
   description: "Show you all the typhoons and the secret behind their names",
 };

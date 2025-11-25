@@ -17,6 +17,7 @@ import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
+import { TITLE_COMMON } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
 import {
   getPositionTitle,
@@ -66,8 +67,8 @@ export default function Dashboard() {
       params.filter
     );
     const title = titleParts
-      ? `${titleParts} | Dashboard | Typhoon Tracker`
-      : "Dashboard | Typhoon Tracker";
+      ? `${titleParts} | Dashboard | ${TITLE_COMMON}`
+      : `Dashboard | ${TITLE_COMMON}`;
 
     document.title = title;
   }, [params]);

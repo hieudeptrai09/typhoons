@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Menu from "./_components/Menu";
+import { TITLE_COMMON } from "@/constants";
 
 const HomePage = () => {
   return (
@@ -48,7 +49,7 @@ const HomePage = () => {
 
       <footer className="bg-emerald-700 py-6">
         <p className="text-white text-center text-sm">
-          © {new Date().getFullYear()} Typhoon Tracker | Explore the World of
+          © {new Date().getFullYear()} {TITLE_COMMON} | Explore the World of
           Tropical Storms
         </p>
       </footer>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchData from "../../../containers/utils/fetcher";
+import { TITLE_COMMON } from "../../../constants";
 import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import FilterButton from "./_components/MainPage/FilterButton";
@@ -73,8 +74,8 @@ const RetiredNamesContent = () => {
     );
 
     document.title = titleParts
-      ? `Retired Names: ${titleParts} | Typhoon Tracker`
-      : "Retired Typhoon Names | Typhoon Tracker";
+      ? `Retired Names: ${titleParts} | ${TITLE_COMMON}`
+      : `Retired Typhoon Names | ${TITLE_COMMON}`;
   }, [searchName, selectedYear, selectedCountry, retirementReasons]);
 
   // Update URL when filters change
