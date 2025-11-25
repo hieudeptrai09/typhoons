@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
 export const StormNamePopup = ({
   popupRef,
@@ -107,7 +107,7 @@ export const StormNamePopup = ({
             <span
               className="text-sm"
               style={{
-                color: getWhiteTextcolor(storm.intensity),
+                color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity],
               }}
             >
               {storm.year}

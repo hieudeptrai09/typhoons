@@ -1,5 +1,5 @@
 import { getIntensityFromNumber } from "../_utils/fns";
-import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
 export const SpecialButtons = ({
   onCellClick,
@@ -15,7 +15,7 @@ export const SpecialButtons = ({
     if (isAverageView && averageValues && averageValues[buttonId]) {
       const avgNumber = averageValues[buttonId];
       const intensityLabel = getIntensityFromNumber(avgNumber);
-      const textColor = getWhiteTextcolor(intensityLabel);
+      const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
       return textColor;
     }
     return "#6A6E7D";

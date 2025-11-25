@@ -1,6 +1,6 @@
 import { Modal } from "../../../../components/Modal";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
 export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
   // Group storms by name
@@ -31,7 +31,7 @@ export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
                 <span
                   className="ml-1.5"
                   style={{
-                    color: getWhiteTextcolor(storm.intensity),
+                    color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity],
                   }}
                 >
                   {storm.name} {storm.year}

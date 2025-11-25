@@ -9,9 +9,9 @@ import {
 } from "../_utils/fns";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import {
-  getWhiteTextcolor,
-  intensityRank,
-} from "../../../../containers/utils/intensity";
+  TEXT_COLOR_WHITE_BACKGROUND,
+  INTENSITY_RANK,
+} from "../../../../constants";
 
 const renderStormGridWithButtons = (
   onCellClick,
@@ -91,7 +91,7 @@ const createCellData = (
 
 const renderIntensityCell = (avgNumber, displayValue) => {
   const intensityLabel = getIntensityFromNumber(avgNumber);
-  const textColor = getWhiteTextcolor(intensityLabel);
+  const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
   return (
     <span className="font-semibold" style={{ color: textColor }}>
       {displayValue}
@@ -181,7 +181,7 @@ const getAverageColumns = (
   columns.push({
     key: "average",
     label: "Average Intensity",
-    title: JSON.stringify(intensityRank),
+    title: JSON.stringify(INTENSITY_RANK),
   });
 
   return columns;
@@ -245,7 +245,7 @@ export const DashboardContent = ({
           {
             key: "intensity",
             label: "Intensity",
-            title: JSON.stringify(intensityRank),
+            title: JSON.stringify(INTENSITY_RANK),
           },
           { key: "position", label: "Position" },
         ]}

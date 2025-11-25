@@ -1,15 +1,12 @@
-import {
-  getBackground,
-  getBadgeTextcolor,
-} from "../../containers/utils/intensity";
+import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../constants";
 
 const IntensityBadge = ({ intensity }) => {
   return (
     <span
       className="font-semibold w-10 h-10 flex items-center justify-center"
       style={{
-        backgroundColor: getBackground(intensity),
-        color: getBadgeTextcolor(intensity),
+        backgroundColor: BACKGROUND_BADGE[intensity],
+        color: TEXT_COLOR_BADGE[intensity],
       }}
     >
       {intensity}

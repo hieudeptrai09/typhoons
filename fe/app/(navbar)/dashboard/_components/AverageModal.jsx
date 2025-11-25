@@ -1,11 +1,11 @@
 import { Modal } from "../../../../components/Modal";
 import { useState, useRef, useEffect } from "react";
 import {
-  getBackground,
-  getBadgeTextcolor,
-  getWhiteTextcolor,
-  intensityRank,
-} from "../../../../containers/utils/intensity";
+  BACKGROUND_BADGE,
+  TEXT_COLOR_BADGE,
+  TEXT_COLOR_WHITE_BACKGROUND,
+  INTENSITY_RANK,
+} from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage } from "../_utils/fns";
 import { StormNamePopup } from "./StormNamePopup";
 
@@ -54,14 +54,15 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
       wrapperClassName="max-w-md"
     >
       <div className="space-y-3" ref={containerRef}>
-        <div className="text-lg" title={JSON.stringify(intensityRank)}>
+        <div className="text-lg" title={JSON.stringify(INTENSITY_RANK)}>
           <span className="font-semibold text-purple-700">
             Overall Average Intensity:{" "}
           </span>
           <span
             className="font-bold"
             style={{
-              color: getWhiteTextcolor(getIntensityFromNumber(average)),
+              color:
+                TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)],
             }}
           >
             {average.toFixed(2)}
@@ -74,8 +75,8 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           <div className="space-y-2 relative">
             {nameData.map((data, idx) => {
               const intensityLabel = getIntensityFromNumber(data.average);
-              const bgColor = getBackground(intensityLabel);
-              const textColor = getBadgeTextcolor(intensityLabel);
+              const bgColor = BACKGROUND_BADGE[intensityLabel];
+              const textColor = TEXT_COLOR_BADGE[intensityLabel];
 
               return (
                 <div

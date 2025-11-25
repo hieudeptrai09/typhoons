@@ -1,4 +1,4 @@
-import { getRank } from "../../../../containers/utils/intensity";
+import { INTENSITY_RANK } from "../../../../constants";
 
 export const getIntensityFromNumber = (avgNumber) => {
   const rounded = Math.round(avgNumber);
@@ -40,7 +40,7 @@ export const getGroupedStorms = (stormsData, groupBy) => {
 };
 
 export const calculateAverage = (storms) => {
-  const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
+  const sum = storms.reduce((acc, s) => acc + INTENSITY_RANK[s.intensity], 0);
   return sum / storms.length;
 };
 

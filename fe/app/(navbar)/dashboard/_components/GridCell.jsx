@@ -1,4 +1,4 @@
-import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
 export const GridCell = ({
@@ -25,7 +25,7 @@ export const GridCell = ({
   const getTextColor = () => {
     if (isAverageView && avgNumber !== null) {
       const intensityLabel = getIntensityFromNumber(avgNumber);
-      return getWhiteTextcolor(intensityLabel);
+      return TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
     }
     return "#6A6E7D";
   };
