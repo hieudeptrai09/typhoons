@@ -1,5 +1,5 @@
 import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
-import { getIntensityFromNumber } from "../utils/fns";
+import { getIntensityFromNumber } from "../_utils/fns";
 
 export const GridCell = ({
   onClick,

@@ -22,7 +22,8 @@ import {
   getPositionTitle,
   getGroupedStorms,
   calculateAverage,
-} from "./utils/fns";
+  getDashboardTitle,
+} from "./_utils/fns";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -56,6 +57,20 @@ export default function Dashboard() {
     });
     return values;
   }, [averageByPosition]);
+
+  // Update page title based on params (client-side)
+  useEffect(() => {
+    const titleParts = getDashboardTitle(
+      params.view,
+      params.mode,
+      params.filter
+    );
+    const title = titleParts
+      ? `${titleParts} | Dashboard | Typhoon Tracker`
+      : "Dashboard | Typhoon Tracker";
+
+    document.title = title;
+  }, [params]);
 
   useEffect(() => {
     const handlePopState = () => {

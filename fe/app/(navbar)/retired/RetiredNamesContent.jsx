@@ -10,6 +10,7 @@ import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import Pagination from "./_components/MainPage/Pagination";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
+import { getRetiredNamesTitle } from "./_utils/fns";
 
 const RetiredNamesContent = () => {
   const router = useRouter();
@@ -51,6 +52,30 @@ const RetiredNamesContent = () => {
     }
     setRetirementReasons(reasons);
   }, [searchParams]);
+
+  // Update page title based on filters (client-side)
+  useEffect(() => {
+    // Convert retirementReasons array back to lang format
+    let lang = "";
+    if (retirementReasons.length === 2) {
+      lang = "both";
+    } else if (retirementReasons.includes("language")) {
+      lang = "true";
+    } else if (retirementReasons.includes("destructive")) {
+      lang = "false";
+    }
+
+    const titleParts = getRetiredNamesTitle(
+      searchName,
+      selectedYear?.toString() || "",
+      selectedCountry,
+      lang
+    );
+
+    document.title = titleParts
+      ? `Retired Names: ${titleParts} | Typhoon Tracker`
+      : "Retired Typhoon Names | Typhoon Tracker";
+  }, [searchName, selectedYear, selectedCountry, retirementReasons]);
 
   // Update URL when filters change
   const updateURL = (filters) => {

@@ -6,7 +6,7 @@ import {
   getWhiteTextcolor,
   intensityRank,
 } from "../../../../containers/utils/intensity";
-import { getIntensityFromNumber, calculateAverage } from "../utils/fns";
+import { getIntensityFromNumber, calculateAverage } from "../_utils/fns";
 import { StormNamePopup } from "./StormNamePopup";
 
 export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {

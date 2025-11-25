@@ -43,3 +43,42 @@ export const calculateAverage = (storms) => {
   const sum = storms.reduce((acc, s) => acc + getRank(s.intensity), 0);
   return sum / storms.length;
 };
+
+export const getDashboardTitle = (view, mode, filter) => {
+  const parts = [];
+
+  // Add view type
+  if (view === "storms") {
+    parts.push("All Storms");
+  } else if (view === "highlights") {
+    // Add filter detail for highlights
+    if (filter === "strongest") {
+      parts.push("Strongest Typhoons by Position");
+    } else if (filter === "first") {
+      parts.push("First Typhoons by Position");
+    } else {
+      parts.push("Highlights");
+    }
+    // Add mode for highlights
+    if (mode === "list") {
+      parts.push("(List View)");
+    }
+  } else if (view === "average") {
+    // Add filter detail for average
+    if (filter === "by position") {
+      parts.push("Average Intensity by Position");
+    } else if (filter === "by name") {
+      parts.push("Average Intensity by Name");
+    } else if (filter === "by country") {
+      parts.push("Average Intensity by Country");
+    } else {
+      parts.push("Average Intensity");
+    }
+    // Add mode for average (only when in list mode)
+    if (mode === "list") {
+      parts.push("(List View)");
+    }
+  }
+
+  return parts.join(" ");
+};

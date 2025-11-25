@@ -6,7 +6,7 @@ import {
   getIntensityFromNumber,
   getPositionTitle,
   calculateAverage,
-} from "../utils/fns";
+} from "../_utils/fns";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import {
   getWhiteTextcolor,

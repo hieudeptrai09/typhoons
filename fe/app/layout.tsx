@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Typhoons App",
+  title: {
+    template: "%s | Catfish's Typhoons App",
+    default: "Catfish's Typhoons App",
+  },
   description: "Show you all the typhoons and the secret behind their names",
 };
 

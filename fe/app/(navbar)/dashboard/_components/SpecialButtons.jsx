@@ -1,4 +1,4 @@
-import { getIntensityFromNumber } from "../utils/fns";
+import { getIntensityFromNumber } from "../_utils/fns";
 import { getWhiteTextcolor } from "../../../../containers/utils/intensity";
 
 export const SpecialButtons = ({
