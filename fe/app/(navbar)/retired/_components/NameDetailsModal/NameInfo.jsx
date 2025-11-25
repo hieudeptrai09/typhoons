@@ -1,4 +1,4 @@
-const NameInfo = ({ meaning, country, position }) => {
+const NameInfo = ({ meaning, country, position, language }) => {
   return (
     <>
       <p className="text-gray-700">
@@ -9,6 +9,9 @@ const NameInfo = ({ meaning, country, position }) => {
       </p>
       <p className="text-gray-700">
         <span className="font-semibold">Position:</span> {position}
+      </p>
+      <p className="text-gray-700">
+        <span className="font-semibold">Language:</span> {language}
       </p>
     </>
   );

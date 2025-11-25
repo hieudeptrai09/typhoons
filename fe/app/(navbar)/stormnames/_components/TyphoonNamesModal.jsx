@@ -35,6 +35,7 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
           <img
             src={selectedName.image}
             alt={selectedName.name}
+            title={selectedName.description}
             className={`w-36 h-28 object-cover rounded-lg shadow-md ${
               selectedName.image ? "block" : "hidden"
             }`}

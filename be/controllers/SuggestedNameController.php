@@ -26,7 +26,7 @@ class SuggestedNameController
             $query .= " WHERE sn.nameId = :nameId";
         }
 
-        $query .= " ORDER BY sn.nameId, sn.isChosen DESC";
+        $query .= " ORDER BY sn.id ASC, sn.nameId DESC, sn.isChosen DESC";
 
         $stmt = $this->conn->prepare($query);
 

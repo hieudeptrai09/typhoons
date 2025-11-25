@@ -29,9 +29,14 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
             meaning={selectedName.meaning}
             country={selectedName.country}
             position={selectedName.position}
+            language={selectedName.language}
           />
         </div>
-        <NameImage src={selectedName.image} alt={selectedName.name} />
+        <NameImage
+          src={selectedName.image}
+          alt={selectedName.name}
+          title={selectedName.description}
+        />
       </div>
 
       <div className="overflow-y-auto max-h-[calc(80vh-200px)] pb-6">
