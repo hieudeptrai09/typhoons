@@ -12,6 +12,7 @@ import Pagination from "./_components/MainPage/Pagination";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 import { getRetiredNamesTitle } from "./_utils/fns";
+import PageHeader from "../../../components/PageHeader";
 
 const RetiredNamesContent = () => {
   const router = useRouter();
@@ -156,30 +157,24 @@ const RetiredNamesContent = () => {
   };
 
   return (
-    <>
-      <div className="p-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
-          Retired Typhoon Names
-        </h1>
+    <PageHeader title="Retired Typhoon Names">
+      <FilterButton
+        activeFilterCount={activeFilterCount}
+        onClick={() => setIsFilterModalOpen(true)}
+      />
 
-        <FilterButton
-          activeFilterCount={activeFilterCount}
-          onClick={() => setIsFilterModalOpen(true)}
+      <div className="max-w-4xl mx-auto">
+        <RetiredNamesTable
+          paginatedData={paginatedData}
+          onNameClick={handleNameClick}
         />
 
-        <div className="max-w-4xl mx-auto">
-          <RetiredNamesTable
-            paginatedData={paginatedData}
-            onNameClick={handleNameClick}
-          />
-
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            activeFilterCount={activeFilterCount}
-            onPageChange={setCurrentPage}
-          />
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          activeFilterCount={activeFilterCount}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <FilterModal
@@ -200,7 +195,7 @@ const RetiredNamesContent = () => {
         suggestions={suggestions}
         onClose={() => setSelectedName(null)}
       />
-    </>
+    </PageHeader>
   );
 };
 

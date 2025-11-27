@@ -25,6 +25,7 @@ import {
   calculateAverage,
   getDashboardTitle,
 } from "./_utils/fns";
+import PageHeader from "../../../components/PageHeader";
 
 export default function Dashboard() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -196,53 +197,47 @@ export default function Dashboard() {
   };
 
   return (
-    <>
-      <div className="p-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
-          Typhoon Dashboard
-        </h1>
-
-        <div className="max-w-4xl mx-auto mb-6">
-          <button
-            onClick={() => setFilterModalOpen(true)}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
-          >
-            {renderViewIcons()}
-          </button>
-        </div>
-
-        <DashboardContent
-          params={params}
-          stormsData={stormsData}
-          averageByPosition={averageByPosition}
-          averageByName={averageByName}
-          averageByCountry={averageByCountry}
-          averageValues={averageValues}
-          onCellClick={handleCellClick}
-        />
-
-        <FilterModal
-          isOpen={filterModalOpen}
-          onClose={() => setFilterModalOpen(false)}
-          onApply={handleApplyFilter}
-          currentParams={params}
-        />
-
-        <StormDetailModal
-          isOpen={detailModalOpen}
-          onClose={() => setDetailModalOpen(false)}
-          title={selectedData?.title || ""}
-          storms={selectedData?.storms || []}
-        />
-
-        <AverageModal
-          isOpen={averageModalOpen}
-          onClose={() => setAverageModalOpen(false)}
-          title={selectedData?.title || ""}
-          average={selectedData?.average || 0}
-          storms={selectedData?.storms || []}
-        />
+    <PageHeader title="Typhoon Dashboard">
+      <div className="max-w-4xl mx-auto mb-6">
+        <button
+          onClick={() => setFilterModalOpen(true)}
+          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
+        >
+          {renderViewIcons()}
+        </button>
       </div>
-    </>
+
+      <DashboardContent
+        params={params}
+        stormsData={stormsData}
+        averageByPosition={averageByPosition}
+        averageByName={averageByName}
+        averageByCountry={averageByCountry}
+        averageValues={averageValues}
+        onCellClick={handleCellClick}
+      />
+
+      <FilterModal
+        isOpen={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+        onApply={handleApplyFilter}
+        currentParams={params}
+      />
+
+      <StormDetailModal
+        isOpen={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        title={selectedData?.title || ""}
+        storms={selectedData?.storms || []}
+      />
+
+      <AverageModal
+        isOpen={averageModalOpen}
+        onClose={() => setAverageModalOpen(false)}
+        title={selectedData?.title || ""}
+        average={selectedData?.average || 0}
+        storms={selectedData?.storms || []}
+      />
+    </PageHeader>
   );
 }
