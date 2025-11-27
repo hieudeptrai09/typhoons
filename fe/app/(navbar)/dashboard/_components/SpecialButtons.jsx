@@ -9,6 +9,7 @@ export const SpecialButtons = ({
   const buttons = [
     { id: 141, label: "CPHC" },
     { id: 142, label: "NHC" },
+    { id: 143, label: "IMD" },
   ];
 
   const getButtonStyle = (buttonId) => {
