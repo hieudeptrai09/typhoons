@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Menu from "./_components/Menu";
-import { TITLE_COMMON } from "@/constants";
+import { TITLE_COMMON } from "../../constants";
 
 const HomePage = () => {
   return (
