@@ -2,10 +2,10 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import NavbarLogo from "./_components/NavBarLogo";
-import DesktopNav from "./_components/DesktopNav";
-import MobileNav from "./_components/MobileNav";
-import MenuToggle from "./_components/MenuToggle";
+import NavbarLogo from "./NavBarLogo";
+import DesktopNav from "./DesktopNav";
+import MobileNav from "./MobileNav";
+import MenuToggle from "./MenuToggle";
 
 const Navbar = () => {
   const pathName = usePathname();
