@@ -17,7 +17,8 @@ const renderStormGridWithButtons = (
   onCellClick,
   cellData,
   isAverageView,
-  averageValues
+  averageValues,
+  stormsData
 ) => (
   <div>
     <StormGrid
@@ -25,6 +26,7 @@ const renderStormGridWithButtons = (
       onCellClick={onCellClick}
       isClickable={true}
       isAverageView={isAverageView}
+      stormsData={stormsData}
     />
     <SpecialButtons
       onCellClick={onCellClick}
@@ -209,7 +211,8 @@ export const DashboardContent = ({
       onCellClick,
       cellData,
       params.view === "average",
-      params.view === "average" ? averageValues : null
+      params.view === "average" ? averageValues : null,
+      stormsData
     );
   }
 

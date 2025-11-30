@@ -8,6 +8,7 @@ export const GridCell = ({
   isClickable = true,
   isAverageView = false,
   avgNumber = null,
+  stormNames = [],
 }) => {
   const getHighlightColor = () => {
     if (!highlight) return "";
@@ -37,6 +38,11 @@ export const GridCell = ({
       } ${getHighlightColor()}`}
       onClick={handleClick}
     >
+      {stormNames.length > 0 && (
+        <div className="text-sky-100 text-xs absolute top-0 opacity-1">
+          {stormNames.join(", ")}
+        </div>
+      )}
       <div className="w-full h-16 flex items-center justify-center">
         <div
           className="text-center text-base font-semibold"

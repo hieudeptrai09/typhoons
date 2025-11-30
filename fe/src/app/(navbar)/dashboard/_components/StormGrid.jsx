@@ -6,9 +6,23 @@ export const StormGrid = ({
   highlightType = "",
   isClickable = true,
   isAverageView = false,
+  stormsData = [],
 }) => {
   const rows = 10;
   const cols = 14;
+
+  // Helper function to get storm names for a position
+  const getStormNamesForPosition = (position) => {
+    if (!stormsData || stormsData.length === 0) return [];
+
+    const storms = stormsData.filter(
+      (storm) => storm.position === String(position)
+    );
+
+    // Get unique storm names
+    const uniqueNames = [...new Set(storms.map((storm) => storm.name))];
+    return uniqueNames;
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -19,6 +33,7 @@ export const StormGrid = ({
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
                 const data = cellData[position];
+                const stormNames = getStormNamesForPosition(position);
 
                 return (
                   <GridCell
@@ -29,6 +44,7 @@ export const StormGrid = ({
                     isClickable={isClickable}
                     isAverageView={isAverageView}
                     avgNumber={data?.avgNumber}
+                    stormNames={stormNames}
                   />
                 );
               })}
