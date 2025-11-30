@@ -192,7 +192,11 @@ export default function DashboardPageContent() {
   };
 
   return (
-    <PageHeader title="Typhoon Dashboard">
+    <PageHeader title={getDashboardTitle(
+      params.view,
+      params.mode,
+      params.filter
+    )}>
       <div className="max-w-4xl mx-auto mb-6">
         <button
           onClick={() => setFilterModalOpen(true)}
