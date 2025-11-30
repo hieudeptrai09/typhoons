@@ -39,7 +39,7 @@ export const GridCell = ({
       onClick={handleClick}
     >
       {stormNames.length > 0 && (
-        <div className="text-sky-100 text-xs absolute top-0 opacity-1">
+        <div className="text-sky-100 text-xs absolute top-0">
           {stormNames.join(", ")}
         </div>
       )}
