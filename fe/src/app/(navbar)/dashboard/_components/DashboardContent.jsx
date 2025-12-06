@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { StormGrid } from "./StormGrid";
 import SortableTable from "../../../../components/SortableTable";
 import { SpecialButtons } from "./SpecialButtons";
@@ -6,6 +7,7 @@ import {
   getIntensityFromNumber,
   getPositionTitle,
   calculateAverage,
+  getGroupedStorms,
 } from "../_utils/fns";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import {
@@ -111,88 +113,56 @@ const createAverageCellRenderer = (row, col) => {
   return row[col.key];
 };
 
-const transformAverageData = (
-  dataMap,
-  averageValues,
-  includePosition = false,
-  includeCountry = false,
-  includeYear = false
-) => {
+const transformAverageData = (dataMap, filterType) => {
   return Object.entries(dataMap).map(([key, storms]) => {
-    const avgValue =
-      includePosition || includeCountry || includeYear
-        ? calculateAverage(storms)
-        : averageValues[key];
-
+    const avgValue = calculateAverage(storms);
     const baseData = {
       count: storms.length,
       average: avgValue.toFixed(2),
       avgNumber: avgValue,
     };
 
-    if (includeYear) {
-      // For "by year" view
-      return {
-        year: parseInt(key),
-        ...baseData,
-      };
-    } else if (includeCountry) {
-      // For "by country" view
-      return {
-        country: key,
-        ...baseData,
-      };
-    } else if (includePosition) {
-      // For "by name" view
-      return {
+    const dataTypeMap = {
+      year: { year: parseInt(key) },
+      country: { country: key },
+      name: {
         name: key,
         country: storms[0].country,
         position: storms[0].position,
-        ...baseData,
-      };
-    } else {
-      // For "by position" view
-      return {
-        position: parseInt(key),
-        country: storms[0].country,
-        ...baseData,
-      };
-    }
+      },
+      position: { position: parseInt(key), country: storms[0].country },
+    };
+
+    return { ...dataTypeMap[filterType], ...baseData };
   });
 };
 
-const getAverageColumns = (
-  includeNameAndPosition = false,
-  includeCountry = false,
-  includeYear = false
-) => {
-  const columns = [];
-
-  if (includeYear) {
-    columns.push(
+const getAverageColumns = (filterType) => {
+  const columnMap = {
+    year: [
       { key: "year", label: "Year" },
-      { key: "count", label: "Count" }
-    );
-  } else if (includeCountry) {
-    columns.push(
+      { key: "count", label: "Count" },
+    ],
+    country: [
       { key: "country", label: "Country" },
-      { key: "count", label: "Count" }
-    );
-  } else if (includeNameAndPosition) {
-    columns.push(
+      { key: "count", label: "Count" },
+    ],
+    name: [
       { key: "name", label: "Name" },
       { key: "country", label: "Country" },
       { key: "count", label: "Count" },
-      { key: "position", label: "Position" }
-    );
-  } else {
-    columns.push(
+      { key: "position", label: "Position" },
+    ],
+    position: [
       { key: "position", label: "Position" },
       { key: "country", label: "Country" },
-      { key: "count", label: "Count" }
-    );
-  }
+      { key: "count", label: "Count" },
+    ],
+  };
 
+  const columns = [...columnMap[filterType]];
+
+  // Add average intensity for all
   columns.push({
     key: "average",
     label: "Average Intensity",
@@ -202,16 +172,24 @@ const getAverageColumns = (
   return columns;
 };
 
-export const DashboardContent = ({
-  params,
-  stormsData,
-  averageByPosition,
-  averageByName,
-  averageByCountry,
-  averageByYear,
-  averageValues,
-  onCellClick,
-}) => {
+export const DashboardContent = ({ params, stormsData, onCellClick }) => {
+  // Compute grouped storms based on filter
+  const groupedStorms = useMemo(() => {
+    return getGroupedStorms(stormsData, params.filter);
+  }, [stormsData, params.filter]);
+
+  // Compute average values for positions (only for table view)
+  const averageValues = useMemo(() => {
+    if (params.view !== "average" || params.mode !== "table") return null;
+
+    const positionGroups = getGroupedStorms(stormsData, "position");
+    const values = {};
+    Object.entries(positionGroups).forEach(([position, storms]) => {
+      values[position] = calculateAverage(storms);
+    });
+    return values;
+  }, [stormsData, params.view, params.mode]);
+
   if (
     (params.view === "storms" && params.mode === "table") ||
     (params.view === "average" && params.mode === "table")
@@ -278,44 +256,14 @@ export const DashboardContent = ({
   }
 
   if (params.view === "average") {
-    const isByPosition = params.filter === "by position";
-    const isByCountry = params.filter === "by country";
-    const isByYear = params.filter === "by year";
-
-    const avgData = isByPosition
-      ? averageByPosition
-      : isByCountry
-      ? averageByCountry
-      : isByYear
-      ? averageByYear
-      : averageByName;
-
-    const data = transformAverageData(
-      avgData,
-      averageValues,
-      !isByPosition && !isByCountry && !isByYear,
-      isByCountry,
-      isByYear
-    );
+    const data = transformAverageData(groupedStorms, params.filter);
 
     return (
       <SortableTable
         data={data}
-        columns={getAverageColumns(
-          !isByPosition && !isByCountry && !isByYear,
-          isByCountry,
-          isByYear
-        )}
+        columns={getAverageColumns(params.filter)}
         onRowClick={(row) => {
-          if (isByPosition) {
-            onCellClick(row.position, "position");
-          } else if (isByCountry) {
-            onCellClick(row.country, "country");
-          } else if (isByYear) {
-            onCellClick(row.year, "year");
-          } else {
-            onCellClick(row.name, "name");
-          }
+          onCellClick(row[params.filter], params.filter);
         }}
         renderCell={createAverageCellRenderer}
       />

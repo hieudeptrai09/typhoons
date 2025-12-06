@@ -39,21 +39,20 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const getFilterOptions = () => {
     if (view === "highlights") return ["strongest", "first"];
-    if (view === "average")
-      return ["by position", "by name", "by country", "by year"];
+    if (view === "average") return ["position", "name", "country", "year"];
     return [];
   };
 
   const getDefaultFilter = (viewType) => {
     if (viewType === "highlights") return "strongest";
-    if (viewType === "average") return "by position";
+    if (viewType === "average") return "position";
     return "";
   };
 
   const isFilterDisabled = view === "storms";
   const isModeTableOptionDisabled =
     view === "average" &&
-    (filter === "by name" || filter === "by country" || filter === "by year");
+    (filter === "name" || filter === "country" || filter === "year");
   const isModeListOptionDisabled = view === "storms";
 
   const handleViewChange = (newView) => {
@@ -92,7 +91,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   useEffect(() => {
     if (
       view === "average" &&
-      (filter === "by name" || filter === "by country" || filter === "by year")
+      (filter === "name" || filter === "country" || filter === "year")
     ) {
       setMode("list");
     } else if (view === "storms") {
@@ -129,7 +128,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
         </FilterSection>
 
         <FilterSection
-          label="Filter"
+          label="Filter by"
           hasValue={Boolean(filter) && filter !== getDefaultFilter(view)}
           onClear={() => handleClear("filter")}
           disabled={isFilterDisabled}
@@ -158,9 +157,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
             mode !== "table" &&
             !(
               view === "average" &&
-              (filter === "by name" ||
-                filter === "by country" ||
-                filter === "by year")
+              (filter === "name" || filter === "country" || filter === "year")
             )
           }
           onClear={() => handleClear("mode")}

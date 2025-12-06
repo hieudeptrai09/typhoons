@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Cloud,
@@ -19,15 +19,9 @@ import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
-import { TITLE_COMMON } from "../../../constants";
+import { INTENSITY_RANK, TITLE_COMMON } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
-import {
-  getPositionTitle,
-  getGroupedStorms,
-  getGroupedStormsByYear,
-  calculateAverage,
-  getDashboardTitle,
-} from "./_utils/fns";
+import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
 import PageHeader from "../../../components/PageHeader";
 
 export default function DashboardPageContent() {
@@ -40,36 +34,6 @@ export default function DashboardPageContent() {
   const [selectedData, setSelectedData] = useState(null);
   const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
-
-  // Memoize expensive calculations
-  const averageByPosition = useMemo(
-    () => getGroupedStorms(stormsData, "position"),
-    [stormsData]
-  );
-
-  const averageByName = useMemo(
-    () => getGroupedStorms(stormsData, "name"),
-    [stormsData]
-  );
-
-  const averageByCountry = useMemo(
-    () => getGroupedStorms(stormsData, "country"),
-    [stormsData]
-  );
-
-  const averageByYear = useMemo(
-    () => getGroupedStormsByYear(stormsData),
-    [stormsData]
-  );
-
-  // Pre-calculate average values for positions
-  const averageValues = useMemo(() => {
-    const values = {};
-    Object.entries(averageByPosition).forEach(([position, storms]) => {
-      values[position] = calculateAverage(storms);
-    });
-    return values;
-  }, [averageByPosition]);
 
   // Initialize params from URL searchParams
   useEffect(() => {
@@ -121,78 +85,71 @@ export default function DashboardPageContent() {
   const handleCellClick = (data, key) => {
     const storms = stormsData.filter((s) => s[key] === String(data));
 
-    if (params.view === "average" && params.filter === "by name") {
+    if (
+      params.view === "storms" ||
+      (params.view === "average" && params.filter === "name")
+    ) {
       setSelectedData({ title: data, storms });
       setDetailModalOpen(true);
-    } else if (params.view === "average" && params.filter === "by position") {
-      const avg = averageValues[data];
-      setSelectedData({
-        title: getPositionTitle(data),
-        average: avg,
-        storms,
-      });
-      setAverageModalOpen(true);
-    } else if (params.view === "average" && params.filter === "by country") {
-      const avg = calculateAverage(storms);
-      setSelectedData({
-        title: data,
-        average: avg,
-        storms,
-      });
-      setAverageModalOpen(true);
-    } else if (params.view === "average" && params.filter === "by year") {
-      const avg = calculateAverage(storms);
-      setSelectedData({
-        title: `Year ${data}`,
-        average: avg,
-        storms,
-      });
-      setAverageModalOpen(true);
     } else {
+      // All other routes open average modal
+      const titleMap = {
+        position: getPositionTitle(data),
+        country: data,
+        year: `Year ${data}`,
+      };
+
+      const avg =
+        storms.reduce((sum, s) => {
+          return sum + INTENSITY_RANK[s.intensity];
+        }, 0) / storms.length;
+
       setSelectedData({
-        title: getPositionTitle(data),
+        title: titleMap[key] || getPositionTitle(data),
+        average: avg,
         storms,
       });
-      setDetailModalOpen(true);
+      setAverageModalOpen(true);
     }
   };
 
   const renderViewIcons = () => {
-    const icons = [];
     const iconSize = 20;
+    const icons = [];
 
-    // View icon
-    if (params.view === "storms") {
-      icons.push(<Cloud key="view" size={iconSize} />);
-    } else if (params.view === "highlights") {
-      icons.push(<Star key="view" size={iconSize} />);
-    } else if (params.view === "average") {
-      icons.push(<BarChart3 key="view" size={iconSize} />);
-    }
+    const iconMap = {
+      view: {
+        storms: Cloud,
+        highlights: Star,
+        average: BarChart3,
+      },
+      filter: {
+        strongest: Zap,
+        first: Medal,
+        position: MapPin,
+        name: Tag,
+        country: Globe,
+        year: Calendar,
+      },
+      mode: {
+        table: Grid3x3,
+        list: List,
+      },
+    };
 
-    // Filter icon (if applicable)
+    // Add view icon
+    const ViewIcon = iconMap.view[params.view];
+    if (ViewIcon) icons.push(<ViewIcon key="view" size={iconSize} />);
+
+    // Add filter icon
     if (params.filter) {
-      if (params.filter === "strongest") {
-        icons.push(<Zap key="filter" size={iconSize} />);
-      } else if (params.filter === "first") {
-        icons.push(<Medal key="filter" size={iconSize} />);
-      } else if (params.filter === "by position") {
-        icons.push(<MapPin key="filter" size={iconSize} />);
-      } else if (params.filter === "by name") {
-        icons.push(<Tag key="filter" size={iconSize} />);
-      } else if (params.filter === "by country") {
-        icons.push(<Globe key="filter" size={iconSize} />);
-      } else if (params.filter === "by year") {
-        icons.push(<Calendar key="filter" size={iconSize} />);
-      }
+      const FilterIcon = iconMap.filter[params.filter];
+      if (FilterIcon) icons.push(<FilterIcon key="filter" size={iconSize} />);
     }
 
-    // Mode icon
-    if (params.mode === "table") {
-      icons.push(<Grid3x3 key="mode" size={iconSize} />);
-    } else if (params.mode === "list") {
-      icons.push(<List key="mode" size={iconSize} />);
-    }
+    // Add mode icon
+    const ModeIcon = iconMap.mode[params.mode];
+    if (ModeIcon) icons.push(<ModeIcon key="mode" size={iconSize} />);
 
     // Insert "/" separators between icons
     return icons.reduce((acc, icon, index) => {
@@ -224,11 +181,6 @@ export default function DashboardPageContent() {
       <DashboardContent
         params={params}
         stormsData={stormsData}
-        averageByPosition={averageByPosition}
-        averageByName={averageByName}
-        averageByCountry={averageByCountry}
-        averageByYear={averageByYear}
-        averageValues={averageValues}
         onCellClick={handleCellClick}
       />
 

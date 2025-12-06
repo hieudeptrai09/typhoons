@@ -30,23 +30,12 @@ export const getHighlights = (stormsData, type) => {
 };
 
 export const getGroupedStorms = (stormsData, groupBy) => {
-  // Group storms by specified field (position, name, or country)
+  // Group storms by specified field (position, name, country, or year)
   const grouped = {};
   stormsData.forEach((storm) => {
     const key = storm[groupBy];
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(storm);
-  });
-  return grouped;
-};
-
-export const getGroupedStormsByYear = (stormsData) => {
-  // Group storms by year
-  const grouped = {};
-  stormsData.forEach((storm) => {
-    const year = storm.year;
-    if (!grouped[year]) grouped[year] = [];
-    grouped[year].push(storm);
   });
   return grouped;
 };
@@ -57,42 +46,14 @@ export const calculateAverage = (storms) => {
 };
 
 export const getDashboardTitle = (view, mode, filter) => {
-  const parts = [];
+  const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
 
-  // Add view type
-  if (view === "storms") {
-    parts.push("All Storms");
-  } else if (view === "highlights") {
-    // Add filter detail for highlights
-    if (filter === "strongest") {
-      parts.push("Strongest Typhoons by Position");
-    } else if (filter === "first") {
-      parts.push("First Typhoons by Position");
-    } else {
-      parts.push("Highlights");
-    }
-    // Add mode for highlights
-    if (mode === "list") {
-      parts.push("(List View)");
-    }
-  } else if (view === "average") {
-    // Add filter detail for average
-    if (filter === "by position") {
-      parts.push("Average Intensity by Position");
-    } else if (filter === "by name") {
-      parts.push("Average Intensity by Name");
-    } else if (filter === "by country") {
-      parts.push("Average Intensity by Country");
-    } else if (filter === "by year") {
-      parts.push("Average Intensity by Year");
-    } else {
-      parts.push("Average Intensity");
-    }
-    // Add mode for average (only when in list mode)
-    if (mode === "list") {
-      parts.push("(List View)");
-    }
-  }
+  const viewTitles = {
+    storms: "All Storms",
+    highlights: `${capitalize(filter)} Typhoons by Position`,
+    average: `Average Intensity by ${capitalize(filter)}`,
+  };
 
-  return parts.join(" ");
+  const title = viewTitles[view];
+  return mode === "list" && view !== "storms" ? `${title} (List View)` : title;
 };
