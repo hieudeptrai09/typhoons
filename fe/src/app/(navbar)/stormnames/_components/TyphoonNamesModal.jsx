@@ -19,9 +19,7 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
       onClose={onClose}
       title={selectedName.name}
       wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
-      specialStyles={{
-        titleClassName: "!text-3xl !text-blue-600",
-      }}
+      titleClassName="!text-3xl !text-blue-600"
     >
       <div className="flex gap-6 items-center">
         <div className="flex-1 space-y-3">
