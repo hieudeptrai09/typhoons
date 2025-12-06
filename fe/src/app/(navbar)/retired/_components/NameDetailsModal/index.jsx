@@ -37,7 +37,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
         />
       </div>
 
-      <div className="overflow-y-auto max-h-[calc(80vh-200px)] pb-6">
+      <div className="max-h-[calc(80vh-200px)] pb-6">
         <h3 className="font-bold text-xl mb-4 text-gray-800">
           Suggested Replacements
         </h3>
