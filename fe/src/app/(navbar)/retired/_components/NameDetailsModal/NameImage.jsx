@@ -12,7 +12,7 @@ const NameImage = ({ src, alt, description }) => {
   return (
     <div
       className={`shrink-0 flex flex-col gap-2 ${
-        hasDescription ? "w-56" : "w-0"
+        hasDescription ? "w-64" : "w-0"
       }`}
     >
       <div className="flex justify-center">
