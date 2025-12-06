@@ -3,12 +3,22 @@ import { Modal } from "../../../../components/Modal";
 const TyphoonNameModal = ({ selectedName, onClose }) => {
   if (!selectedName) return null;
 
+  const hasImage = selectedName.image;
+  const hasDescription = selectedName.description;
+
+  // Determine image visibility: hidden if no src and no description, invisible if no src but has description
+  const getImageVisibility = () => {
+    if (!hasImage && !hasDescription) return "hidden";
+    if (!hasImage && hasDescription) return "invisible";
+    return "";
+  };
+
   return (
     <Modal
       isOpen={!!selectedName}
       onClose={onClose}
       title={selectedName.name}
-      wrapperClassName="max-w-lg"
+      wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
       specialStyles={{
         titleClassName: "!text-3xl !text-blue-600",
       }}
@@ -31,15 +41,21 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
           </div>
         </div>
 
-        <div className="shrink-0">
-          <img
-            src={selectedName.image}
-            alt={selectedName.name}
-            title={selectedName.description}
-            className={`w-36 h-28 object-cover rounded-lg shadow-md ${
-              selectedName.image ? "block" : "hidden"
-            }`}
-          />
+        <div
+          className={`shrink-0 flex flex-col gap-2 ${
+            hasDescription ? "w-56" : "w-0"
+          }`}
+        >
+          <div className="flex justify-center">
+            <img
+              src={selectedName.image || ""}
+              alt={selectedName.name}
+              className={`w-36 h-28 object-cover rounded-lg shadow-md ${getImageVisibility()}`}
+            />
+          </div>
+          <p className="text-xs text-gray-600 italic text-center">
+            {selectedName.description || ""}
+          </p>
         </div>
       </div>
     </Modal>

@@ -23,7 +23,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
         titleClassName: `!text-3xl ${getNameColor(selectedName)}`,
       }}
     >
-      <div className="flex gap-6 mb-6 pb-4 border-b border-gray-200">
+      <div className="flex gap-6 mb-6 pb-4 border-b border-gray-200 items-center">
         <div className="flex-1">
           <NameInfo
             meaning={selectedName.meaning}
@@ -35,7 +35,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
         <NameImage
           src={selectedName.image}
           alt={selectedName.name}
-          title={selectedName.description}
+          description={selectedName.description}
         />
       </div>
 
