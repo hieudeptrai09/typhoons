@@ -175,7 +175,7 @@ const getAverageColumns = (filterType) => {
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
-    const filteredData = stormsData;
+    let filteredData = stormsData;
     if (params.filter === "year") {
       filteredData = stormsData.filter((storm) => parseInt(storm.year) >= 2000);
     }
