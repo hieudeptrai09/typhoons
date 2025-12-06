@@ -40,6 +40,17 @@ export const getGroupedStorms = (stormsData, groupBy) => {
   return grouped;
 };
 
+export const getGroupedStormsByYear = (stormsData) => {
+  // Group storms by year
+  const grouped = {};
+  stormsData.forEach((storm) => {
+    const year = storm.year;
+    if (!grouped[year]) grouped[year] = [];
+    grouped[year].push(storm);
+  });
+  return grouped;
+};
+
 export const calculateAverage = (storms) => {
   const sum = storms.reduce((acc, s) => acc + INTENSITY_RANK[s.intensity], 0);
   return sum / storms.length;
@@ -72,6 +83,8 @@ export const getDashboardTitle = (view, mode, filter) => {
       parts.push("Average Intensity by Name");
     } else if (filter === "by country") {
       parts.push("Average Intensity by Country");
+    } else if (filter === "by year") {
+      parts.push("Average Intensity by Year");
     } else {
       parts.push("Average Intensity");
     }

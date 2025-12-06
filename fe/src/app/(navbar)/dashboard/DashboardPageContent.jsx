@@ -7,12 +7,13 @@ import {
   Star,
   BarChart3,
   Zap,
-  Calendar,
+  Medal,
   MapPin,
-  Type,
+  Tag,
   Grid3x3,
   List,
   Globe,
+  Calendar,
 } from "lucide-react";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
@@ -23,6 +24,7 @@ import fetchData from "../../../containers/utils/fetcher";
 import {
   getPositionTitle,
   getGroupedStorms,
+  getGroupedStormsByYear,
   calculateAverage,
   getDashboardTitle,
 } from "./_utils/fns";
@@ -52,6 +54,11 @@ export default function DashboardPageContent() {
 
   const averageByCountry = useMemo(
     () => getGroupedStorms(stormsData, "country"),
+    [stormsData]
+  );
+
+  const averageByYear = useMemo(
+    () => getGroupedStormsByYear(stormsData),
     [stormsData]
   );
 
@@ -133,6 +140,14 @@ export default function DashboardPageContent() {
         storms,
       });
       setAverageModalOpen(true);
+    } else if (params.view === "average" && params.filter === "by year") {
+      const avg = calculateAverage(storms);
+      setSelectedData({
+        title: `Year ${data}`,
+        average: avg,
+        storms,
+      });
+      setAverageModalOpen(true);
     } else {
       setSelectedData({
         title: getPositionTitle(data),
@@ -160,13 +175,15 @@ export default function DashboardPageContent() {
       if (params.filter === "strongest") {
         icons.push(<Zap key="filter" size={iconSize} />);
       } else if (params.filter === "first") {
-        icons.push(<Calendar key="filter" size={iconSize} />);
+        icons.push(<Medal key="filter" size={iconSize} />);
       } else if (params.filter === "by position") {
         icons.push(<MapPin key="filter" size={iconSize} />);
       } else if (params.filter === "by name") {
-        icons.push(<Type key="filter" size={iconSize} />);
+        icons.push(<Tag key="filter" size={iconSize} />);
       } else if (params.filter === "by country") {
         icons.push(<Globe key="filter" size={iconSize} />);
+      } else if (params.filter === "by year") {
+        icons.push(<Calendar key="filter" size={iconSize} />);
       }
     }
 
@@ -210,6 +227,7 @@ export default function DashboardPageContent() {
         averageByPosition={averageByPosition}
         averageByName={averageByName}
         averageByCountry={averageByCountry}
+        averageByYear={averageByYear}
         averageValues={averageValues}
         onCellClick={handleCellClick}
       />

@@ -39,7 +39,8 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const getFilterOptions = () => {
     if (view === "highlights") return ["strongest", "first"];
-    if (view === "average") return ["by position", "by name", "by country"];
+    if (view === "average")
+      return ["by position", "by name", "by country", "by year"];
     return [];
   };
 
@@ -51,7 +52,8 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const isFilterDisabled = view === "storms";
   const isModeTableOptionDisabled =
-    view === "average" && (filter === "by name" || filter === "by country");
+    view === "average" &&
+    (filter === "by name" || filter === "by country" || filter === "by year");
   const isModeListOptionDisabled = view === "storms";
 
   const handleViewChange = (newView) => {
@@ -90,7 +92,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   useEffect(() => {
     if (
       view === "average" &&
-      (filter === "by name" || filter === "by country")
+      (filter === "by name" || filter === "by country" || filter === "by year")
     ) {
       setMode("list");
     } else if (view === "storms") {
@@ -156,7 +158,9 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
             mode !== "table" &&
             !(
               view === "average" &&
-              (filter === "by name" || filter === "by country")
+              (filter === "by name" ||
+                filter === "by country" ||
+                filter === "by year")
             )
           }
           onClear={() => handleClear("mode")}

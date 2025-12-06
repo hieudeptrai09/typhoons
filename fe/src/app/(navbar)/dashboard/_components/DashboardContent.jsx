@@ -115,11 +115,12 @@ const transformAverageData = (
   dataMap,
   averageValues,
   includePosition = false,
-  includeCountry = false
+  includeCountry = false,
+  includeYear = false
 ) => {
   return Object.entries(dataMap).map(([key, storms]) => {
     const avgValue =
-      includePosition || includeCountry
+      includePosition || includeCountry || includeYear
         ? calculateAverage(storms)
         : averageValues[key];
 
@@ -129,7 +130,13 @@ const transformAverageData = (
       avgNumber: avgValue,
     };
 
-    if (includeCountry) {
+    if (includeYear) {
+      // For "by year" view
+      return {
+        year: parseInt(key),
+        ...baseData,
+      };
+    } else if (includeCountry) {
       // For "by country" view
       return {
         country: key,
@@ -156,11 +163,17 @@ const transformAverageData = (
 
 const getAverageColumns = (
   includeNameAndPosition = false,
-  includeCountry = false
+  includeCountry = false,
+  includeYear = false
 ) => {
   const columns = [];
 
-  if (includeCountry) {
+  if (includeYear) {
+    columns.push(
+      { key: "year", label: "Year" },
+      { key: "count", label: "Count" }
+    );
+  } else if (includeCountry) {
     columns.push(
       { key: "country", label: "Country" },
       { key: "count", label: "Count" }
@@ -195,6 +208,7 @@ export const DashboardContent = ({
   averageByPosition,
   averageByName,
   averageByCountry,
+  averageByYear,
   averageValues,
   onCellClick,
 }) => {
@@ -266,29 +280,39 @@ export const DashboardContent = ({
   if (params.view === "average") {
     const isByPosition = params.filter === "by position";
     const isByCountry = params.filter === "by country";
+    const isByYear = params.filter === "by year";
 
     const avgData = isByPosition
       ? averageByPosition
       : isByCountry
       ? averageByCountry
+      : isByYear
+      ? averageByYear
       : averageByName;
 
     const data = transformAverageData(
       avgData,
       averageValues,
-      !isByPosition && !isByCountry,
-      isByCountry
+      !isByPosition && !isByCountry && !isByYear,
+      isByCountry,
+      isByYear
     );
 
     return (
       <SortableTable
         data={data}
-        columns={getAverageColumns(!isByPosition && !isByCountry, isByCountry)}
+        columns={getAverageColumns(
+          !isByPosition && !isByCountry && !isByYear,
+          isByCountry,
+          isByYear
+        )}
         onRowClick={(row) => {
           if (isByPosition) {
             onCellClick(row.position, "position");
           } else if (isByCountry) {
             onCellClick(row.country, "country");
+          } else if (isByYear) {
+            onCellClick(row.year, "year");
           } else {
             onCellClick(row.name, "name");
           }
