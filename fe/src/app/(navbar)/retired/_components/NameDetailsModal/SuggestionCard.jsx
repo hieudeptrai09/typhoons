@@ -31,7 +31,7 @@ const SuggestionCard = ({ suggestion, hasAnyImage }) => {
           <img
             src={suggestion.image}
             alt={suggestion.replacementName}
-            className={`w-18 h-14 object-cover rounded-lg shadow-sm border border-gray-200 ${imageVisibilityClass}`}
+            className={`w-32 h-24 object-cover rounded-lg shadow-sm border border-gray-200 ${imageVisibilityClass}`}
           />
         </div>
       </div>
