@@ -51,7 +51,7 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
               className={`w-36 h-28 object-cover rounded-lg shadow-md ${getImageVisibility()}`}
             />
           </div>
-          <p className="text-xs text-gray-600 italic text-center">
+          <p className="text-xs text-gray-700 italic text-center">
             {selectedName.description || ""}
           </p>
         </div>

@@ -22,7 +22,7 @@ const NameImage = ({ src, alt, description }) => {
           className={`w-36 h-28 object-cover rounded-lg shadow-md border border-gray-200 ${getImageVisibility()}`}
         />
       </div>
-      <p className="text-xs text-gray-600 italic text-center">
+      <p className="text-xs text-gray-700 italic text-center">
         {description || ""}
       </p>
     </div>
