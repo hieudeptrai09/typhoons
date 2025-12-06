@@ -1,38 +1,47 @@
+import { Check } from "lucide-react";
+
 const SuggestionCard = ({ suggestion, hasAnyImage }) => {
-  const cardClasses = Boolean(Number(suggestion.isChosen))
-    ? "bg-blue-100 border-2 border-blue-500"
-    : "bg-gray-50";
+  const isChosen = Boolean(Number(suggestion.isChosen));
+
+  const cardClasses = isChosen
+    ? "bg-blue-50 border-2 border-blue-400 shadow-md"
+    : "bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md";
 
   // Determine image visibility class
   const imageVisibilityClass = !hasAnyImage
-    ? "hidden" // No images at all - remove from layout
+    ? "hidden"
     : suggestion.image
-    ? "block" // This card has image - show it
-    : "invisible"; // Some cards have images but not this one - preserve space
+    ? "block"
+    : "invisible";
 
   return (
-    <div className={`p-4 rounded-lg ${cardClasses}`}>
-      <div className="flex gap-4 items-center">
-        <div className="flex-1">
-          <div className="font-semibold text-gray-800 mb-1">
-            {suggestion.replacementName}
-            {Boolean(Number(suggestion.isChosen)) && (
-              <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
+    <div className={`p-5 rounded-xl ${cardClasses}`}>
+      <div className="flex gap-5 items-center">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <h4 className="font-semibold text-lg text-gray-800">
+              {suggestion.replacementName}
+            </h4>
+            {isChosen && (
+              <span className="inline-flex items-center gap-1 text-xs font-semibold bg-blue-500 text-white px-3 py-1 rounded-full shadow-sm">
+                <Check className="w-3 h-3" />
                 CHOSEN
               </span>
             )}
           </div>
-          <div className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 leading-relaxed">
             {suggestion.replacementMeaning}
-          </div>
+          </p>
         </div>
 
         <div className="shrink-0">
-          <img
-            src={suggestion.image}
-            alt={suggestion.replacementName}
-            className={`w-18 h-14 object-cover rounded-lg shadow-sm border border-gray-200 ${imageVisibilityClass}`}
-          />
+          <div className={`relative group ${imageVisibilityClass}`}>
+            <img
+              src={suggestion.image}
+              alt={suggestion.replacementName}
+              className="w-32 h-24 object-cover rounded-lg shadow-sm border-2 border-white ring-1 ring-gray-200"
+            />
+          </div>
         </div>
       </div>
     </div>
