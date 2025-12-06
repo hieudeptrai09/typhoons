@@ -175,7 +175,12 @@ const getAverageColumns = (filterType) => {
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
-    return getGroupedStorms(stormsData, params.filter);
+    const filteredData = stormsData;
+    if (params.filter === "year") {
+      filteredData = stormsData.filter((storm) => parseInt(storm.year) >= 2000);
+    }
+
+    return getGroupedStorms(filteredData, params.filter);
   }, [stormsData, params.filter]);
 
   // Compute average values for positions (only for table view)

@@ -89,7 +89,7 @@ export default function DashboardPageContent() {
       params.view === "storms" ||
       (params.view === "average" && params.filter === "name")
     ) {
-      setSelectedData({ title: data, storms });
+      setSelectedData({ title: getPositionTitle(data), storms });
       setDetailModalOpen(true);
     } else {
       // All other routes open average modal
