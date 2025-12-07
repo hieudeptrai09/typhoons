@@ -1,6 +1,6 @@
 const NameInfo = ({ meaning, country, position, language }) => {
   return (
-    <>
+    <div className="flex-1">
       <p className="text-gray-700">
         <span className="font-semibold">Meaning:</span> {meaning}
       </p>
@@ -13,7 +13,7 @@ const NameInfo = ({ meaning, country, position, language }) => {
       <p className="text-gray-700">
         <span className="font-semibold">Language:</span> {language}
       </p>
-    </>
+    </div>
   );
 };
 
