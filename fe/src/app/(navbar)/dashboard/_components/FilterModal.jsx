@@ -1,59 +1,6 @@
 import { Modal } from "../../../../components/Modal";
+import { FilterSelectSection } from "./FilterSelectSection";
 import { useState, useEffect } from "react";
-
-const FilterSection = ({
-  label,
-  hasValue,
-  onClear,
-  children,
-  disabled = false,
-}) => {
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-2">
-        <label className="text-sm font-semibold text-gray-700">{label}</label>
-        {hasValue && !disabled && (
-          <button
-            onClick={onClear}
-            className="text-sm text-blue-500 hover:text-blue-600 hover:underline"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-      {children}
-    </div>
-  );
-};
-
-const Select = ({
-  value,
-  onChange,
-  options,
-  disabled = false,
-  className = "",
-}) => {
-  const baseClassName =
-    "w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none";
-  const disabledClassName = disabled
-    ? "bg-gray-100 cursor-not-allowed opacity-60"
-    : "";
-
-  return (
-    <select
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-      className={`${baseClassName} ${disabledClassName} ${className}`}
-    >
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-  );
-};
 
 export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
@@ -140,38 +87,45 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
       wrapperClassName="max-w-lg"
     >
       <div className="space-y-4 mb-6">
-        <FilterSection
+        <FilterSelectSection
           label="View"
+          value={view}
+          onChange={(e) => handleViewChange(e.target.value)}
+          options={[
+            { value: "storms", label: "Storms" },
+            { value: "highlights", label: "Highlights" },
+            { value: "average", label: "Average" },
+          ]}
           hasValue={view !== "storms"}
           onClear={() => handleClear("view")}
-        >
-          <Select
-            value={view}
-            onChange={(e) => handleViewChange(e.target.value)}
-            options={[
-              { value: "storms", label: "Storms" },
-              { value: "highlights", label: "Highlights" },
-              { value: "average", label: "Average" },
-            ]}
-          />
-        </FilterSection>
+        />
 
-        <FilterSection
+        <FilterSelectSection
           label="Filter by"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
           hasValue={Boolean(filter) && filter !== getDefaultFilter(view)}
           onClear={() => handleClear("filter")}
           disabled={isFilterDisabled}
-        >
-          <Select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            disabled={isFilterDisabled}
-            options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
-          />
-        </FilterSection>
+        />
 
-        <FilterSection
+        <FilterSelectSection
           label="Mode"
+          value={mode}
+          onChange={(e) => setMode(e.target.value)}
+          options={[
+            {
+              value: "table",
+              label: "Table",
+              disabled: isModeTableOptionDisabled,
+            },
+            {
+              value: "list",
+              label: "List",
+              disabled: isModeListOptionDisabled,
+            },
+          ]}
           hasValue={
             mode !== "table" &&
             !(
@@ -180,24 +134,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
             )
           }
           onClear={() => handleClear("mode")}
-        >
-          <Select
-            value={mode}
-            onChange={(e) => setMode(e.target.value)}
-            options={[
-              {
-                value: "table",
-                label: "Table",
-                disabled: isModeTableOptionDisabled,
-              },
-              {
-                value: "list",
-                label: "List",
-                disabled: isModeListOptionDisabled,
-              },
-            ]}
-          />
-        </FilterSection>
+        />
       </div>
 
       <div className="flex gap-3 mt-6">
