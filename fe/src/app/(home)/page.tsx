@@ -52,8 +52,8 @@ const HomePage = () => {
 
       <footer className="bg-emerald-700 h-16 flex items-center justify-center">
         <p className="text-white text-center text-sm">
-          © {new Date().getFullYear()} {TITLE_COMMON} | Explore the World of
-          Tropical Storms
+          © {new Date().getFullYear()} {TITLE_COMMON} | Track Typhoons and
+          Discover Their Names
         </p>
       </footer>
     </div>

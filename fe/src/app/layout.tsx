@@ -7,7 +7,8 @@ export const metadata: Metadata = {
     template: `%s | ${TITLE_COMMON}`,
     default: TITLE_COMMON,
   },
-  description: "Show you all the typhoons and the secret behind their names",
+  description:
+    "Comprehensive typhoon database featuring storm tracking, intensity analysis, and the fascinating stories behind typhoon names",
 };
 
 export default function RootLayout({
