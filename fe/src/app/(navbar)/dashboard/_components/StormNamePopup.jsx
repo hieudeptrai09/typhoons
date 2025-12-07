@@ -7,14 +7,14 @@ export const StormNamePopup = ({
   popupRef,
   selectedName,
   selectedNameData,
-  nameElement,
+  nameElementRef,
   onClose,
 }) => {
-  // Position the popup
+  // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
-      if (selectedName && nameElement && popupRef.current) {
-        const nameRect = nameElement.getBoundingClientRect();
+      if (selectedName && nameElementRef && popupRef.current) {
+        const nameRect = nameElementRef.getBoundingClientRect();
 
         const popupMaxHeight = 41 + getHeight(selectedNameData.storms.length);
         const popupWidth = nameRect.width;
@@ -27,10 +27,10 @@ export const StormNamePopup = ({
         // Adjust top if popup would go below viewport
         if (top + popupMaxHeight > window.innerHeight) {
           top = window.innerHeight - popupMaxHeight - gap;
-          // If there's still not enough space, position it at the top of viewport
-          if (top < gap) {
-            top = gap;
-          }
+        }
+        // If top would be negative or above container top, set it to 0
+        if (top < 0) {
+          top = 0;
         }
 
         popupRef.current.style.top = `${top}px`;
@@ -51,16 +51,16 @@ export const StormNamePopup = ({
     return () => {
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [selectedName, nameElement, popupRef]);
+  }, [selectedName, nameElementRef, popupRef, selectedNameData]);
 
-  // Handle click outside
+  // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         selectedName &&
         popupRef.current &&
         !popupRef.current.contains(event.target) &&
-        !nameElement?.contains(event.target)
+        !nameElementRef?.contains(event.target)
       ) {
         onClose();
       }
@@ -73,7 +73,7 @@ export const StormNamePopup = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedName, popupRef, nameElement, onClose]);
+  }, [selectedName, popupRef, nameElementRef, onClose]);
 
   if (!selectedName || !selectedNameData) {
     return null;
@@ -95,9 +95,8 @@ export const StormNamePopup = ({
         All <span className="text-red-700">{selectedName}</span> storms:
       </div>
       <div
-        className="flex flex-col gap-1.5 px-4 py-2 overflow-y-auto"
+        className="flex flex-col gap-1.5 px-4 py-2 overflow-y-auto flex-1"
         style={{
-          flex: "1 1 0",
           minHeight: `${getHeight(selectedNameData.storms.length)}px`,
         }}
       >

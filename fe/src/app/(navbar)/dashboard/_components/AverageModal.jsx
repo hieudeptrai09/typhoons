@@ -19,7 +19,6 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const [hoveredName, setHoveredName] = useState(null);
   const nameRefs = useRef({});
   const popupRef = useRef(null);
-  const containerRef = useRef(null);
 
   // Group storms by name and calculate average intensity for each name
   const nameAverages = getGroupedStorms(storms, "name");
@@ -53,7 +52,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
       title={title}
       wrapperClassName="max-w-md"
     >
-      <div className="space-y-3" ref={containerRef}>
+      <div className="space-y-3">
         <div className="text-lg" title={JSON.stringify(INTENSITY_RANK)}>
           <span className="font-semibold text-purple-700">
             Overall Average Intensity:{" "}
@@ -117,7 +116,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           popupRef={popupRef}
           selectedName={selectedName}
           selectedNameData={selectedNameData}
-          nameElement={nameRefs.current[selectedName]}
+          nameElementRef={nameRefs.current[selectedName]}
           onClose={() => setSelectedName(null)}
         />
       </div>
