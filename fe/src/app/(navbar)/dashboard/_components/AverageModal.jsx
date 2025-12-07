@@ -5,24 +5,24 @@ import {
   TEXT_COLOR_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_RANK,
+  BACKGROUND_HOVER_BADGE,
 } from "../../../../constants";
-import { getIntensityFromNumber, calculateAverage } from "../_utils/fns";
+import {
+  getIntensityFromNumber,
+  calculateAverage,
+  getGroupedStorms,
+} from "../_utils/fns";
 import { StormNamePopup } from "./StormNamePopup";
 
 export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const [selectedName, setSelectedName] = useState(null);
+  const [hoveredName, setHoveredName] = useState(null);
   const nameRefs = useRef({});
   const popupRef = useRef(null);
   const containerRef = useRef(null);
 
   // Group storms by name and calculate average intensity for each name
-  const nameAverages = {};
-  storms.forEach((storm) => {
-    if (!nameAverages[storm.name]) {
-      nameAverages[storm.name] = [];
-    }
-    nameAverages[storm.name].push(storm);
-  });
+  const nameAverages = getGroupedStorms(storms, "name");
 
   const nameData = Object.entries(nameAverages).map(([name, nameStorms]) => {
     const avg = calculateAverage(nameStorms);
@@ -76,15 +76,22 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
             {nameData.map((data, idx) => {
               const intensityLabel = getIntensityFromNumber(data.average);
               const bgColor = BACKGROUND_BADGE[intensityLabel];
+              const hoverColor = BACKGROUND_HOVER_BADGE[intensityLabel];
               const textColor = TEXT_COLOR_BADGE[intensityLabel];
+              const isHovered = hoveredName === data.name;
 
               return (
                 <div
                   key={idx}
                   ref={(el) => (nameRefs.current[data.name] = el)}
                   onClick={() => handleNameClick(data.name)}
-                  className="flex justify-between items-center px-3 py-2 rounded border cursor-pointer hover:opacity-80 transition-opacity"
-                  style={{ backgroundColor: bgColor, borderColor: bgColor }}
+                  className="flex justify-between items-center px-3 py-2 rounded border cursor-pointer transition-colors"
+                  style={{
+                    backgroundColor: isHovered ? hoverColor : bgColor,
+                    borderColor: bgColor,
+                  }}
+                  onMouseEnter={() => setHoveredName(data.name)}
+                  onMouseLeave={() => setHoveredName(null)}
                 >
                   <span className="font-semibold" style={{ color: textColor }}>
                     {data.name}
