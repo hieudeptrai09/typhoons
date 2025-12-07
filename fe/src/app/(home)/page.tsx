@@ -6,8 +6,11 @@ import { TITLE_COMMON } from "../../constants";
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-sky-100 flex flex-col justify-between">
-      <div className="grow flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-sky-100 flex flex-col">
+      <div
+        className="flex flex-col items-center justify-center p-8"
+        style={{ height: "calc(100vh - 64px)" }}
+      >
         <a
           href="https://www.youtube.com/watch?v=5LtFOkH9zwU"
           target="_blank"
@@ -47,7 +50,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <footer className="bg-emerald-700 py-6">
+      <footer className="bg-emerald-700 h-16 flex items-center justify-center">
         <p className="text-white text-center text-sm">
           © {new Date().getFullYear()} {TITLE_COMMON} | Explore the World of
           Tropical Storms
