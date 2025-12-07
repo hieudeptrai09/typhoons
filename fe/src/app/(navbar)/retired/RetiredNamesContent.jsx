@@ -14,6 +14,21 @@ import { usePagination } from "./_hooks/usePagination";
 import { getRetiredNamesTitle } from "./_utils/fns";
 import PageHeader from "../../../components/PageHeader";
 
+// Helper functions to convert between retirementReasons array and lang parameter
+const langToReasons = (lang) => {
+  if (lang === "both") return ["language", "destructive"];
+  if (lang === "true") return ["language"];
+  if (lang === "false") return ["destructive"];
+  return [];
+};
+
+const reasonsToLang = (reasons) => {
+  if (reasons.length === 2) return "both";
+  if (reasons.includes("language")) return "true";
+  if (reasons.includes("destructive")) return "false";
+  return "";
+};
+
 const RetiredNamesContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,30 +57,12 @@ const RetiredNamesContent = () => {
     setSearchName(name);
     setSelectedYear(year ? parseInt(year) : "");
     setSelectedCountry(country);
-
-    // Parse lang parameter to array
-    const reasons = [];
-    if (lang === "true") {
-      reasons.push("language");
-    } else if (lang === "false") {
-      reasons.push("destructive");
-    } else if (lang === "both") {
-      reasons.push("language", "destructive");
-    }
-    setRetirementReasons(reasons);
+    setRetirementReasons(langToReasons(lang));
   }, [searchParams]);
 
   // Update page title based on filters (client-side)
   useEffect(() => {
-    // Convert retirementReasons array back to lang format
-    let lang = "";
-    if (retirementReasons.length === 2) {
-      lang = "both";
-    } else if (retirementReasons.includes("language")) {
-      lang = "true";
-    } else if (retirementReasons.includes("destructive")) {
-      lang = "false";
-    }
+    const lang = reasonsToLang(retirementReasons);
 
     const titleParts = getRetiredNamesTitle(
       searchName,
@@ -93,13 +90,9 @@ const RetiredNamesContent = () => {
       params.set("country", filters.selectedCountry);
     }
 
-    // Convert retirement reasons array to lang parameter
-    if (filters.retirementReasons.length === 2) {
-      params.set("lang", "both");
-    } else if (filters.retirementReasons.includes("language")) {
-      params.set("lang", "true");
-    } else if (filters.retirementReasons.includes("destructive")) {
-      params.set("lang", "false");
+    const lang = reasonsToLang(filters.retirementReasons);
+    if (lang) {
+      params.set("lang", lang);
     }
 
     const queryString = params.toString();
