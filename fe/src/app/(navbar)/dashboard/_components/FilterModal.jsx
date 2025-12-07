@@ -26,6 +26,35 @@ const FilterSection = ({
   );
 };
 
+const Select = ({
+  value,
+  onChange,
+  options,
+  disabled = false,
+  className = "",
+}) => {
+  const baseClassName =
+    "w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none";
+  const disabledClassName = disabled
+    ? "bg-gray-100 cursor-not-allowed opacity-60"
+    : "";
+
+  return (
+    <select
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className={`${baseClassName} ${disabledClassName} ${className}`}
+    >
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  );
+};
+
 export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
@@ -116,15 +145,15 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
           hasValue={view !== "storms"}
           onClear={() => handleClear("view")}
         >
-          <select
+          <Select
             value={view}
             onChange={(e) => handleViewChange(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
-          >
-            <option value="storms">Storms</option>
-            <option value="highlights">Highlights</option>
-            <option value="average">Average</option>
-          </select>
+            options={[
+              { value: "storms", label: "Storms" },
+              { value: "highlights", label: "Highlights" },
+              { value: "average", label: "Average" },
+            ]}
+          />
         </FilterSection>
 
         <FilterSection
@@ -133,22 +162,12 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
           onClear={() => handleClear("filter")}
           disabled={isFilterDisabled}
         >
-          <select
+          <Select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             disabled={isFilterDisabled}
-            className={`w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none ${
-              isFilterDisabled
-                ? "bg-gray-100 cursor-not-allowed opacity-60"
-                : ""
-            }`}
-          >
-            {filterOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
+            options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
+          />
         </FilterSection>
 
         <FilterSection
@@ -162,18 +181,22 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
           }
           onClear={() => handleClear("mode")}
         >
-          <select
+          <Select
             value={mode}
             onChange={(e) => setMode(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
-          >
-            <option value="table" disabled={isModeTableOptionDisabled}>
-              Table
-            </option>
-            <option value="list" disabled={isModeListOptionDisabled}>
-              List
-            </option>
-          </select>
+            options={[
+              {
+                value: "table",
+                label: "Table",
+                disabled: isModeTableOptionDisabled,
+              },
+              {
+                value: "list",
+                label: "List",
+                disabled: isModeListOptionDisabled,
+              },
+            ]}
+          />
         </FilterSection>
       </div>
 
