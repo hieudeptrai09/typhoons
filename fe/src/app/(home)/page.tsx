@@ -25,24 +25,21 @@ const HomePage = () => {
           />
         </a>
 
-        <div className="flex flex-col gap-6 w-full max-w-md">
+        <div className="flex flex-col gap-6 w-full max-w-sm">
           <Menu
             href="dashboard"
-            icon="📊"
             label="Dashboard"
             color="bg-purple-800"
             hoverColor="hover:bg-purple-900"
           />
           <Menu
             href="stormnames"
-            icon="📋"
             label="Current Names"
             color="bg-purple-800"
             hoverColor="hover:bg-purple-900"
           />
           <Menu
             href="retired"
-            icon="🗃️"
             label="Retired Names"
             color="bg-purple-800"
             hoverColor="hover:bg-purple-900"
