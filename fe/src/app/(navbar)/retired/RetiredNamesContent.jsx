@@ -72,7 +72,7 @@ const RetiredNamesContent = () => {
     );
 
     document.title = titleParts
-      ? `Retired Names: ${titleParts} | ${TITLE_COMMON}`
+      ? `Retired Names: ${titleParts.join(" • ")} | ${TITLE_COMMON}`
       : `Retired Typhoon Names | ${TITLE_COMMON}`;
   }, [searchName, selectedYear, selectedCountry, retirementReasons]);
 
@@ -154,6 +154,12 @@ const RetiredNamesContent = () => {
       <FilterButton
         activeFilterCount={activeFilterCount}
         onClick={() => setIsFilterModalOpen(true)}
+        params={{
+          name: searchName,
+          year: selectedYear?.toString() || "",
+          country: selectedCountry,
+          lang: reasonsToLang(retirementReasons),
+        }}
       />
 
       <div className="max-w-4xl mx-auto">

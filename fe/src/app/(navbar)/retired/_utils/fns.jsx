@@ -17,11 +17,11 @@ export const getRetiredNamesTitle = (name, year, country, lang) => {
     if (lang === "both") {
       parts.push("Language & Destructive");
     } else if (lang === "true") {
-      parts.push("Language Problem");
+      parts.push("Language");
     } else if (lang === "false") {
       parts.push("Destructive");
     }
   }
 
-  return parts.join(" • ");
+  return parts;
 };

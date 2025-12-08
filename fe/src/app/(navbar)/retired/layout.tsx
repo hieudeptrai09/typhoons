@@ -15,7 +15,7 @@ export async function generateMetadata({
 
   const titleParts = getRetiredNamesTitle(name, year, country, lang);
   const title = titleParts
-    ? `Retired Names: ${titleParts}`
+    ? `Retired Names: ${titleParts.join(" • ")}`
     : "Retired Typhoon Names";
 
   return {
