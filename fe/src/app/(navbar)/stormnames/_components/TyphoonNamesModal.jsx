@@ -40,7 +40,9 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
         </div>
 
         <div
-          className={`flex flex-col gap-2 ${hasDescription ? "flex-1" : "w-0"}`}
+          className={`flex flex-col gap-2 ${
+            hasDescription || hasImage ? "flex-1" : "w-0"
+          }`}
         >
           <div className="flex justify-center">
             <img
