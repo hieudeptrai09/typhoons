@@ -6,7 +6,7 @@ const Select = ({
   className = "",
 }) => {
   const baseClassName =
-    "w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none";
+    "w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-500 outline-none";
   const disabledClassName = disabled
     ? "bg-gray-100 cursor-not-allowed opacity-60"
     : "";
