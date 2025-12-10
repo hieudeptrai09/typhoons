@@ -20,9 +20,17 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
     "Vietnam",
   ];
 
+  // Calculate equal width for each column (100% / 14 columns)
+  const columnWidth = `${100 / cols}%`;
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border-collapse">
+        <colgroup>
+          {[...Array(cols)].map((_, idx) => (
+            <col key={idx} style={{ width: columnWidth }} />
+          ))}
+        </colgroup>
         <thead>
           <tr>
             {countries.map((country, index) => (

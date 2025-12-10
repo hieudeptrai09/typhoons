@@ -24,9 +24,17 @@ export const StormGrid = ({
     return uniqueNames;
   };
 
+  // Calculate equal width for each column (100% / 14 columns)
+  const columnWidth = `${100 / cols}%`;
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border-collapse mx-auto">
+        <colgroup>
+          {[...Array(cols)].map((_, idx) => (
+            <col key={idx} style={{ width: columnWidth }} />
+          ))}
+        </colgroup>
         <tbody>
           {[...Array(rows)].map((_, row) => (
             <tr key={row}>
