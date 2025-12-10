@@ -13,13 +13,13 @@ const NameImage = ({ src, alt, description }) => {
     <div
       className={`flex flex-col gap-2 ${
         hasDescription || hasImage ? "flex-1" : "w-0"
-      }`}
+      } ${!hasDescription && "self-end"}`}
     >
       <div className="flex justify-center">
         <img
           src={src || ""}
           alt={alt}
-          className={`object-cover rounded-lg shadow-md border border-gray-200 ${getImageVisibility()}`}
+          className={`object-cover rounded-lg shadow-md max-h-72 border border-gray-200 ${getImageVisibility()}`}
         />
       </div>
       <p className="text-xs text-gray-700 italic text-center">

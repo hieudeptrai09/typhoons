@@ -5,24 +5,24 @@ const DesktopNav = ({ currentPath }) => {
   return (
     <div className="hidden md:flex space-x-4">
       <NavLink
-        href="/dashboard"
+        href="/dashboard/"
         icon={LayoutDashboard}
         label="Dashboard"
-        isActive={currentPath === "/dashboard"}
+        isActive={currentPath === "/dashboard/"}
       />
 
       <NavLink
-        href="/stormnames"
+        href="/stormnames/"
         icon={List}
         label="Current Names"
-        isActive={currentPath === "/stormnames"}
+        isActive={currentPath === "/stormnames/"}
       />
 
       <NavLink
-        href="/retired"
+        href="/retired/"
         icon={Archive}
         label="Retired Names"
-        isActive={currentPath === "/retired"}
+        isActive={currentPath === "/retired/"}
       />
     </div>
   );

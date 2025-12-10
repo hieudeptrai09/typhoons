@@ -1,7 +1,7 @@
 const SuggestionCard = ({ suggestion, hasAnyImage }) => {
   const cardClasses = Boolean(Number(suggestion.isChosen))
     ? "bg-blue-100 border-2 border-blue-500"
-    : "bg-gray-50";
+    : "bg-gray-100";
 
   // Determine image visibility class
   const imageVisibilityClass = !hasAnyImage
@@ -27,11 +27,11 @@ const SuggestionCard = ({ suggestion, hasAnyImage }) => {
           </div>
         </div>
 
-        <div className="shrink-0">
+        <div className="shrink-0 self-end">
           <img
             src={suggestion.image}
             alt={suggestion.replacementName}
-            className={`w-32 h-24 object-cover rounded-lg shadow-sm border border-gray-200 ${imageVisibilityClass}`}
+            className={`w-32 h-24 object-cover rounded-lg shadow-sm max-h-72 border border-gray-200 ${imageVisibilityClass}`}
           />
         </div>
       </div>

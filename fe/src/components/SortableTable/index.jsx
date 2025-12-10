@@ -14,7 +14,7 @@ const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
   return (
     <div className="overflow-x-auto max-w-4xl mx-auto">
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-100">
+        <thead className="bg-stone-200">
           <tr>
             {columns.map((col) => (
               <SortableTableHeader
@@ -30,12 +30,12 @@ const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-300">
           {sortedData.map((row, idx) => (
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className="hover:bg-gray-50 transition-colors cursor-pointer"
+              className="hover:bg-gray-100 transition-colors cursor-pointer"
             >
               {columns.map((col) => (
                 <td key={col.key} className="px-6 py-4 text-gray-600">

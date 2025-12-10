@@ -47,7 +47,7 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
                 return (
                   <td
                     key={col}
-                    className="border border-sky-200 hover:bg-sky-200 p-2"
+                    className="border border-stone-300 hover:bg-stone-200 p-2"
                   >
                     <button
                       onClick={() => dataNow && onNameClick(dataNow)}

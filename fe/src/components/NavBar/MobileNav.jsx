@@ -10,26 +10,26 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
     >
       <div className="px-4 py-2 space-y-2">
         <NavLink
-          href="/dashboard"
+          href="/dashboard/"
           icon={LayoutDashboard}
           label="Dashboard"
-          isActive={currentPath === "/dashboard"}
+          isActive={currentPath === "/dashboard/"}
           onClick={onClose}
         />
 
         <NavLink
-          href="/stormnames"
+          href="/stormnames/"
           icon={List}
           label="Current Names"
-          isActive={currentPath === "/stormnames"}
+          isActive={currentPath === "/stormnames/"}
           onClick={onClose}
         />
 
         <NavLink
-          href="/retired"
+          href="/retired/"
           icon={Archive}
           label="Retired Names"
-          isActive={currentPath === "/retired"}
+          isActive={currentPath === "/retired/"}
           onClick={onClose}
         />
       </div>

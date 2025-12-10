@@ -28,7 +28,7 @@ export const SpecialButtons = ({
         <button
           key={button.id}
           onClick={() => onCellClick(button.id, "position")}
-          className="px-8 py-4 bg-sky-100 font-semibold rounded-lg hover:bg-sky-200 transition-colors border border-sky-300"
+          className="px-8 py-4 bg-stone-100 font-semibold rounded-lg hover:bg-stone-200 transition-colors border border-stone-300"
           style={{ color: getButtonStyle(button.id) }}
         >
           {button.label}

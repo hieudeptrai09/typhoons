@@ -14,10 +14,10 @@ const SortableTableHeader = ({
       return <span className="text-gray-600">⇅</span>;
     }
     if (currentSortDirection === "asc") {
-      return <span className="text-green-600 font-semibold">↑</span>;
+      return <span className="text-green-600 font-bold">↑</span>;
     }
     if (currentSortDirection === "desc") {
-      return <span className="text-red-600 font-semibold">↓</span>;
+      return <span className="text-red-600 font-bold">↓</span>;
     }
     return null;
   };

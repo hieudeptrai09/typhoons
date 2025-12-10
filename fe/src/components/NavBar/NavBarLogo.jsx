@@ -9,7 +9,7 @@ const NavbarLogo = ({ onClose }) => {
       onClick={onClose}
     >
       <Home size={24} />
-      <span className="font-semibold">Home</span>
+      <span>Home</span>
     </Link>
   );
 };

@@ -14,7 +14,7 @@ export const GridCell = ({
     if (!highlight) return "";
     if (highlight === "strongest") return "bg-red-300";
     if (highlight === "first") return "bg-blue-300";
-    return "bg-sky-200";
+    return "bg-stone-200";
   };
 
   const handleClick = () => {
@@ -33,13 +33,13 @@ export const GridCell = ({
 
   return (
     <td
-      className={`relative border-2 border-sky-200 p-2 ${
-        isClickable ? "cursor-pointer hover:bg-sky-200" : "cursor-default"
+      className={`relative border-2 border-stone-200 p-2 ${
+        isClickable ? "cursor-pointer hover:bg-stone-200" : "cursor-default"
       } ${getHighlightColor()}`}
       onClick={handleClick}
     >
       {stormNames.length > 0 && (
-        <div className="text-sky-100 text-[7px] absolute top-0">
+        <div className="text-stone-100 text-[7px] absolute top-0">
           {stormNames.join(", ")}
         </div>
       )}
