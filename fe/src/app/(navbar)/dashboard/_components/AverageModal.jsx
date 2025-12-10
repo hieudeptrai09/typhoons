@@ -54,9 +54,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     >
       <div className="space-y-3">
         <div className="text-lg" title={JSON.stringify(INTENSITY_RANK)}>
-          <span className="font-semibold text-purple-700">
-            Overall Average Intensity:{" "}
-          </span>
+          <span className="text-blue-700">Overall Average Intensity: </span>
           <span
             className="font-bold"
             style={{
@@ -68,7 +66,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           </span>
         </div>
         <div>
-          <div className="font-semibold mb-2 text-purple-700">
+          <div className="mb-2 text-blue-700">
             Storm names at this position:
           </div>
           <div className="space-y-2 relative">

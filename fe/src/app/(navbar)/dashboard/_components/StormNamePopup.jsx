@@ -89,10 +89,11 @@ export const StormNamePopup = ({
   return createPortal(
     <div
       ref={popupRef}
-      className="bg-white border-2 border-purple-500 rounded-lg shadow-xl fixed flex flex-col z-50"
+      className="bg-white border-2 border-blue-500 rounded-lg shadow-xl fixed flex flex-col z-50"
     >
-      <div className="font-semibold text-purple-700 px-4 py-2 border-b shrink-0">
-        All <span className="text-red-700">{selectedName}</span> storms:
+      <div className="font-semibold text-blue-700 px-4 py-2 border-b shrink-0">
+        All <span className="text-purple-600 font-bold">{selectedName}</span>{" "}
+        storms:
       </div>
       <div
         className="flex flex-col gap-1.5 px-4 py-2 overflow-y-auto flex-1"
