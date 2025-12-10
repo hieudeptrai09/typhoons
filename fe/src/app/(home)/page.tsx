@@ -14,16 +14,20 @@ const HomePage = () => {
         <a
           href="https://www.youtube.com/watch?v=5LtFOkH9zwU"
           target="_blank"
-          className="mb-12"
+          className="mb-4"
         >
           <Image
             src="/logo.png"
             alt="web logo"
             loading="eager"
             width={500}
-            height={250}
+            height={167}
           />
         </a>
+
+        <p className="text-gray-700 text-center font-semibold text-lg mb-12 max-w-md">
+          Track Typhoons and Discover Their Names
+        </p>
 
         <div className="flex flex-col gap-6 w-full max-w-sm">
           <Menu
@@ -49,8 +53,7 @@ const HomePage = () => {
 
       <footer className="bg-emerald-700 h-16 flex items-center justify-center">
         <p className="text-white text-center text-sm">
-          © {new Date().getFullYear()} {TITLE_COMMON} | Track Typhoons and
-          Discover Their Names
+          © {new Date().getFullYear()} {TITLE_COMMON}
         </p>
       </footer>
     </div>

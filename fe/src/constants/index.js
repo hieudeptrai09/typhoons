@@ -1,4 +1,4 @@
-export const TITLE_COMMON = "Catfish's Typhoons App";
+export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
 export const BACKGROUND_BADGE = {
   TD: "#00CCFF",
