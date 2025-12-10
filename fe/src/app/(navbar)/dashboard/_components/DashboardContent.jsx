@@ -23,17 +23,17 @@ const renderStormGridWithButtons = (
   stormsData
 ) => (
   <div>
+    <SpecialButtons
+      onCellClick={onCellClick}
+      isAverageView={isAverageView}
+      averageValues={averageValues}
+    />
     <StormGrid
       cellData={cellData}
       onCellClick={onCellClick}
       isClickable={true}
       isAverageView={isAverageView}
       stormsData={stormsData}
-    />
-    <SpecialButtons
-      onCellClick={onCellClick}
-      isAverageView={isAverageView}
-      averageValues={averageValues}
     />
   </div>
 );

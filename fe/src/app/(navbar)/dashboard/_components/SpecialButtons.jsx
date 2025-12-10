@@ -23,12 +23,15 @@ export const SpecialButtons = ({
   };
 
   return (
-    <div className="mt-6 flex justify-center gap-4">
+    <div className="mb-6 flex justify-center gap-4">
+      <div className="text-sm font-semibold text-gray-600 self-center mr-2">
+        Other Regions:
+      </div>
       {buttons.map((button) => (
         <button
           key={button.id}
           onClick={() => onCellClick(button.id, "position")}
-          className="px-8 py-4 bg-stone-100 font-semibold rounded-lg hover:bg-stone-200 transition-colors border border-stone-300"
+          className="px-6 py-3 bg-stone-100 font-semibold rounded-lg hover:bg-stone-200 transition-colors border border-stone-300 shadow-sm"
           style={{ color: getButtonStyle(button.id) }}
         >
           {button.label}
