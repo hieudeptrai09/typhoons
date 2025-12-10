@@ -2,7 +2,7 @@ import SortableTable from "../../../../../components/SortableTable";
 import { Frown } from "lucide-react";
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
-  if (paginatedData.length) {
+  if (paginatedData.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-8 text-center">
         <Frown className="w-16 h-16 mx-auto text-gray-400 mb-4" />
