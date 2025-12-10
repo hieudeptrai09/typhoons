@@ -14,7 +14,7 @@ const YearDigitSelector = ({ value, onChange }) => {
         onChange={(e) => onChange(e.target.value)}
         min="2000"
         max="2100"
-        className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+        className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-500 outline-none"
       />
     </FilterSection>
   );
