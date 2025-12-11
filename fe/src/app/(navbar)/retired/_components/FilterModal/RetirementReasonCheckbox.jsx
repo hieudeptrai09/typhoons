@@ -4,48 +4,57 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
   const options = [
     {
       value: "language",
-      label: "Language Problem (Green)",
-      colorClass: "text-green-600",
+      label: "Language Problem",
+      activeColor: "bg-green-600",
+      inactiveColor: "bg-green-100",
+      hoverActiveColor: "hover:bg-green-700",
+      hoverInactiveColor: "hover:bg-green-200",
+      textInactiveColor: "text-green-700",
     },
     {
       value: "destructive",
-      label: "Destructive Storm (Red)",
-      colorClass: "text-red-600",
+      label: "Destructive Storm",
+      activeColor: "bg-red-600",
+      inactiveColor: "bg-red-100",
+      hoverActiveColor: "hover:bg-red-700",
+      hoverInactiveColor: "hover:bg-red-200",
+      textInactiveColor: "text-red-700",
     },
   ];
 
-  const handleCheckboxChange = (optionValue) => {
-    if (value.includes(optionValue)) {
-      // Remove from array
-      onChange(value.filter((v) => v !== optionValue));
+  const handleButtonClick = (selectedValue) => {
+    // If clicking the same button, deselect it (set to empty string)
+    if (value === selectedValue) {
+      onChange("");
     } else {
-      // Add to array
-      onChange([...value, optionValue]);
+      // Select this option
+      onChange(selectedValue);
     }
   };
 
   return (
     <FilterSection
       label="Filter by Retirement Reason"
-      hasValue={value.length > 0}
-      onClear={() => onChange([])}
+      hasValue={Boolean(value)}
+      onClear={() => onChange("")}
     >
-      <div className="space-y-2">
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className="flex items-center cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              value={option.value}
-              checked={value.includes(option.value)}
-              onChange={() => handleCheckboxChange(option.value)}
-              className="w-4 h-4 text-blue-500 cursor-pointer rounded border-gray-300"
-            />
-            <span className={`ml-2 ${option.colorClass}`}>{option.label}</span>
-          </label>
-        ))}
+      <div className="flex gap-2">
+        {options.map((option) => {
+          const isActive = value === option.value;
+          return (
+            <button
+              key={option.value}
+              onClick={() => handleButtonClick(option.value)}
+              className={`px-4 py-2 rounded-lg ${
+                isActive
+                  ? `${option.activeColor} text-white ${option.hoverColor}`
+                  : `bg-gray-200 text-gray-700 hover:bg-gray-300`
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
       </div>
     </FilterSection>
   );

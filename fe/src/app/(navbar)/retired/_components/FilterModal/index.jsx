@@ -15,7 +15,7 @@ const FilterModal = ({
     searchName: "",
     selectedYear: "",
     selectedCountry: "",
-    retirementReasons: [],
+    retirementReason: "",
   },
 }) => {
   const [tempSearchName, setTempSearchName] = useState(
@@ -27,15 +27,15 @@ const FilterModal = ({
   const [tempSelectedCountry, setTempSelectedCountry] = useState(
     initialFilters.selectedCountry
   );
-  const [tempRetirementReasons, setTempRetirementReasons] = useState(
-    initialFilters.retirementReasons
+  const [tempRetirementReason, setTempRetirementReason] = useState(
+    initialFilters.retirementReason
   );
 
   useEffect(() => {
     setTempSearchName(initialFilters.searchName);
     setTempSelectedYear(initialFilters.selectedYear);
     setTempSelectedCountry(initialFilters.selectedCountry);
-    setTempRetirementReasons(initialFilters.retirementReasons);
+    setTempRetirementReason(initialFilters.retirementReason);
   }, [initialFilters]);
 
   const handleApply = () => {
@@ -43,7 +43,7 @@ const FilterModal = ({
       searchName: tempSearchName,
       selectedYear: tempSelectedYear,
       selectedCountry: tempSelectedCountry,
-      retirementReasons: tempRetirementReasons,
+      retirementReason: tempRetirementReason,
     });
   };
 
@@ -51,7 +51,7 @@ const FilterModal = ({
     setTempSearchName("");
     setTempSelectedYear("");
     setTempSelectedCountry("");
-    setTempRetirementReasons([]);
+    setTempRetirementReason("");
   };
 
   return (
@@ -76,8 +76,8 @@ const FilterModal = ({
         />
 
         <RetirementReasonCheckbox
-          value={tempRetirementReasons}
-          onChange={setTempRetirementReasons}
+          value={tempRetirementReason}
+          onChange={setTempRetirementReason}
         />
       </div>
 

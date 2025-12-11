@@ -14,11 +14,9 @@ export const getRetiredNamesTitle = (name, year, country, lang) => {
   }
 
   if (lang) {
-    if (lang === "both") {
-      parts.push("Language & Destructive");
-    } else if (lang === "true") {
+    if (lang === "language") {
       parts.push("Language");
-    } else if (lang === "false") {
+    } else if (lang === "destructive") {
       parts.push("Destructive");
     }
   }

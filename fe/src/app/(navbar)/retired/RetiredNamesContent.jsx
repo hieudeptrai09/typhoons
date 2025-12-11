@@ -14,21 +14,6 @@ import { usePagination } from "./_hooks/usePagination";
 import { getRetiredNamesTitle } from "./_utils/fns";
 import PageHeader from "../../../components/PageHeader";
 
-// Helper functions to convert between retirementReasons array and lang parameter
-const langToReasons = (lang) => {
-  if (lang === "both") return ["language", "destructive"];
-  if (lang === "true") return ["language"];
-  if (lang === "false") return ["destructive"];
-  return [];
-};
-
-const reasonsToLang = (reasons) => {
-  if (reasons.length === 2) return "both";
-  if (reasons.includes("language")) return "true";
-  if (reasons.includes("destructive")) return "false";
-  return "";
-};
-
 const RetiredNamesContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,7 +27,7 @@ const RetiredNamesContent = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [retirementReasons, setRetirementReasons] = useState([]);
+  const [retirementReason, setRetirementReason] = useState("");
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,29 +37,27 @@ const RetiredNamesContent = () => {
     const name = searchParams.get("name") || "";
     const year = searchParams.get("year") || "";
     const country = searchParams.get("country") || "";
-    const lang = searchParams.get("lang");
+    const lang = searchParams.get("lang") || "";
 
     setSearchName(name);
     setSelectedYear(year ? parseInt(year) : "");
     setSelectedCountry(country);
-    setRetirementReasons(langToReasons(lang));
+    setRetirementReason(lang);
   }, [searchParams]);
 
   // Update page title based on filters (client-side)
   useEffect(() => {
-    const lang = reasonsToLang(retirementReasons);
-
     const titleParts = getRetiredNamesTitle(
       searchName,
       selectedYear?.toString() || "",
       selectedCountry,
-      lang
+      retirementReason
     );
 
     document.title = titleParts
       ? `Retired Names: ${titleParts.join(" • ")} | ${TITLE_COMMON}`
       : `Retired Typhoon Names | ${TITLE_COMMON}`;
-  }, [searchName, selectedYear, selectedCountry, retirementReasons]);
+  }, [searchName, selectedYear, selectedCountry, retirementReason]);
 
   // Update URL when filters change
   const updateURL = (filters) => {
@@ -89,10 +72,8 @@ const RetiredNamesContent = () => {
     if (filters.selectedCountry) {
       params.set("country", filters.selectedCountry);
     }
-
-    const lang = reasonsToLang(filters.retirementReasons);
-    if (lang) {
-      params.set("lang", lang);
+    if (filters.retirementReason) {
+      params.set("lang", filters.retirementReason);
     }
 
     const queryString = params.toString();
@@ -117,7 +98,7 @@ const RetiredNamesContent = () => {
     searchName,
     selectedYear,
     selectedCountry,
-    retirementReasons,
+    retirementReason,
   });
 
   const { paginatedData, totalPages } = usePagination({
@@ -144,7 +125,7 @@ const RetiredNamesContent = () => {
     setSearchName(filters.searchName);
     setSelectedYear(filters.selectedYear);
     setSelectedCountry(filters.selectedCountry);
-    setRetirementReasons(filters.retirementReasons);
+    setRetirementReason(filters.retirementReason);
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
@@ -158,7 +139,7 @@ const RetiredNamesContent = () => {
           name: searchName,
           year: selectedYear?.toString() || "",
           country: selectedCountry,
-          lang: reasonsToLang(retirementReasons),
+          lang: retirementReason,
         }}
       />
 
@@ -185,7 +166,7 @@ const RetiredNamesContent = () => {
           searchName,
           selectedYear,
           selectedCountry,
-          retirementReasons,
+          retirementReason,
         }}
       />
 
