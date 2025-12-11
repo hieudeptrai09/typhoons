@@ -6,9 +6,9 @@ const FilterSection = ({ label, hasValue, onClear, children }) => {
         {hasValue && (
           <button
             onClick={onClear}
-            className="text-sm text-blue-500 hover:text-blue-600 hover:underline"
+            className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2 py-1"
           >
-            Clear
+            Clear this filter
           </button>
         )}
       </div>
