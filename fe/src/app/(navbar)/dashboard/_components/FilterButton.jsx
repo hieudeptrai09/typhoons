@@ -1,5 +1,5 @@
 import {
-  Cloud,
+  CloudLightning,
   Star,
   BarChart3,
   Zap,
@@ -20,7 +20,7 @@ const FilterButton = ({ onClick, params }) => {
 
     const iconMap = {
       view: {
-        storms: Cloud,
+        storms: CloudLightning,
         highlights: Star,
         average: BarChart3,
       },
