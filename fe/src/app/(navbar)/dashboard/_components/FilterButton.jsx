@@ -1,7 +1,7 @@
 import {
   CloudLightning,
   Star,
-  BarChart3,
+  Activity,
   Zap,
   Medal,
   MapPin,
@@ -22,7 +22,7 @@ const FilterButton = ({ onClick, params }) => {
       view: {
         storms: CloudLightning,
         highlights: Star,
-        average: BarChart3,
+        average: Activity,
       },
       filter: {
         strongest: Zap,
