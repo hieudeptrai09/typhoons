@@ -105,10 +105,7 @@ export default function DashboardPageContent() {
     <PageHeader
       title={getDashboardTitle(params.view, params.mode, params.filter)}
     >
-      <FilterButton
-        onClick={() => setFilterModalOpen(true)}
-        params={params}
-      />
+      <FilterButton onClick={() => setFilterModalOpen(true)} params={params} />
 
       <DashboardContent
         params={params}

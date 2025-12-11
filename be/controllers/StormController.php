@@ -18,7 +18,8 @@ class StormController
                     s.intensity,
                     s.year,
                     s.isStrongest,
-                    s.isFirst
+                    s.isFirst,
+                    s.isLast
                   FROM storms s
                   INNER JOIN positions p ON s.position = p.id";
 

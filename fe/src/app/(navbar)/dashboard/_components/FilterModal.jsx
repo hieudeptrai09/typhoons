@@ -13,7 +13,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   }, [currentParams]);
 
   const getFilterOptions = () => {
-    if (view === "highlights") return ["strongest", "first"];
+    if (view === "highlights") return ["strongest", "first", "last"];
     if (view === "average") return ["position", "name", "country", "year"];
     return [];
   };
@@ -74,7 +74,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
         {options.map((option) => {
           const isActive = value === option.value;
           const isDisabled = disabled || option.disabled;
-          
+
           return (
             <button
               key={option.value}

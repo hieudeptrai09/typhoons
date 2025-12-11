@@ -25,6 +25,8 @@ export const getHighlights = (stormsData, type) => {
     return stormsData.filter((storm) => Boolean(Number(storm.isStrongest)));
   } else if (type === "first") {
     return stormsData.filter((storm) => Boolean(Number(storm.isFirst)));
+  } else if (type === "last") {
+    return stormsData.filter((storm) => Boolean(Number(storm.isLast)));
   }
   return [];
 };
