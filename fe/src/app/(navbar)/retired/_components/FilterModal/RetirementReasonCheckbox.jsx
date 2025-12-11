@@ -48,7 +48,7 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
               className={`px-4 py-2 rounded-lg ${
                 isActive
                   ? `${option.activeColor} text-white ${option.hoverColor}`
-                  : `bg-gray-200 text-gray-700 hover:bg-gray-300`
+                  : `${option.inactiveColor} ${option.textInactiveColor} ${option.hoverInactiveColor}`
               }`}
             >
               {option.label}
