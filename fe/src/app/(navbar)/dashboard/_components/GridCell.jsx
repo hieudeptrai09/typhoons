@@ -14,7 +14,8 @@ export const GridCell = ({
     if (!highlight) return "";
     if (highlight === "strongest") return "bg-red-300";
     if (highlight === "first") return "bg-blue-300";
-    return "bg-stone-200";
+    if (highlight === "last") return "bg-orange-300";
+    return "bg-green-300";
   };
 
   const handleClick = () => {
