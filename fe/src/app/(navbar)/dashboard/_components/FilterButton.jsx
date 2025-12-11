@@ -10,7 +10,7 @@ import {
   List,
   Globe,
   Calendar,
-  Flag,
+  ArrowDownToLine,
 } from "lucide-react";
 
 const FilterButton = ({ onClick, params }) => {
@@ -27,7 +27,7 @@ const FilterButton = ({ onClick, params }) => {
       filter: {
         strongest: Zap,
         first: Medal,
-        last: Flag,
+        last: ArrowDownToLine,
         position: MapPin,
         name: Tag,
         country: Globe,
