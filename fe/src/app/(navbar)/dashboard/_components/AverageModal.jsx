@@ -53,10 +53,10 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
       wrapperClassName="max-w-md"
     >
       <div className="space-y-3">
-        <div className="text-lg" title={JSON.stringify(INTENSITY_RANK)}>
+        <div title={JSON.stringify(INTENSITY_RANK)}>
           <span className="text-blue-700">Overall Average Intensity: </span>
           <span
-            className="font-bold"
+            className="text-lg font-bold"
             style={{
               color:
                 TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)],
