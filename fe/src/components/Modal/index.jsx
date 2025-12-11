@@ -16,7 +16,7 @@ export const Modal = ({
       onClick={onClose}
     >
       <div
-        className={`bg-white rounded-lg shadow-2xl w-full max-h-[90vh] flex flex-col ${wrapperClassName}`}
+        className={`bg-white rounded-lg w-full max-h-[90vh] flex flex-col ${wrapperClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start p-6 pb-4 shrink-0 border-b border-gray-300">
