@@ -1,5 +1,4 @@
 import { Modal } from "../../../../components/Modal";
-import { FilterSelectSection } from "./FilterSelectSection";
 import { useState, useEffect } from "react";
 
 export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
@@ -41,17 +40,6 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     }
   };
 
-  const handleClear = (field) => {
-    if (field === "view") {
-      setView("storms");
-      setFilter("");
-    }
-    if (field === "filter") {
-      setFilter(getDefaultFilter(view));
-    }
-    if (field === "mode") setMode("table");
-  };
-
   const handleClearAll = () => {
     setView("storms");
     setFilter("");
@@ -79,6 +67,35 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const filterOptions = getFilterOptions();
 
+  const ButtonGroup = ({ label, options, value, onChange, disabled }) => (
+    <div className="space-y-2">
+      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => {
+          const isActive = value === option.value;
+          const isDisabled = disabled || option.disabled;
+          
+          return (
+            <button
+              key={option.value}
+              onClick={() => !isDisabled && onChange(option.value)}
+              disabled={isDisabled}
+              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                isActive
+                  ? "bg-blue-500 text-white"
+                  : isDisabled
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -87,33 +104,27 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
       wrapperClassName="max-w-lg"
     >
       <div className="space-y-4 mb-6">
-        <FilterSelectSection
+        <ButtonGroup
           label="View"
-          value={view}
-          onChange={(e) => handleViewChange(e.target.value)}
           options={[
             { value: "storms", label: "Storms" },
             { value: "highlights", label: "Highlights" },
             { value: "average", label: "Average" },
           ]}
-          hasValue={view !== "storms"}
-          onClear={() => handleClear("view")}
+          value={view}
+          onChange={handleViewChange}
         />
 
-        <FilterSelectSection
+        <ButtonGroup
           label="Filter by"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
           options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
-          hasValue={Boolean(filter) && filter !== getDefaultFilter(view)}
-          onClear={() => handleClear("filter")}
+          value={filter}
+          onChange={setFilter}
           disabled={isFilterDisabled}
         />
 
-        <FilterSelectSection
+        <ButtonGroup
           label="Mode"
-          value={mode}
-          onChange={(e) => setMode(e.target.value)}
           options={[
             {
               value: "table",
@@ -126,14 +137,8 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
               disabled: isModeListOptionDisabled,
             },
           ]}
-          hasValue={
-            mode !== "table" &&
-            !(
-              view === "average" &&
-              (filter === "name" || filter === "country" || filter === "year")
-            )
-          }
-          onClear={() => handleClear("mode")}
+          value={mode}
+          onChange={setMode}
         />
       </div>
 
