@@ -7,8 +7,8 @@ export const BACKGROUND_BADGE = {
   1: "#FFFF00",
   2: "#FFCC00",
   3: "#FF6600",
-  4: "#FF0000",
-  5: "#CC00CC",
+  4: "#DD0000",
+  5: "#AA00AA",
 };
 
 export const BACKGROUND_HOVER_BADGE = {
@@ -34,12 +34,12 @@ export const TEXT_COLOR_BADGE = {
 };
 
 export const TEXT_COLOR_WHITE_BACKGROUND = {
-  TD: "#00CCFF",
-  TS: "#00FF00",
-  STS: "#007733",
-  1: "#AA8800",
-  2: "#FFCC00",
-  3: "#FF6600",
+  TD: "#0099CC",
+  TS: "#00BB00",
+  STS: "#008844",
+  1: "#CC9900",
+  2: "#FF9900",
+  3: "#FF5500",
   4: "#FF0000",
   5: "#CC00CC",
 };
