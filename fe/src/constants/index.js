@@ -7,8 +7,8 @@ export const BACKGROUND_BADGE = {
   1: "#FFFF00",
   2: "#FFCC00",
   3: "#FF6600",
-  4: "#DD0000",
-  5: "#AA00AA",
+  4: "#FF0000",
+  5: "#CC00CC",
 };
 
 export const BACKGROUND_HOVER_BADGE = {
@@ -40,8 +40,8 @@ export const TEXT_COLOR_WHITE_BACKGROUND = {
   1: "#CC9900",
   2: "#FF9900",
   3: "#FF5500",
-  4: "#FF0000",
-  5: "#CC00CC",
+  4: "#DD0000",
+  5: "#AA00AA",
 };
 
 export const SORTING_RANK = {
