@@ -1,12 +1,8 @@
-import SortableTable from "../../../../components/SortableTable";
-import { CheckCircle, XCircle } from "lucide-react";
+import SortableTable from "../../../../../components/SortableTable";
+import { Check, X } from "lucide-react";
 import { useMemo } from "react";
 
-const FilteredNamesTable = ({
-  filteredNames,
-  showImageAndDescription,
-  onNameClick,
-}) => {
+const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
   const getNameColor = (name) => {
     if (Boolean(Number(name.isRetired))) return "text-red-600";
     return "text-blue-600";
@@ -39,7 +35,7 @@ const FilteredNamesTable = ({
     }
     if (column.key === "image") {
       return (
-        <div onClick={(e) => e.stopPropagation()}>
+        <>
           {row.image ? (
             <img
               src={row.image}
@@ -49,21 +45,17 @@ const FilteredNamesTable = ({
           ) : (
             <span className="text-gray-400">-</span>
           )}
-        </div>
+        </>
       );
     }
     if (column.key === "description") {
-      return (
-        <div onClick={(e) => e.stopPropagation()}>
-          {row.description || <span className="text-gray-400">-</span>}
-        </div>
-      );
+      return <>{row.description || <span className="text-gray-400">-</span>}</>;
     }
     if (column.key === "isRetired") {
       return Boolean(Number(row.isRetired)) ? (
-        <CheckCircle className="text-red-600" size={20} />
+        <Check className="text-red-600" size={20} />
       ) : (
-        <XCircle className="text-gray-400" size={20} />
+        <X className="text-gray-400" size={20} />
       );
     }
     return row[column.key];
@@ -73,7 +65,6 @@ const FilteredNamesTable = ({
     <SortableTable
       data={filteredNames}
       columns={columns}
-      onRowClick={onNameClick}
       renderCell={renderCell}
     />
   );

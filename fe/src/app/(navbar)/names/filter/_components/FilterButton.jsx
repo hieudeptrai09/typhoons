@@ -1,8 +1,6 @@
 import { Filter } from "lucide-react";
 
-const FilterButton = ({ activeFilterCount, onClick, params }) => {
-  const hasFilters = activeFilterCount > 0;
-
+const FilterButton = ({ onClick, params }) => {
   const getFilterText = () => {
     const parts = [];
     if (params.name) parts.push(params.name);

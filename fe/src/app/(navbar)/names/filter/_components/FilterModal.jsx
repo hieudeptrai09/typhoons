@@ -1,4 +1,4 @@
-import { Modal } from "../../../../components/Modal";
+import { Modal } from "../../../../../components/Modal";
 import { useState, useEffect } from "react";
 
 const FilterModal = ({
@@ -37,7 +37,7 @@ const FilterModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Filter Options"
-      wrapperClassName="max-w-2xl"
+      wrapperClassName="max-w-md"
     >
       <div className="space-y-4">
         <div>
@@ -48,7 +48,7 @@ const FilterModal = ({
             {tempSearchName && (
               <button
                 onClick={() => setTempSearchName("")}
-                className="text-sm text-blue-500 hover:text-blue-600 hover:underline px-2 py-1"
+                className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2 py-1"
               >
                 Clear this filter
               </button>
@@ -59,7 +59,7 @@ const FilterModal = ({
             placeholder="Enter typhoon name..."
             value={tempSearchName}
             onChange={(e) => setTempSearchName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-600 outline-none"
           />
         </div>
 
@@ -71,7 +71,7 @@ const FilterModal = ({
             {tempSelectedCountry && (
               <button
                 onClick={() => setTempSelectedCountry("")}
-                className="text-sm text-blue-500 hover:text-blue-600 hover:underline px-2 py-1"
+                className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2 py-1"
               >
                 Clear this filter
               </button>
@@ -80,7 +80,7 @@ const FilterModal = ({
           <select
             value={tempSelectedCountry}
             onChange={(e) => setTempSelectedCountry(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-purple-600 outline-none"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-500 outline-none"
           >
             <option value="">All Countries</option>
             {countries.map((country) => (
