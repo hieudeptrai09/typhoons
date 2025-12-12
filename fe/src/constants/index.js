@@ -24,7 +24,7 @@ export const BACKGROUND_HOVER_BADGE = {
 
 export const TEXT_COLOR_BADGE = {
   TD: "white",
-  TS: "white",
+  TS: "gray",
   STS: "gray",
   1: "gray",
   2: "white",
