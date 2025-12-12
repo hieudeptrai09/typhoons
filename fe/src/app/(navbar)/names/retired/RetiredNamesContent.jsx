@@ -77,7 +77,9 @@ const RetiredNamesContent = () => {
     }
 
     const queryString = params.toString();
-    const newURL = queryString ? `/retired?${queryString}` : "/retired";
+    const newURL = queryString
+      ? `/names/retired?${queryString}`
+      : "/names/retired";
     router.push(newURL);
   };
 
