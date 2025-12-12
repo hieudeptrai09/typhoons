@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import fetchData from "../../../containers/utils/fetcher";
-import { TITLE_COMMON } from "../../../constants";
+import fetchData from "../../../../containers/utils/fetcher";
+import { TITLE_COMMON } from "../../../../constants";
 import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import FilterButton from "./_components/MainPage/FilterButton";
@@ -12,7 +12,7 @@ import Pagination from "./_components/MainPage/Pagination";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 import { getRetiredNamesTitle } from "./_utils/fns";
-import PageHeader from "../../../components/PageHeader";
+import PageHeader from "../../../../components/PageHeader";
 
 const RetiredNamesContent = () => {
   const router = useRouter();
@@ -77,7 +77,9 @@ const RetiredNamesContent = () => {
     }
 
     const queryString = params.toString();
-    const newURL = queryString ? `/retired?${queryString}` : "/retired";
+    const newURL = queryString
+      ? `/names/retired?${queryString}`
+      : "/names/retired";
     router.push(newURL);
   };
 

@@ -16,7 +16,7 @@ const FilterButton = ({ activeFilterCount, onClick, params }) => {
     <div className="max-w-4xl mx-auto mb-6">
       <button
         onClick={onClick}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
+        className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
       >
         <Filter size={20} />
         {filterText}

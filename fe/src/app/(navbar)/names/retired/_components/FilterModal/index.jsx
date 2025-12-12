@@ -1,4 +1,4 @@
-import { Modal } from "../../../../../components/Modal";
+import { Modal } from "../../../../../../components/Modal";
 import { useState, useEffect } from "react";
 import NameSearchInput from "./NameSearchInput";
 import YearDigitSelector from "./YearDigitSelector";

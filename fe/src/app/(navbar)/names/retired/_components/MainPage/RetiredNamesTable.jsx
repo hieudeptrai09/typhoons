@@ -1,4 +1,4 @@
-import SortableTable from "../../../../../components/SortableTable";
+import SortableTable from "../../../../../../components/SortableTable";
 import { Frown } from "lucide-react";
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
