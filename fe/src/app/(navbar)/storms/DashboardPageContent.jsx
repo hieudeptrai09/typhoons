@@ -66,7 +66,7 @@ export default function DashboardPageContent() {
     window.history.pushState(
       {},
       "",
-      `/dashboard${searchParams.toString() ? `?${searchParams}` : ""}`
+      `/storms${searchParams.toString() ? `?${searchParams}` : ""}`
     );
   };
 
