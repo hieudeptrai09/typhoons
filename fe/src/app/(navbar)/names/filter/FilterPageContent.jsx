@@ -152,13 +152,7 @@ const FilterNamesPage = () => {
   };
 
   return (
-    <PageHeader
-      title={`Filter Names: ${getPageTitle(
-        searchName,
-        selectedCountry,
-        currentLetter
-      ).join(" / ")}`}
-    >
+    <PageHeader title="Filter Names">
       <FilterButton
         onClick={() => setIsFilterModalOpen(true)}
         params={{
