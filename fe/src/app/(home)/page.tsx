@@ -31,20 +31,14 @@ const HomePage = () => {
 
         <div className="flex flex-col gap-6 w-full max-w-sm">
           <Menu
-            href="dashboard"
-            label="Dashboard"
+            href="storms"
+            label="Storms"
             color="bg-purple-800"
             hoverColor="hover:bg-purple-900"
           />
           <Menu
-            href="stormnames"
-            label="Current Names"
-            color="bg-purple-800"
-            hoverColor="hover:bg-purple-900"
-          />
-          <Menu
-            href="retired"
-            label="Retired Names"
+            href="names"
+            label="Names"
             color="bg-purple-800"
             hoverColor="hover:bg-purple-900"
           />
