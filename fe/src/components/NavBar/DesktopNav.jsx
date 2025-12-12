@@ -15,10 +15,10 @@ const DesktopNav = ({ currentPath }) => {
 
   const namesSubmenu = [
     {
-      href: "/names/now",
+      href: "/names/current",
       icon: List,
       label: "Current Names",
-      isActive: currentPath === "/names/now/",
+      isActive: currentPath === "/names/current/",
     },
     {
       href: "/names/retired",

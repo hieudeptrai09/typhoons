@@ -9,7 +9,7 @@ const NamesPage = () => {
 
   const sections = [
     {
-      href: "/names/now",
+      href: "/names/current",
       title: "Current Typhoon Names",
       description:
         "View the 140 active typhoon names in the official WMO naming list, organized by contributing country",

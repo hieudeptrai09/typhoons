@@ -15,17 +15,16 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
 
   const namesSubmenu = [
     {
-      href: "/names/now",
+      href: "/names/current",
       icon: List,
       label: "Current Names",
-      isActive: currentPath === "/names/now/" || currentPath === "/stormnames/",
+      isActive: currentPath === "/names/current/",
     },
     {
       href: "/names/retired",
       icon: Archive,
       label: "Retired Names",
-      isActive:
-        currentPath === "/names/retired/" || currentPath === "/retired/",
+      isActive: currentPath === "/names/retired/",
     },
     {
       href: "/names/filter",
@@ -35,10 +34,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
     },
   ];
 
-  const isNamesActive =
-    currentPath.startsWith("/names") ||
-    currentPath === "/stormnames/" ||
-    currentPath === "/retired/";
+  const isNamesActive = currentPath.startsWith("/names");
 
   return (
     <div
@@ -51,9 +47,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
           href="/storms/"
           icon={CloudLightning}
           label="Storms"
-          isActive={
-            currentPath.startsWith("/storms") || currentPath === "/dashboard/"
-          }
+          isActive={currentPath === "/storms/"}
           onClick={onClose}
         />
 
