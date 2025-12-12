@@ -23,14 +23,14 @@ export const BACKGROUND_HOVER_BADGE = {
 };
 
 export const TEXT_COLOR_BADGE = {
-  TD: "white",
-  TS: "gray",
-  STS: "gray",
-  1: "gray",
-  2: "white",
-  3: "white",
-  4: "white",
-  5: "white",
+  TD: "#FFFFFF",
+  TS: "#005500",
+  STS: "#004D26",
+  1: "#666600",
+  2: "#663300",
+  3: "#FFFFFF",
+  4: "#FFFFFF",
+  5: "#FFFFFF",
 };
 
 export const TEXT_COLOR_WHITE_BACKGROUND = {
