@@ -3,14 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchData from "../../../../containers/utils/fetcher";
-import { TITLE_COMMON } from "../../../../constants";
 import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import Toggle from "./_components/Toggle";
 import LetterNavigation from "./_components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
-import { getPageTitle } from "./_utils/fns";
 
 const FilterNamesPage = () => {
   const router = useRouter();
@@ -39,17 +37,6 @@ const FilterNamesPage = () => {
     setSelectedCountry(country);
     setCurrentLetter(letter);
   }, [searchParams]);
-
-  useEffect(() => {
-    const titleParts = getPageTitle(searchName, selectedCountry, currentLetter);
-
-    const title =
-      titleParts.length > 0
-        ? `Filter Names: ${titleParts.join(" • ")} | ${TITLE_COMMON}`
-        : `Filter Typhoon Names | ${TITLE_COMMON}`;
-
-    document.title = title;
-  }, [searchName, selectedCountry, currentLetter]);
 
   useEffect(() => {
     // Fetch all names (both current and retired)

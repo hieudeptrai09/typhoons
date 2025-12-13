@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchData from "../../../../containers/utils/fetcher";
-import { TITLE_COMMON } from "../../../../constants";
 import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import FilterButton from "./_components/MainPage/FilterButton";
@@ -11,7 +10,6 @@ import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import Pagination from "./_components/MainPage/Pagination";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
-import { getRetiredNamesTitle } from "./_utils/fns";
 import PageHeader from "../../../../components/PageHeader";
 
 const RetiredNamesContent = () => {
@@ -44,20 +42,6 @@ const RetiredNamesContent = () => {
     setSelectedCountry(country);
     setRetirementReason(lang);
   }, [searchParams]);
-
-  // Update page title based on filters (client-side)
-  useEffect(() => {
-    const titleParts = getRetiredNamesTitle(
-      searchName,
-      selectedYear?.toString() || "",
-      selectedCountry,
-      retirementReason
-    );
-
-    document.title = titleParts
-      ? `Retired Names: ${titleParts.join(" • ")} | ${TITLE_COMMON}`
-      : `Retired Typhoon Names | ${TITLE_COMMON}`;
-  }, [searchName, selectedYear, selectedCountry, retirementReason]);
 
   // Update URL when filters change
   const updateURL = (filters) => {

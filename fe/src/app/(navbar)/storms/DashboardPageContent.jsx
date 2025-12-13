@@ -7,7 +7,7 @@ import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
 import { DashboardContent } from "./_components/DashboardContent";
 import FilterButton from "./_components/FilterButton";
-import { INTENSITY_RANK, TITLE_COMMON } from "../../../constants";
+import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
 import PageHeader from "../../../components/PageHeader";
@@ -32,20 +32,6 @@ export default function DashboardPageContent() {
     setParams({ view, mode, filter });
   }, [searchParams]);
 
-  // Update page title based on params (client-side)
-  useEffect(() => {
-    const titleParts = getDashboardTitle(
-      params.view,
-      params.mode,
-      params.filter
-    );
-    const title = titleParts
-      ? `${titleParts} | Dashboard | ${TITLE_COMMON}`
-      : `Dashboard | ${TITLE_COMMON}`;
-
-    document.title = title;
-  }, [params]);
-
   useEffect(() => {
     const loadStorms = async () => {
       const result = await fetchData("/storms");
@@ -63,11 +49,7 @@ export default function DashboardPageContent() {
     Object.entries(newParams).forEach(([key, value]) => {
       if (value) searchParams.set(key, value);
     });
-    window.history.pushState(
-      {},
-      "",
-      `/storms${searchParams.toString() ? `?${searchParams}` : ""}`
-    );
+    router.push(`/storms${searchParams.toString() ? `?${searchParams}` : ""}`);
   };
 
   const handleCellClick = (data, key) => {
