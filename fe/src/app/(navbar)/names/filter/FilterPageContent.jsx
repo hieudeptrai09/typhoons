@@ -156,10 +156,12 @@ const FilterNamesPage = () => {
         />
       )}
 
-      <Toggle
-        value={showImageAndDescription}
-        onChange={setShowImageAndDescription}
-      />
+      {paginatedNames.length > 0 && (
+        <Toggle
+          value={showImageAndDescription}
+          onChange={setShowImageAndDescription}
+        />
+      )}
 
       <FilteredNamesTable
         filteredNames={paginatedNames}

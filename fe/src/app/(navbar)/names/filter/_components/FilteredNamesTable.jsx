@@ -1,8 +1,23 @@
 import SortableTable from "../../../../../components/SortableTable";
-import { Check, X } from "lucide-react";
+import { Check, X, Frown } from "lucide-react";
 import { useMemo } from "react";
 
 const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
+  if (filteredNames.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-8 text-center">
+        <Frown className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          No Results Found
+        </h3>
+        <p className="text-gray-500">
+          No typhoon names match your current filters. Try adjusting your search
+          criteria.
+        </p>
+      </div>
+    );
+  }
+
   const getNameColor = (name) => {
     if (Boolean(Number(name.isRetired))) return "text-red-600";
     return "text-blue-600";
