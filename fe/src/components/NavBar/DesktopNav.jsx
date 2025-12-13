@@ -64,7 +64,7 @@ const DesktopNav = ({ currentPath }) => {
         </button>
 
         {isNamesOpen && (
-          <div className="absolute top-full left-0 pt-2 z-50">
+          <div className="absolute top-full right-0 pt-2 z-50">
             <div className="bg-white rounded-lg shadow-lg py-2 min-w-[200px]">
               {namesSubmenu.map((item) => {
                 const Icon = item.icon;
