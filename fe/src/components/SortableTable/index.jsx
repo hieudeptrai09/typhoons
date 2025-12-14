@@ -1,7 +1,13 @@
 import { useTableSort } from "../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
 
-const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
+const SortableTable = ({
+  data,
+  columns,
+  onRowClick,
+  renderCell,
+  className = "max-w-4xl",
+}) => {
   const { sortedData, sortColumn, sortDirection, handleSort } =
     useTableSort(data);
 
@@ -12,7 +18,7 @@ const SortableTable = ({ data, columns, onRowClick, renderCell }) => {
   const getCellRenderer = renderCell || defaultRenderCell;
 
   return (
-    <div className="overflow-x-auto max-w-4xl mx-auto">
+    <div className={`overflow-x-auto mx-auto ${className}`}>
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-stone-200">
           <tr>

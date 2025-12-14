@@ -55,7 +55,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
             <img
               src={row.image}
               alt={row.name}
-              className="w-24 h-24 object-cover rounded"
+              className="min-h-24 max-h-52 object-cover rounded"
             />
           ) : (
             <span className="text-gray-400">-</span>
@@ -81,6 +81,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
       data={filteredNames}
       columns={columns}
       renderCell={renderCell}
+      className={showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}
     />
   );
 };
