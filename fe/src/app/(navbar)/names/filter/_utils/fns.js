@@ -1,5 +1,10 @@
 // Generate dynamic page header title
-export const getPageTitle = (searchName, selectedCountry, currentLetter) => {
+export const getPageTitle = (
+  searchName,
+  selectedCountry,
+  selectedLanguage,
+  currentLetter
+) => {
   const titleParts = [];
 
   if (searchName) {
@@ -10,7 +15,11 @@ export const getPageTitle = (searchName, selectedCountry, currentLetter) => {
     titleParts.push(selectedCountry);
   }
 
-  if (!searchName && !selectedCountry) {
+  if (selectedLanguage) {
+    titleParts.push(selectedLanguage);
+  }
+
+  if (!searchName && !selectedCountry && !selectedLanguage) {
     titleParts.push(`Letter ${currentLetter}`);
   }
 

@@ -28,6 +28,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
       { key: "isRetired", label: "Retired", isSortable: true },
       { key: "name", label: "Name", isSortable: true },
       { key: "country", label: "Country", isSortable: true },
+      { key: "language", label: "Language", isSortable: true },
       { key: "position", label: "Position", isSortable: true },
       { key: "meaning", label: "Meaning", isSortable: false },
     ];
@@ -55,7 +56,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
             <img
               src={row.image}
               alt={row.name}
-              className="min-h-24 max-h-52 object-cover rounded"
+              className="min-h-24 max-h-52 min-w-28 object-cover rounded"
             />
           ) : (
             <span className="text-gray-400">-</span>

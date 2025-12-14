@@ -20,6 +20,7 @@ const FilterNamesPage = () => {
   // Filter states
   const [searchName, setSearchName] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
@@ -31,10 +32,12 @@ const FilterNamesPage = () => {
   useEffect(() => {
     const name = searchParams.get("name") || "";
     const country = searchParams.get("country") || "";
+    const language = searchParams.get("language") || "";
     const letter = searchParams.get("letter") || "A";
 
     setSearchName(name);
     setSelectedCountry(country);
+    setSelectedLanguage(language);
     setCurrentLetter(letter);
   }, [searchParams]);
 
@@ -51,6 +54,12 @@ const FilterNamesPage = () => {
     return [...new Set(names.map((name) => name.country))].sort();
   }, [names]);
 
+  const languages = useMemo(() => {
+    return [
+      ...new Set(names.map((name) => name.language).filter(Boolean)),
+    ].sort();
+  }, [names]);
+
   const filteredNames = useMemo(() => {
     let filtered = [...names];
 
@@ -64,8 +73,12 @@ const FilterNamesPage = () => {
       filtered = filtered.filter((name) => name.country === selectedCountry);
     }
 
+    if (selectedLanguage) {
+      filtered = filtered.filter((name) => name.language === selectedLanguage);
+    }
+
     return filtered;
-  }, [names, searchName, selectedCountry]);
+  }, [names, searchName, selectedCountry, selectedLanguage]);
 
   // Sort by name and filter by current letter
   const paginatedNames = useMemo(() => {
@@ -74,7 +87,7 @@ const FilterNamesPage = () => {
     );
 
     // If filters are active, show all results
-    if (searchName || selectedCountry) {
+    if (searchName || selectedCountry || selectedLanguage) {
       return sorted;
     }
 
@@ -82,7 +95,13 @@ const FilterNamesPage = () => {
     return sorted.filter(
       (name) => name.name.charAt(0).toUpperCase() === currentLetter
     );
-  }, [filteredNames, currentLetter, searchName, selectedCountry]);
+  }, [
+    filteredNames,
+    currentLetter,
+    searchName,
+    selectedCountry,
+    selectedLanguage,
+  ]);
 
   // Get available letters (letters that have names)
   const availableLetters = useMemo(() => {
@@ -120,15 +139,23 @@ const FilterNamesPage = () => {
     return fullyRetired;
   }, [filteredNames]);
 
-  const activeFilterCount = [searchName, selectedCountry].filter(
-    Boolean
-  ).length;
+  const activeFilterCount = [
+    searchName,
+    selectedCountry,
+    selectedLanguage,
+  ].filter(Boolean).length;
 
   const updateURL = (filters, letter = currentLetter) => {
     const params = new URLSearchParams();
     if (filters.searchName) params.set("name", filters.searchName);
     if (filters.selectedCountry) params.set("country", filters.selectedCountry);
-    if (!filters.searchName && !filters.selectedCountry) {
+    if (filters.selectedLanguage)
+      params.set("language", filters.selectedLanguage);
+    if (
+      !filters.searchName &&
+      !filters.selectedCountry &&
+      !filters.selectedLanguage
+    ) {
       params.set("letter", letter);
     }
 
@@ -142,13 +169,17 @@ const FilterNamesPage = () => {
   const handleApplyFilters = (filters) => {
     setSearchName(filters.searchName);
     setSelectedCountry(filters.selectedCountry);
+    setSelectedLanguage(filters.selectedLanguage);
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
 
   const handleLetterChange = (letter) => {
     setCurrentLetter(letter);
-    updateURL({ searchName: "", selectedCountry: "" }, letter);
+    updateURL(
+      { searchName: "", selectedCountry: "", selectedLanguage: "" },
+      letter
+    );
   };
 
   return (
@@ -158,6 +189,7 @@ const FilterNamesPage = () => {
         params={{
           name: searchName,
           country: selectedCountry,
+          language: selectedLanguage,
         }}
       />
 
@@ -187,9 +219,11 @@ const FilterNamesPage = () => {
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilters}
         countries={countries}
+        languages={languages}
         initialFilters={{
           searchName,
           selectedCountry,
+          selectedLanguage,
         }}
       />
     </PageHeader>

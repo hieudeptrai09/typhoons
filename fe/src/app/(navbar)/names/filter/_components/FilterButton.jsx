@@ -5,6 +5,7 @@ const FilterButton = ({ onClick, params }) => {
     const parts = [];
     if (params.name) parts.push(params.name);
     if (params.country) parts.push(params.country);
+    if (params.language) parts.push(params.language);
     return parts.length > 0 ? parts.join(" / ") : "Filters";
   };
 

@@ -1,11 +1,13 @@
 import { Modal } from "../../../../../components/Modal";
 import { useState, useEffect } from "react";
+import FilterSection from "./FilterSection";
 
 const FilterModal = ({
   isOpen,
   onClose,
   onApply,
   countries,
+  languages,
   initialFilters,
 }) => {
   const [tempSearchName, setTempSearchName] = useState(
@@ -14,22 +16,28 @@ const FilterModal = ({
   const [tempSelectedCountry, setTempSelectedCountry] = useState(
     initialFilters.selectedCountry
   );
+  const [tempSelectedLanguage, setTempSelectedLanguage] = useState(
+    initialFilters.selectedLanguage
+  );
 
   useEffect(() => {
     setTempSearchName(initialFilters.searchName);
     setTempSelectedCountry(initialFilters.selectedCountry);
+    setTempSelectedLanguage(initialFilters.selectedLanguage);
   }, [initialFilters]);
 
   const handleApply = () => {
     onApply({
       searchName: tempSearchName,
       selectedCountry: tempSelectedCountry,
+      selectedLanguage: tempSelectedLanguage,
     });
   };
 
   const handleClearAll = () => {
     setTempSearchName("");
     setTempSelectedCountry("");
+    setTempSelectedLanguage("");
   };
 
   return (
@@ -40,20 +48,11 @@ const FilterModal = ({
       wrapperClassName="max-w-md"
     >
       <div className="space-y-4">
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="text-sm font-semibold text-gray-700">
-              Filter by Name
-            </label>
-            {tempSearchName && (
-              <button
-                onClick={() => setTempSearchName("")}
-                className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2 py-1"
-              >
-                Clear this filter
-              </button>
-            )}
-          </div>
+        <FilterSection
+          label="Filter by Name"
+          hasValue={Boolean(tempSearchName)}
+          onClear={() => setTempSearchName("")}
+        >
           <input
             type="text"
             placeholder="Enter typhoon name..."
@@ -61,22 +60,13 @@ const FilterModal = ({
             onChange={(e) => setTempSearchName(e.target.value)}
             className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-600 outline-none"
           />
-        </div>
+        </FilterSection>
 
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="text-sm font-semibold text-gray-700">
-              Filter by Country
-            </label>
-            {tempSelectedCountry && (
-              <button
-                onClick={() => setTempSelectedCountry("")}
-                className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2 py-1"
-              >
-                Clear this filter
-              </button>
-            )}
-          </div>
+        <FilterSection
+          label="Filter by Country"
+          hasValue={Boolean(tempSelectedCountry)}
+          onClear={() => setTempSelectedCountry("")}
+        >
           <select
             value={tempSelectedCountry}
             onChange={(e) => setTempSelectedCountry(e.target.value)}
@@ -89,7 +79,26 @@ const FilterModal = ({
               </option>
             ))}
           </select>
-        </div>
+        </FilterSection>
+
+        <FilterSection
+          label="Filter by Language"
+          hasValue={Boolean(tempSelectedLanguage)}
+          onClear={() => setTempSelectedLanguage("")}
+        >
+          <select
+            value={tempSelectedLanguage}
+            onChange={(e) => setTempSelectedLanguage(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-500 outline-none"
+          >
+            <option value="">All Languages</option>
+            {languages.map((language) => (
+              <option key={language} value={language}>
+                {language}
+              </option>
+            ))}
+          </select>
+        </FilterSection>
       </div>
 
       <div className="flex gap-3 mt-6">
