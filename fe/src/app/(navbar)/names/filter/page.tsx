@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import FilterNamesPage from "./FilterPageContent";
 import type { Metadata } from "next";
-import { getPageTitle } from "./_utils/fns";
+import { getPageDescription, getPageTitle } from "./_utils/fns";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,9 +17,11 @@ export async function generateMetadata({
   const title = titleParts
     ? `Filter Names: ${titleParts.join(" • ")}`
     : "Filter Names";
+  const description = getPageDescription(name, country, language, letter);
 
   return {
     title: title,
+    description: description,
   };
 }
 

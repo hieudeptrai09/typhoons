@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import RetiredNamesContent from "./RetiredNamesContent";
 import type { Metadata } from "next";
-import { getRetiredNamesTitle } from "./_utils/fns";
+import { getRetiredNamesDescription, getRetiredNamesTitle } from "./_utils/fns";
 
 type MetadataProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,9 +17,11 @@ export async function generateMetadata({
     titleParts.length > 0
       ? `Retired Names: ${titleParts.join(" • ")}`
       : "Retired Typhoon Names";
+  const description = getRetiredNamesDescription(name, year, country, lang);
 
   return {
     title: title,
+    description: description,
   };
 }
 

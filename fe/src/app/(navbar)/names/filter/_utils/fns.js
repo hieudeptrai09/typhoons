@@ -25,3 +25,28 @@ export const getPageTitle = (
 
   return titleParts;
 };
+
+export const getPageDescription = (name, country, language, letter) => {
+  const parts = [];
+
+  if (name) {
+    parts.push(`names matching "${name}"`);
+  }
+  if (country) {
+    parts.push(`names from ${country}`);
+  }
+  if (language) {
+    parts.push(`names in ${language}`);
+  }
+  if (!name && !country && !language && letter) {
+    parts.push(`typhoon names starting with letter ${letter}`);
+  }
+
+  if (parts.length > 0) {
+    return `Filter and search ${parts.join(
+      ", "
+    )}. Browse both current and retired typhoon names with detailed information about their meanings and origins.`;
+  }
+
+  return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, or browse alphabetically. View complete details including meanings, images, and descriptions.";
+};

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import DashboardPageContent from "./DashboardPageContent";
 import type { Metadata } from "next";
-import { getDashboardTitle } from "./_utils/fns";
+import { getDashboardDescription, getDashboardTitle } from "./_utils/fns";
 
 type MetadataProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -14,9 +14,11 @@ export async function generateMetadata({
 
   const titleParts = getDashboardTitle(view, mode, filter);
   const title = titleParts ? `${titleParts} | Dashboard` : "Dashboard";
+  const description = getDashboardDescription(view, filter);
 
   return {
     title: title,
+    description: description,
   };
 }
 
