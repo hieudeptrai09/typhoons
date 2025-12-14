@@ -40,24 +40,10 @@ const FilterNamesPage = () => {
 
   useEffect(() => {
     // Fetch all names (both current and retired)
-    Promise.all([
-      fetchData("/typhoon-names?isRetired=0"),
-      fetchData("/typhoon-names?isRetired=1"),
-    ]).then(([currentData, retiredData]) => {
-      const allNames = [
-        ...(currentData?.data || []),
-        ...(retiredData?.data || []),
-      ];
-
-      // Remove duplicates using Map
-      const uniqueNamesMap = new Map();
-      allNames.forEach((name) => {
-        if (!uniqueNamesMap.has(name.name)) {
-          uniqueNamesMap.set(name.name, name);
-        }
-      });
-
-      setNames(Array.from(uniqueNamesMap.values()));
+    fetchData("/typhoon-names").then((data) => {
+      if (data) {
+        setNames(data);
+      }
     });
   }, []);
 
