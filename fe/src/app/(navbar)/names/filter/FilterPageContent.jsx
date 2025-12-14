@@ -93,6 +93,33 @@ const FilterNamesPage = () => {
     return Array.from(letters).sort();
   }, [filteredNames]);
 
+  // Get letters where ALL names are retired
+  const retiredLetters = useMemo(() => {
+    const letterGroups = {};
+
+    // Group names by first letter
+    filteredNames.forEach((name) => {
+      const letter = name.name.charAt(0).toUpperCase();
+      if (!letterGroups[letter]) {
+        letterGroups[letter] = [];
+      }
+      letterGroups[letter].push(name);
+    });
+
+    // Check which letters have ALL retired names
+    const fullyRetired = [];
+    Object.entries(letterGroups).forEach(([letter, namesInLetter]) => {
+      const allRetired = namesInLetter.every((name) =>
+        Boolean(Number(name.isRetired))
+      );
+      if (allRetired) {
+        fullyRetired.push(letter);
+      }
+    });
+
+    return fullyRetired;
+  }, [filteredNames]);
+
   const activeFilterCount = [searchName, selectedCountry].filter(
     Boolean
   ).length;
@@ -138,6 +165,7 @@ const FilterNamesPage = () => {
         <LetterNavigation
           currentLetter={currentLetter}
           availableLetters={availableLetters}
+          retiredLetters={retiredLetters}
           onLetterChange={handleLetterChange}
         />
       )}

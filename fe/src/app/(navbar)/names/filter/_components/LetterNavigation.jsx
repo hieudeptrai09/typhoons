@@ -1,6 +1,7 @@
 const LetterNavigation = ({
   currentLetter,
   availableLetters,
+  retiredLetters,
   onLetterChange,
 }) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -11,6 +12,7 @@ const LetterNavigation = ({
         {allLetters.map((letter) => {
           const isAvailable = availableLetters.includes(letter);
           const isActive = currentLetter === letter;
+          const isFullyRetired = retiredLetters.includes(letter);
 
           return (
             <button
@@ -19,9 +21,13 @@ const LetterNavigation = ({
               disabled={!isAvailable}
               className={`text-lg font-semibold transition-all ${
                 isActive
-                  ? "text-blue-800 underline decoration-2 underline-offset-4"
+                  ? isFullyRetired
+                    ? "text-red-800 underline decoration-2 underline-offset-4"
+                    : "text-blue-800 underline decoration-2 underline-offset-4"
                   : isAvailable
-                  ? "text-blue-500 hover:text-blue-600 hover:underline underline-offset-4"
+                  ? isFullyRetired
+                    ? "text-red-500 hover:text-red-600 hover:underline underline-offset-4"
+                    : "text-blue-500 hover:text-blue-600 hover:underline underline-offset-4"
                   : "text-gray-300 cursor-not-allowed"
               }`}
             >
