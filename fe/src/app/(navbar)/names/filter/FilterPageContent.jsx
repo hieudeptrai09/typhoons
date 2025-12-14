@@ -42,7 +42,7 @@ const FilterNamesPage = () => {
     // Fetch all names (both current and retired)
     fetchData("/typhoon-names").then((data) => {
       if (data) {
-        setNames(data);
+        setNames(data.data);
       }
     });
   }, []);
