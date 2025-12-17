@@ -50,3 +50,30 @@ export const getPageDescription = (name, country, language, letter) => {
 
   return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, or browse alphabetically. View complete details including meanings, images, and descriptions.";
 };
+
+export const categorizeLettersByStatus = (namesList) => {
+  const letterStatusMap = {};
+
+  // Single pass through all names to build the map
+  namesList.forEach((name) => {
+    const letter = name.name.charAt(0).toUpperCase();
+    const isRetired = Boolean(Number(name.isRetired));
+
+    // Initialize letter if not exists: [hasAny, hasRetired, hasAlive]
+    if (!letterStatusMap[letter]) {
+      letterStatusMap[letter] = [false, false, false];
+    }
+
+    // Mark as available (has at least one name)
+    letterStatusMap[letter][0] = true;
+
+    // Mark status
+    if (isRetired) {
+      letterStatusMap[letter][1] = true; // Has retired
+    } else {
+      letterStatusMap[letter][2] = true; // Has alive
+    }
+  });
+
+  return letterStatusMap;
+};

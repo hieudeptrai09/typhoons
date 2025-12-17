@@ -1,21 +1,22 @@
 const LetterNavigation = ({
   currentLetter,
-  availableLetters,
-  retiredLetters,
-  aliveLetters,
+  letterStatusMap,
   onLetterChange,
 }) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   const getLetterColorClass = (letter) => {
-    const isAvailable = availableLetters.includes(letter);
+    // Get status array: [hasAny, hasRetired, hasAlive]
+    const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;
-    const hasRetired = retiredLetters.includes(letter);
-    const hasAlive = aliveLetters.includes(letter);
 
-    if (!isAvailable) {
+    // If letter not in map, it has no names
+    if (!status || !status[0]) {
       return "text-gray-300 cursor-not-allowed";
     }
+
+    const hasRetired = status[1];
+    const hasAlive = status[2];
 
     let colorClass = "";
 
@@ -43,7 +44,8 @@ const LetterNavigation = ({
     <div className="max-w-4xl mx-auto mb-6">
       <div className="flex flex-wrap gap-3 justify-center items-center">
         {allLetters.map((letter) => {
-          const isAvailable = availableLetters.includes(letter);
+          const status = letterStatusMap[letter];
+          const isAvailable = status && status[0];
           const colorClass = getLetterColorClass(letter);
 
           return (

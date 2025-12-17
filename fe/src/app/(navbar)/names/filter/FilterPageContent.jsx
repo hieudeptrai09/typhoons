@@ -9,6 +9,7 @@ import FilteredNamesTable from "./_components/FilteredNamesTable";
 import Toggle from "./_components/Toggle";
 import LetterNavigation from "./_components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
+import { categorizeLettersByStatus } from "./_utils/fns";
 
 const FilterNamesPage = () => {
   const router = useRouter();
@@ -103,67 +104,9 @@ const FilterNamesPage = () => {
     selectedLanguage,
   ]);
 
-  // Get available letters (letters that have names)
-  const availableLetters = useMemo(() => {
-    const letters = new Set();
-    filteredNames.forEach((name) => {
-      letters.add(name.name.charAt(0).toUpperCase());
-    });
-    return Array.from(letters).sort();
-  }, [filteredNames]);
-
-  // Get letters where ALL names are retired
-  const retiredLetters = useMemo(() => {
-    const letterGroups = {};
-
-    // Group names by first letter
-    filteredNames.forEach((name) => {
-      const letter = name.name.charAt(0).toUpperCase();
-      if (!letterGroups[letter]) {
-        letterGroups[letter] = [];
-      }
-      letterGroups[letter].push(name);
-    });
-
-    // Check which letters have at least one retired name
-    const hasRetired = [];
-    Object.entries(letterGroups).forEach(([letter, namesInLetter]) => {
-      const hasRetiredName = namesInLetter.some((name) =>
-        Boolean(Number(name.isRetired))
-      );
-      if (hasRetiredName) {
-        hasRetired.push(letter);
-      }
-    });
-
-    return hasRetired;
-  }, [filteredNames]);
-
-  // Get letters where at least one name is alive (not retired)
-  const aliveLetters = useMemo(() => {
-    const letterGroups = {};
-
-    // Group names by first letter
-    filteredNames.forEach((name) => {
-      const letter = name.name.charAt(0).toUpperCase();
-      if (!letterGroups[letter]) {
-        letterGroups[letter] = [];
-      }
-      letterGroups[letter].push(name);
-    });
-
-    // Check which letters have at least one alive name
-    const hasAlive = [];
-    Object.entries(letterGroups).forEach(([letter, namesInLetter]) => {
-      const hasAliveName = namesInLetter.some(
-        (name) => !Boolean(Number(name.isRetired))
-      );
-      if (hasAliveName) {
-        hasAlive.push(letter);
-      }
-    });
-
-    return hasAlive;
+  // Categorize letters by their retired/alive status using optimized map
+  const letterStatusMap = useMemo(() => {
+    return categorizeLettersByStatus(filteredNames);
   }, [filteredNames]);
 
   const activeFilterCount = [
@@ -223,9 +166,7 @@ const FilterNamesPage = () => {
       {activeFilterCount === 0 && (
         <LetterNavigation
           currentLetter={currentLetter}
-          availableLetters={availableLetters}
-          retiredLetters={retiredLetters}
-          aliveLetters={aliveLetters}
+          letterStatusMap={letterStatusMap}
           onLetterChange={handleLetterChange}
         />
       )}
