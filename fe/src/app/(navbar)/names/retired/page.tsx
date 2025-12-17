@@ -10,14 +10,25 @@ type MetadataProps = {
 export async function generateMetadata({
   searchParams,
 }: MetadataProps): Promise<Metadata> {
-  const { name, year, country, lang } = await searchParams;
+  let { name, year, country, lang, letter } = await searchParams;
 
-  const titleParts = getRetiredNamesTitle(name, year, country, lang);
+  // Default to letter A if no letter is specified and no filters are active
+  if (!letter && !name && !year && !country && !lang) {
+    letter = "A";
+  }
+
+  const titleParts = getRetiredNamesTitle(name, year, country, lang, letter);
   const title =
     titleParts.length > 0
       ? `Retired Names: ${titleParts.join(" • ")}`
       : "Retired Typhoon Names";
-  const description = getRetiredNamesDescription(name, year, country, lang);
+  const description = getRetiredNamesDescription(
+    name,
+    year,
+    country,
+    lang,
+    letter
+  );
 
   return {
     title: title,

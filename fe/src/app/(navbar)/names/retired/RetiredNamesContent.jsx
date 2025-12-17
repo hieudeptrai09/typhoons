@@ -7,7 +7,7 @@ import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
-import Pagination from "./_components/MainPage/Pagination";
+import LetterNavigation from "./_components/MainPage/LetterNavigation";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 import PageHeader from "../../../../components/PageHeader";
@@ -27,8 +27,8 @@ const RetiredNamesContent = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [retirementReason, setRetirementReason] = useState("");
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
+  // Letter-based pagination state
+  const [currentLetter, setCurrentLetter] = useState("A");
 
   // Initialize filters from URL parameters
   useEffect(() => {
@@ -36,15 +36,17 @@ const RetiredNamesContent = () => {
     const year = searchParams.get("year") || "";
     const country = searchParams.get("country") || "";
     const lang = searchParams.get("lang") || "";
+    const letter = searchParams.get("letter") || "A";
 
     setSearchName(name);
     setSelectedYear(year ? parseInt(year) : "");
     setSelectedCountry(country);
     setRetirementReason(lang);
+    setCurrentLetter(letter);
   }, [searchParams]);
 
   // Update URL when filters change
-  const updateURL = (filters) => {
+  const updateURL = (filters, letter = currentLetter) => {
     const params = new URLSearchParams();
 
     if (filters.searchName) {
@@ -58,6 +60,16 @@ const RetiredNamesContent = () => {
     }
     if (filters.retirementReason) {
       params.set("lang", filters.retirementReason);
+    }
+
+    // Only add letter parameter if no filters are active
+    if (
+      !filters.searchName &&
+      !filters.selectedYear &&
+      !filters.selectedCountry &&
+      !filters.retirementReason
+    ) {
+      params.set("letter", letter);
     }
 
     const queryString = params.toString();
@@ -87,11 +99,11 @@ const RetiredNamesContent = () => {
     retirementReason,
   });
 
-  const { paginatedData, totalPages } = usePagination({
+  const { paginatedData, availableLetters } = usePagination({
     retiredNames,
     filteredNames,
     activeFilterCount,
-    currentPage,
+    currentLetter,
   });
 
   const loadSuggestions = async (nameId) => {
@@ -116,6 +128,19 @@ const RetiredNamesContent = () => {
     updateURL(filters);
   };
 
+  const handleLetterChange = (letter) => {
+    setCurrentLetter(letter);
+    updateURL(
+      {
+        searchName: "",
+        selectedYear: "",
+        selectedCountry: "",
+        retirementReason: "",
+      },
+      letter
+    );
+  };
+
   return (
     <PageHeader title="Retired Typhoon Names">
       <FilterButton
@@ -129,17 +154,18 @@ const RetiredNamesContent = () => {
         }}
       />
 
+      {activeFilterCount === 0 && (
+        <LetterNavigation
+          currentLetter={currentLetter}
+          availableLetters={availableLetters}
+          onLetterChange={handleLetterChange}
+        />
+      )}
+
       <div className="max-w-4xl mx-auto">
         <RetiredNamesTable
           paginatedData={paginatedData}
           onNameClick={handleNameClick}
-        />
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          activeFilterCount={activeFilterCount}
-          onPageChange={setCurrentPage}
         />
       </div>
 

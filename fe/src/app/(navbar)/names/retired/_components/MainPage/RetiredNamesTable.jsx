@@ -2,7 +2,7 @@ import SortableTable from "../../../../../../components/SortableTable";
 import { Frown } from "lucide-react";
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
-  if (paginatedData.length === 0) {
+  if (!paginatedData || paginatedData.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-8 text-center">
         <Frown className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -44,23 +44,12 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
   };
 
   return (
-    <div className="space-y-8">
-      {paginatedData.map((group, gidx) => (
-        <div key={gidx}>
-          {group.country && (
-            <h2 className="text-2xl font-bold text-blue-600 mb-4 pb-2 border-b-2 border-blue-200">
-              {group.country}
-            </h2>
-          )}
-          <SortableTable
-            data={group.items || []}
-            columns={columns}
-            onRowClick={onNameClick}
-            renderCell={renderCell}
-          />
-        </div>
-      ))}
-    </div>
+    <SortableTable
+      data={paginatedData}
+      columns={columns}
+      onRowClick={onNameClick}
+      renderCell={renderCell}
+    />
   );
 };
 

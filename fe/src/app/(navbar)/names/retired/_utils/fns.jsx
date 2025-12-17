@@ -1,4 +1,4 @@
-export const getRetiredNamesTitle = (name, year, country, lang) => {
+export const getRetiredNamesTitle = (name, year, country, lang, letter) => {
   const parts = [];
 
   if (name) {
@@ -21,10 +21,20 @@ export const getRetiredNamesTitle = (name, year, country, lang) => {
     }
   }
 
+  if (!name && !year && !country && !lang && letter) {
+    parts.push(`Letter ${letter}`);
+  }
+
   return parts;
 };
 
-export const getRetiredNamesDescription = (name, year, country, lang) => {
+export const getRetiredNamesDescription = (
+  name,
+  year,
+  country,
+  lang,
+  letter
+) => {
   const parts = [];
 
   if (name) {
@@ -40,6 +50,9 @@ export const getRetiredNamesDescription = (name, year, country, lang) => {
     parts.push("names retired due to language problems");
   } else if (lang === "destructive") {
     parts.push("names retired due to destructive storms");
+  }
+  if (!name && !year && !country && !lang && letter) {
+    parts.push(`retired typhoon names starting with letter ${letter}`);
   }
 
   if (parts.length > 0) {
