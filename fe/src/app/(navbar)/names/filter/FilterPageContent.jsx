@@ -125,18 +125,45 @@ const FilterNamesPage = () => {
       letterGroups[letter].push(name);
     });
 
-    // Check which letters have ALL retired names
-    const fullyRetired = [];
+    // Check which letters have at least one retired name
+    const hasRetired = [];
     Object.entries(letterGroups).forEach(([letter, namesInLetter]) => {
-      const allRetired = namesInLetter.every((name) =>
+      const hasRetiredName = namesInLetter.some((name) =>
         Boolean(Number(name.isRetired))
       );
-      if (allRetired) {
-        fullyRetired.push(letter);
+      if (hasRetiredName) {
+        hasRetired.push(letter);
       }
     });
 
-    return fullyRetired;
+    return hasRetired;
+  }, [filteredNames]);
+
+  // Get letters where at least one name is alive (not retired)
+  const aliveLetters = useMemo(() => {
+    const letterGroups = {};
+
+    // Group names by first letter
+    filteredNames.forEach((name) => {
+      const letter = name.name.charAt(0).toUpperCase();
+      if (!letterGroups[letter]) {
+        letterGroups[letter] = [];
+      }
+      letterGroups[letter].push(name);
+    });
+
+    // Check which letters have at least one alive name
+    const hasAlive = [];
+    Object.entries(letterGroups).forEach(([letter, namesInLetter]) => {
+      const hasAliveName = namesInLetter.some(
+        (name) => !Boolean(Number(name.isRetired))
+      );
+      if (hasAliveName) {
+        hasAlive.push(letter);
+      }
+    });
+
+    return hasAlive;
   }, [filteredNames]);
 
   const activeFilterCount = [
@@ -198,6 +225,7 @@ const FilterNamesPage = () => {
           currentLetter={currentLetter}
           availableLetters={availableLetters}
           retiredLetters={retiredLetters}
+          aliveLetters={aliveLetters}
           onLetterChange={handleLetterChange}
         />
       )}
