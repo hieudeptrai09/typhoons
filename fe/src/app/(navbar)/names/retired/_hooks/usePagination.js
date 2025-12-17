@@ -7,12 +7,13 @@ export const usePagination = ({
   currentLetter,
 }) => {
   // Get available letters (letters that have retired names)
-  const availableLetters = useMemo(() => {
-    const letters = new Set();
+  const availableLettersMap = useMemo(() => {
+    const map = {};
     retiredNames.forEach((name) => {
-      letters.add(name.name.charAt(0).toUpperCase());
+      const letter = name.name.charAt(0).toUpperCase();
+      map[letter] = true;
     });
-    return Array.from(letters).sort();
+    return map;
   }, [retiredNames]);
 
   const paginatedData = useMemo(() => {
@@ -28,5 +29,5 @@ export const usePagination = ({
     }
   }, [retiredNames, filteredNames, activeFilterCount, currentLetter]);
 
-  return { paginatedData, availableLetters };
+  return { paginatedData, availableLettersMap };
 };

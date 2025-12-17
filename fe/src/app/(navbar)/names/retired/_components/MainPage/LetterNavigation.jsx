@@ -1,6 +1,6 @@
 const LetterNavigation = ({
   currentLetter,
-  availableLetters,
+  availableLettersMap,
   onLetterChange,
 }) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -9,7 +9,7 @@ const LetterNavigation = ({
     <div className="max-w-4xl mx-auto mb-6">
       <div className="flex flex-wrap gap-3 justify-center items-center">
         {allLetters.map((letter) => {
-          const isAvailable = availableLetters.includes(letter);
+          const isAvailable = availableLettersMap[letter];
           const isActive = currentLetter === letter;
 
           return (

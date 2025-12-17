@@ -99,7 +99,7 @@ const RetiredNamesContent = () => {
     retirementReason,
   });
 
-  const { paginatedData, availableLetters } = usePagination({
+  const { paginatedData, availableLettersMap } = usePagination({
     retiredNames,
     filteredNames,
     activeFilterCount,
@@ -157,7 +157,7 @@ const RetiredNamesContent = () => {
       {activeFilterCount === 0 && (
         <LetterNavigation
           currentLetter={currentLetter}
-          availableLetters={availableLetters}
+          availableLettersMap={availableLettersMap}
           onLetterChange={handleLetterChange}
         />
       )}
