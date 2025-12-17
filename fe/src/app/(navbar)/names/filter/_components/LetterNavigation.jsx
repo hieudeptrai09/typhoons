@@ -21,20 +21,17 @@ const LetterNavigation = ({
     let colorClass = "";
 
     if (hasRetired && hasAlive) {
-      // Both retired and alive names exist - Purple
       colorClass = isActive
-        ? "text-purple-800 underline decoration-2"
-        : "text-purple-500 hover:text-purple-600 hover:underline";
+        ? "text-blue-800 underline decoration-2"
+        : "text-blue-500 hover:text-blue-600 hover:underline";
     } else if (hasRetired && !hasAlive) {
-      // Only retired names exist - Red
       colorClass = isActive
         ? "text-red-800 underline decoration-2"
         : "text-red-500 hover:text-red-600 hover:underline";
     } else if (!hasRetired && hasAlive) {
-      // Only alive names exist - Blue
       colorClass = isActive
-        ? "text-blue-800 underline decoration-2"
-        : "text-blue-500 hover:text-blue-600 hover:underline";
+        ? "text-green-800 underline decoration-2"
+        : "text-green-500 hover:text-green-600 hover:underline";
     }
 
     return colorClass;
