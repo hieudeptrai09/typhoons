@@ -83,17 +83,13 @@ const FilterNamesPage = () => {
 
   // Sort by name and filter by current letter
   const paginatedNames = useMemo(() => {
-    const sorted = [...filteredNames].sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
-
     // If filters are active, show all results
     if (searchName || selectedCountry || selectedLanguage) {
-      return sorted;
+      return filteredNames;
     }
 
     // Otherwise, filter by current letter
-    return sorted.filter(
+    return filteredNames.filter(
       (name) => name.name.charAt(0).toUpperCase() === currentLetter
     );
   }, [
