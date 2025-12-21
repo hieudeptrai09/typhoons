@@ -7,13 +7,20 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
   if (!selectedName) return null;
 
   const getNameColor = (selectedName) => {
-    if (Boolean(Number(selectedName.isLanguageProblem))) {
-      if (Number(selectedName.isLanguageProblem) === 1) {
-        return "!text-green-700";
-      } else return "!text-amber-600";
+    const ilp = String(selectedName.isLanguageProblem);
+
+    switch (ilp) {
+      case "0":
+        return "!text-red-600"; // Destructive Storm
+      case "1":
+        return "!text-green-600"; // Language Problem
+      case "2":
+        return "!text-amber-500"; // Misspelling
+      case "3":
+        return "!text-purple-600"; // Special Storm
+      default:
+        return "!text-red-600"; // Default to destructive
     }
-    if (selectedName.name === "Vamei") return "!text-purple-700";
-    return "!text-red-700";
   };
 
   return (

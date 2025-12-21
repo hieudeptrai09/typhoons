@@ -3,7 +3,16 @@ import FilterSection from "./FilterSection";
 const RetirementReasonCheckbox = ({ value, onChange }) => {
   const options = [
     {
-      value: "language",
+      value: "0",
+      label: "Destructive Storm",
+      activeColor: "bg-red-600",
+      inactiveColor: "bg-red-100",
+      hoverActiveColor: "hover:bg-red-700",
+      hoverInactiveColor: "hover:bg-red-200",
+      textInactiveColor: "text-red-700",
+    },
+    {
+      value: "1",
       label: "Language Problem",
       activeColor: "bg-green-600",
       inactiveColor: "bg-green-100",
@@ -12,24 +21,41 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
       textInactiveColor: "text-green-700",
     },
     {
-      value: "destructive",
-      label: "Destructive Storm",
-      activeColor: "bg-red-600",
-      inactiveColor: "bg-red-100",
-      hoverActiveColor: "hover:bg-red-700",
-      hoverInactiveColor: "hover:bg-red-200",
-      textInactiveColor: "text-red-700",
+      value: "2",
+      label: "Misspelling",
+      activeColor: "bg-amber-600",
+      inactiveColor: "bg-amber-100",
+      hoverActiveColor: "hover:bg-amber-700",
+      hoverInactiveColor: "hover:bg-amber-200",
+      textInactiveColor: "text-amber-700",
+    },
+    {
+      value: "3",
+      label: "Special Storm",
+      activeColor: "bg-purple-600",
+      inactiveColor: "bg-purple-100",
+      hoverActiveColor: "hover:bg-purple-700",
+      hoverInactiveColor: "hover:bg-purple-200",
+      textInactiveColor: "text-purple-700",
     },
   ];
 
+  // Parse current value (comma-separated string) into array
+  const selectedValues = value ? value.split(",") : [];
+
   const handleButtonClick = (selectedValue) => {
-    // If clicking the same button, deselect it (set to empty string)
-    if (value === selectedValue) {
-      onChange("");
+    let newValues;
+
+    if (selectedValues.includes(selectedValue)) {
+      // Remove value if already selected
+      newValues = selectedValues.filter((v) => v !== selectedValue);
     } else {
-      // Select this option
-      onChange(selectedValue);
+      // Add value if not selected
+      newValues = [...selectedValues, selectedValue];
     }
+
+    // Convert array back to comma-separated string
+    onChange(newValues.join(","));
   };
 
   return (
@@ -38,16 +64,16 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
       hasValue={Boolean(value)}
       onClear={() => onChange("")}
     >
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {options.map((option) => {
-          const isActive = value === option.value;
+          const isActive = selectedValues.includes(option.value);
           return (
             <button
               key={option.value}
               onClick={() => handleButtonClick(option.value)}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg transition-colors ${
                 isActive
-                  ? `${option.activeColor} text-white ${option.hoverColor}`
+                  ? `${option.activeColor} text-white ${option.hoverActiveColor}`
                   : `${option.inactiveColor} ${option.textInactiveColor} ${option.hoverInactiveColor}`
               }`}
             >

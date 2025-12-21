@@ -14,10 +14,27 @@ export const getRetiredNamesTitle = (name, year, country, lang, letter) => {
   }
 
   if (lang) {
-    if (lang === "language") {
-      parts.push("Language");
-    } else if (lang === "destructive") {
-      parts.push("Destructive");
+    // Parse comma-separated values
+    const reasons = lang
+      .split(",")
+      .map((reason) => {
+        switch (reason) {
+          case "0":
+            return "Destructive";
+          case "1":
+            return "Language";
+          case "2":
+            return "Misspelling";
+          case "3":
+            return "Special";
+          default:
+            return "";
+        }
+      })
+      .filter(Boolean);
+
+    if (reasons.length > 0) {
+      parts.push(reasons.join(", "));
     }
   }
 
@@ -46,10 +63,28 @@ export const getRetiredNamesDescription = (
   if (country) {
     parts.push(`names from ${country}`);
   }
-  if (lang === "language") {
-    parts.push("names retired due to language problems");
-  } else if (lang === "destructive") {
-    parts.push("names retired due to destructive storms");
+  if (lang) {
+    const reasons = lang
+      .split(",")
+      .map((reason) => {
+        switch (reason) {
+          case "0":
+            return "destructive storms";
+          case "1":
+            return "language problems";
+          case "2":
+            return "misspellings";
+          case "3":
+            return "special storms";
+          default:
+            return "";
+        }
+      })
+      .filter(Boolean);
+
+    if (reasons.length > 0) {
+      parts.push(`names retired due to ${reasons.join(", ")}`);
+    }
   }
   if (!name && !year && !country && !lang && letter) {
     parts.push(`retired typhoon names starting with letter ${letter}`);

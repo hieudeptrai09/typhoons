@@ -27,16 +27,13 @@ export const useFilteredNames = ({
     }
 
     if (retirementReason) {
-      filtered = filtered.filter((name) => {
-        const isLanguageProblem = Boolean(Number(name.isLanguageProblem));
+      // Parse comma-separated values
+      const selectedReasons = retirementReason.split(",");
 
-        if (retirementReason === "language" && isLanguageProblem) {
-          return true;
-        }
-        if (retirementReason === "destructive" && !isLanguageProblem) {
-          return true;
-        }
-        return false;
+      filtered = filtered.filter((name) => {
+        const ilp = String(name.isLanguageProblem);
+        // Check if the name's isLanguageProblem value is in the selected reasons
+        return selectedReasons.includes(ilp);
       });
     }
 
