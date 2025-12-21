@@ -14,7 +14,7 @@ export async function generateMetadata({
 
   const titleParts = getDashboardTitle(view, mode, filter);
   const title = titleParts ? `${titleParts} | Dashboard` : "Dashboard";
-  const description = getDashboardDescription(view, filter);
+  const description = getDashboardDescription(view, mode, filter);
 
   return {
     title: title,

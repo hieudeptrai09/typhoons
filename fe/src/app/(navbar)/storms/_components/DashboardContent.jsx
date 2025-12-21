@@ -172,6 +172,15 @@ const getAverageColumns = (filterType) => {
   return columns;
 };
 
+const getStormNameColumns = () => {
+  return [
+    { key: "name", label: "Name" },
+    { key: "country", label: "Country" },
+    { key: "position", label: "Position" },
+    { key: "count", label: "Storm Count" },
+  ];
+};
+
 export const DashboardContent = ({ params, stormsData, onCellClick }) => {
   // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
@@ -194,6 +203,41 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
     });
     return values;
   }, [stormsData, params.view, params.mode]);
+
+  // Handle storms view in list mode - show all names
+  if (params.view === "storms" && params.mode === "list") {
+    const nameGroups = getGroupedStorms(stormsData, "name");
+    const nameData = Object.entries(nameGroups).map(([name, storms]) => {
+      const avgIntensity = calculateAverage(storms);
+      return {
+        name,
+        country: storms[0].country,
+        position: storms[0].position,
+        count: storms.length,
+        avgIntensity,
+      };
+    });
+
+    return (
+      <SortableTable
+        data={nameData}
+        columns={getStormNameColumns()}
+        onRowClick={(row) => onCellClick(row.name, "name")}
+        renderCell={(row, col) => {
+          if (col.key === "name") {
+            const intensityLabel = getIntensityFromNumber(row.avgIntensity);
+            const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+            return (
+              <span className="font-bold" style={{ color: textColor }}>
+                {row.name}
+              </span>
+            );
+          }
+          return row[col.key];
+        }}
+      />
+    );
+  }
 
   if (
     (params.view === "storms" && params.mode === "table") ||

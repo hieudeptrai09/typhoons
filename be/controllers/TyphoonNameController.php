@@ -35,8 +35,6 @@ class TyphoonNameController
             }
         }
 
-        $query .= " ORDER BY tn.lastYear, tn.position, tn.name";
-
         $stmt = $this->conn->prepare($query);
 
         if ($isRetired !== null) {

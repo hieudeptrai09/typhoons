@@ -7,6 +7,7 @@ export const Modal = ({
   children,
   wrapperClassName = "",
   titleClassName = "",
+  titleStyle = {},
 }) => {
   if (!isOpen) return null;
 
@@ -20,7 +21,10 @@ export const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start p-6 pb-4 shrink-0 border-b border-gray-300">
-          <h2 className={`text-2xl font-bold text-gray-800 ${titleClassName}`}>
+          <h2
+            className={`text-2xl font-bold text-gray-800 ${titleClassName}`}
+            style={titleStyle}
+          >
             {title}
           </h2>
           <button

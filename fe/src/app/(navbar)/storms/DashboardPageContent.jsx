@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FilterModal } from "./_components/FilterModal";
 import { StormDetailModal } from "./_components/StormDetailModal";
 import { AverageModal } from "./_components/AverageModal";
+import { NameListModal } from "./_components/NameListModal";
 import { DashboardContent } from "./_components/DashboardContent";
 import FilterButton from "./_components/FilterButton";
 import { INTENSITY_RANK } from "../../../constants";
@@ -19,6 +20,7 @@ export default function DashboardPageContent() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [averageModalOpen, setAverageModalOpen] = useState(false);
+  const [nameListModalOpen, setNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
@@ -55,11 +57,23 @@ export default function DashboardPageContent() {
   const handleCellClick = (data, key) => {
     const storms = stormsData.filter((s) => s[key] === String(data));
 
+    // Handle storms list view - clicking on a name
+    if (params.view === "storms" && params.mode === "list" && key === "name") {
+      const avgIntensity =
+        storms.reduce((sum, s) => {
+          return sum + INTENSITY_RANK[s.intensity];
+        }, 0) / storms.length;
+
+      setSelectedData({ name: data, storms, avgIntensity });
+      setNameListModalOpen(true);
+      return;
+    }
+
     if (
       params.view === "storms" ||
       (params.view === "average" && params.filter === "name")
     ) {
-      setSelectedData({ title: getPositionTitle(data), storms });
+      setSelectedData({ title: getPositionTitle(data, params.filter), storms });
       setDetailModalOpen(true);
     } else {
       // All other routes open average modal
@@ -115,6 +129,14 @@ export default function DashboardPageContent() {
         title={selectedData?.title || ""}
         average={selectedData?.average || 0}
         storms={selectedData?.storms || []}
+      />
+
+      <NameListModal
+        isOpen={nameListModalOpen}
+        onClose={() => setNameListModalOpen(false)}
+        name={selectedData?.name || ""}
+        storms={selectedData?.storms || []}
+        avgIntensity={selectedData?.avgIntensity || 0}
       />
     </PageHeader>
   );

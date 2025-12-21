@@ -28,7 +28,7 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const isModeTableOptionDisabled =
     view === "average" &&
     (filter === "name" || filter === "country" || filter === "year");
-  const isModeListOptionDisabled = view === "storms";
+  const isModeListOptionDisabled = false;
 
   const handleViewChange = (newView) => {
     setView(newView);
@@ -58,8 +58,6 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
       (filter === "name" || filter === "country" || filter === "year")
     ) {
       setMode("list");
-    } else if (view === "storms") {
-      setMode("table");
     }
   }, [view, filter]);
 

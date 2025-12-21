@@ -16,6 +16,7 @@ class StormController
                     p.country,
                     s.name,
                     s.intensity,
+                    s.map,
                     s.year,
                     s.isStrongest,
                     s.isFirst,

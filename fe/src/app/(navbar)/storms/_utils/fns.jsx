@@ -12,10 +12,11 @@ export const getIntensityFromNumber = (avgNumber) => {
   return "TD";
 };
 
-export const getPositionTitle = (position) => {
+export const getPositionTitle = (position, type) => {
   if (position === 141) return "CPHC";
   if (position === 142) return "NHC";
   if (position === 143) return "IMD";
+  if (type === "name") return position;
   return `#${position}`;
 };
 
@@ -51,7 +52,7 @@ export const getDashboardTitle = (view, mode, filter) => {
   const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
 
   const viewTitles = {
-    storms: "All Storms",
+    storms: mode === "list" ? "All Typhoon Names" : "All Storms",
     highlights: `${capitalize(filter)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filter)}`,
   };
@@ -60,8 +61,11 @@ export const getDashboardTitle = (view, mode, filter) => {
   return mode === "list" && view !== "storms" ? `${title} (List View)` : title;
 };
 
-export const getDashboardDescription = (view, filter) => {
+export const getDashboardDescription = (view, mode, filter) => {
   if (view === "storms") {
+    if (mode === "list") {
+      return "Browse all typhoon names used in the Western Pacific basin. Click any name to see detailed storm history, including years, intensities, and track maps.";
+    }
     return "View comprehensive typhoon storm data organized by position in the naming list. Track all typhoons that have occurred in the Western Pacific basin.";
   }
 
