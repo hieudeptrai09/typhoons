@@ -7,8 +7,11 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
   if (!selectedName) return null;
 
   const getNameColor = (selectedName) => {
-    if (Boolean(Number(selectedName.isLanguageProblem)))
-      return "!text-green-600";
+    if (Boolean(Number(selectedName.isLanguageProblem))) {
+      if (Number(selectedName.isLanguageProblem) === 1) {
+        return "!text-green-600";
+      } else return "!text-amber-600";
+    }
     if (selectedName.name === "Vamei") return "!text-purple-600";
     return "!text-red-600";
   };

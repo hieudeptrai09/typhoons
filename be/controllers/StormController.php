@@ -17,6 +17,7 @@ class StormController
                     s.name,
                     s.intensity,
                     s.map,
+                    s.correctSpelling,
                     s.year,
                     s.isStrongest,
                     s.isFirst,

@@ -50,7 +50,7 @@ export const NameListModal = ({
       <div className="space-y-4">
         {/* Storm Information and Toggle - all in one line */}
         <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col gap-1">
             <div>
               <span className="font-semibold text-gray-700">Country:</span>
               <span className="text-gray-600 ml-2">{storms[0].country}</span>
@@ -59,8 +59,18 @@ export const NameListModal = ({
               <span className="font-semibold text-gray-700">Position:</span>
               <span className="text-gray-600 ml-2">{storms[0].position}</span>
             </div>
+            {storms[0].correctSpelling && (
+              <div>
+                <span className="font-semibold text-gray-700">
+                  Correct spelling:
+                </span>
+                <span className="text-gray-600 ml-2">
+                  {storms[0].correctSpelling}
+                </span>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col md:flex-row items-end md:gap-1">
             <label className="text-sm font-semibold text-gray-700">
               Show Map
             </label>
@@ -105,7 +115,10 @@ export const NameListModal = ({
                   onMouseLeave={() => setHoveredName(null)}
                 >
                   <div className="flex-1">
-                    <div className="font-bold" style={{ color: textColor }}>
+                    <div
+                      className="font-bold text-sm"
+                      style={{ color: textColor }}
+                    >
                       {stormTitle}
                     </div>
                   </div>
