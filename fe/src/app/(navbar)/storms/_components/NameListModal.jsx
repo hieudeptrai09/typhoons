@@ -1,5 +1,5 @@
 import { Modal } from "../../../../components/Modal";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -7,6 +7,7 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
+import { StormMapPopup } from "./StormMapPopup";
 
 const getIntensityLabel = (intensity) => {
   const labels = {
@@ -30,13 +31,34 @@ export const NameListModal = ({
   avgIntensity = 0,
 }) => {
   const [showMap, setShowMap] = useState(false);
-  const [hoveredName, setHoveredName] = useState(null);
-
-  if (!storms || storms.length === 0) return null;
+  const [hoveredYear, sethoveredYear] = useState(null);
+  const [selectedStorm, setSelectedStorm] = useState(null);
+  const stormRefs = useRef({});
+  const popupRef = useRef(null);
 
   // Calculate title color based on average intensity
   const intensityLabel = getIntensityFromNumber(avgIntensity);
   const titleColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+
+  // Close popup when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedStorm(null);
+    }
+  }, [isOpen]);
+
+  if (!storms || storms.length === 0) return null;
+
+  const handleBadgeClick = (index) => {
+    if (selectedStorm === index) {
+      setSelectedStorm(null);
+    } else {
+      setSelectedStorm(index);
+    }
+  };
+
+  const selectedStormData =
+    selectedStorm !== null ? storms[selectedStorm] : null;
 
   return (
     <Modal
@@ -101,7 +123,7 @@ export const NameListModal = ({
               const bgColor = BACKGROUND_BADGE[storm.intensity];
               const textColor = TEXT_COLOR_BADGE[storm.intensity];
               const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
-              const isHovered = hoveredName === storm.name;
+              const isHovered = hoveredYear === storm.year;
               const hasMap = storm.map && storm.map.trim() !== "";
               const intensityLabel = getIntensityLabel(storm.intensity);
               const stormTitle = `${intensityLabel} ${storm.name} ${storm.year}`;
@@ -109,10 +131,12 @@ export const NameListModal = ({
               return (
                 <div
                   key={idx}
-                  className="flex items-center gap-4 p-2 rounded-lg transition-opacity"
+                  ref={(el) => (stormRefs.current[idx] = el)}
+                  className="flex items-center gap-4 p-2 rounded-lg transition-opacity cursor-pointer"
                   style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
-                  onMouseEnter={() => setHoveredName(storm.name)}
-                  onMouseLeave={() => setHoveredName(null)}
+                  onMouseEnter={() => sethoveredYear(storm.year)}
+                  onMouseLeave={() => sethoveredYear(null)}
+                  onClick={() => handleBadgeClick(idx)}
                 >
                   <div className="flex-1">
                     <div
@@ -136,6 +160,13 @@ export const NameListModal = ({
             })}
           </div>
         </div>
+
+        <StormMapPopup
+          popupRef={popupRef}
+          selectedStorm={selectedStormData}
+          stormElementRef={stormRefs.current[selectedStorm]}
+          onClose={() => setSelectedStorm(null)}
+        />
       </div>
     </Modal>
   );

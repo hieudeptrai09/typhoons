@@ -91,7 +91,7 @@ export const StormNamePopup = ({
       ref={popupRef}
       className="bg-white border-2 border-blue-500 rounded-lg shadow-xl fixed flex flex-col z-50"
     >
-      <div className="font-semibold text-blue-700 px-4 py-2 border-b shrink-0">
+      <div className="font-semibold text-blue-700 px-4 py-2 border-b-2 shrink-0">
         All <span className="text-purple-600 font-bold">{selectedName}</span>{" "}
         storms:
       </div>
