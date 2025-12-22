@@ -22,8 +22,8 @@ export const StormMapPopup = ({
       onClose={onClose}
       style={{ borderColor }}
       positioning={{
-        width: 400,
-        height: 300,
+        width: 350,
+        height: 262,
         gap: 4,
         preferredPosition: "below",
       }}
