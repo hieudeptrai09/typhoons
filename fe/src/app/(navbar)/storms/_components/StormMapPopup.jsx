@@ -1,50 +1,30 @@
-import { BACKGROUND_BADGE } from "../../../../constants";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import { BACKGROUND_BADGE } from "../../../../constants";
 
-const Popup = ({
+export const StormMapPopup = ({
   popupRef,
-  isOpen,
-  triggerElementRef,
+  selectedStorm,
+  stormElementRef,
   onClose,
-  children,
-  className = "",
-  style = {},
-  positioning = {},
 }) => {
-  const {
-    width,
-    height,
-    maxHeight,
-    gap = 4,
-    preferredPosition = "below", // 'below' or 'above'
-  } = positioning;
-
-  // Update popup position relative to the trigger element
+  // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
-      if (isOpen && triggerElementRef && popupRef.current) {
-        const triggerRect = triggerElementRef.getBoundingClientRect();
-        const popupHeight =
-          height || maxHeight || popupRef.current.offsetHeight;
-        const popupWidth = width || triggerRect.width;
+      if (selectedStorm && stormElementRef && popupRef.current) {
+        const stormRect = stormElementRef.getBoundingClientRect();
 
-        let top;
-        let left = triggerRect.left;
+        const popupHeight = 300; // Fixed height for map popup
+        const popupWidth = 400; // Fixed width for map popup
+        const gap = 8;
 
-        // Determine vertical position: bottom first, then top, then top=0
-        const spaceBelow = window.innerHeight - triggerRect.bottom - gap;
-        const spaceAbove = triggerRect.top - gap;
+        // Use fixed positioning relative to viewport
+        let top = stormRect.bottom + gap;
+        let left = stormRect.left;
 
-        if (spaceBelow >= popupHeight) {
-          // Enough space below - position below trigger
-          top = triggerRect.bottom + gap;
-        } else if (spaceAbove >= popupHeight) {
-          // Not enough space below but enough above - position above trigger
-          top = triggerRect.top - popupHeight - gap;
-        } else {
-          // Not enough space in either direction - position at top of viewport
-          top = gap;
+        // Adjust if popup would go below viewport
+        if (top + popupHeight > window.innerHeight) {
+          top = stormRect.top - popupHeight - gap;
         }
 
         // Adjust if popup would go off right edge
@@ -57,24 +37,23 @@ const Popup = ({
           left = gap;
         }
 
+        // If top would be negative, set it to gap
+        if (top < gap) {
+          top = gap;
+        }
+
         popupRef.current.style.top = `${top}px`;
         popupRef.current.style.left = `${left}px`;
-        popupRef.current.style.width = `${popupWidth - 5}px`;
-
-        if (height) {
-          popupRef.current.style.height = `${height}px`;
-        }
-        if (maxHeight) {
-          popupRef.current.style.maxHeight = `${maxHeight}px`;
-        }
+        popupRef.current.style.width = `${popupWidth}px`;
+        popupRef.current.style.height = `${popupHeight}px`;
       }
     };
 
     // Initial position
     updatePosition();
 
-    // Update position on scroll and resize
-    if (isOpen) {
+    // Update position on scroll
+    if (selectedStorm) {
       window.addEventListener("scroll", updatePosition, true);
       window.addEventListener("resize", updatePosition);
     }
@@ -83,61 +62,30 @@ const Popup = ({
       window.removeEventListener("scroll", updatePosition, true);
       window.removeEventListener("resize", updatePosition);
     };
-  }, [
-    isOpen,
-    triggerElementRef,
-    popupRef,
-    width,
-    height,
-    maxHeight,
-    gap,
-    preferredPosition,
-  ]);
+  }, [selectedStorm, stormElementRef, popupRef]);
 
   // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        isOpen &&
+        selectedStorm &&
         popupRef.current &&
         !popupRef.current.contains(event.target) &&
-        !triggerElementRef?.contains(event.target)
+        !stormElementRef?.contains(event.target)
       ) {
         onClose();
       }
     };
 
-    if (isOpen) {
+    if (selectedStorm) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, popupRef, triggerElementRef, onClose]);
+  }, [selectedStorm, popupRef, stormElementRef, onClose]);
 
-  if (!isOpen) {
-    return null;
-  }
-
-  return createPortal(
-    <div
-      ref={popupRef}
-      className={`bg-white rounded-lg shadow-xl fixed flex flex-col z-50 border-2 ${className}`}
-      style={style}
-    >
-      {children}
-    </div>,
-    document.body
-  );
-};
-
-export const StormMapPopup = ({
-  popupRef,
-  selectedStorm,
-  stormElementRef,
-  onClose,
-}) => {
   if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "") {
     return null;
   }
@@ -145,13 +93,11 @@ export const StormMapPopup = ({
   const stormTitle = `${selectedStorm.name} ${selectedStorm.year}`;
   const borderColor = BACKGROUND_BADGE[selectedStorm.intensity];
 
-  return (
-    <Popup
-      popupRef={popupRef}
-      isOpen={true}
-      triggerElementRef={stormElementRef}
-      onClose={onClose}
-      style={{ borderColor }}
+  return createPortal(
+    <div
+      ref={popupRef}
+      className="bg-white rounded-lg shadow-xl fixed flex flex-col z-50 border-2 overflow-hidden"
+      style={{ borderColor: borderColor }}
     >
       <div
         className="font-semibold px-4 py-2 border-b-2 shrink-0"
@@ -166,6 +112,7 @@ export const StormMapPopup = ({
           className="w-full h-full object-contain"
         />
       </div>
-    </Popup>
+    </div>,
+    document.body
   );
 };
