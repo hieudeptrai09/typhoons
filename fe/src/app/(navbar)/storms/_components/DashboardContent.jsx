@@ -178,6 +178,7 @@ const getStormNameColumns = () => {
     { key: "country", label: "Country" },
     { key: "position", label: "Position" },
     { key: "count", label: "Storm Count" },
+    { key: "year", label: "Last Year" },
   ];
 };
 
