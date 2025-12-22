@@ -19,8 +19,8 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
   }
 
   const getNameColor = (name) => {
-    if (Boolean(Number(name.isRetired))) return "text-red-600";
     if (Number(name.isLanguageProblem) === 2) return "text-amber-500";
+    if (Boolean(Number(name.isRetired))) return "text-red-600";
     return "text-blue-600";
   };
 
