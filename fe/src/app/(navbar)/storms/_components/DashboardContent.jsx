@@ -216,6 +216,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
         position: storms[0].position,
         count: storms.length,
         avgIntensity,
+        year: storms[storms.length - 1].year,
       };
     });
 
