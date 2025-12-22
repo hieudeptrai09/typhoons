@@ -29,17 +29,22 @@ const Popup = ({
           height || maxHeight || popupRef.current.offsetHeight;
         const popupWidth = width || triggerRect.width;
 
-        // Use fixed positioning relative to viewport
-        let top = triggerRect.bottom + gap;
+        let top;
         let left = triggerRect.left;
 
-        // Adjust if popup would go below viewport
-        if (top + popupHeight > window.innerHeight) {
-          if (preferredPosition === "below") {
-            top = triggerRect.top - popupHeight - gap;
-          } else {
-            top = window.innerHeight - popupHeight - gap;
-          }
+        // Determine vertical position: bottom first, then top, then top=0
+        const spaceBelow = window.innerHeight - triggerRect.bottom - gap;
+        const spaceAbove = triggerRect.top - gap;
+
+        if (spaceBelow >= popupHeight) {
+          // Enough space below - position below trigger
+          top = triggerRect.bottom + gap;
+        } else if (spaceAbove >= popupHeight) {
+          // Not enough space below but enough above - position above trigger
+          top = triggerRect.top - popupHeight - gap;
+        } else {
+          // Not enough space in either direction - position at top of viewport
+          top = gap;
         }
 
         // Adjust if popup would go off right edge
@@ -50,11 +55,6 @@ const Popup = ({
         // Adjust if popup would go off left edge
         if (left < gap) {
           left = gap;
-        }
-
-        // If top would be negative, set it to gap
-        if (top < gap) {
-          top = gap;
         }
 
         popupRef.current.style.top = `${top}px`;
