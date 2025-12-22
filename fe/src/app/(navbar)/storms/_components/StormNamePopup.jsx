@@ -31,7 +31,6 @@ export const StormNamePopup = ({
       className="border-blue-500"
       positioning={{
         maxHeight: popupMaxHeight,
-        gap: 4,
       }}
     >
       <div className="font-semibold text-blue-700 px-4 py-2 border-b-2 shrink-0">

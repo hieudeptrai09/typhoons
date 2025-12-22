@@ -21,9 +21,6 @@ export const StormMapPopup = ({
       triggerElementRef={stormElementRef}
       onClose={onClose}
       style={{ borderColor }}
-      positioning={{
-        gap: 4
-      }}
     >
       <div
         className="font-semibold px-4 py-2 border-b-2 shrink-0"

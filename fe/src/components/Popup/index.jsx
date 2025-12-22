@@ -58,10 +58,8 @@ export const Popup = ({
 
         popupRef.current.style.top = `${top}px`;
         popupRef.current.style.left = `${left}px`;
+        popupRef.current.style.width = `${popupWidth}px`;
 
-        if (width) {
-          popupRef.current.style.width = `${popupWidth}px`;
-        }
         if (height) {
           popupRef.current.style.height = `${height}px`;
         }

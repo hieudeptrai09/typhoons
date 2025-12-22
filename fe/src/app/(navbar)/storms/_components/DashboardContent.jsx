@@ -233,6 +233,9 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
               </span>
             );
           }
+          if (col.key === "position") {
+            return getPositionTitle(row.position);
+          }
           return row[col.key];
         }}
       />
