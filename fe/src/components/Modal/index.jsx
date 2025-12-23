@@ -40,7 +40,7 @@ export const Modal = ({
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 w-11 h-11 flex items-center justify-center -mt-2 -mr-2 hover:bg-gray-100 hover:rounded-full"
           >
             <X size={24} />
           </button>
