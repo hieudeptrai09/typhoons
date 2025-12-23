@@ -2,7 +2,11 @@ import SortableTable from "../../../../../components/SortableTable";
 import { Check, X, Frown } from "lucide-react";
 import { useMemo } from "react";
 
-const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
+const FilteredNamesTable = ({
+  filteredNames,
+  showImageAndDescription,
+  onNameClick,
+}) => {
   if (filteredNames.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-8 text-center">
@@ -69,12 +73,13 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
       return <>{row.description || <span className="text-gray-400">-</span>}</>;
     }
     if (column.key === "isRetired") {
-      return Boolean(Number(row.isRetired)) ? 
-      (Number(row.isLanguageProblem) === 2 ? (
-        <Check className="text-amber-500" size={20} />
-      ): (
-        <Check className="text-red-600" size={20} />
-      )) : (
+      return Boolean(Number(row.isRetired)) ? (
+        Number(row.isLanguageProblem) === 2 ? (
+          <Check className="text-amber-500" size={20} />
+        ) : (
+          <Check className="text-red-600" size={20} />
+        )
+      ) : (
         <X className="text-gray-400" size={20} />
       );
     }
@@ -85,6 +90,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription }) => {
     <SortableTable
       data={filteredNames}
       columns={columns}
+      onRowClick={onNameClick}
       renderCell={renderCell}
       className={showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}
     />

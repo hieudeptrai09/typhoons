@@ -10,6 +10,7 @@ import Toggle from "./_components/Toggle";
 import LetterNavigation from "./_components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
 import { categorizeLettersByStatus } from "./_utils/fns";
+import NameDetailsModal from "./_components/NameDetailsModal";
 
 const FilterNamesPage = () => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const FilterNamesPage = () => {
 
   const [names, setNames] = useState([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [selectedName, setSelectedName] = useState(null);
 
   // Filter states
   const [searchName, setSearchName] = useState("");
@@ -148,6 +150,10 @@ const FilterNamesPage = () => {
     );
   };
 
+  const handleNameClick = (name) => {
+    setSelectedName(name);
+  };
+
   return (
     <PageHeader title="Filter Names">
       <FilterButton
@@ -177,6 +183,7 @@ const FilterNamesPage = () => {
       <FilteredNamesTable
         filteredNames={paginatedNames}
         showImageAndDescription={showImageAndDescription}
+        onNameClick={handleNameClick}
       />
 
       <FilterModal
@@ -190,6 +197,11 @@ const FilterNamesPage = () => {
           selectedCountry,
           selectedLanguage,
         }}
+      />
+
+      <NameDetailsModal
+        selectedName={selectedName}
+        onClose={() => handleNameClick(null)}
       />
     </PageHeader>
   );
