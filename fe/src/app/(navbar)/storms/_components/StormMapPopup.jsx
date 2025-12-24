@@ -15,7 +15,7 @@ export const StormMapPopup = ({
         const stormRect = stormElementRef.getBoundingClientRect();
 
         const popupHeight = 262; // Fixed height for map popup
-        const popupWidth = 350; // Fixed width for map popup
+        const popupWidth = stormRect.width - 5; // Fixed width for map popup
         const gap = 4;
 
         // Use fixed positioning relative to viewport
