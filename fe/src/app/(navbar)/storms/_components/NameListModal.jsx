@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Modal } from "../../../../components/Modal";
+import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -7,7 +7,7 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
-import { StormMapPopup } from "./StormMapPopup";
+import StormMapPopup from "./StormMapPopup";
 
 const getIntensityLabel = (intensity) => {
   const labels = {
@@ -23,7 +23,7 @@ const getIntensityLabel = (intensity) => {
   return labels[intensity] || intensity;
 };
 
-export const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
+const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
   const [showMap, setShowMap] = useState(false);
   const [hoveredYear, sethoveredYear] = useState(null);
   const [selectedStorm, setSelectedStorm] = useState(null);
@@ -155,3 +155,5 @@ export const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 
     </Modal>
   );
 };
+
+export default NameListModal;

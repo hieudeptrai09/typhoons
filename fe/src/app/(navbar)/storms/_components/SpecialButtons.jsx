@@ -1,7 +1,7 @@
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
-export const SpecialButtons = ({ onCellClick, isAverageView = false, averageValues = null }) => {
+const SpecialButtons = ({ onCellClick, isAverageView = false, averageValues = null }) => {
   const buttons = [
     { id: 141, label: "CPHC" },
     { id: 142, label: "NHC" },
@@ -34,3 +34,5 @@ export const SpecialButtons = ({ onCellClick, isAverageView = false, averageValu
     </div>
   );
 };
+
+export default SpecialButtons;

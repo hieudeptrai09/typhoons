@@ -3,13 +3,7 @@ import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
-export const StormNamePopup = ({
-  popupRef,
-  selectedName,
-  selectedNameData,
-  nameElementRef,
-  onClose,
-}) => {
+const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementRef, onClose }) => {
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
@@ -118,3 +112,5 @@ export const StormNamePopup = ({
     document.body,
   );
 };
+
+export default StormNamePopup;

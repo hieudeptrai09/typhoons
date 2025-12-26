@@ -1,7 +1,7 @@
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
-export const GridCell = ({
+const GridCell = ({
   onClick,
   content,
   highlight = "",
@@ -50,3 +50,5 @@ export const GridCell = ({
     </td>
   );
 };
+
+export default GridCell;

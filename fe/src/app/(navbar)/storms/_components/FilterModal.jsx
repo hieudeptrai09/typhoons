@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Modal } from "../../../../components/Modal";
+import Modal from "../../../../components/Modal";
 
-export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
+const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
   const [mode, setMode] = useState(currentParams.mode || "table");
@@ -153,3 +153,5 @@ export const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     </Modal>
   );
 };
+
+export default FilterModal;

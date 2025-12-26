@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal } from "../../../../../components/Modal";
+import Modal from "../../../../../components/Modal";
 import FilterSection from "./FilterSection";
 
 const FilterModal = ({ isOpen, onClose, onApply, countries, languages, initialFilters }) => {

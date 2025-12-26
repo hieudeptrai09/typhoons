@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal } from "../../../../../../components/Modal";
+import Modal from "../../../../../../components/Modal";
 import CountrySelect from "./CountrySelect";
 import ModalActions from "./ModalActions";
 import NameSearchInput from "./NameSearchInput";

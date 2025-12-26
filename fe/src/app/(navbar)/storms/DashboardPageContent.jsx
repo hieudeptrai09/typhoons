@@ -5,12 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
-import { AverageModal } from "./_components/AverageModal";
-import { DashboardContent } from "./_components/DashboardContent";
+import AverageModal from "./_components/AverageModal";
+import DashboardContent from "./_components/DashboardContent";
 import FilterButton from "./_components/FilterButton";
-import { FilterModal } from "./_components/FilterModal";
-import { NameListModal } from "./_components/NameListModal";
-import { StormDetailModal } from "./_components/StormDetailModal";
+import FilterModal from "./_components/FilterModal";
+import NameListModal from "./_components/NameListModal";
+import StormDetailModal from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
 
 export default function DashboardPageContent() {

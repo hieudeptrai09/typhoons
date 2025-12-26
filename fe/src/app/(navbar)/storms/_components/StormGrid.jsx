@@ -1,6 +1,6 @@
-import { GridCell } from "./GridCell";
+import GridCell from "./GridCell";
 
-export const StormGrid = ({
+const StormGrid = ({
   cellData,
   onCellClick,
   highlightType = "",
@@ -61,3 +61,5 @@ export const StormGrid = ({
     </div>
   );
 };
+
+export default StormGrid;

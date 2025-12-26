@@ -9,8 +9,8 @@ import {
   calculateAverage,
   getGroupedStorms,
 } from "../_utils/fns";
-import { SpecialButtons } from "./SpecialButtons";
-import { StormGrid } from "./StormGrid";
+import SpecialButtons from "./SpecialButtons";
+import StormGrid from "./StormGrid";
 
 const renderStormGridWithButtons = (
   onCellClick,
@@ -173,7 +173,7 @@ const getStormNameColumns = () => {
   ];
 };
 
-export const DashboardContent = ({ params, stormsData, onCellClick }) => {
+const DashboardContent = ({ params, stormsData, onCellClick }) => {
   // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
     let filteredData = stormsData;
@@ -313,3 +313,5 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
 
   return <div className="text-center text-gray-500">Select filters to view data</div>;
 };
+
+export default DashboardContent;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
-export const Modal = ({
+const Modal = ({
   isOpen,
   onClose,
   title,
@@ -47,3 +47,5 @@ export const Modal = ({
     </div>
   );
 };
+
+export default Modal;

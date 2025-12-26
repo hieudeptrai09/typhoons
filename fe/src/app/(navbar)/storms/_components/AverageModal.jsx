@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Modal } from "../../../../components/Modal";
+import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -8,9 +8,9 @@ import {
   BACKGROUND_HOVER_BADGE,
 } from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
-import { StormNamePopup } from "./StormNamePopup";
+import StormNamePopup from "./StormNamePopup";
 
-export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
+const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const [selectedName, setSelectedName] = useState(null);
   const [hoveredName, setHoveredName] = useState(null);
   const nameRefs = useRef({});
@@ -106,3 +106,5 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     </Modal>
   );
 };
+
+export default AverageModal;

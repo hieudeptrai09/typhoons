@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { BACKGROUND_BADGE } from "../../../../constants";
 
-export const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) => {
+const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) => {
   // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
@@ -111,3 +111,5 @@ export const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClos
     document.body,
   );
 };
+
+export default StormMapPopup;

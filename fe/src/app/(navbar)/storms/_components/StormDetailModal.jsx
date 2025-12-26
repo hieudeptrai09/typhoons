@@ -1,8 +1,8 @@
 import IntensityBadge from "../../../../components/IntensityBadge";
-import { Modal } from "../../../../components/Modal";
+import Modal from "../../../../components/Modal";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
-export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
+const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
   // Group storms by name
   const groupedByName = storms.reduce((acc, storm) => {
     if (!acc[storm.name]) {
@@ -43,3 +43,5 @@ export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
     </Modal>
   );
 };
+
+export default StormDetailModal;
