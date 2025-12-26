@@ -40,15 +40,10 @@ export const GridCell = ({
       onClick={handleClick}
     >
       {stormNames.length > 0 && (
-        <div className="text-stone-100 text-[7px] absolute top-0">
-          {stormNames.join(", ")}
-        </div>
+        <div className="absolute top-0 text-[7px] text-stone-100">{stormNames.join(", ")}</div>
       )}
-      <div className="w-full h-16 flex items-center justify-center relative z-2">
-        <div
-          className="text-center text-base font-semibold"
-          style={{ color: getTextColor() }}
-        >
+      <div className="relative z-2 flex h-16 w-full items-center justify-center">
+        <div className="text-center text-base font-semibold" style={{ color: getTextColor() }}>
           {content}
         </div>
       </div>

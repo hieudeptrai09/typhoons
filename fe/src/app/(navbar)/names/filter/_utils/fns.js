@@ -1,10 +1,5 @@
 // Generate dynamic page header title
-export const getPageTitle = (
-  searchName,
-  selectedCountry,
-  selectedLanguage,
-  currentLetter
-) => {
+export const getPageTitle = (searchName, selectedCountry, selectedLanguage, currentLetter) => {
   const titleParts = [];
 
   if (searchName) {
@@ -44,7 +39,7 @@ export const getPageDescription = (name, country, language, letter) => {
 
   if (parts.length > 0) {
     return `Filter and search ${parts.join(
-      ", "
+      ", ",
     )}. Browse both current and retired typhoon names with detailed information about their meanings and origins.`;
   }
 

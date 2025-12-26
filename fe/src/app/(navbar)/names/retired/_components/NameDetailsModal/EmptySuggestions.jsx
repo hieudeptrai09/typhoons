@@ -1,9 +1,5 @@
 const EmptySuggestions = () => {
-  return (
-    <div className="text-gray-500 text-center py-4">
-      No suggested replacements available
-    </div>
-  );
+  return <div className="py-4 text-center text-gray-500">No suggested replacements available</div>;
 };
 
 export default EmptySuggestions;

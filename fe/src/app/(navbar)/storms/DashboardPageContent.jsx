@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FilterModal } from "./_components/FilterModal";
-import { StormDetailModal } from "./_components/StormDetailModal";
-import { AverageModal } from "./_components/AverageModal";
-import { NameListModal } from "./_components/NameListModal";
-import { DashboardContent } from "./_components/DashboardContent";
-import FilterButton from "./_components/FilterButton";
+import PageHeader from "../../../components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
+import { AverageModal } from "./_components/AverageModal";
+import { DashboardContent } from "./_components/DashboardContent";
+import FilterButton from "./_components/FilterButton";
+import { FilterModal } from "./_components/FilterModal";
+import { NameListModal } from "./_components/NameListModal";
+import { StormDetailModal } from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
-import PageHeader from "../../../components/PageHeader";
 
 export default function DashboardPageContent() {
   const router = useRouter();
@@ -69,10 +69,7 @@ export default function DashboardPageContent() {
       return;
     }
 
-    if (
-      params.view === "storms" ||
-      (params.view === "average" && params.filter === "name")
-    ) {
+    if (params.view === "storms" || (params.view === "average" && params.filter === "name")) {
       setSelectedData({ title: getPositionTitle(data, params.filter), storms });
       setDetailModalOpen(true);
     } else {
@@ -98,16 +95,10 @@ export default function DashboardPageContent() {
   };
 
   return (
-    <PageHeader
-      title={getDashboardTitle(params.view, params.mode, params.filter)}
-    >
+    <PageHeader title={getDashboardTitle(params.view, params.mode, params.filter)}>
       <FilterButton onClick={() => setFilterModalOpen(true)} params={params} />
 
-      <DashboardContent
-        params={params}
-        stormsData={stormsData}
-        onCellClick={handleCellClick}
-      />
+      <DashboardContent params={params} stormsData={stormsData} onCellClick={handleCellClick} />
 
       <FilterModal
         isOpen={filterModalOpen}

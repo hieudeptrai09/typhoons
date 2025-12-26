@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import fetchData from "../../../../containers/utils/fetcher";
-import TyphoonNamesTable from "./_components/TyphoonNamesTable";
-import TyphoonNameModal from "./_components/TyphoonNamesModal";
 import PageHeader from "../../../../components/PageHeader";
+import fetchData from "../../../../containers/utils/fetcher";
+import TyphoonNameModal from "./_components/TyphoonNamesModal";
+import TyphoonNamesTable from "./_components/TyphoonNamesTable";
 
 const CurrentNamesPage = () => {
   const [names, setNames] = useState([]);
@@ -19,10 +19,7 @@ const CurrentNamesPage = () => {
   return (
     <PageHeader title="Current Typhoon Names">
       <TyphoonNamesTable names={names} onNameClick={setSelectedName} />
-      <TyphoonNameModal
-        selectedName={selectedName}
-        onClose={() => setSelectedName(null)}
-      />
+      <TyphoonNameModal selectedName={selectedName} onClose={() => setSelectedName(null)} />
     </PageHeader>
   );
 };

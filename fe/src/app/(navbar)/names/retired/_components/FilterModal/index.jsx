@@ -1,10 +1,10 @@
-import { Modal } from "../../../../../../components/Modal";
 import { useState, useEffect } from "react";
-import NameSearchInput from "./NameSearchInput";
-import YearDigitSelector from "./YearDigitSelector";
+import { Modal } from "../../../../../../components/Modal";
 import CountrySelect from "./CountrySelect";
-import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import ModalActions from "./ModalActions";
+import NameSearchInput from "./NameSearchInput";
+import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
+import YearDigitSelector from "./YearDigitSelector";
 
 const FilterModal = ({
   isOpen,
@@ -18,18 +18,10 @@ const FilterModal = ({
     retirementReason: "",
   },
 }) => {
-  const [tempSearchName, setTempSearchName] = useState(
-    initialFilters.searchName
-  );
-  const [tempSelectedYear, setTempSelectedYear] = useState(
-    initialFilters.selectedYear
-  );
-  const [tempSelectedCountry, setTempSelectedCountry] = useState(
-    initialFilters.selectedCountry
-  );
-  const [tempRetirementReason, setTempRetirementReason] = useState(
-    initialFilters.retirementReason
-  );
+  const [tempSearchName, setTempSearchName] = useState(initialFilters.searchName);
+  const [tempSelectedYear, setTempSelectedYear] = useState(initialFilters.selectedYear);
+  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.selectedCountry);
+  const [tempRetirementReason, setTempRetirementReason] = useState(initialFilters.retirementReason);
 
   useEffect(() => {
     setTempSearchName(initialFilters.searchName);
@@ -55,19 +47,11 @@ const FilterModal = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Filter Options"
-      wrapperClassName="max-w-2xl"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" wrapperClassName="max-w-2xl">
       <div className="space-y-4">
         <NameSearchInput value={tempSearchName} onChange={setTempSearchName} />
 
-        <YearDigitSelector
-          value={tempSelectedYear}
-          onChange={setTempSelectedYear}
-        />
+        <YearDigitSelector value={tempSelectedYear} onChange={setTempSelectedYear} />
 
         <CountrySelect
           value={tempSelectedCountry}
@@ -75,10 +59,7 @@ const FilterModal = ({
           countries={countries}
         />
 
-        <RetirementReasonCheckbox
-          value={tempRetirementReason}
-          onChange={setTempRetirementReason}
-        />
+        <RetirementReasonCheckbox value={tempRetirementReason} onChange={setTempRetirementReason} />
       </div>
 
       <ModalActions onClearAll={handleClearAll} onApply={handleApply} />

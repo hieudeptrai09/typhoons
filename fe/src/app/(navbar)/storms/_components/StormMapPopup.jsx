@@ -1,13 +1,8 @@
-import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { BACKGROUND_BADGE } from "../../../../constants";
 
-export const StormMapPopup = ({
-  popupRef,
-  selectedStorm,
-  stormElementRef,
-  onClose,
-}) => {
+export const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) => {
   // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
@@ -96,23 +91,23 @@ export const StormMapPopup = ({
   return createPortal(
     <div
       ref={popupRef}
-      className="bg-white rounded-lg shadow-xl fixed flex flex-col z-50 border-2 overflow-hidden"
+      className="fixed z-50 flex flex-col overflow-hidden rounded-lg border-2 bg-white shadow-xl"
       style={{ borderColor: borderColor }}
     >
       <div
-        className="font-semibold px-4 py-2 border-b-2 shrink-0"
+        className="shrink-0 border-b-2 px-4 py-2 font-semibold"
         style={{ borderBottomColor: borderColor }}
       >
         <span className="text-blue-700">{stormTitle}</span>
       </div>
-      <div className="flex-1 p-2 overflow-hidden">
+      <div className="flex-1 overflow-hidden p-2">
         <img
           src={selectedStorm.map}
           alt={`${selectedStorm.name} ${selectedStorm.year} track`}
-          className="w-full h-full object-contain"
+          className="h-full w-full object-contain"
         />
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

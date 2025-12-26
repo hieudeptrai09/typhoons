@@ -1,8 +1,4 @@
-const LetterNavigation = ({
-  currentLetter,
-  letterStatusMap,
-  onLetterChange,
-}) => {
+const LetterNavigation = ({ currentLetter, letterStatusMap, onLetterChange }) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   const getLetterColorClass = (letter) => {
@@ -38,8 +34,8 @@ const LetterNavigation = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto mb-6">
-      <div className="flex flex-wrap gap-3 justify-center items-center">
+    <div className="mx-auto mb-6 max-w-4xl">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         {allLetters.map((letter) => {
           const status = letterStatusMap[letter];
           const isAvailable = status && status[0];
@@ -50,7 +46,7 @@ const LetterNavigation = ({
               key={letter}
               onClick={() => isAvailable && onLetterChange(letter)}
               disabled={!isAvailable}
-              className={`text-lg font-semibold transition-all underline-offset-4 ${colorClass}`}
+              className={`text-lg font-semibold underline-offset-4 transition-all ${colorClass}`}
             >
               {letter}
             </button>

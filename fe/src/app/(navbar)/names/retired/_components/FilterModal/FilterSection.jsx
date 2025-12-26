@@ -1,12 +1,12 @@
 const FilterSection = ({ label, hasValue, onClear, children }) => {
   return (
     <div>
-      <div className="flex justify-between items-center mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <label className="text-sm font-semibold text-gray-700">{label}</label>
         {hasValue && (
           <button
             onClick={onClear}
-            className="text-sm text-blue-500 font-semibold hover:text-blue-600 hover:underline px-2"
+            className="px-2 text-sm font-semibold text-blue-500 hover:text-blue-600 hover:underline"
           >
             Clear this filter
           </button>

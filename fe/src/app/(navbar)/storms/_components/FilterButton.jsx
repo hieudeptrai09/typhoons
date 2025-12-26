@@ -57,9 +57,9 @@ const FilterButton = ({ onClick, params }) => {
     return icons.reduce((acc, icon, index) => {
       if (index > 0) {
         acc.push(
-          <span key={`sep-${index}`} className="text-white mx-1">
+          <span key={`sep-${index}`} className="mx-1 text-white">
             /
-          </span>
+          </span>,
         );
       }
       acc.push(icon);
@@ -68,10 +68,10 @@ const FilterButton = ({ onClick, params }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mb-6">
+    <div className="mx-auto mb-6 max-w-4xl">
       <button
         onClick={onClick}
-        className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
+        className="mx-auto flex items-center gap-2 rounded-lg bg-purple-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-purple-600"
       >
         {renderViewIcons()}
       </button>

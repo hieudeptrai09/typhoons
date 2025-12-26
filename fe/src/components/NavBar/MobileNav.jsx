@@ -1,14 +1,7 @@
-import {
-  CloudLightning,
-  BookText,
-  List,
-  Archive,
-  Filter,
-  ChevronDown,
-} from "lucide-react";
-import NavLink from "./NavLink";
-import Link from "next/link";
 import { useState } from "react";
+import { CloudLightning, BookText, List, Archive, Filter, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import NavLink from "./NavLink";
 
 const MobileNav = ({ currentPath, isOpen, onClose }) => {
   const [isNamesExpanded, setIsNamesExpanded] = useState(false);
@@ -38,11 +31,11 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
 
   return (
     <div
-      className={`md:hidden absolute top-full left-0 right-0 bg-blue-600 shadow-lg transition-all duration-300 ease-in-out overflow-hidden z-40 ${
+      className={`absolute top-full right-0 left-0 z-40 overflow-hidden bg-blue-600 shadow-lg transition-all duration-300 ease-in-out md:hidden ${
         isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
       }`}
     >
-      <div className="px-4 py-2 space-y-2">
+      <div className="space-y-2 px-4 py-2">
         <NavLink
           href="/storms/"
           icon={CloudLightning}
@@ -54,7 +47,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
         <div>
           <button
             onClick={() => setIsNamesExpanded(!isNamesExpanded)}
-            className={`text-white flex items-center justify-between w-full px-4 py-1 rounded-lg transition hover:bg-white/30 ${
+            className={`flex w-full items-center justify-between rounded-lg px-4 py-1 text-white transition hover:bg-white/30 ${
               isNamesActive && "font-semibold"
             }`}
           >
@@ -64,14 +57,12 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
             </div>
             <ChevronDown
               size={20}
-              className={`transition-transform ${
-                isNamesExpanded && "rotate-180"
-              }`}
+              className={`transition-transform ${isNamesExpanded && "rotate-180"}`}
             />
           </button>
 
           {isNamesExpanded && (
-            <div className="ml-4 mt-2 space-y-2">
+            <div className="mt-2 ml-4 space-y-2">
               {namesSubmenu.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -79,9 +70,9 @@ const MobileNav = ({ currentPath, isOpen, onClose }) => {
                     key={item.href}
                     href={item.href}
                     onClick={onClose}
-                    className={`flex items-center space-x-2 px-4 py-1 rounded-lg transition ${
+                    className={`flex items-center space-x-2 rounded-lg px-4 py-1 transition ${
                       item.isActive
-                        ? "bg-white/40 text-white font-semibold"
+                        ? "bg-white/40 font-semibold text-white"
                         : "text-white/90 hover:bg-white/20"
                     }`}
                   >

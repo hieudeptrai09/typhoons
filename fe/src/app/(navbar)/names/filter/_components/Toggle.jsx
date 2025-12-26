@@ -1,9 +1,7 @@
 const Toggle = ({ value, onChange }) => {
   return (
-    <div className="max-w-4xl mx-auto mb-6 flex justify-end items-center gap-3">
-      <label className="text-sm font-semibold text-gray-700">
-        Show Images & Descriptions
-      </label>
+    <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end gap-3">
+      <label className="text-sm font-semibold text-gray-700">Show Images & Descriptions</label>
       <button
         onClick={() => onChange(!value)}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${

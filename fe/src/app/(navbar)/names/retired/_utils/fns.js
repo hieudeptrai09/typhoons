@@ -45,13 +45,7 @@ export const getRetiredNamesTitle = (name, year, country, lang, letter) => {
   return parts;
 };
 
-export const getRetiredNamesDescription = (
-  name,
-  year,
-  country,
-  lang,
-  letter
-) => {
+export const getRetiredNamesDescription = (name, year, country, lang, letter) => {
   const parts = [];
 
   if (name) {
@@ -92,7 +86,7 @@ export const getRetiredNamesDescription = (
 
   if (parts.length > 0) {
     return `Explore ${parts.join(
-      ", "
+      ", ",
     )} and their suggested replacements. Learn about the history and reasons behind typhoon name retirements.`;
   }
 

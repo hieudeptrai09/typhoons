@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { StormGrid } from "./StormGrid";
+import IntensityBadge from "../../../../components/IntensityBadge";
 import SortableTable from "../../../../components/SortableTable";
-import { SpecialButtons } from "./SpecialButtons";
+import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK } from "../../../../constants";
 import {
   getHighlights,
   getIntensityFromNumber,
@@ -9,18 +9,15 @@ import {
   calculateAverage,
   getGroupedStorms,
 } from "../_utils/fns";
-import IntensityBadge from "../../../../components/IntensityBadge";
-import {
-  TEXT_COLOR_WHITE_BACKGROUND,
-  INTENSITY_RANK,
-} from "../../../../constants";
+import { SpecialButtons } from "./SpecialButtons";
+import { StormGrid } from "./StormGrid";
 
 const renderStormGridWithButtons = (
   onCellClick,
   cellData,
   isAverageView,
   averageValues,
-  stormsData
+  stormsData,
 ) => (
   <div>
     <SpecialButtons
@@ -38,11 +35,7 @@ const renderStormGridWithButtons = (
   </div>
 );
 
-const createCellData = (
-  viewType,
-  highlightedData = null,
-  averageValues = null
-) => {
+const createCellData = (viewType, highlightedData = null, averageValues = null) => {
   const cellData = {};
 
   // Initialize first 140 cells based on view type
@@ -68,9 +61,7 @@ const createCellData = (
           <div className="flex flex-col items-center gap-1">
             {storms.map((storm, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="text-xs font-bold text-gray-800">
-                  {storm.name}
-                </div>
+                <div className="text-xs font-bold text-gray-800">{storm.name}</div>
                 <div className="text-[10px] text-gray-600">({storm.year})</div>
               </div>
             ))}
@@ -258,7 +249,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
       cellData,
       params.view === "average",
       params.view === "average" ? averageValues : null,
-      stormsData
+      stormsData,
     );
   }
 
@@ -299,11 +290,7 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
           { key: "position", label: "Position" },
         ]}
         renderCell={(row, col) =>
-          col.key === "intensity" ? (
-            <IntensityBadge intensity={row.intensity} />
-          ) : (
-            row[col.key]
-          )
+          col.key === "intensity" ? <IntensityBadge intensity={row.intensity} /> : row[col.key]
         }
       />
     );
@@ -324,7 +311,5 @@ export const DashboardContent = ({ params, stormsData, onCellClick }) => {
     );
   }
 
-  return (
-    <div className="text-center text-gray-500">Select filters to view data</div>
-  );
+  return <div className="text-center text-gray-500">Select filters to view data</div>;
 };

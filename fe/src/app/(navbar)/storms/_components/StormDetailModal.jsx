@@ -1,5 +1,5 @@
-import { Modal } from "../../../../components/Modal";
 import IntensityBadge from "../../../../components/IntensityBadge";
+import { Modal } from "../../../../components/Modal";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
 export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
@@ -16,15 +16,10 @@ export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
   const hasMultipleNames = nameGroups.length > 1;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      wrapperClassName="max-w-md"
-    >
-      <div className="flex flex-col max-h-96 overflow-y-auto">
+    <Modal isOpen={isOpen} onClose={onClose} title={title} wrapperClassName="max-w-md">
+      <div className="flex max-h-96 flex-col overflow-y-auto">
         {nameGroups.map(([name, stormGroup], groupIndex) => (
-          <div key={name} className="flex gap-1.5 flex-col">
+          <div key={name} className="flex flex-col gap-1.5">
             {stormGroup.map((storm, index) => (
               <div key={index} className="flex items-center">
                 <IntensityBadge intensity={storm.intensity} />
@@ -40,7 +35,7 @@ export const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
             ))}
 
             {hasMultipleNames && groupIndex < nameGroups.length - 1 && (
-              <div className="border-b border-gray-300 my-3"></div>
+              <div className="my-3 border-b border-gray-300"></div>
             )}
           </div>
         ))}

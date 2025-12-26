@@ -12,14 +12,12 @@ export const useFilteredNames = ({
 
     if (searchName) {
       filtered = filtered.filter((name) =>
-        name.name.toLowerCase().includes(searchName.toLowerCase())
+        name.name.toLowerCase().includes(searchName.toLowerCase()),
       );
     }
 
     if (selectedYear) {
-      filtered = filtered.filter(
-        (name) => name.lastYear === String(selectedYear)
-      );
+      filtered = filtered.filter((name) => name.lastYear === String(selectedYear));
     }
 
     if (selectedCountry) {
@@ -38,20 +36,11 @@ export const useFilteredNames = ({
     }
 
     return filtered;
-  }, [
-    retiredNames,
-    searchName,
-    selectedYear,
-    selectedCountry,
-    retirementReason,
-  ]);
+  }, [retiredNames, searchName, selectedYear, selectedCountry, retirementReason]);
 
-  const activeFilterCount = [
-    searchName,
-    selectedYear,
-    selectedCountry,
-    retirementReason,
-  ].filter(Boolean).length;
+  const activeFilterCount = [searchName, selectedYear, selectedCountry, retirementReason].filter(
+    Boolean,
+  ).length;
 
   return { filteredNames, activeFilterCount };
 };

@@ -71,7 +71,7 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
             <button
               key={option.value}
               onClick={() => handleButtonClick(option.value)}
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              className={`rounded-lg px-4 py-2 transition-colors ${
                 isActive
                   ? `${option.activeColor} text-white ${option.hoverActiveColor}`
                   : `${option.inactiveColor} ${option.textInactiveColor} ${option.hoverInactiveColor}`

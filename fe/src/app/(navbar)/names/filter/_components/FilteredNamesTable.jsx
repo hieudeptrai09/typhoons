@@ -1,22 +1,15 @@
-import SortableTable from "../../../../../components/SortableTable";
-import { Check, X, Frown } from "lucide-react";
 import { useMemo } from "react";
+import { Check, X, Frown } from "lucide-react";
+import SortableTable from "../../../../../components/SortableTable";
 
-const FilteredNamesTable = ({
-  filteredNames,
-  showImageAndDescription,
-  onNameClick,
-}) => {
+const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClick }) => {
   if (filteredNames.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-8 text-center">
-        <Frown className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">
-          No Results Found
-        </h3>
+      <div className="mx-auto max-w-4xl p-8 text-center">
+        <Frown className="mx-auto mb-4 h-16 w-16 text-gray-400" />
+        <h3 className="mb-2 text-xl font-semibold text-gray-700">No Results Found</h3>
         <p className="text-gray-500">
-          No typhoon names match your current filters. Try adjusting your search
-          criteria.
+          No typhoon names match your current filters. Try adjusting your search criteria.
         </p>
       </div>
     );
@@ -41,7 +34,7 @@ const FilteredNamesTable = ({
     if (showImageAndDescription) {
       baseColumns.push(
         { key: "image", label: "Image", isSortable: false },
-        { key: "description", label: "Description", isSortable: false }
+        { key: "description", label: "Description", isSortable: false },
       );
     }
 
@@ -50,9 +43,7 @@ const FilteredNamesTable = ({
 
   const renderCell = (row, column) => {
     if (column.key === "name") {
-      return (
-        <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>
-      );
+      return <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>;
     }
     if (column.key === "image") {
       return (
@@ -61,7 +52,7 @@ const FilteredNamesTable = ({
             <img
               src={row.image}
               alt={row.name}
-              className="min-h-24 max-h-52 min-w-28 object-cover rounded"
+              className="max-h-52 min-h-24 min-w-28 rounded object-cover"
             />
           ) : (
             <span className="text-gray-400">-</span>

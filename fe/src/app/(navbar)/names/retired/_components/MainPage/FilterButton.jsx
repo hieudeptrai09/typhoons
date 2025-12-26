@@ -4,19 +4,14 @@ import { getRetiredNamesTitle } from "../../_utils/fns";
 const FilterButton = ({ activeFilterCount, onClick, params }) => {
   const hasFilters = activeFilterCount > 0;
   const filterText = hasFilters
-    ? getRetiredNamesTitle(
-        params.name,
-        params.year,
-        params.country,
-        params.lang
-      ).join(" / ")
+    ? getRetiredNamesTitle(params.name, params.year, params.country, params.lang).join(" / ")
     : "Filters";
 
   return (
-    <div className="max-w-4xl mx-auto mb-6">
+    <div className="mx-auto mb-6 max-w-4xl">
       <button
         onClick={onClick}
-        className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center gap-2 mx-auto"
+        className="mx-auto flex items-center gap-2 rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-orange-600"
       >
         <Filter size={20} />
         {filterText}

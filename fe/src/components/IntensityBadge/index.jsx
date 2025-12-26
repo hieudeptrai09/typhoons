@@ -3,7 +3,7 @@ import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../constants";
 const IntensityBadge = ({ intensity }) => {
   return (
     <span
-      className="font-semibold w-10 h-10 flex items-center justify-center"
+      className="flex h-10 w-10 items-center justify-center font-semibold"
       style={{
         backgroundColor: BACKGROUND_BADGE[intensity],
         color: TEXT_COLOR_BADGE[intensity],

@@ -1,5 +1,5 @@
-import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
@@ -89,14 +89,13 @@ export const StormNamePopup = ({
   return createPortal(
     <div
       ref={popupRef}
-      className="bg-white border-2 border-blue-500 rounded-lg shadow-xl fixed flex flex-col z-50"
+      className="fixed z-50 flex flex-col rounded-lg border-2 border-blue-500 bg-white shadow-xl"
     >
-      <div className="font-semibold text-blue-700 px-4 py-2 border-b-2 shrink-0">
-        All <span className="text-purple-600 font-bold">{selectedName}</span>{" "}
-        storms:
+      <div className="shrink-0 border-b-2 px-4 py-2 font-semibold text-blue-700">
+        All <span className="font-bold text-purple-600">{selectedName}</span> storms:
       </div>
       <div
-        className="flex flex-col gap-1.5 px-4 py-2 overflow-y-auto flex-1"
+        className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-4 py-2"
         style={{
           minHeight: `${getHeight(selectedNameData.storms.length)}px`,
         }}
@@ -116,6 +115,6 @@ export const StormNamePopup = ({
         ))}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
