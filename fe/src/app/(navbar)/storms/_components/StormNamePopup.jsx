@@ -4,6 +4,13 @@ import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
 const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementRef, onClose }) => {
+  const getHeight = (length) => {
+    if (length === 1) return 56;
+    else if (length === 2) return 102;
+    else if (length === 3) return 148;
+    else return 150;
+  };
+
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
@@ -72,13 +79,6 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementR
   if (!selectedName || !selectedNameData) {
     return null;
   }
-
-  const getHeight = (length) => {
-    if (length === 1) return 56;
-    else if (length === 2) return 102;
-    else if (length === 3) return 148;
-    else return 150;
-  };
 
   return createPortal(
     <div
