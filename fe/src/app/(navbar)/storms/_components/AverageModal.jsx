@@ -99,7 +99,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           popupRef={popupRef}
           selectedName={selectedName}
           selectedNameData={selectedNameData}
-          nameElementRef={nameRefs.current[selectedName]}
+          nameRefs={nameRefs}
           onClose={() => setSelectedName(null)}
         />
       </div>

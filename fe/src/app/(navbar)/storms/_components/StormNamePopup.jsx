@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 
-const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementRef, onClose }) => {
+const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameRefs, onClose }) => {
   const getHeight = (length) => {
     if (length === 1) return 56;
     else if (length === 2) return 102;
@@ -14,6 +14,8 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementR
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
+      const nameElementRef = nameRefs.current[selectedName];
+
       if (selectedName && nameElementRef && popupRef.current) {
         const nameRect = nameElementRef.getBoundingClientRect();
 
@@ -52,10 +54,11 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementR
     return () => {
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [selectedName, nameElementRef, popupRef, selectedNameData]);
+  }, [selectedName, nameRefs, popupRef, selectedNameData]);
 
   // Close popup when clicking outside
   useEffect(() => {
+    const nameElementRef = nameRefs?.current[selectedName];
     const handleClickOutside = (event) => {
       if (
         selectedName &&
@@ -74,7 +77,7 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameElementR
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedName, popupRef, nameElementRef, onClose]);
+  }, [selectedName, popupRef, nameRefs, onClose]);
 
   if (!selectedName || !selectedNameData) {
     return null;

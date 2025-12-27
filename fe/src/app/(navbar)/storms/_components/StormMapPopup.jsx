@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { BACKGROUND_BADGE } from "../../../../constants";
 
-const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) => {
+const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex, onClose }) => {
   // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
+      const stormElementRef = stormRefs?.current[selectedStormIndex];
+
       if (selectedStorm && stormElementRef && popupRef.current) {
         const stormRect = stormElementRef.getBoundingClientRect();
 
@@ -57,10 +59,11 @@ const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) =>
       window.removeEventListener("scroll", updatePosition, true);
       window.removeEventListener("resize", updatePosition);
     };
-  }, [selectedStorm, stormElementRef, popupRef]);
+  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex]);
 
   // Close popup when clicking outside
   useEffect(() => {
+    const stormElementRef = stormRefs?.current[selectedStormIndex];
     const handleClickOutside = (event) => {
       if (
         selectedStorm &&
@@ -79,7 +82,7 @@ const StormMapPopup = ({ popupRef, selectedStorm, stormElementRef, onClose }) =>
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedStorm, popupRef, stormElementRef, onClose]);
+  }, [selectedStorm, popupRef, stormRefs, onClose]);
 
   if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "") {
     return null;

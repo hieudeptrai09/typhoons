@@ -148,7 +148,8 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
         <StormMapPopup
           popupRef={popupRef}
           selectedStorm={selectedStormData}
-          stormElementRef={stormRefs.current[selectedStorm]}
+          stormRefs={stormRefs}
+          selectedStormIndex={selectedStorm}
           onClose={() => setSelectedStorm(null)}
         />
       </div>
