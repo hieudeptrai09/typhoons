@@ -82,7 +82,7 @@ const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex,
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedStorm, popupRef, stormRefs, onClose]);
+  }, [selectedStorm, popupRef, stormRefs, onClose, selectedStormIndex]);
 
   if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "") {
     return null;
