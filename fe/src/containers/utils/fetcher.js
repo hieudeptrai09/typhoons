@@ -4,7 +4,7 @@ const fetchData = async (endpoint) => {
   try {
     const response = await fetch(`${API_BASE}${endpoint}`);
     return await response.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 };
