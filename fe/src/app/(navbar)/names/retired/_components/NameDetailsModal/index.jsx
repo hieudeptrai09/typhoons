@@ -1,6 +1,6 @@
-import { Modal } from "../../../../../../components/Modal";
-import NameInfo from "./NameInfo";
+import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
+import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
 
 const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
@@ -31,7 +31,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
       wrapperClassName="max-w-2xl max-h-[80vh] overflow-hidden"
       titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
     >
-      <div className="flex gap-6 mb-6 pb-4 border-b border-gray-200 items-center">
+      <div className="mb-6 flex items-center gap-6 border-b border-gray-200 pb-4">
         <NameInfo
           meaning={selectedName.meaning}
           country={selectedName.country}
@@ -46,9 +46,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
       </div>
 
       <div className="max-h-[calc(80vh-200px)] pb-6">
-        <h3 className="font-bold text-xl mb-4 text-gray-800">
-          Suggested Replacements
-        </h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">Suggested Replacements</h3>
         <SuggestionsList suggestions={suggestions} />
       </div>
     </Modal>

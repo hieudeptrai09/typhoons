@@ -1,5 +1,5 @@
-import SuggestionCard from "./SuggestionCard";
 import EmptySuggestions from "./EmptySuggestions";
+import SuggestionCard from "./SuggestionCard";
 
 const SuggestionsList = ({ suggestions }) => {
   if (suggestions.length === 0) {
@@ -12,11 +12,7 @@ const SuggestionsList = ({ suggestions }) => {
   return (
     <div className="space-y-3">
       {suggestions.map((suggestion, sidx) => (
-        <SuggestionCard
-          key={sidx}
-          suggestion={suggestion}
-          hasAnyImage={hasAnyImage}
-        />
+        <SuggestionCard key={sidx} suggestion={suggestion} hasAnyImage={hasAnyImage} />
       ))}
     </div>
   );

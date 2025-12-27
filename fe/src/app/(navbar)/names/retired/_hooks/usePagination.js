@@ -23,7 +23,7 @@ export const usePagination = ({
     } else {
       // Filter names by current letter
       const namesForLetter = retiredNames.filter(
-        (name) => name.name.charAt(0).toUpperCase() === currentLetter
+        (name) => name.name.charAt(0).toUpperCase() === currentLetter,
       );
       return namesForLetter;
     }

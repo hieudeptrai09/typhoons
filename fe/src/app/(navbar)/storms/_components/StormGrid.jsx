@@ -1,6 +1,6 @@
-import { GridCell } from "./GridCell";
+import GridCell from "./GridCell";
 
-export const StormGrid = ({
+const StormGrid = ({
   cellData,
   onCellClick,
   highlightType = "",
@@ -15,9 +15,7 @@ export const StormGrid = ({
   const getStormNamesForPosition = (position) => {
     if (!stormsData || stormsData.length === 0) return [];
 
-    const storms = stormsData.filter(
-      (storm) => storm.position === String(position)
-    );
+    const storms = stormsData.filter((storm) => storm.position === String(position));
 
     // Get unique storm names
     const uniqueNames = [...new Set(storms.map((storm) => storm.name))];
@@ -29,7 +27,7 @@ export const StormGrid = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse mx-auto">
+      <table className="mx-auto min-w-full border-collapse">
         <colgroup>
           {[...Array(cols)].map((_, idx) => (
             <col key={idx} style={{ width: columnWidth }} />
@@ -63,3 +61,5 @@ export const StormGrid = ({
     </div>
   );
 };
+
+export default StormGrid;

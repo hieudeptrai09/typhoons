@@ -1,15 +1,15 @@
 const ModalActions = ({ onClearAll, onApply }) => {
   return (
-    <div className="flex gap-3 mt-6">
+    <div className="mt-6 flex gap-3">
       <button
         onClick={onClearAll}
-        className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-semibold"
+        className="flex-1 rounded-lg bg-gray-300 px-4 py-2 font-semibold text-gray-700 transition-colors hover:bg-gray-400"
       >
         Clear All
       </button>
       <button
         onClick={onApply}
-        className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+        className="flex-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-600"
       >
         Apply Filters
       </button>

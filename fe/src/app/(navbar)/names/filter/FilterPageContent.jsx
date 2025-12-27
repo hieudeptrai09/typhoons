@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import PageHeader from "../../../../components/PageHeader";
 import fetchData from "../../../../containers/utils/fetcher";
-import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
-import Toggle from "./_components/Toggle";
+import FilterModal from "./_components/FilterModal";
 import LetterNavigation from "./_components/LetterNavigation";
-import PageHeader from "../../../../components/PageHeader";
-import { categorizeLettersByStatus } from "./_utils/fns";
 import NameDetailsModal from "./_components/NameDetailsModal";
+import Toggle from "./_components/Toggle";
+import { categorizeLettersByStatus } from "./_utils/fns";
 
 const FilterNamesPage = () => {
   const router = useRouter();
@@ -20,29 +20,14 @@ const FilterNamesPage = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState(null);
 
-  // Filter states
-  const [searchName, setSearchName] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("");
-
   // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
 
-  // Pagination by letter
-  const [currentLetter, setCurrentLetter] = useState("A");
-
   // Initialize filters from URL
-  useEffect(() => {
-    const name = searchParams.get("name") || "";
-    const country = searchParams.get("country") || "";
-    const language = searchParams.get("language") || "";
-    const letter = searchParams.get("letter") || "A";
-
-    setSearchName(name);
-    setSelectedCountry(country);
-    setSelectedLanguage(language);
-    setCurrentLetter(letter);
-  }, [searchParams]);
+  const searchName = searchParams.get("name") || "";
+  const selectedCountry = searchParams.get("country") || "";
+  const selectedLanguage = searchParams.get("language") || "";
+  const currentLetter = searchParams.get("letter") || "A";
 
   useEffect(() => {
     // Fetch all names (both current and retired)
@@ -58,9 +43,7 @@ const FilterNamesPage = () => {
   }, [names]);
 
   const languages = useMemo(() => {
-    return [
-      ...new Set(names.map((name) => name.language).filter(Boolean)),
-    ].sort();
+    return [...new Set(names.map((name) => name.language).filter(Boolean))].sort();
   }, [names]);
 
   const filteredNames = useMemo(() => {
@@ -68,7 +51,7 @@ const FilterNamesPage = () => {
 
     if (searchName) {
       filtered = filtered.filter((name) =>
-        name.name.toLowerCase().includes(searchName.toLowerCase())
+        name.name.toLowerCase().includes(searchName.toLowerCase()),
       );
     }
 
@@ -91,63 +74,37 @@ const FilterNamesPage = () => {
     }
 
     // Otherwise, filter by current letter
-    return filteredNames.filter(
-      (name) => name.name.charAt(0).toUpperCase() === currentLetter
-    );
-  }, [
-    filteredNames,
-    currentLetter,
-    searchName,
-    selectedCountry,
-    selectedLanguage,
-  ]);
+    return filteredNames.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
+  }, [filteredNames, currentLetter, searchName, selectedCountry, selectedLanguage]);
 
   // Categorize letters by their retired/alive status using optimized map
   const letterStatusMap = useMemo(() => {
     return categorizeLettersByStatus(filteredNames);
   }, [filteredNames]);
 
-  const activeFilterCount = [
-    searchName,
-    selectedCountry,
-    selectedLanguage,
-  ].filter(Boolean).length;
+  const activeFilterCount = [searchName, selectedCountry, selectedLanguage].filter(Boolean).length;
 
   const updateURL = (filters, letter = currentLetter) => {
     const params = new URLSearchParams();
     if (filters.searchName) params.set("name", filters.searchName);
     if (filters.selectedCountry) params.set("country", filters.selectedCountry);
-    if (filters.selectedLanguage)
-      params.set("language", filters.selectedLanguage);
-    if (
-      !filters.searchName &&
-      !filters.selectedCountry &&
-      !filters.selectedLanguage
-    ) {
+    if (filters.selectedLanguage) params.set("language", filters.selectedLanguage);
+    if (!filters.searchName && !filters.selectedCountry && !filters.selectedLanguage) {
       params.set("letter", letter);
     }
 
     const queryString = params.toString();
-    const newURL = queryString
-      ? `/names/filter?${queryString}`
-      : "/names/filter";
+    const newURL = queryString ? `/names/filter?${queryString}` : "/names/filter";
     router.push(newURL);
   };
 
   const handleApplyFilters = (filters) => {
-    setSearchName(filters.searchName);
-    setSelectedCountry(filters.selectedCountry);
-    setSelectedLanguage(filters.selectedLanguage);
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
 
   const handleLetterChange = (letter) => {
-    setCurrentLetter(letter);
-    updateURL(
-      { searchName: "", selectedCountry: "", selectedLanguage: "" },
-      letter
-    );
+    updateURL({ searchName: "", selectedCountry: "", selectedLanguage: "" }, letter);
   };
 
   const handleNameClick = (name) => {
@@ -174,10 +131,7 @@ const FilterNamesPage = () => {
       )}
 
       {paginatedNames.length > 0 && (
-        <Toggle
-          value={showImageAndDescription}
-          onChange={setShowImageAndDescription}
-        />
+        <Toggle value={showImageAndDescription} onChange={setShowImageAndDescription} />
       )}
 
       <FilteredNamesTable
@@ -199,10 +153,7 @@ const FilterNamesPage = () => {
         }}
       />
 
-      <NameDetailsModal
-        selectedName={selectedName}
-        onClose={() => handleNameClick(null)}
-      />
+      <NameDetailsModal selectedName={selectedName} onClose={() => handleNameClick(null)} />
     </PageHeader>
   );
 };

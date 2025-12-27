@@ -1,5 +1,5 @@
-import { Modal } from "../../../../components/Modal";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -7,14 +7,10 @@ import {
   INTENSITY_RANK,
   BACKGROUND_HOVER_BADGE,
 } from "../../../../constants";
-import {
-  getIntensityFromNumber,
-  calculateAverage,
-  getGroupedStorms,
-} from "../_utils/fns";
-import { StormNamePopup } from "./StormNamePopup";
+import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
+import StormNamePopup from "./StormNamePopup";
 
-export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
+const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const [selectedName, setSelectedName] = useState(null);
   const [hoveredName, setHoveredName] = useState(null);
   const nameRefs = useRef({});
@@ -28,12 +24,10 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });
 
-  // Close popup when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedName(null);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedName(null);
+    onClose();
+  };
 
   const handleNameClick = (name) => {
     if (selectedName === name) {
@@ -46,30 +40,22 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const selectedNameData = nameData.find((d) => d.name === selectedName);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      wrapperClassName="max-w-md"
-    >
+    <Modal isOpen={isOpen} onClose={handleClose} title={title} wrapperClassName="max-w-md">
       <div className="space-y-3">
         <div title={JSON.stringify(INTENSITY_RANK)}>
           <span className="text-blue-700">Overall Average Intensity: </span>
           <span
             className="text-lg font-bold"
             style={{
-              color:
-                TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)],
+              color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)],
             }}
           >
             {average.toFixed(2)}
           </span>
         </div>
         <div>
-          <div className="mb-2 text-blue-700">
-            Storm names at this position:
-          </div>
-          <div className="space-y-2 relative">
+          <div className="mb-2 text-blue-700">Storm names at this position:</div>
+          <div className="relative space-y-2">
             {nameData.map((data, idx) => {
               const intensityLabel = getIntensityFromNumber(data.average);
               const bgColor = BACKGROUND_BADGE[intensityLabel];
@@ -82,7 +68,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
                   key={idx}
                   ref={(el) => (nameRefs.current[data.name] = el)}
                   onClick={() => handleNameClick(data.name)}
-                  className="flex justify-between items-center px-3 py-2 rounded border cursor-pointer transition-colors"
+                  className="flex cursor-pointer items-center justify-between rounded border px-3 py-2 transition-colors"
                   style={{
                     backgroundColor: isHovered ? hoverColor : bgColor,
                     borderColor: bgColor,
@@ -98,10 +84,7 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
                       Count: <span className="font-semibold">{data.count}</span>
                     </span>
                     <span style={{ color: textColor }}>
-                      Avg:{" "}
-                      <span className="font-semibold">
-                        {data.average.toFixed(2)}
-                      </span>
+                      Avg: <span className="font-semibold">{data.average.toFixed(2)}</span>
                     </span>
                   </div>
                 </div>
@@ -114,10 +97,12 @@ export const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
           popupRef={popupRef}
           selectedName={selectedName}
           selectedNameData={selectedNameData}
-          nameElementRef={nameRefs.current[selectedName]}
+          nameRefs={nameRefs}
           onClose={() => setSelectedName(null)}
         />
       </div>
     </Modal>
   );
 };
+
+export default AverageModal;

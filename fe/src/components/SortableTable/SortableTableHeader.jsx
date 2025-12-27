@@ -14,10 +14,10 @@ const SortableTableHeader = ({
       return <span className="text-gray-600">⇅</span>;
     }
     if (currentSortDirection === "asc") {
-      return <span className="text-green-600 font-bold">↑</span>;
+      return <span className="font-bold text-green-600">↑</span>;
     }
     if (currentSortDirection === "desc") {
-      return <span className="text-red-600 font-bold">↓</span>;
+      return <span className="font-bold text-red-600">↓</span>;
     }
     return null;
   };
@@ -34,7 +34,7 @@ const SortableTableHeader = ({
     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
       <button
         onClick={() => onSort(columnKey)}
-        className="flex items-center gap-1 hover:text-blue-600 transition-colors w-full"
+        className="flex w-full items-center gap-1 transition-colors hover:text-blue-600"
         title={columnTitle}
       >
         <span>{label}</span>

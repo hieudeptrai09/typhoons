@@ -1,5 +1,6 @@
-import { Modal } from "../../../../components/Modal";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
+import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -7,7 +8,7 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
-import { StormMapPopup } from "./StormMapPopup";
+import StormMapPopup from "./StormMapPopup";
 
 const getIntensityLabel = (intensity) => {
   const labels = {
@@ -23,13 +24,7 @@ const getIntensityLabel = (intensity) => {
   return labels[intensity] || intensity;
 };
 
-export const NameListModal = ({
-  isOpen,
-  onClose,
-  name,
-  storms,
-  avgIntensity = 0,
-}) => {
+const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
   const [showMap, setShowMap] = useState(false);
   const [hoveredYear, sethoveredYear] = useState(null);
   const [selectedStorm, setSelectedStorm] = useState(null);
@@ -40,12 +35,10 @@ export const NameListModal = ({
   const intensityLabel = getIntensityFromNumber(avgIntensity);
   const titleColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
 
-  // Close popup when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedStorm(null);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedStorm(null);
+    onClose();
+  };
 
   if (!storms || storms.length === 0) return null;
 
@@ -57,13 +50,12 @@ export const NameListModal = ({
     }
   };
 
-  const selectedStormData =
-    selectedStorm !== null ? storms[selectedStorm] : null;
+  const selectedStormData = selectedStorm !== null ? storms[selectedStorm] : null;
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title={name}
       wrapperClassName="max-w-lg"
       titleClassName="!text-3xl"
@@ -71,31 +63,25 @@ export const NameListModal = ({
     >
       <div className="space-y-4">
         {/* Storm Information and Toggle - all in one line */}
-        <div className="flex justify-between items-center pb-4 border-b border-gray-200">
+        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
           <div className="flex flex-col gap-1">
             <div>
               <span className="font-semibold text-gray-700">Country:</span>
-              <span className="text-gray-600 ml-2">{storms[0].country}</span>
+              <span className="ml-2 text-gray-600">{storms[0].country}</span>
             </div>
             <div>
               <span className="font-semibold text-gray-700">Position:</span>
-              <span className="text-gray-600 ml-2">{storms[0].position}</span>
+              <span className="ml-2 text-gray-600">{storms[0].position}</span>
             </div>
             {storms[0].correctSpelling && (
               <div>
-                <span className="font-semibold text-gray-700">
-                  Correct spelling:
-                </span>
-                <span className="text-gray-600 ml-2">
-                  {storms[0].correctSpelling}
-                </span>
+                <span className="font-semibold text-gray-700">Correct spelling:</span>
+                <span className="ml-2 text-gray-600">{storms[0].correctSpelling}</span>
               </div>
             )}
           </div>
-          <div className="flex flex-col md:flex-row items-end md:gap-1">
-            <label className="text-sm font-semibold text-gray-700">
-              Show Map
-            </label>
+          <div className="flex flex-col items-end md:flex-row md:gap-1">
+            <label className="text-sm font-semibold text-gray-700">Show Map</label>
             <button
               onClick={() => setShowMap(!showMap)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -115,7 +101,7 @@ export const NameListModal = ({
 
         {/* Storms List */}
         <div>
-          <h3 className="font-semibold text-gray-700 mb-3">
+          <h3 className="mb-3 font-semibold text-gray-700">
             All {name} Storms ({storms.length})
           </h3>
           <div className="space-y-2">
@@ -132,26 +118,25 @@ export const NameListModal = ({
                 <div
                   key={idx}
                   ref={(el) => (stormRefs.current[idx] = el)}
-                  className="flex items-center gap-4 p-2 rounded-lg transition-opacity cursor-pointer"
+                  className="flex cursor-pointer items-center gap-4 rounded-lg p-2 transition-opacity"
                   style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
                   onMouseEnter={() => sethoveredYear(storm.year)}
                   onMouseLeave={() => sethoveredYear(null)}
                   onClick={() => handleBadgeClick(idx)}
                 >
                   <div className="flex-1">
-                    <div
-                      className="font-bold text-sm"
-                      style={{ color: textColor }}
-                    >
+                    <div className="text-sm font-bold" style={{ color: textColor }}>
                       {stormTitle}
                     </div>
                   </div>
                   {showMap && hasMap && (
-                    <div className="shrink-0">
-                      <img
+                    <div className="relative h-32 w-48 shrink-0">
+                      <Image
                         src={storm.map}
                         alt={`${storm.name} ${storm.year} track`}
-                        className="h-32 w-48 object-cover rounded border-2 border-white/30"
+                        fill
+                        className="rounded border-2 border-white/30 object-cover"
+                        unoptimized
                       />
                     </div>
                   )}
@@ -164,10 +149,13 @@ export const NameListModal = ({
         <StormMapPopup
           popupRef={popupRef}
           selectedStorm={selectedStormData}
-          stormElementRef={stormRefs.current[selectedStorm]}
+          stormRefs={stormRefs}
+          selectedStormIndex={selectedStorm}
           onClose={() => setSelectedStorm(null)}
         />
       </div>
     </Modal>
   );
 };
+
+export default NameListModal;

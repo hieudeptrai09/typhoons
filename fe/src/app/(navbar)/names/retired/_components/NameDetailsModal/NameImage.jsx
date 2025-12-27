@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const NameImage = ({ src, alt, description }) => {
   const hasImage = src;
   const hasDescription = description;
@@ -15,16 +17,19 @@ const NameImage = ({ src, alt, description }) => {
         hasDescription || hasImage ? "flex-1" : "w-0"
       } ${!hasDescription && "self-end"}`}
     >
-      <div className="flex justify-center">
-        <img
-          src={src || ""}
-          alt={alt}
-          className={`object-cover rounded-lg shadow-md max-h-72 border border-gray-200 ${getImageVisibility()}`}
-        />
+      <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
+        {hasImage && (
+          <Image
+            src={src}
+            alt={alt}
+            width={400}
+            height={288}
+            className="rounded-lg object-cover shadow-md"
+            unoptimized
+          />
+        )}
       </div>
-      <p className="text-xs text-gray-700 italic text-center">
-        {description || ""}
-      </p>
+      <p className="text-center text-xs text-gray-700 italic">{description || ""}</p>
     </div>
   );
 };

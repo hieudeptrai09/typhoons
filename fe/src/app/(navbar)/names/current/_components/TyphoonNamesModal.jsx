@@ -1,4 +1,5 @@
-import { Modal } from "../../../../../components/Modal";
+import Image from "next/image";
+import Modal from "../../../../../components/Modal";
 
 const TyphoonNameModal = ({ selectedName, onClose }) => {
   if (!selectedName) return null;
@@ -21,21 +22,21 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
       wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
       titleClassName="!text-3xl !text-blue-600"
     >
-      <div className="flex gap-6 items-center">
+      <div className="flex items-center gap-6">
         <div className="flex-1 space-y-3">
           <div>
             <span className="font-semibold text-gray-700">Meaning:</span>
-            <span className="text-gray-600 ml-2">{selectedName.meaning}</span>
+            <span className="ml-2 text-gray-600">{selectedName.meaning}</span>
           </div>
 
           <div>
             <span className="font-semibold text-gray-700">Country:</span>
-            <span className="text-gray-600 ml-2">{selectedName.country}</span>
+            <span className="ml-2 text-gray-600">{selectedName.country}</span>
           </div>
 
           <div>
             <span className="font-semibold text-gray-700">Language:</span>
-            <span className="text-gray-600 ml-2">{selectedName.language}</span>
+            <span className="ml-2 text-gray-600">{selectedName.language}</span>
           </div>
         </div>
 
@@ -44,14 +45,19 @@ const TyphoonNameModal = ({ selectedName, onClose }) => {
             hasDescription || hasImage ? "flex-1" : "w-0"
           } ${!hasDescription && "self-end"}`}
         >
-          <div className="flex justify-center">
-            <img
-              src={selectedName.image || ""}
-              alt={selectedName.name}
-              className={`object-cover rounded-lg shadow-md max-h-72 ${getImageVisibility()}`}
-            />
+          <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
+            {hasImage && (
+              <Image
+                src={selectedName.image}
+                alt={selectedName.name}
+                width={400}
+                height={288}
+                className="rounded-lg object-cover shadow-md"
+                unoptimized
+              />
+            )}
           </div>
-          <p className="text-xs text-gray-700 italic text-center">
+          <p className="text-center text-xs text-gray-700 italic">
             {selectedName.description || ""}
           </p>
         </div>

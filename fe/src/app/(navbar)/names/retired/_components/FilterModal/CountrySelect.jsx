@@ -2,15 +2,11 @@ import FilterSection from "./FilterSection";
 
 const CountrySelect = ({ value, onChange, countries }) => {
   return (
-    <FilterSection
-      label="Filter by Country"
-      hasValue={Boolean(value)}
-      onClear={() => onChange("")}
-    >
+    <FilterSection label="Filter by Country" hasValue={Boolean(value)} onClear={() => onChange("")}>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:border-blue-500 text-blue-500 outline-none"
+        className="w-full rounded-lg border border-gray-400 px-4 py-2 text-blue-500 outline-none focus:border-blue-500"
       >
         <option value="">All Countries</option>
         {countries.map((country) => (

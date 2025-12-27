@@ -1,15 +1,8 @@
 import { useTableSort } from "../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
 
-const SortableTable = ({
-  data,
-  columns,
-  onRowClick,
-  renderCell,
-  className = "max-w-4xl",
-}) => {
-  const { sortedData, sortColumn, sortDirection, handleSort } =
-    useTableSort(data);
+const SortableTable = ({ data, columns, onRowClick, renderCell, className = "max-w-4xl" }) => {
+  const { sortedData, sortColumn, sortDirection, handleSort } = useTableSort(data);
 
   const defaultRenderCell = (row, column) => {
     return row[column.key];
@@ -18,8 +11,8 @@ const SortableTable = ({
   const getCellRenderer = renderCell || defaultRenderCell;
 
   return (
-    <div className={`overflow-x-auto mx-auto ${className}`}>
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <div className={`mx-auto overflow-x-auto ${className}`}>
+      <table className="min-w-full overflow-hidden rounded-lg bg-white shadow-md">
         <thead className="bg-stone-200">
           <tr>
             {columns.map((col) => (
@@ -41,7 +34,7 @@ const SortableTable = ({
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className="hover:bg-gray-100 transition-colors cursor-pointer"
+              className="cursor-pointer transition-colors hover:bg-gray-100"
             >
               {columns.map((col) => (
                 <td key={col.key} className="px-6 py-4 text-gray-600">

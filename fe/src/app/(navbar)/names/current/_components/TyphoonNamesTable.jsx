@@ -36,7 +36,7 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
             {countries.map((country, index) => (
               <th
                 key={index}
-                className="border border-sky-300 bg-sky-600 text-white font-semibold p-2 text-sm"
+                className="border border-sky-300 bg-sky-600 p-2 text-sm font-semibold text-white"
               >
                 {country}
               </th>
@@ -48,18 +48,13 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
             <tr key={row}>
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
-                const dataNow = names.find(
-                  (n) => n.position === String(position)
-                );
+                const dataNow = names.find((n) => n.position === String(position));
 
                 return (
-                  <td
-                    key={col}
-                    className="border border-stone-300 hover:bg-stone-200 p-2"
-                  >
+                  <td key={col} className="border border-stone-300 p-2 hover:bg-stone-200">
                     <button
                       onClick={() => dataNow && onNameClick(dataNow)}
-                      className="w-full h-16 flex items-center justify-center transition-all"
+                      className="flex h-16 w-full items-center justify-center transition-all"
                     >
                       <div className="text-sm font-semibold text-gray-700">
                         {dataNow?.name || ""}

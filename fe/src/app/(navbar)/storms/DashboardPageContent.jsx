@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FilterModal } from "./_components/FilterModal";
-import { StormDetailModal } from "./_components/StormDetailModal";
-import { AverageModal } from "./_components/AverageModal";
-import { NameListModal } from "./_components/NameListModal";
-import { DashboardContent } from "./_components/DashboardContent";
-import FilterButton from "./_components/FilterButton";
+import PageHeader from "../../../components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
+import AverageModal from "./_components/AverageModal";
+import DashboardContent from "./_components/DashboardContent";
+import FilterButton from "./_components/FilterButton";
+import FilterModal from "./_components/FilterModal";
+import NameListModal from "./_components/NameListModal";
+import StormDetailModal from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
-import PageHeader from "../../../components/PageHeader";
 
 export default function DashboardPageContent() {
   const router = useRouter();
@@ -22,17 +22,14 @@ export default function DashboardPageContent() {
   const [averageModalOpen, setAverageModalOpen] = useState(false);
   const [nameListModalOpen, setNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
 
   // Initialize params from URL searchParams
-  useEffect(() => {
-    const view = searchParams.get("view") || "storms";
-    const mode = searchParams.get("mode") || "table";
-    const filter = searchParams.get("filter") || "";
-
-    setParams({ view, mode, filter });
-  }, [searchParams]);
+  const params = {
+    view: searchParams.get("view") || "storms",
+    mode: searchParams.get("mode") || "table",
+    filter: searchParams.get("filter") || "",
+  };
 
   useEffect(() => {
     const loadStorms = async () => {
@@ -44,7 +41,6 @@ export default function DashboardPageContent() {
   }, []);
 
   const handleApplyFilter = (newParams) => {
-    setParams(newParams);
     setFilterModalOpen(false);
 
     const searchParams = new URLSearchParams();
@@ -69,10 +65,7 @@ export default function DashboardPageContent() {
       return;
     }
 
-    if (
-      params.view === "storms" ||
-      (params.view === "average" && params.filter === "name")
-    ) {
+    if (params.view === "storms" || (params.view === "average" && params.filter === "name")) {
       setSelectedData({ title: getPositionTitle(data, params.filter), storms });
       setDetailModalOpen(true);
     } else {
@@ -98,18 +91,13 @@ export default function DashboardPageContent() {
   };
 
   return (
-    <PageHeader
-      title={getDashboardTitle(params.view, params.mode, params.filter)}
-    >
+    <PageHeader title={getDashboardTitle(params.view, params.mode, params.filter)}>
       <FilterButton onClick={() => setFilterModalOpen(true)} params={params} />
 
-      <DashboardContent
-        params={params}
-        stormsData={stormsData}
-        onCellClick={handleCellClick}
-      />
+      <DashboardContent params={params} stormsData={stormsData} onCellClick={handleCellClick} />
 
       <FilterModal
+        key={JSON.stringify(params)}
         isOpen={filterModalOpen}
         onClose={() => setFilterModalOpen(false)}
         onApply={handleApplyFilter}

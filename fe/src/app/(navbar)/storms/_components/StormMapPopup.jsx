@@ -1,16 +1,14 @@
-import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 import { BACKGROUND_BADGE } from "../../../../constants";
 
-export const StormMapPopup = ({
-  popupRef,
-  selectedStorm,
-  stormElementRef,
-  onClose,
-}) => {
+const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex, onClose }) => {
   // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
+      const stormElementRef = stormRefs?.current[selectedStormIndex];
+
       if (selectedStorm && stormElementRef && popupRef.current) {
         const stormRect = stormElementRef.getBoundingClientRect();
 
@@ -62,10 +60,11 @@ export const StormMapPopup = ({
       window.removeEventListener("scroll", updatePosition, true);
       window.removeEventListener("resize", updatePosition);
     };
-  }, [selectedStorm, stormElementRef, popupRef]);
+  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex]);
 
   // Close popup when clicking outside
   useEffect(() => {
+    const stormElementRef = stormRefs?.current[selectedStormIndex];
     const handleClickOutside = (event) => {
       if (
         selectedStorm &&
@@ -84,7 +83,7 @@ export const StormMapPopup = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedStorm, popupRef, stormElementRef, onClose]);
+  }, [selectedStorm, popupRef, stormRefs, onClose, selectedStormIndex]);
 
   if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "") {
     return null;
@@ -96,23 +95,27 @@ export const StormMapPopup = ({
   return createPortal(
     <div
       ref={popupRef}
-      className="bg-white rounded-lg shadow-xl fixed flex flex-col z-50 border-2 overflow-hidden"
+      className="fixed z-50 flex flex-col overflow-hidden rounded-lg border-2 bg-white shadow-xl"
       style={{ borderColor: borderColor }}
     >
       <div
-        className="font-semibold px-4 py-2 border-b-2 shrink-0"
+        className="shrink-0 border-b-2 px-4 py-2 font-semibold"
         style={{ borderBottomColor: borderColor }}
       >
         <span className="text-blue-700">{stormTitle}</span>
       </div>
-      <div className="flex-1 p-2 overflow-hidden">
-        <img
+      <div className="relative flex-1 overflow-hidden p-2">
+        <Image
           src={selectedStorm.map}
           alt={`${selectedStorm.name} ${selectedStorm.year} track`}
-          className="w-full h-full object-contain"
+          fill
+          className="object-contain"
+          unoptimized
         />
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
+
+export default StormMapPopup;
