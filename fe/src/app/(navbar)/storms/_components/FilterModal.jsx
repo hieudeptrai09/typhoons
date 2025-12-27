@@ -1,6 +1,35 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
 
+const ButtonGroup = ({ label, options, value, onChange, disabled }) => (
+  <div className="space-y-2">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <div className="flex flex-wrap gap-2">
+      {options.map((option) => {
+        const isActive = value === option.value;
+        const isDisabled = disabled || option.disabled;
+
+        return (
+          <button
+            key={option.value}
+            onClick={() => !isDisabled && onChange(option.value)}
+            disabled={isDisabled}
+            className={`rounded-lg px-4 py-2 font-semibold transition-colors ${
+              isActive
+                ? "bg-blue-500 text-white"
+                : isDisabled
+                  ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
@@ -25,7 +54,6 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const handleViewChange = (newView) => {
     setView(newView);
-    // Auto-set default filter when view changes
     if (newView === "highlights" || newView === "average") {
       setFilter(getDefaultFilter(newView));
     } else {
@@ -35,7 +63,6 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    // Auto-switch to list mode if needed
     if (
       view === "average" &&
       (newFilter === "name" || newFilter === "country" || newFilter === "year")
@@ -59,35 +86,6 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   if (!isOpen) return null;
 
   const filterOptions = getFilterOptions();
-
-  const ButtonGroup = ({ label, options, value, onChange, disabled }) => (
-    <div className="space-y-2">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => {
-          const isActive = value === option.value;
-          const isDisabled = disabled || option.disabled;
-
-          return (
-            <button
-              key={option.value}
-              onClick={() => !isDisabled && onChange(option.value)}
-              disabled={isDisabled}
-              className={`rounded-lg px-4 py-2 font-semibold transition-colors ${
-                isActive
-                  ? "bg-blue-500 text-white"
-                  : isDisabled
-                    ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
 
   return (
     <Modal
