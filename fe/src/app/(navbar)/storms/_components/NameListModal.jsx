@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
@@ -34,12 +34,10 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
   const intensityLabel = getIntensityFromNumber(avgIntensity);
   const titleColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
 
-  // Close popup when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedStorm(null);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedName(null);
+    onClose();
+  };
 
   if (!storms || storms.length === 0) return null;
 
@@ -56,7 +54,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title={name}
       wrapperClassName="max-w-lg"
       titleClassName="!text-3xl"
