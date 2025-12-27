@@ -8,12 +8,9 @@ type MetadataProps = {
 };
 
 export async function generateMetadata({ searchParams }: MetadataProps): Promise<Metadata> {
-  let { name, year, country, lang, letter } = await searchParams;
-
-  // Default to letter A if no letter is specified and no filters are active
-  if (!letter && !name && !year && !country && !lang) {
-    letter = "A";
-  }
+  const params = await searchParams;
+  const { name, year, country, lang } = params;
+  const letter = params.letter === undefined ? "A" : params.letter;
 
   const titleParts = getRetiredNamesTitle(name, year, country, lang, letter);
   const title =

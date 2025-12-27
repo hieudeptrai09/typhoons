@@ -8,8 +8,9 @@ type Props = {
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  let { name, country, language, letter } = await searchParams;
-  if (letter === undefined) letter = "A";
+  const params = await searchParams;
+  const { name, country, language } = params;
+  const letter = params.letter === undefined ? "A" : params.letter;
 
   const titleParts = getPageTitle(name, country, language, letter);
   const title = titleParts ? `Filter Names: ${titleParts.join(" • ")}` : "Filter Names";
