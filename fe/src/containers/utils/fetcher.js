@@ -5,7 +5,6 @@ const fetchData = async (endpoint) => {
     const response = await fetch(`${API_BASE}${endpoint}`);
     return await response.json();
   } catch (error) {
-    console.error("Error fetching data:", error);
     return null;
   }
 };
