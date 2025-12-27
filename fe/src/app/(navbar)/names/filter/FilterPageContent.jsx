@@ -20,29 +20,14 @@ const FilterNamesPage = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState(null);
 
-  // Filter states
-  const [searchName, setSearchName] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("");
-
   // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
 
-  // Pagination by letter
-  const [currentLetter, setCurrentLetter] = useState("A");
-
   // Initialize filters from URL
-  useEffect(() => {
-    const name = searchParams.get("name") || "";
-    const country = searchParams.get("country") || "";
-    const language = searchParams.get("language") || "";
-    const letter = searchParams.get("letter") || "A";
-
-    setSearchName(name);
-    setSelectedCountry(country);
-    setSelectedLanguage(language);
-    setCurrentLetter(letter);
-  }, [searchParams]);
+  const searchName = searchParams.get("name") || "";
+  const selectedCountry = searchParams.get("country") || "";
+  const selectedLanguage = searchParams.get("language") || "";
+  const currentLetter = searchParams.get("letter") || "A";
 
   useEffect(() => {
     // Fetch all names (both current and retired)
@@ -114,15 +99,11 @@ const FilterNamesPage = () => {
   };
 
   const handleApplyFilters = (filters) => {
-    setSearchName(filters.searchName);
-    setSelectedCountry(filters.selectedCountry);
-    setSelectedLanguage(filters.selectedLanguage);
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
 
   const handleLetterChange = (letter) => {
-    setCurrentLetter(letter);
     updateURL({ searchName: "", selectedCountry: "", selectedLanguage: "" }, letter);
   };
 

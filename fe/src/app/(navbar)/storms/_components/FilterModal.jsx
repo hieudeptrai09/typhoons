@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Modal from "../../../../components/Modal";
 
 const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
   const [mode, setMode] = useState(currentParams.mode || "table");
-
-  useEffect(() => {
-    setView(currentParams.view || "storms");
-    setFilter(currentParams.filter || "");
-    setMode(currentParams.mode || "table");
-  }, [currentParams]);
 
   const getFilterOptions = () => {
     if (view === "highlights") return ["strongest", "first", "last"];
@@ -39,6 +33,17 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     }
   };
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    // Auto-switch to list mode if needed
+    if (
+      view === "average" &&
+      (newFilter === "name" || newFilter === "country" || newFilter === "year")
+    ) {
+      setMode("list");
+    }
+  };
+
   const handleClearAll = () => {
     setView("storms");
     setFilter("");
@@ -50,12 +55,6 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     if (filter && view !== "storms") params.filter = filter;
     onApply(params);
   };
-
-  useEffect(() => {
-    if (view === "average" && (filter === "name" || filter === "country" || filter === "year")) {
-      setMode("list");
-    }
-  }, [view, filter]);
 
   if (!isOpen) return null;
 
@@ -113,7 +112,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
           label="Filter by"
           options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
           value={filter}
-          onChange={setFilter}
+          onChange={handleFilterChange}
           disabled={isFilterDisabled}
         />
 

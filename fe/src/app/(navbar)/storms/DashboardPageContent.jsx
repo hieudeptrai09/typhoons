@@ -22,17 +22,14 @@ export default function DashboardPageContent() {
   const [averageModalOpen, setAverageModalOpen] = useState(false);
   const [nameListModalOpen, setNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [params, setParams] = useState({ view: "storms", mode: "table" });
   const [stormsData, setStormsData] = useState([]);
 
   // Initialize params from URL searchParams
-  useEffect(() => {
-    const view = searchParams.get("view") || "storms";
-    const mode = searchParams.get("mode") || "table";
-    const filter = searchParams.get("filter") || "";
-
-    setParams({ view, mode, filter });
-  }, [searchParams]);
+  const params = {
+    view: searchParams.get("view") || "storms",
+    mode: searchParams.get("mode") || "table",
+    filter: searchParams.get("filter") || "",
+  };
 
   useEffect(() => {
     const loadStorms = async () => {
@@ -44,7 +41,6 @@ export default function DashboardPageContent() {
   }, []);
 
   const handleApplyFilter = (newParams) => {
-    setParams(newParams);
     setFilterModalOpen(false);
 
     const searchParams = new URLSearchParams();
@@ -101,6 +97,7 @@ export default function DashboardPageContent() {
       <DashboardContent params={params} stormsData={stormsData} onCellClick={handleCellClick} />
 
       <FilterModal
+        key={JSON.stringify(params)}
         isOpen={filterModalOpen}
         onClose={() => setFilterModalOpen(false)}
         onApply={handleApplyFilter}
