@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
@@ -24,12 +24,10 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });
 
-  // Close popup when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedName(null);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedName(null);
+    onClose();
+  };
 
   const handleNameClick = (name) => {
     if (selectedName === name) {
@@ -42,7 +40,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
   const selectedNameData = nameData.find((d) => d.name === selectedName);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} wrapperClassName="max-w-md">
+    <Modal isOpen={isOpen} onClose={handleClose} title={title} wrapperClassName="max-w-md">
       <div className="space-y-3">
         <div title={JSON.stringify(INTENSITY_RANK)}>
           <span className="text-blue-700">Overall Average Intensity: </span>
