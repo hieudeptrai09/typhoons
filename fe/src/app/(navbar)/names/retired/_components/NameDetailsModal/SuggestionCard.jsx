@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const SuggestionCard = ({ suggestion, hasAnyImage }) => {
   const cardClasses = Boolean(Number(suggestion.isChosen))
     ? "bg-blue-100 border-2 border-blue-500"
@@ -23,12 +25,16 @@ const SuggestionCard = ({ suggestion, hasAnyImage }) => {
           <div className="text-sm text-gray-600">{suggestion.replacementMeaning}</div>
         </div>
 
-        <div className="shrink-0 self-end">
-          <img
-            src={suggestion.image}
-            alt={suggestion.replacementName}
-            className={`h-24 max-h-72 w-32 rounded-lg border border-gray-200 object-cover shadow-sm ${imageVisibilityClass}`}
-          />
+        <div className={`relative h-24 max-h-72 w-32 shrink-0 self-end ${imageVisibilityClass}`}>
+          {suggestion.image && (
+            <Image
+              src={suggestion.image}
+              alt={suggestion.replacementName}
+              fill
+              className="rounded-lg border border-gray-200 object-cover shadow-sm"
+              unoptimized
+            />
+          )}
         </div>
       </div>
     </div>

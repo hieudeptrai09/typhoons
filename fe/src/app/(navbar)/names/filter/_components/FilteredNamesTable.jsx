@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Image from "next/image";
 import { Check, X, Frown } from "lucide-react";
 import SortableTable from "../../../../../components/SortableTable";
 
@@ -37,11 +38,15 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClic
       return (
         <>
           {row.image ? (
-            <img
-              src={row.image}
-              alt={row.name}
-              className="max-h-52 min-h-24 min-w-28 rounded object-cover"
-            />
+            <div className="relative max-h-52 min-h-24 min-w-28">
+              <Image
+                src={row.image}
+                alt={row.name}
+                fill
+                className="rounded object-cover"
+                unoptimized
+              />
+            </div>
           ) : (
             <span className="text-gray-400">-</span>
           )}

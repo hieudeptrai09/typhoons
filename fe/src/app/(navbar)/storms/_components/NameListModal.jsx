@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import Image from "next/image";
 import Modal from "../../../../components/Modal";
 import {
   BACKGROUND_BADGE,
@@ -35,7 +36,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
   const titleColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
 
   const handleClose = () => {
-    setSelectedName(null);
+    setSelectedStorm(null);
     onClose();
   };
 
@@ -129,11 +130,13 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
                     </div>
                   </div>
                   {showMap && hasMap && (
-                    <div className="shrink-0">
-                      <img
+                    <div className="relative h-32 w-48 shrink-0">
+                      <Image
                         src={storm.map}
                         alt={`${storm.name} ${storm.year} track`}
-                        className="h-32 w-48 rounded border-2 border-white/30 object-cover"
+                        fill
+                        className="rounded border-2 border-white/30 object-cover"
+                        unoptimized
                       />
                     </div>
                   )}

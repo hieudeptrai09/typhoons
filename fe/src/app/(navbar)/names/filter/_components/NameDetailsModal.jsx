@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Modal from "../../../../../components/Modal";
 
 const NameDetailsModal = ({ selectedName, onClose }) => {
@@ -50,12 +51,17 @@ const NameDetailsModal = ({ selectedName, onClose }) => {
             hasDescription || hasImage ? "flex-1" : "w-0"
           } ${!hasDescription && "self-end"}`}
         >
-          <div className="flex justify-center">
-            <img
-              src={selectedName.image || ""}
-              alt={selectedName.name}
-              className={`max-h-72 rounded-lg object-cover shadow-md ${getImageVisibility()}`}
-            />
+          <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
+            {hasImage && (
+              <Image
+                src={selectedName.image}
+                alt={selectedName.name}
+                width={400}
+                height={288}
+                className="rounded-lg object-cover shadow-md"
+                unoptimized
+              />
+            )}
           </div>
           <p className="text-center text-xs text-gray-700 italic">
             {selectedName.description || ""}

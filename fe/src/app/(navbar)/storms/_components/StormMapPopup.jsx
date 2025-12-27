@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { BACKGROUND_BADGE } from "../../../../constants";
 
 const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex, onClose }) => {
@@ -103,11 +104,13 @@ const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex,
       >
         <span className="text-blue-700">{stormTitle}</span>
       </div>
-      <div className="flex-1 overflow-hidden p-2">
-        <img
+      <div className="relative flex-1 overflow-hidden p-2">
+        <Image
           src={selectedStorm.map}
           alt={`${selectedStorm.name} ${selectedStorm.year} track`}
-          className="h-full w-full object-contain"
+          fill
+          className="object-contain"
+          unoptimized
         />
       </div>
     </div>,
