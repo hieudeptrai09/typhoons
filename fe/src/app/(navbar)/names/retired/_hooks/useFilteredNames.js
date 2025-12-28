@@ -26,11 +26,10 @@ export const useFilteredNames = ({
 
     if (retirementReason) {
       // Parse comma-separated values
-      const selectedReasons = retirementReason.split(",");
+      const selectedReasons = retirementReason.split(",").map(Number);
 
       filtered = filtered.filter((name) => {
-        const ilp = String(name.isLanguageProblem);
-        return selectedReasons.includes(ilp);
+        return selectedReasons.includes(name.isLanguageProblem);
       });
     }
 
