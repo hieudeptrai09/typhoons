@@ -51,7 +51,7 @@ export default function DashboardPageContent() {
   };
 
   const handleCellClick = (data, key) => {
-    const storms = stormsData.filter((s) => s[key] === String(data));
+    const storms = stormsData.filter((s) => s[key] === data);
 
     // Handle storms list view - clicking on a name
     if (params.view === "storms" && params.mode === "list" && key === "name") {
