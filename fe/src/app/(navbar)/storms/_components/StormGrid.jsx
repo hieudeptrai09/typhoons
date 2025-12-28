@@ -15,7 +15,7 @@ const StormGrid = ({
   const getStormNamesForPosition = (position) => {
     if (!stormsData || stormsData.length === 0) return [];
 
-    const storms = stormsData.filter((storm) => storm.position === String(position));
+    const storms = stormsData.filter((storm) => storm.position === position);
 
     // Get unique storm names
     const uniqueNames = [...new Set(storms.map((storm) => storm.name))];

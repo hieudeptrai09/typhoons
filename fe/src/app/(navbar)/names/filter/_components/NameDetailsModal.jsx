@@ -21,8 +21,8 @@ const NameDetailsModal = ({ selectedName, onClose }) => {
       title={selectedName.name}
       wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
       titleClassName={`!text-3xl ${
-        Boolean(Number(selectedName.isRetired))
-          ? Number(selectedName.isLanguageProblem) === 2
+        Boolean(selectedName.isRetired)
+          ? selectedName.isLanguageProblem === 2
             ? "!text-amber-500"
             : "!text-red-600"
           : "!text-blue-600"

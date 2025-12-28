@@ -23,16 +23,16 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
   ];
 
   const getNameColor = (selectedName) => {
-    const ilp = String(selectedName.isLanguageProblem);
+    const ilp = selectedName.isLanguageProblem;
 
     switch (ilp) {
-      case "0":
+      case 0:
         return "text-red-600"; // Destructive Storm
-      case "1":
+      case 1:
         return "text-green-600"; // Language Problem
-      case "2":
+      case 2:
         return "text-amber-500"; // Misspelling
-      case "3":
+      case 3:
         return "text-purple-600"; // Special Storm
       default:
         return "text-red-600"; // Default to destructive

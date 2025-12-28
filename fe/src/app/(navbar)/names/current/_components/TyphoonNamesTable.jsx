@@ -48,7 +48,7 @@ const TyphoonNamesTable = ({ names, onNameClick }) => {
             <tr key={row}>
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
-                const dataNow = names.find((n) => n.position === String(position));
+                const dataNow = names.find((n) => n.position === position);
 
                 return (
                   <td key={col} className="border border-stone-300 p-2 hover:bg-stone-200">

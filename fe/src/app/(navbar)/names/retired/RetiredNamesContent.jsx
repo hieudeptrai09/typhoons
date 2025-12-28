@@ -23,7 +23,7 @@ const RetiredNamesContent = () => {
 
   // Initialize filters from URL parameters
   const searchName = searchParams.get("name") || "";
-  const selectedYear = parseInt(searchParams.get("year")) || "";
+  const selectedYear = searchParams.get("year") || "";
   const selectedCountry = searchParams.get("country") || "";
   const retirementReason = searchParams.get("lang") || "";
   const currentLetter = searchParams.get("letter") || "A";
@@ -122,7 +122,7 @@ const RetiredNamesContent = () => {
         onClick={() => setIsFilterModalOpen(true)}
         params={{
           name: searchName,
-          year: selectedYear?.toString() || "",
+          year: selectedYear,
           country: selectedCountry,
           lang: retirementReason,
         }}

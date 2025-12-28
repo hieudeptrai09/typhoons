@@ -25,7 +25,7 @@ const eslintConfig = defineConfig([
           groups: ["builtin", "external", "parent", "sibling", "type"],
           pathGroups: [
             {
-              pattern: "{react,react-dom/**,react-router-dom}",
+              pattern: "{react,react-dom,react-dom/**,react-router-dom}",
               group: "builtin",
               position: "before",
             },

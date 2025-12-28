@@ -52,7 +52,7 @@ export const categorizeLettersByStatus = (namesList) => {
   // Single pass through all names to build the map
   namesList.forEach((name) => {
     const letter = name.name.charAt(0).toUpperCase();
-    const isRetired = Boolean(Number(name.isRetired));
+    const isRetired = Boolean(name.isRetired);
 
     // Initialize letter if not exists: [hasAny, hasRetired, hasAlive]
     if (!letterStatusMap[letter]) {

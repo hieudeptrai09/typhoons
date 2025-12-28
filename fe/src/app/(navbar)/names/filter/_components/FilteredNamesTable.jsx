@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import Image from "next/image";
 import { Check, X, Frown } from "lucide-react";
+import Image from "next/image";
 import SortableTable from "../../../../../components/SortableTable";
 
 const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClick }) => {
   const getNameColor = (name) => {
-    if (Number(name.isLanguageProblem) === 2) return "text-amber-500";
-    if (Boolean(Number(name.isRetired))) return "text-red-600";
+    if (name.isLanguageProblem === 2) return "text-amber-500";
+    if (Boolean(name.isRetired)) return "text-red-600";
     return "text-blue-600";
   };
 
@@ -57,8 +57,8 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClic
       return <>{row.description || <span className="text-gray-400">-</span>}</>;
     }
     if (column.key === "isRetired") {
-      return Boolean(Number(row.isRetired)) ? (
-        Number(row.isLanguageProblem) === 2 ? (
+      return Boolean(row.isRetired) ? (
+        row.isLanguageProblem === 2 ? (
           <Check className="text-amber-500" size={20} />
         ) : (
           <Check className="text-red-600" size={20} />

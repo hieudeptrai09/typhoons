@@ -44,6 +44,16 @@ class TyphoonNameController
         $stmt->execute();
         $results = $stmt->fetchAll();
 
+        $results = array_map(function ($row) {
+            $row['id'] = (int)$row['id'];
+            $row['position'] = (int)$row['position'];
+            $row['isRetired'] = (int)$row['isRetired'];
+            $row['isReplaced'] = (int)$row['isReplaced'];
+            $row['isLanguageProblem'] = (int)$row['isLanguageProblem'];
+            $row['lastYear'] = (int)$row['lastYear'];
+            return $row;
+        }, $results);
+
         return [
             'count' => count($results),
             'data' => $results

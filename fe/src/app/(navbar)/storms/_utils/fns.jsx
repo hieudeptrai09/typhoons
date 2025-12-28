@@ -23,11 +23,11 @@ export const getPositionTitle = (position, type) => {
 export const getHighlights = (stormsData, type) => {
   // Filter storms based on highlight type
   if (type === "strongest") {
-    return stormsData.filter((storm) => Boolean(Number(storm.isStrongest)));
+    return stormsData.filter((storm) => Boolean(storm.isStrongest));
   } else if (type === "first") {
-    return stormsData.filter((storm) => Boolean(Number(storm.isFirst)));
+    return stormsData.filter((storm) => Boolean(storm.isFirst));
   } else if (type === "last") {
-    return stormsData.filter((storm) => Boolean(Number(storm.isLast)));
+    return stormsData.filter((storm) => Boolean(storm.isLast));
   }
   return [];
 };

@@ -37,6 +37,13 @@ class SuggestedNameController
         $stmt->execute();
         $results = $stmt->fetchAll();
 
+        $results = array_map(function ($row) {
+            $row['id'] = (int)$row['id'];
+            $row['nameId'] = (int)$row['nameId'];
+            $row['isChosen'] = (int)$row['isChosen'];
+            return $row;
+        }, $results);
+
         return [
             'count' => count($results),
             'data' => $results

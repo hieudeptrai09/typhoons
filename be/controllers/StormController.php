@@ -40,6 +40,16 @@ class StormController
         $stmt->execute();
         $results = $stmt->fetchAll();
 
+        $results = array_map(function ($row) {
+            $row['id'] = (int)$row['id'];
+            $row['position'] = (int)$row['position'];
+            $row['year'] = (int)$row['year'];
+            $row['isStrongest'] = (int)$row['isStrongest'];
+            $row['isFirst'] = (int)$row['isFirst'];
+            $row['isLast'] = (int)$row['isLast'];
+            return $row;
+        }, $results);
+
         return [
             'count' => count($results),
             'data' => $results

@@ -17,7 +17,7 @@ export const useFilteredNames = ({
     }
 
     if (selectedYear) {
-      filtered = filtered.filter((name) => name.lastYear === String(selectedYear));
+      filtered = filtered.filter((name) => name.lastYear === Number(selectedYear));
     }
 
     if (selectedCountry) {
@@ -29,8 +29,7 @@ export const useFilteredNames = ({
       const selectedReasons = retirementReason.split(",");
 
       filtered = filtered.filter((name) => {
-        const ilp = String(name.isLanguageProblem);
-        // Check if the name's isLanguageProblem value is in the selected reasons
+        const ilp = name.isLanguageProblem;
         return selectedReasons.includes(ilp);
       });
     }

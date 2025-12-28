@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const SuggestionCard = ({ suggestion, hasAnyImage }) => {
-  const cardClasses = Boolean(Number(suggestion.isChosen))
+  const cardClasses = Boolean(suggestion.isChosen)
     ? "bg-blue-100 border-2 border-blue-500"
     : "bg-gray-100";
 
@@ -18,7 +18,7 @@ const SuggestionCard = ({ suggestion, hasAnyImage }) => {
         <div className="flex-1">
           <div className="mb-1 font-semibold text-gray-800">
             {suggestion.replacementName}
-            {Boolean(Number(suggestion.isChosen)) && (
+            {Boolean(suggestion.isChosen) && (
               <span className="ml-2 rounded bg-blue-500 px-2 py-1 text-xs text-white">CHOSEN</span>
             )}
           </div>
