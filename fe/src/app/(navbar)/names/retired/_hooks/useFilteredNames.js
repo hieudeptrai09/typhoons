@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+qimport { useMemo } from "react";
 
 export const useFilteredNames = ({
   retiredNames,
@@ -29,7 +29,7 @@ export const useFilteredNames = ({
       const selectedReasons = retirementReason.split(",");
 
       filtered = filtered.filter((name) => {
-        const ilp = name.isLanguageProblem;
+        const ilp = String(name.isLanguageProblem);
         return selectedReasons.includes(ilp);
       });
     }
