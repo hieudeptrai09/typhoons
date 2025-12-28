@@ -12,11 +12,19 @@ const Modal = ({
 }) => {
   useEffect(() => {
     if (isOpen) {
+      const isDesktop = window.innerWidth >= 768; // md breakpoint
+      const hasScrollbar = window.innerWidth > document.documentElement.clientWidth;
+
       document.body.style.overflow = "hidden";
+
+      if (isDesktop && hasScrollbar) {
+        document.body.style.paddingRight = "15px";
+      }
     }
 
     return () => {
       document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
     };
   }, [isOpen]);
 
