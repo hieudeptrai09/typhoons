@@ -1,4 +1,4 @@
-qimport { useMemo } from "react";
+import { useMemo } from "react";
 
 export const useFilteredNames = ({
   retiredNames,
