@@ -64,6 +64,8 @@ export const calculateAverage = (storms: Storm[]): number => {
 export const getDashboardTitle = (view: string, mode: string, filter: string): string => {
   const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+  if (!filter) filter = "";
+
   const viewTitles: Record<string, string> = {
     storms: mode === "list" ? "All Typhoon Names" : "All Storms",
     highlights: `${capitalize(filter)} Typhoons by Position`,
