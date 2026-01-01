@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../components/PageHeader";
-import { INTENSITY_RANK } from "../../../constants";
+import { INTENSITY_RANK, IntensityType } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
@@ -13,6 +13,34 @@ import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
 
+interface Storm {
+  id: number;
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  position: number;
+  country: string;
+  correctSpelling?: string;
+  map: string;
+  isStrongest?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+interface DashboardParams {
+  view: string;
+  mode: string;
+  filter: string;
+}
+
+interface SelectedData {
+  title?: string;
+  storms?: Storm[];
+  name?: string;
+  avgIntensity?: number;
+  average?: number;
+}
+
 export default function DashboardPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,11 +49,11 @@ export default function DashboardPageContent() {
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [averageModalOpen, setAverageModalOpen] = useState(false);
   const [nameListModalOpen, setNameListModalOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
-  const [stormsData, setStormsData] = useState([]);
+  const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
+  const [stormsData, setStormsData] = useState<Storm[]>([]);
 
   // Initialize params from URL searchParams
-  const params = {
+  const params: DashboardParams = {
     view: searchParams.get("view") || "storms",
     mode: searchParams.get("mode") || "table",
     filter: searchParams.get("filter") || "",
@@ -33,14 +61,16 @@ export default function DashboardPageContent() {
 
   useEffect(() => {
     const loadStorms = async () => {
-      const result = await fetchData("/storms");
-      setStormsData(result.data);
+      const result = await fetchData<Storm[]>("/storms");
+      if (result) {
+        setStormsData(result.data);
+      }
     };
 
     loadStorms();
   }, []);
 
-  const handleApplyFilter = (newParams) => {
+  const handleApplyFilter = (newParams: DashboardParams) => {
     setFilterModalOpen(false);
 
     const searchParams = new URLSearchParams();
@@ -50,8 +80,8 @@ export default function DashboardPageContent() {
     router.push(`/storms${searchParams.toString() ? `?${searchParams}` : ""}`);
   };
 
-  const handleCellClick = (data, key) => {
-    const storms = stormsData.filter((s) => s[key] === data);
+  const handleCellClick = (data: number | string, key: string) => {
+    const storms = stormsData.filter((s) => s[key as keyof Storm] === data);
 
     // Handle storms list view - clicking on a name
     if (params.view === "storms" && params.mode === "list" && key === "name") {
@@ -60,7 +90,7 @@ export default function DashboardPageContent() {
           return sum + INTENSITY_RANK[s.intensity];
         }, 0) / storms.length;
 
-      setSelectedData({ name: data, storms, avgIntensity });
+      setSelectedData({ name: data as string, storms, avgIntensity });
       setNameListModalOpen(true);
       return;
     }
@@ -70,9 +100,9 @@ export default function DashboardPageContent() {
       setDetailModalOpen(true);
     } else {
       // All other routes open average modal
-      const titleMap = {
+      const titleMap: Record<string, string> = {
         position: getPositionTitle(data),
-        country: data,
+        country: data as string,
         year: `Year ${data}`,
       };
 

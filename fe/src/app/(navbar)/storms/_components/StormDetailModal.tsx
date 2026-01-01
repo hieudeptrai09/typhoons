@@ -1,10 +1,23 @@
 import IntensityBadge from "../../../../components/IntensityBadge";
 import Modal from "../../../../components/Modal";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
 
-const StormDetailModal = ({ isOpen, onClose, title, storms }) => {
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+}
+
+interface StormDetailModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  storms: Storm[];
+}
+
+const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalProps) => {
   // Group storms by name
-  const groupedByName = storms.reduce((acc, storm) => {
+  const groupedByName = storms.reduce<Record<string, Storm[]>>((acc, storm) => {
     if (!acc[storm.name]) {
       acc[storm.name] = [];
     }

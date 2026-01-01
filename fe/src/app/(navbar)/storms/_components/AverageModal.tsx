@@ -6,20 +6,46 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_RANK,
   BACKGROUND_HOVER_BADGE,
+  IntensityType,
 } from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
 import StormNamePopup from "./StormNamePopup";
 
-const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
-  const [selectedName, setSelectedName] = useState(null);
-  const [hoveredName, setHoveredName] = useState(null);
-  const nameRefs = useRef({});
-  const popupRef = useRef(null);
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  position: number;
+  country: string;
+  correctSpelling?: string;
+  map?: string;
+}
+
+interface AverageModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  average: number;
+  storms: Storm[];
+}
+
+interface NameData {
+  name: string;
+  average: number;
+  count: number;
+  storms: Storm[];
+}
+
+const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalProps) => {
+  const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [hoveredName, setHoveredName] = useState<string | null>(null);
+  const nameRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const popupRef = useRef<HTMLDivElement>(null);
 
   // Group storms by name and calculate average intensity for each name
   const nameAverages = getGroupedStorms(storms, "name");
 
-  const nameData = Object.entries(nameAverages).map(([name, nameStorms]) => {
+  const nameData: NameData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
     const avg = calculateAverage(nameStorms);
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });
@@ -29,7 +55,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
     onClose();
   };
 
-  const handleNameClick = (name) => {
+  const handleNameClick = (name: string) => {
     if (selectedName === name) {
       setSelectedName(null);
     } else {
@@ -66,7 +92,9 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }) => {
               return (
                 <div
                   key={idx}
-                  ref={(el) => (nameRefs.current[data.name] = el)}
+                  ref={(el) => {
+                    nameRefs.current[data.name] = el;
+                  }}
                   onClick={() => handleNameClick(data.name)}
                   className="flex cursor-pointer items-center justify-between rounded border px-3 py-2 transition-colors"
                   style={{

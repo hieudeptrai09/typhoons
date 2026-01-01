@@ -1,5 +1,16 @@
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import { ReactNode } from "react";
+import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
+
+interface GridCellProps {
+  onClick: () => void;
+  content: ReactNode;
+  highlight?: string;
+  isClickable?: boolean;
+  isAverageView?: boolean;
+  avgNumber?: number | null;
+  stormNames?: string[];
+}
 
 const GridCell = ({
   onClick,
@@ -9,7 +20,7 @@ const GridCell = ({
   isAverageView = false,
   avgNumber = null,
   stormNames = [],
-}) => {
+}: GridCellProps) => {
   const getHighlightColor = () => {
     if (!highlight) return "";
     if (highlight === "strongest") return "bg-red-300";

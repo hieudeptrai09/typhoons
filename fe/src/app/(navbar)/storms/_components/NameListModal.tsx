@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, CSSProperties } from "react";
 import Image from "next/image";
 import Modal from "../../../../components/Modal";
 import {
@@ -6,12 +6,31 @@ import {
   TEXT_COLOR_BADGE,
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
+  IntensityType,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
 
-const getIntensityLabel = (intensity) => {
-  const labels = {
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  position: number;
+  country: string;
+  correctSpelling?: string;
+  map: string;
+}
+
+interface NameListModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  name: string;
+  storms: Storm[];
+  avgIntensity?: number;
+}
+
+const getIntensityLabel = (intensity: IntensityType): string => {
+  const labels: Record<IntensityType, string> = {
     5: "Category 5 Super Typhoon",
     4: "Category 4 Super Typhoon",
     3: "Category 3 Typhoon",
@@ -24,12 +43,12 @@ const getIntensityLabel = (intensity) => {
   return labels[intensity] || intensity;
 };
 
-const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
+const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
   const [showMap, setShowMap] = useState(false);
-  const [hoveredYear, sethoveredYear] = useState(null);
-  const [selectedStorm, setSelectedStorm] = useState(null);
-  const stormRefs = useRef({});
-  const popupRef = useRef(null);
+  const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+  const [selectedStorm, setSelectedStorm] = useState<number | null>(null);
+  const stormRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const popupRef = useRef<HTMLDivElement>(null);
 
   // Calculate title color based on average intensity
   const intensityLabel = getIntensityFromNumber(avgIntensity);
@@ -42,7 +61,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
 
   if (!storms || storms.length === 0) return null;
 
-  const handleBadgeClick = (index) => {
+  const handleBadgeClick = (index: number) => {
     if (selectedStorm === index) {
       setSelectedStorm(null);
     } else {
@@ -52,6 +71,8 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
 
   const selectedStormData = selectedStorm !== null ? storms[selectedStorm] : null;
 
+  const titleStyle: CSSProperties = { color: titleColor };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -59,7 +80,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
       title={name}
       wrapperClassName="max-w-lg"
       titleClassName="!text-3xl"
-      titleStyle={{ color: titleColor }}
+      titleStyle={titleStyle}
     >
       <div className="space-y-4">
         {/* Storm Information and Toggle - all in one line */}
@@ -110,18 +131,19 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
               const textColor = TEXT_COLOR_BADGE[storm.intensity];
               const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
               const isHovered = hoveredYear === storm.year;
-              const hasMap = storm.map && storm.map.trim() !== "";
               const intensityLabel = getIntensityLabel(storm.intensity);
               const stormTitle = `${intensityLabel} ${storm.name} ${storm.year}`;
 
               return (
                 <div
                   key={idx}
-                  ref={(el) => (stormRefs.current[idx] = el)}
+                  ref={(el) => {
+                    stormRefs.current[idx] = el;
+                  }}
                   className="flex cursor-pointer items-center gap-4 rounded-lg p-2 transition-opacity"
                   style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
-                  onMouseEnter={() => sethoveredYear(storm.year)}
-                  onMouseLeave={() => sethoveredYear(null)}
+                  onMouseEnter={() => setHoveredYear(storm.year)}
+                  onMouseLeave={() => setHoveredYear(null)}
                   onClick={() => handleBadgeClick(idx)}
                 >
                   <div className="flex-1">
@@ -129,7 +151,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }) => {
                       {stormTitle}
                     </div>
                   </div>
-                  {showMap && hasMap && (
+                  {showMap && (
                     <div className="relative h-32 w-48 shrink-0">
                       <Image
                         src={storm.map}

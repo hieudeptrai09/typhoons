@@ -1,7 +1,34 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
 
-const ButtonGroup = ({ label, options, value, onChange, disabled }) => (
+interface FilterOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+interface ButtonGroupProps {
+  label: string;
+  options: FilterOption[];
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}
+
+interface FilterModalParams {
+  view: string;
+  mode: string;
+  filter: string;
+}
+
+interface FilterModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onApply: (params: FilterModalParams) => void;
+  currentParams: FilterModalParams;
+}
+
+const ButtonGroup = ({ label, options, value, onChange, disabled }: ButtonGroupProps) => (
   <div className="space-y-2">
     <label className="text-sm font-semibold text-gray-700">{label}</label>
     <div className="flex flex-wrap gap-2">
@@ -30,18 +57,18 @@ const ButtonGroup = ({ label, options, value, onChange, disabled }) => (
   </div>
 );
 
-const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
+const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalProps) => {
   const [view, setView] = useState(currentParams.view || "storms");
   const [filter, setFilter] = useState(currentParams.filter || "");
   const [mode, setMode] = useState(currentParams.mode || "table");
 
-  const getFilterOptions = () => {
+  const getFilterOptions = (): string[] => {
     if (view === "highlights") return ["strongest", "first", "last"];
     if (view === "average") return ["position", "name", "country", "year"];
     return [];
   };
 
-  const getDefaultFilter = (viewType) => {
+  const getDefaultFilter = (viewType: string): string => {
     if (viewType === "highlights") return "strongest";
     if (viewType === "average") return "position";
     return "";
@@ -52,7 +79,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     view === "average" && (filter === "name" || filter === "country" || filter === "year");
   const isModeListOptionDisabled = false;
 
-  const handleViewChange = (newView) => {
+  const handleViewChange = (newView: string) => {
     setView(newView);
     if (newView === "highlights" || newView === "average") {
       setFilter(getDefaultFilter(newView));
@@ -61,7 +88,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
     }
   };
 
-  const handleFilterChange = (newFilter) => {
+  const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
     if (
       view === "average" &&
@@ -78,8 +105,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }) => {
   };
 
   const handleApply = () => {
-    const params = { view, mode };
-    if (filter && view !== "storms") params.filter = filter;
+    const params: FilterModalParams = { view, mode, filter };
     onApply(params);
   };
 

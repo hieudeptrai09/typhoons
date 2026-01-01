@@ -1,6 +1,17 @@
-import { INTENSITY_RANK } from "../../../../constants";
+import { INTENSITY_RANK, IntensityType } from "../../../../constants";
 
-export const getIntensityFromNumber = (avgNumber) => {
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  position: number;
+  country: string;
+  isStrongest?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
   if (rounded >= 5) return "5";
   if (rounded === 4) return "4";
@@ -12,15 +23,17 @@ export const getIntensityFromNumber = (avgNumber) => {
   return "TD";
 };
 
-export const getPositionTitle = (position, type) => {
-  if (position === 141) return "CPHC";
-  if (position === 142) return "NHC";
-  if (position === 143) return "IMD";
-  if (type === "name") return position;
+export const getPositionTitle = (position: number | string, type?: string): string => {
+  const pos = typeof position === "string" ? parseInt(position) : position;
+
+  if (pos === 141) return "CPHC";
+  if (pos === 142) return "NHC";
+  if (pos === 143) return "IMD";
+  if (type === "name") return position.toString();
   return `#${position}`;
 };
 
-export const getHighlights = (stormsData, type) => {
+export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   // Filter storms based on highlight type
   if (type === "strongest") {
     return stormsData.filter((storm) => Boolean(storm.isStrongest));
@@ -32,26 +45,26 @@ export const getHighlights = (stormsData, type) => {
   return [];
 };
 
-export const getGroupedStorms = (stormsData, groupBy) => {
+export const getGroupedStorms = (stormsData: Storm[], groupBy: string): Record<string, Storm[]> => {
   // Group storms by specified field (position, name, country, or year)
-  const grouped = {};
+  const grouped: Record<string, Storm[]> = {};
   stormsData.forEach((storm) => {
-    const key = storm[groupBy];
+    const key = storm[groupBy as keyof Storm]?.toString() || "";
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(storm);
   });
   return grouped;
 };
 
-export const calculateAverage = (storms) => {
+export const calculateAverage = (storms: Storm[]): number => {
   const sum = storms.reduce((acc, s) => acc + INTENSITY_RANK[s.intensity], 0);
   return sum / storms.length;
 };
 
-export const getDashboardTitle = (view, mode, filter) => {
-  const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
+export const getDashboardTitle = (view: string, mode: string, filter: string): string => {
+  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-  const viewTitles = {
+  const viewTitles: Record<string, string> = {
     storms: mode === "list" ? "All Typhoon Names" : "All Storms",
     highlights: `${capitalize(filter)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filter)}`,
@@ -61,7 +74,7 @@ export const getDashboardTitle = (view, mode, filter) => {
   return mode === "list" && view !== "storms" ? `${title} (List View)` : title;
 };
 
-export const getDashboardDescription = (view, mode, filter) => {
+export const getDashboardDescription = (view: string, mode: string, filter: string): string => {
   if (view === "storms") {
     if (mode === "list") {
       return "Browse all typhoon names used in the Western Pacific basin. Click any name to see detailed storm history, including years, intensities, and track maps.";
@@ -70,7 +83,7 @@ export const getDashboardDescription = (view, mode, filter) => {
   }
 
   if (view === "highlights") {
-    const highlightDescriptions = {
+    const highlightDescriptions: Record<string, string> = {
       strongest:
         "Explore the strongest typhoons by position - discover which names have been associated with the most powerful storms in history.",
       first:
@@ -84,7 +97,7 @@ export const getDashboardDescription = (view, mode, filter) => {
   }
 
   if (view === "average") {
-    const averageDescriptions = {
+    const averageDescriptions: Record<string, string> = {
       position:
         "Analyze average typhoon intensity by position in the naming list. Compare which positions tend to produce stronger or weaker storms.",
       name: "Compare average intensity across different typhoon names. Discover which names have historically been associated with stronger storms.",

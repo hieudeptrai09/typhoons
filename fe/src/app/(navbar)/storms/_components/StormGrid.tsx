@@ -1,4 +1,25 @@
+import { ReactNode } from "react";
 import GridCell from "./GridCell";
+
+interface Storm {
+  position: number;
+  name: string;
+}
+
+interface CellData {
+  content: ReactNode;
+  highlighted: boolean;
+  avgNumber: number | null;
+}
+
+interface StormGridProps {
+  cellData: Record<number, CellData>;
+  onCellClick: (position: number, key: string) => void;
+  highlightType?: string;
+  isClickable?: boolean;
+  isAverageView?: boolean;
+  stormsData?: Storm[];
+}
 
 const StormGrid = ({
   cellData,
@@ -7,12 +28,12 @@ const StormGrid = ({
   isClickable = true,
   isAverageView = false,
   stormsData = [],
-}) => {
+}: StormGridProps) => {
   const rows = 10;
   const cols = 14;
 
   // Helper function to get storm names for a position
-  const getStormNamesForPosition = (position) => {
+  const getStormNamesForPosition = (position: number): string[] => {
     if (!stormsData || stormsData.length === 0) return [];
 
     const storms = stormsData.filter((storm) => storm.position === position);

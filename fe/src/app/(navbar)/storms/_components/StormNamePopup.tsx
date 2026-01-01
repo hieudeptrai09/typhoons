@@ -1,10 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
 
-const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameRefs, onClose }) => {
-  const getHeight = (length) => {
+interface Storm {
+  year: number;
+  intensity: IntensityType;
+}
+
+interface NameData {
+  name: string;
+  storms: Storm[];
+}
+
+interface StormNamePopupProps {
+  popupRef: MutableRefObject<HTMLDivElement | null>;
+  selectedName: string | null;
+  selectedNameData: NameData | undefined;
+  nameRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
+  onClose: () => void;
+}
+
+const StormNamePopup = ({
+  popupRef,
+  selectedName,
+  selectedNameData,
+  nameRefs,
+  onClose,
+}: StormNamePopupProps) => {
+  const getHeight = (length: number): number => {
     if (length === 1) return 56;
     else if (length === 2) return 102;
     else if (length === 3) return 148;
@@ -14,9 +38,9 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameRefs, on
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
-      const nameElementRef = nameRefs.current[selectedName];
+      const nameElementRef = selectedName ? nameRefs.current[selectedName] : null;
 
-      if (selectedName && nameElementRef && popupRef.current) {
+      if (selectedName && nameElementRef && popupRef.current && selectedNameData) {
         const nameRect = nameElementRef.getBoundingClientRect();
 
         const popupMaxHeight = 41 + getHeight(selectedNameData.storms.length);
@@ -58,13 +82,13 @@ const StormNamePopup = ({ popupRef, selectedName, selectedNameData, nameRefs, on
 
   // Close popup when clicking outside
   useEffect(() => {
-    const nameElementRef = nameRefs?.current[selectedName];
-    const handleClickOutside = (event) => {
+    const nameElementRef = selectedName ? nameRefs?.current[selectedName] : null;
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         selectedName &&
         popupRef.current &&
-        !popupRef.current.contains(event.target) &&
-        !nameElementRef?.contains(event.target)
+        !popupRef.current.contains(event.target as Node) &&
+        !nameElementRef?.contains(event.target as Node)
       ) {
         onClose();
       }

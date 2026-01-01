@@ -1,13 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { BACKGROUND_BADGE } from "../../../../constants";
+import { BACKGROUND_BADGE, IntensityType } from "../../../../constants";
 
-const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex, onClose }) => {
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  map?: string;
+}
+
+interface StormMapPopupProps {
+  popupRef: MutableRefObject<HTMLDivElement | null>;
+  selectedStorm: Storm | null;
+  stormRefs: MutableRefObject<Record<number, HTMLDivElement | null>>;
+  selectedStormIndex: number | null;
+  onClose: () => void;
+}
+
+const StormMapPopup = ({
+  popupRef,
+  selectedStorm,
+  stormRefs,
+  selectedStormIndex,
+  onClose,
+}: StormMapPopupProps) => {
   // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
-      const stormElementRef = stormRefs?.current[selectedStormIndex];
+      const stormElementRef =
+        selectedStormIndex !== null ? stormRefs?.current[selectedStormIndex] : null;
 
       if (selectedStorm && stormElementRef && popupRef.current) {
         const stormRect = stormElementRef.getBoundingClientRect();
@@ -64,13 +86,14 @@ const StormMapPopup = ({ popupRef, selectedStorm, stormRefs, selectedStormIndex,
 
   // Close popup when clicking outside
   useEffect(() => {
-    const stormElementRef = stormRefs?.current[selectedStormIndex];
-    const handleClickOutside = (event) => {
+    const stormElementRef =
+      selectedStormIndex !== null ? stormRefs?.current[selectedStormIndex] : null;
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         selectedStorm &&
         popupRef.current &&
-        !popupRef.current.contains(event.target) &&
-        !stormElementRef?.contains(event.target)
+        !popupRef.current.contains(event.target as Node) &&
+        !stormElementRef?.contains(event.target as Node)
       ) {
         onClose();
       }

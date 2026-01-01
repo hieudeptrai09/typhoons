@@ -1,14 +1,24 @@
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
-const SpecialButtons = ({ onCellClick, isAverageView = false, averageValues = null }) => {
+interface SpecialButtonsProps {
+  onCellClick: (data: number, key: string) => void;
+  isAverageView?: boolean;
+  averageValues?: Record<number, number> | null;
+}
+
+const SpecialButtons = ({
+  onCellClick,
+  isAverageView = false,
+  averageValues = null,
+}: SpecialButtonsProps) => {
   const buttons = [
     { id: 141, label: "CPHC" },
     { id: 142, label: "NHC" },
     { id: 143, label: "IMD" },
   ];
 
-  const getButtonStyle = (buttonId) => {
+  const getButtonStyle = (buttonId: number): string => {
     if (isAverageView && averageValues && averageValues[buttonId]) {
       const avgNumber = averageValues[buttonId];
       const intensityLabel = getIntensityFromNumber(avgNumber);

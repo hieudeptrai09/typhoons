@@ -11,14 +11,27 @@ import {
   Globe,
   Calendar,
   ArrowDownToLine,
+  LucideIcon,
 } from "lucide-react";
+import { ReactNode } from "react";
 
-const FilterButton = ({ onClick, params }) => {
+interface FilterButtonParams {
+  view: string;
+  filter?: string;
+  mode: string;
+}
+
+interface FilterButtonProps {
+  onClick: () => void;
+  params: FilterButtonParams;
+}
+
+const FilterButton = ({ onClick, params }: FilterButtonProps) => {
   const renderViewIcons = () => {
     const iconSize = 20;
-    const icons = [];
+    const icons: ReactNode[] = [];
 
-    const iconMap = {
+    const iconMap: Record<string, Record<string, LucideIcon>> = {
       view: {
         storms: CloudLightning,
         highlights: Star,
@@ -54,7 +67,7 @@ const FilterButton = ({ onClick, params }) => {
     if (ModeIcon) icons.push(<ModeIcon key="mode" size={iconSize} />);
 
     // Insert "/" separators between icons
-    return icons.reduce((acc, icon, index) => {
+    return icons.reduce<ReactNode[]>((acc, icon, index) => {
       if (index > 0) {
         acc.push(
           <span key={`sep-${index}`} className="mx-1 text-white">

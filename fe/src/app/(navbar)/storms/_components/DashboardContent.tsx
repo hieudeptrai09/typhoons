@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, ReactNode } from "react";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import SortableTable from "../../../../components/SortableTable";
-import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK } from "../../../../constants";
+import SortableTable, { TableColumn } from "../../../../components/SortableTable";
+import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK, IntensityType } from "../../../../constants";
 import {
   getHighlights,
   getIntensityFromNumber,
@@ -12,12 +12,64 @@ import {
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
 
+interface Storm {
+  name: string;
+  year: number;
+  intensity: IntensityType;
+  position: number;
+  country: string;
+  correctSpelling?: string;
+  map?: string;
+  isStrongest?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+interface DashboardParams {
+  view: string;
+  mode: string;
+  filter: string;
+}
+
+interface DashboardContentProps {
+  params: DashboardParams;
+  stormsData: Storm[];
+  onCellClick: (data: number | string, key: string) => void;
+}
+
+interface CellData {
+  content: ReactNode;
+  highlighted: boolean;
+  avgNumber: number | null;
+}
+
+interface AverageData {
+  year?: number;
+  country?: string;
+  name?: string;
+  position?: number;
+  count: number;
+  average: string;
+  avgNumber: number;
+  [key: string]: unknown;
+}
+
+interface NameData {
+  name: string;
+  country: string;
+  position: number;
+  count: number;
+  avgIntensity: number;
+  year: number;
+  [key: string]: unknown;
+}
+
 const renderStormGridWithButtons = (
-  onCellClick,
-  cellData,
-  isAverageView,
-  averageValues,
-  stormsData,
+  onCellClick: (data: number | string, key: string) => void,
+  cellData: Record<number, CellData>,
+  isAverageView: boolean,
+  averageValues: Record<number, number> | null,
+  stormsData: Storm[],
 ) => (
   <div>
     <SpecialButtons
@@ -35,8 +87,12 @@ const renderStormGridWithButtons = (
   </div>
 );
 
-const createCellData = (viewType, highlightedData = null, averageValues = null) => {
-  const cellData = {};
+const createCellData = (
+  viewType: string,
+  highlightedData: Storm[] | null = null,
+  averageValues: Record<number, number> | null = null,
+): Record<number, CellData> => {
+  const cellData: Record<number, CellData> = {};
 
   // Initialize first 140 cells based on view type
   for (let i = 1; i <= 140; i++) {
@@ -49,14 +105,17 @@ const createCellData = (viewType, highlightedData = null, averageValues = null) 
 
   // Handle different view types
   if (viewType === "highlights" && highlightedData) {
-    const stormsByPosition = highlightedData.reduce((acc, storm) => {
-      if (!acc[storm.position]) acc[storm.position] = [];
-      acc[storm.position].push(storm);
-      return acc;
-    }, {});
+    const stormsByPosition: Record<number, Storm[]> = highlightedData.reduce(
+      (acc, storm) => {
+        if (!acc[storm.position]) acc[storm.position] = [];
+        acc[storm.position].push(storm);
+        return acc;
+      },
+      {} as Record<number, Storm[]>,
+    );
 
     Object.entries(stormsByPosition).forEach(([position, storms]) => {
-      cellData[position] = {
+      cellData[Number(position)] = {
         content: (
           <div className="flex flex-col items-center gap-1">
             {storms.map((storm, idx) => (
@@ -73,7 +132,7 @@ const createCellData = (viewType, highlightedData = null, averageValues = null) 
     });
   } else if (viewType === "average" && averageValues) {
     Object.entries(averageValues).forEach(([position, avgValue]) => {
-      cellData[position] = {
+      cellData[Number(position)] = {
         content: `${position}`,
         highlighted: false,
         avgNumber: avgValue,
@@ -84,7 +143,7 @@ const createCellData = (viewType, highlightedData = null, averageValues = null) 
   return cellData;
 };
 
-const renderIntensityCell = (avgNumber, displayValue) => {
+const renderIntensityCell = (avgNumber: number, displayValue: string) => {
   const intensityLabel = getIntensityFromNumber(avgNumber);
   const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
   return (
@@ -94,17 +153,10 @@ const renderIntensityCell = (avgNumber, displayValue) => {
   );
 };
 
-const createAverageCellRenderer = (row, col) => {
-  if (col.key === "average") {
-    return renderIntensityCell(row.avgNumber, row.average);
-  }
-  if (col.key === "position") {
-    return getPositionTitle(row.position);
-  }
-  return row[col.key];
-};
-
-const transformAverageData = (dataMap, filterType) => {
+const transformAverageData = (
+  dataMap: Record<string, Storm[]>,
+  filterType: string,
+): AverageData[] => {
   return Object.entries(dataMap).map(([key, storms]) => {
     const avgValue = calculateAverage(storms);
     const baseData = {
@@ -113,7 +165,7 @@ const transformAverageData = (dataMap, filterType) => {
       avgNumber: avgValue,
     };
 
-    const dataTypeMap = {
+    const dataTypeMap: Record<string, Partial<AverageData>> = {
       year: { year: parseInt(key) },
       country: { country: key },
       name: {
@@ -124,12 +176,12 @@ const transformAverageData = (dataMap, filterType) => {
       position: { position: parseInt(key), country: storms[0].country },
     };
 
-    return { ...dataTypeMap[filterType], ...baseData };
+    return { ...dataTypeMap[filterType], ...baseData } as AverageData;
   });
 };
 
-const getAverageColumns = (filterType) => {
-  const columnMap = {
+const getAverageColumns = (filterType: string): TableColumn<AverageData>[] => {
+  const columnMap: Record<string, TableColumn<AverageData>[]> = {
     year: [
       { key: "year", label: "Year" },
       { key: "count", label: "Count" },
@@ -163,7 +215,7 @@ const getAverageColumns = (filterType) => {
   return columns;
 };
 
-const getStormNameColumns = () => {
+const getStormNameColumns = (): TableColumn<NameData>[] => {
   return [
     { key: "name", label: "Name" },
     { key: "country", label: "Country" },
@@ -173,12 +225,12 @@ const getStormNameColumns = () => {
   ];
 };
 
-const DashboardContent = ({ params, stormsData, onCellClick }) => {
+const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentProps) => {
   // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
     let filteredData = stormsData;
     if (params.filter === "year") {
-      filteredData = stormsData.filter((storm) => parseInt(storm.year) >= 2000);
+      filteredData = stormsData.filter((storm) => parseInt(storm.year.toString()) >= 2000);
     }
 
     return getGroupedStorms(filteredData, params.filter);
@@ -189,9 +241,9 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
     if (params.view !== "average" || params.mode !== "table") return null;
 
     const positionGroups = getGroupedStorms(stormsData, "position");
-    const values = {};
+    const values: Record<number, number> = {};
     Object.entries(positionGroups).forEach(([position, storms]) => {
-      values[position] = calculateAverage(storms);
+      values[Number(position)] = calculateAverage(storms);
     });
     return values;
   }, [stormsData, params.view, params.mode]);
@@ -199,7 +251,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
   // Handle storms view in list mode - show all names
   if (params.view === "storms" && params.mode === "list") {
     const nameGroups = getGroupedStorms(stormsData, "name");
-    const nameData = Object.entries(nameGroups).map(([name, storms]) => {
+    const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => {
       const avgIntensity = calculateAverage(storms);
       return {
         name,
@@ -215,10 +267,16 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
       <SortableTable
         data={nameData}
         columns={getStormNameColumns()}
-        onRowClick={(row) => onCellClick(row.name, "name")}
-        renderCell={(row, col) => {
-          if (col.key === "name") {
-            const intensityLabel = getIntensityFromNumber(row.avgIntensity);
+        onRowClick={(row) => {
+          const name = row.name;
+          if (typeof name === "string") {
+            onCellClick(name, "name");
+          }
+        }}
+        renderCell={(row, col): ReactNode => {
+          if (col.key === "name" && typeof row.name === "string") {
+            const avgInt = typeof row.avgIntensity === "number" ? row.avgIntensity : 0;
+            const intensityLabel = getIntensityFromNumber(avgInt);
             const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
             return (
               <span className="font-bold" style={{ color: textColor }}>
@@ -226,10 +284,10 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
               </span>
             );
           }
-          if (col.key === "position") {
+          if (col.key === "position" && typeof row.position === "number") {
             return getPositionTitle(row.position);
           }
-          return row[col.key];
+          return row[col.key] as ReactNode;
         }}
       />
     );
@@ -271,14 +329,16 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
   if (params.view === "highlights") {
     const highlights = getHighlights(stormsData, params.filter);
 
+    const highlightData = highlights.map((s) => ({
+      name: s.name,
+      year: s.year,
+      intensity: s.intensity,
+      position: s.position,
+    }));
+
     return (
       <SortableTable
-        data={highlights.map((s) => ({
-          name: s.name,
-          year: s.year,
-          intensity: s.intensity,
-          position: s.position,
-        }))}
+        data={highlightData}
         columns={[
           { key: "name", label: "Name" },
           { key: "year", label: "Year" },
@@ -289,9 +349,15 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
           },
           { key: "position", label: "Position" },
         ]}
-        renderCell={(row, col) =>
-          col.key === "intensity" ? <IntensityBadge intensity={row.intensity} /> : row[col.key]
-        }
+        renderCell={(row, col): ReactNode => {
+          if (col.key === "intensity") {
+            const intensity = row.intensity;
+            if (typeof intensity === "string" || typeof intensity === "number") {
+              return <IntensityBadge intensity={intensity as IntensityType} />;
+            }
+          }
+          return row[col.key] as ReactNode;
+        }}
       />
     );
   }
@@ -304,9 +370,22 @@ const DashboardContent = ({ params, stormsData, onCellClick }) => {
         data={data}
         columns={getAverageColumns(params.filter)}
         onRowClick={(row) => {
-          onCellClick(row[params.filter], params.filter);
+          const value = row[params.filter as keyof typeof row];
+          if (value !== undefined) {
+            onCellClick(value as number | string, params.filter);
+          }
         }}
-        renderCell={createAverageCellRenderer}
+        renderCell={(row, col): ReactNode => {
+          if (col.key === "average") {
+            const avgNum = typeof row.avgNumber === "number" ? row.avgNumber : 0;
+            const avg = typeof row.average === "string" ? row.average : "0";
+            return renderIntensityCell(avgNum, avg);
+          }
+          if (col.key === "position" && typeof row.position === "number") {
+            return getPositionTitle(row.position);
+          }
+          return row[col.key] as ReactNode;
+        }}
       />
     );
   }
