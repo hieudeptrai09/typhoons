@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { LucideIcon } from "lucide-react";
 
-const NavLink = ({ href, icon: Icon, label, isActive, onClick }) => {
+interface NavLinkProps {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  isActive: boolean;
+  onClick?: () => void;
+}
+
+const NavLink = ({ href, icon: Icon, label, isActive, onClick }: NavLinkProps) => {
   return (
     <Link
       href={href}

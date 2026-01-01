@@ -1,32 +1,17 @@
 import { useState } from "react";
-import { CloudLightning, BookText, List, Archive, Filter, ChevronDown } from "lucide-react";
+import { CloudLightning, BookText, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import NavLink from "./NavLink";
+import { getNamesSubmenu } from "./navNameSubmenuItem";
 
-const DesktopNav = ({ currentPath }) => {
+interface DesktopNavProps {
+  currentPath: string;
+}
+
+const DesktopNav = ({ currentPath }: DesktopNavProps) => {
   const [isNamesOpen, setIsNamesOpen] = useState(false);
 
-  const namesSubmenu = [
-    {
-      href: "/names/current",
-      icon: List,
-      label: "Current Names",
-      isActive: currentPath === "/names/current/",
-    },
-    {
-      href: "/names/retired",
-      icon: Archive,
-      label: "Retired Names",
-      isActive: currentPath === "/names/retired/",
-    },
-    {
-      href: "/names/filter",
-      icon: Filter,
-      label: "Filter Names",
-      isActive: currentPath === "/names/filter/",
-    },
-  ];
-
+  const namesSubmenu = getNamesSubmenu(currentPath);
   const isNamesActive = currentPath.startsWith("/names");
 
   return (

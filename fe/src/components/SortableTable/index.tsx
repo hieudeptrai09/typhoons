@@ -1,11 +1,33 @@
+import { ReactNode } from "react";
 import { useTableSort } from "../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
 
-const SortableTable = ({ data, columns, onRowClick, renderCell, className = "max-w-4xl" }) => {
+export interface TableColumn<T> {
+  key: keyof T;
+  label: string;
+  isSortable?: boolean;
+  title?: string;
+}
+
+interface SortableTableProps<T extends Record<string, unknown>> {
+  data: T[];
+  columns: TableColumn<T>[];
+  onRowClick?: (row: T) => void;
+  renderCell?: (row: T, column: TableColumn<T>) => ReactNode;
+  className?: string;
+}
+
+const SortableTable = <T extends Record<string, unknown>>({
+  data,
+  columns,
+  onRowClick,
+  renderCell,
+  className = "max-w-4xl",
+}: SortableTableProps<T>) => {
   const { sortedData, sortColumn, sortDirection, handleSort } = useTableSort(data);
 
-  const defaultRenderCell = (row, column) => {
-    return row[column.key];
+  const defaultRenderCell = (row: T, column: TableColumn<T>): ReactNode => {
+    return row[column.key] as ReactNode;
   };
 
   const getCellRenderer = renderCell || defaultRenderCell;
@@ -17,7 +39,7 @@ const SortableTable = ({ data, columns, onRowClick, renderCell, className = "max
           <tr>
             {columns.map((col) => (
               <SortableTableHeader
-                key={col.key}
+                key={String(col.key)}
                 label={col.label}
                 columnKey={col.key}
                 columnTitle={col.title}
@@ -37,7 +59,7 @@ const SortableTable = ({ data, columns, onRowClick, renderCell, className = "max
               className="cursor-pointer transition-colors hover:bg-gray-100"
             >
               {columns.map((col) => (
-                <td key={col.key} className="px-6 py-4 text-gray-600">
+                <td key={String(col.key)} className="px-6 py-4 text-gray-600">
                   {getCellRenderer(row, col)}
                 </td>
               ))}

@@ -1,5 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, ReactNode, CSSProperties } from "react";
 import { X } from "lucide-react";
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+  wrapperClassName?: string;
+  titleClassName?: string;
+  titleStyle?: CSSProperties;
+}
 
 const Modal = ({
   isOpen,
@@ -9,7 +19,7 @@ const Modal = ({
   wrapperClassName = "",
   titleClassName = "",
   titleStyle = {},
-}) => {
+}: ModalProps) => {
   useEffect(() => {
     if (isOpen) {
       const isDesktop = window.innerWidth >= 768; // md breakpoint

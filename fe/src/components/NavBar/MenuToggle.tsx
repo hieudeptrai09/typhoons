@@ -1,6 +1,11 @@
 import { Menu, X } from "lucide-react";
 
-const MenuToggle = ({ isOpen, onToggle }) => {
+interface MenuToggleProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+const MenuToggle = ({ isOpen, onToggle }: MenuToggleProps) => {
   return (
     <button
       onClick={onToggle}

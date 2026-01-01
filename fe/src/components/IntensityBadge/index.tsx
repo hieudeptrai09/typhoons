@@ -1,6 +1,10 @@
-import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../constants";
+import { BACKGROUND_BADGE, TEXT_COLOR_BADGE, IntensityType } from "../../constants";
 
-const IntensityBadge = ({ intensity }) => {
+interface IntensityBadgeProps {
+  intensity: IntensityType;
+}
+
+const IntensityBadge = ({ intensity }: IntensityBadgeProps) => {
   return (
     <span
       className="flex h-10 w-10 items-center justify-center font-semibold"

@@ -1,4 +1,16 @@
-const SortableTableHeader = ({
+type SortDirection = "asc" | "desc" | null;
+
+interface SortableTableHeaderProps<T> {
+  label: string;
+  columnKey: keyof T;
+  columnTitle?: string;
+  currentSortColumn: keyof T | null;
+  currentSortDirection: SortDirection;
+  onSort: (column: keyof T) => void;
+  isSortable: boolean;
+}
+
+const SortableTableHeader = <T extends Record<string, unknown>>({
   label,
   columnKey,
   columnTitle,
@@ -6,7 +18,7 @@ const SortableTableHeader = ({
   currentSortDirection,
   onSort,
   isSortable,
-}) => {
+}: SortableTableHeaderProps<T>) => {
   const isActive = currentSortColumn === columnKey;
 
   const getSortIcon = () => {
