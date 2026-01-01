@@ -1,11 +1,22 @@
 import { useState, useMemo } from "react";
-import { SORTING_RANK } from "../../constants";
+import { SORTING_RANK, IntensityType } from "../../constants";
 
-export const useTableSort = (data) => {
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState(null);
+type SortDirection = "asc" | "desc" | null;
 
-  const handleSort = (column) => {
+interface UseTableSortReturn<T> {
+  sortedData: T[];
+  sortColumn: keyof T | null;
+  sortDirection: SortDirection;
+  handleSort: (column: keyof T) => void;
+}
+
+export const useTableSort = <T extends Record<string, unknown>>(
+  data: T[],
+): UseTableSortReturn<T> => {
+  const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const handleSort = (column: keyof T): void => {
     if (sortColumn === column) {
       // Cycle through: asc -> desc -> null
       if (sortDirection === "asc") {
@@ -27,12 +38,12 @@ export const useTableSort = (data) => {
     }
 
     const sorted = [...data].sort((a, b) => {
-      let aValue = a[sortColumn];
-      let bValue = b[sortColumn];
+      let aValue: unknown = a[sortColumn];
+      let bValue: unknown = b[sortColumn];
 
       if (sortColumn === "intensity") {
-        aValue = SORTING_RANK[aValue];
-        bValue = SORTING_RANK[bValue];
+        aValue = SORTING_RANK[aValue as IntensityType];
+        bValue = SORTING_RANK[bValue as IntensityType];
       }
 
       // Handle null/undefined values
@@ -40,7 +51,7 @@ export const useTableSort = (data) => {
       if (bValue == null) bValue = "";
 
       // Compare values
-      let comparison;
+      let comparison: number;
 
       if (typeof aValue === "number" && typeof bValue === "number") {
         comparison = aValue - bValue;

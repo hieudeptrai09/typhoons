@@ -1,6 +1,8 @@
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
-export const BACKGROUND_BADGE = {
+export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
+
+export const BACKGROUND_BADGE: Record<IntensityType, string> = {
   TD: "#00CCFF",
   TS: "#00FF00",
   STS: "#C0FFC0",
@@ -11,7 +13,7 @@ export const BACKGROUND_BADGE = {
   5: "#CC00CC",
 };
 
-export const BACKGROUND_HOVER_BADGE = {
+export const BACKGROUND_HOVER_BADGE: Record<IntensityType, string> = {
   TD: "#00B3E6",
   TS: "#00E600",
   STS: "#ADEBAD",
@@ -22,7 +24,7 @@ export const BACKGROUND_HOVER_BADGE = {
   5: "#B800B8",
 };
 
-export const TEXT_COLOR_BADGE = {
+export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
   TD: "#FFFFFF",
   TS: "#005500",
   STS: "#004D26",
@@ -33,7 +35,7 @@ export const TEXT_COLOR_BADGE = {
   5: "#FFFFFF",
 };
 
-export const TEXT_COLOR_WHITE_BACKGROUND = {
+export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
   TD: "#0099CC",
   TS: "#00BB00",
   STS: "#008844",
@@ -44,7 +46,7 @@ export const TEXT_COLOR_WHITE_BACKGROUND = {
   5: "#AA00AA",
 };
 
-export const SORTING_RANK = {
+export const SORTING_RANK: Record<IntensityType, number> = {
   5: 5,
   4: 4,
   3: 3,
@@ -55,7 +57,7 @@ export const SORTING_RANK = {
   TD: -2,
 };
 
-export const INTENSITY_RANK = {
+export const INTENSITY_RANK: Record<IntensityType, number> = {
   5: 5,
   4: 4,
   3: 3,
