@@ -45,7 +45,7 @@ const Modal = ({
           </h2>
           <button
             onClick={onClose}
-            className="-mt-2 -mr-2 flex h-11 w-11 items-center justify-center text-gray-500 hover:rounded-full hover:bg-gray-100 hover:text-gray-700"
+            className="-mt-2 -mr-2 flex h-11 w-11 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700"
           >
             <X size={24} />
           </button>
