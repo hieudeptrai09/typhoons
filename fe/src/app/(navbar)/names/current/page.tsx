@@ -10,6 +10,7 @@ import { TyphoonName } from "../../../../types";
 const CurrentNamesPage = () => {
   const [names, setNames] = useState<TyphoonName[]>([]);
   const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData<TyphoonName[]>("/typhoon-names?isRetired=0").then((data) => {
@@ -17,13 +18,18 @@ const CurrentNamesPage = () => {
     });
   }, []);
 
+  const handleNameClick = (name: TyphoonName) => {
+    setSelectedName(name);
+    setIsModalOpen(true);
+  };
+
   return (
     <PageHeader title="Current Typhoon Names">
-      <TyphoonNamesTable names={names} onNameClick={setSelectedName} />
+      <TyphoonNamesTable names={names} onNameClick={handleNameClick} />
       <TyphoonNameModal
-        isOpen={!!selectedName}
+        isOpen={isModalOpen}
         selectedName={selectedName}
-        onClose={() => setSelectedName(null)}
+        onClose={() => setIsModalOpen(false)}
       />
     </PageHeader>
   );

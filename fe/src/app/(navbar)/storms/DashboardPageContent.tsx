@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../components/PageHeader";
-import { INTENSITY_RANK, IntensityType } from "../../../constants";
+import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
@@ -26,10 +26,10 @@ export default function DashboardPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [averageModalOpen, setAverageModalOpen] = useState(false);
-  const [nameListModalOpen, setNameListModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
+  const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
   const [stormsData, setStormsData] = useState<Storm[]>([]);
 
@@ -52,7 +52,7 @@ export default function DashboardPageContent() {
   }, []);
 
   const handleApplyFilter = (newParams: DashboardParams) => {
-    setFilterModalOpen(false);
+    setIsFilterModalOpen(false);
 
     const searchParams = new URLSearchParams();
     Object.entries(newParams).forEach(([key, value]) => {
@@ -72,13 +72,13 @@ export default function DashboardPageContent() {
         }, 0) / storms.length;
 
       setSelectedData({ name: data as string, storms, avgIntensity });
-      setNameListModalOpen(true);
+      setIsNameListModalOpen(true);
       return;
     }
 
     if (params.view === "storms" || (params.view === "average" && params.filter === "name")) {
       setSelectedData({ title: getPositionTitle(data, params.filter), storms });
-      setDetailModalOpen(true);
+      setIsDetailModalOpen(true);
     } else {
       // All other routes open average modal
       const titleMap: Record<string, string> = {
@@ -97,42 +97,42 @@ export default function DashboardPageContent() {
         average: avg,
         storms,
       });
-      setAverageModalOpen(true);
+      setIsAverageModalOpen(true);
     }
   };
 
   return (
     <PageHeader title={getDashboardTitle(params.view, params.mode, params.filter)}>
-      <FilterButton onClick={() => setFilterModalOpen(true)} params={params} />
+      <FilterButton onClick={() => setIsFilterModalOpen(true)} params={params} />
 
       <DashboardContent params={params} stormsData={stormsData} onCellClick={handleCellClick} />
 
       <FilterModal
         key={JSON.stringify(params)}
-        isOpen={filterModalOpen}
-        onClose={() => setFilterModalOpen(false)}
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilter}
         currentParams={params}
       />
 
       <StormDetailModal
-        isOpen={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
         title={selectedData?.title || ""}
         storms={selectedData?.storms || []}
       />
 
       <AverageModal
-        isOpen={averageModalOpen}
-        onClose={() => setAverageModalOpen(false)}
+        isOpen={isAverageModalOpen}
+        onClose={() => setIsAverageModalOpen(false)}
         title={selectedData?.title || ""}
         average={selectedData?.average || 0}
         storms={selectedData?.storms || []}
       />
 
       <NameListModal
-        isOpen={nameListModalOpen}
-        onClose={() => setNameListModalOpen(false)}
+        isOpen={isNameListModalOpen}
+        onClose={() => setIsNameListModalOpen(false)}
         name={selectedData?.name || ""}
         storms={selectedData?.storms || []}
         avgIntensity={selectedData?.avgIntensity || 0}

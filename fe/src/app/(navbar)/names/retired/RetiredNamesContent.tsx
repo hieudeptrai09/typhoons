@@ -21,6 +21,7 @@ const RetiredNamesContent = () => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedName, setSelectedName] = useState<RetiredName | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
 
   // Initialize filters from URL parameters
   const searchName = searchParams.get("name") || "";
@@ -96,6 +97,7 @@ const RetiredNamesContent = () => {
 
   const handleNameClick = async (name: RetiredName) => {
     setSelectedName(name);
+    setIsNameDetailsModalOpen(true);
     await loadSuggestions(name.id);
   };
 
@@ -155,10 +157,10 @@ const RetiredNamesContent = () => {
       />
 
       <NameDetailsModal
-        isOpen={!!selectedName}
+        isOpen={isNameDetailsModalOpen}
         selectedName={selectedName}
         suggestions={suggestions}
-        onClose={() => setSelectedName(null)}
+        onClose={() => setIsNameDetailsModalOpen(false)}
       />
     </PageHeader>
   );

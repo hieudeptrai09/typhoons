@@ -19,6 +19,7 @@ const FilterNamesPage = () => {
 
   const [names, setNames] = useState<TyphoonName[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
 
   // Toggle for showing images and descriptions
@@ -108,6 +109,11 @@ const FilterNamesPage = () => {
     updateURL({ name: "", country: "", language: "" }, letter);
   };
 
+  const handleNameClick = (name: TyphoonName) => {
+    setSelectedName(name);
+    setIsNameDetailsModalOpen(true);
+  };
+
   return (
     <PageHeader title="Filter Names">
       <FilterButton
@@ -134,7 +140,7 @@ const FilterNamesPage = () => {
       <FilteredNamesTable
         filteredNames={paginatedNames}
         showImageAndDescription={showImageAndDescription}
-        onNameClick={setSelectedName}
+        onNameClick={handleNameClick}
       />
 
       <FilterModal
@@ -151,9 +157,9 @@ const FilterNamesPage = () => {
       />
 
       <NameDetailsModal
-        isOpen={!!selectedName}
+        isOpen={isNameDetailsModalOpen}
         selectedName={selectedName}
-        onClose={() => setSelectedName(null)}
+        onClose={() => setIsNameDetailsModalOpen(false)}
       />
     </PageHeader>
   );
