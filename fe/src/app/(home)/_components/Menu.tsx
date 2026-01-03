@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { MenuProps } from "../../../types";
+
+export interface MenuProps {
+  href: string;
+  label: string;
+  color: string;
+  hoverColor: string;
+}
 
 const Menu = ({ href, label, color, hoverColor }: MenuProps) => {
   return (

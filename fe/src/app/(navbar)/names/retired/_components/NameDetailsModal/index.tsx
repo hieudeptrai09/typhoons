@@ -2,10 +2,12 @@ import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
-import {
-  RetiredName,
-  RetiredNameDetailsModalProps as NameDetailsModalProps,
-} from "../../../../../../types";
+import { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
+
+export interface NameDetailsModalProps extends BaseModalProps {
+  selectedName: RetiredName | null;
+  suggestions: Suggestion[];
+}
 
 const NameDetailsModal = ({ selectedName, suggestions, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;

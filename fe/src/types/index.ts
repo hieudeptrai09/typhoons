@@ -3,14 +3,6 @@ import { IntensityType } from "../constants";
 // ===========================
 // Common Types
 // ===========================
-
-export interface MenuProps {
-  href: string;
-  label: string;
-  color: string;
-  hoverColor: string;
-}
-
 // ===========================
 // Typhoon Name Types
 // ===========================
@@ -96,55 +88,15 @@ export interface TableColumn<T> {
 // Modal Props Types
 // ===========================
 
-export interface NameDetailsModalProps {
-  selectedName: TyphoonName | null;
-  onClose: () => void;
-}
-
-export interface RetiredNameDetailsModalProps {
-  selectedName: RetiredName | null;
-  suggestions: Suggestion[];
-  onClose: () => void;
-}
-
-export interface FilterModalProps {
+// Base modal props that all modals share
+export interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApply: (filters: FilterParams) => void;
-  countries: string[];
-  languages: string[];
-  initialFilters: FilterParams;
 }
 
-export interface RetiredFilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApply: (filters: RetiredFilterParams) => void;
-  countries: string[];
-  initialFilters: RetiredFilterParams;
-}
-
-export interface StormDetailModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+export interface StormDetailModalProps extends BaseModalProps {
   title: string;
   storms: Storm[];
-}
-
-export interface AverageModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  average: number;
-  storms: Storm[];
-}
-
-export interface NameListModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  name: string;
-  storms: Storm[];
-  avgIntensity?: number;
 }
 
 // ===========================

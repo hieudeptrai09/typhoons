@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Modal from "../../../../../components/Modal";
-import { TyphoonName, NameDetailsModalProps } from "../../../../../types";
+import { TyphoonName, BaseModalProps } from "../../../../../types";
+
+interface NameDetailsModalProps extends BaseModalProps {
+  selectedName: TyphoonName | null;
+}
 
 const NameDetailsModal = ({ selectedName, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;

@@ -1,16 +1,9 @@
 import IntensityBadge from "../../../../components/IntensityBadge";
 import Modal from "../../../../components/Modal";
 import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
+import { BaseModalProps, Storm } from "../../../../types";
 
-interface Storm {
-  name: string;
-  year: number;
-  intensity: IntensityType;
-}
-
-interface StormDetailModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+export interface StormDetailModalProps extends BaseModalProps {
   title: string;
   storms: Storm[];
 }

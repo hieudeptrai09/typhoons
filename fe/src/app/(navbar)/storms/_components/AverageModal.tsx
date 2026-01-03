@@ -10,7 +10,13 @@ import {
 } from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
 import StormNamePopup from "./StormNamePopup";
-import { AverageModalProps, NameData } from "../../../../types";
+import { BaseModalProps, NameData, Storm } from "../../../../types";
+
+interface AverageModalProps extends BaseModalProps {
+  title: string;
+  average: number;
+  storms: Storm[];
+}
 
 const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalProps) => {
   const [selectedName, setSelectedName] = useState<string | null>(null);
