@@ -1,7 +1,23 @@
 import { Frown } from "lucide-react";
-import SortableTable from "../../../../../../components/SortableTable";
+import SortableTable, { TableColumn } from "../../../../../../components/SortableTable";
+import { ReactNode } from "react";
 
-const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
+interface RetiredName {
+  name: string;
+  meaning: string;
+  country: string;
+  note?: string;
+  lastYear: number;
+  isLanguageProblem: number;
+  [key: string]: unknown;
+}
+
+interface RetiredNamesTableProps {
+  paginatedData: RetiredName[];
+  onNameClick: (name: RetiredName) => void;
+}
+
+const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProps) => {
   if (!paginatedData || paginatedData.length === 0) {
     return (
       <div className="mx-auto max-w-4xl p-8 text-center">
@@ -14,7 +30,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
     );
   }
 
-  const columns = [
+  const columns: TableColumn<RetiredName>[] = [
     { key: "name", label: "Name", isSortable: true },
     { key: "meaning", label: "Meaning", isSortable: false },
     { key: "country", label: "Country", isSortable: true },
@@ -22,7 +38,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
     { key: "lastYear", label: "Year of last storm", isSortable: true },
   ];
 
-  const getNameColor = (selectedName) => {
+  const getNameColor = (selectedName: RetiredName): string => {
     const ilp = selectedName.isLanguageProblem;
 
     switch (ilp) {
@@ -39,14 +55,14 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }) => {
     }
   };
 
-  const renderCell = (row, column) => {
+  const renderCell = (row: RetiredName, column: TableColumn<RetiredName>): ReactNode => {
     if (column.key === "name") {
       return <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>;
     }
     if (column.key === "note") {
       return row.note || "-";
     }
-    return row[column.key];
+    return row[column.key] as ReactNode;
   };
 
   return (

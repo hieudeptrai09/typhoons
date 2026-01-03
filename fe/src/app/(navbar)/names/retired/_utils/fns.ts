@@ -1,19 +1,25 @@
-export const getRetiredNamesTitle = (name, year, country, lang, letter) => {
-  const parts = [];
+export const getRetiredNamesTitle = (
+  name?: string | string[],
+  year?: string | string[],
+  country?: string | string[],
+  lang?: string | string[],
+  letter?: string | string[],
+): string[] => {
+  const parts: string[] = [];
 
-  if (name) {
+  if (name && typeof name === "string") {
     parts.push(`"${name}"`);
   }
 
-  if (year) {
+  if (year && typeof year === "string") {
     parts.push(`Year ${year}`);
   }
 
-  if (country) {
+  if (country && typeof country === "string") {
     parts.push(country);
   }
 
-  if (lang) {
+  if (lang && typeof lang === "string") {
     // Parse comma-separated values
     const reasons = lang
       .split(",")
@@ -38,26 +44,32 @@ export const getRetiredNamesTitle = (name, year, country, lang, letter) => {
     }
   }
 
-  if (!name && !year && !country && !lang && letter) {
+  if (!name && !year && !country && !lang && letter && typeof letter === "string") {
     parts.push(`Letter ${letter}`);
   }
 
   return parts;
 };
 
-export const getRetiredNamesDescription = (name, year, country, lang, letter) => {
-  const parts = [];
+export const getRetiredNamesDescription = (
+  name?: string | string[],
+  year?: string | string[],
+  country?: string | string[],
+  lang?: string | string[],
+  letter?: string | string[],
+): string => {
+  const parts: string[] = [];
 
-  if (name) {
+  if (name && typeof name === "string") {
     parts.push(`retired typhoon name "${name}"`);
   }
-  if (year) {
+  if (year && typeof year === "string") {
     parts.push(`storms from ${year}`);
   }
-  if (country) {
+  if (country && typeof country === "string") {
     parts.push(`names from ${country}`);
   }
-  if (lang) {
+  if (lang && typeof lang === "string") {
     const reasons = lang
       .split(",")
       .map((reason) => {
@@ -80,7 +92,7 @@ export const getRetiredNamesDescription = (name, year, country, lang, letter) =>
       parts.push(`names retired due to ${reasons.join(", ")}`);
     }
   }
-  if (!name && !year && !country && !lang && letter) {
+  if (!name && !year && !country && !lang && letter && typeof letter === "string") {
     parts.push(`retired typhoon names starting with letter ${letter}`);
   }
 

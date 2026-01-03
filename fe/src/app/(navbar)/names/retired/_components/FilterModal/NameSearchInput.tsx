@@ -1,6 +1,11 @@
 import FilterSection from "./FilterSection";
 
-const NameSearchInput = ({ value, onChange }) => {
+interface NameSearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const NameSearchInput = ({ value, onChange }: NameSearchInputProps) => {
   return (
     <FilterSection label="Filter by Name" hasValue={Boolean(value)} onClear={() => onChange("")}>
       <input

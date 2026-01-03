@@ -1,7 +1,22 @@
 import FilterSection from "./FilterSection";
 
-const RetirementReasonCheckbox = ({ value, onChange }) => {
-  const options = [
+interface ReasonOption {
+  value: string;
+  label: string;
+  activeColor: string;
+  inactiveColor: string;
+  hoverActiveColor: string;
+  hoverInactiveColor: string;
+  textInactiveColor: string;
+}
+
+interface RetirementReasonCheckboxProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const RetirementReasonCheckbox = ({ value, onChange }: RetirementReasonCheckboxProps) => {
+  const options: ReasonOption[] = [
     {
       value: "0",
       label: "Destructive Storm",
@@ -43,8 +58,8 @@ const RetirementReasonCheckbox = ({ value, onChange }) => {
   // Parse current value (comma-separated string) into array
   const selectedValues = value ? value.split(",") : [];
 
-  const handleButtonClick = (selectedValue) => {
-    let newValues;
+  const handleButtonClick = (selectedValue: string) => {
+    let newValues: string[];
 
     if (selectedValues.includes(selectedValue)) {
       // Remove value if already selected

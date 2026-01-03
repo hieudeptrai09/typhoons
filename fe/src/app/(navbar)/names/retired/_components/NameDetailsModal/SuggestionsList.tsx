@@ -1,7 +1,18 @@
 import EmptySuggestions from "./EmptySuggestions";
 import SuggestionCard from "./SuggestionCard";
 
-const SuggestionsList = ({ suggestions }) => {
+interface Suggestion {
+  replacementName: string;
+  replacementMeaning: string;
+  isChosen: number;
+  image?: string;
+}
+
+interface SuggestionsListProps {
+  suggestions: Suggestion[];
+}
+
+const SuggestionsList = ({ suggestions }: SuggestionsListProps) => {
   if (suggestions.length === 0) {
     return <EmptySuggestions />;
   }

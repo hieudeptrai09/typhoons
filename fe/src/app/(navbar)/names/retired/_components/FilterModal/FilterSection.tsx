@@ -1,4 +1,13 @@
-const FilterSection = ({ label, hasValue, onClear, children }) => {
+import { ReactNode } from "react";
+
+interface FilterSectionProps {
+  label: string;
+  hasValue: boolean;
+  onClear: () => void;
+  children: ReactNode;
+}
+
+const FilterSection = ({ label, hasValue, onClear, children }: FilterSectionProps) => {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">

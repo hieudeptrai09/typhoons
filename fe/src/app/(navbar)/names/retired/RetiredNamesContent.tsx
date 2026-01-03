@@ -12,13 +12,41 @@ import NameDetailsModal from "./_components/NameDetailsModal";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
 
+interface RetiredName {
+  id: number;
+  name: string;
+  meaning: string;
+  country: string;
+  position: number;
+  language: string;
+  isLanguageProblem: number;
+  lastYear: number;
+  note?: string;
+  image?: string;
+  description?: string;
+}
+
+interface Suggestion {
+  replacementName: string;
+  replacementMeaning: string;
+  isChosen: number;
+  image?: string;
+}
+
+interface FilterParams {
+  searchName: string;
+  selectedYear: string;
+  selectedCountry: string;
+  retirementReason: string;
+}
+
 const RetiredNamesContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [retiredNames, setRetiredNames] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [selectedName, setSelectedName] = useState(null);
+  const [retiredNames, setRetiredNames] = useState<RetiredName[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [selectedName, setSelectedName] = useState<RetiredName | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Initialize filters from URL parameters
@@ -29,7 +57,7 @@ const RetiredNamesContent = () => {
   const currentLetter = searchParams.get("letter") || "A";
 
   // Update URL when filters change
-  const updateURL = (filters, letter = currentLetter) => {
+  const updateURL = (filters: FilterParams, letter: string = currentLetter) => {
     const params = new URLSearchParams();
 
     if (filters.searchName) {
@@ -61,7 +89,7 @@ const RetiredNamesContent = () => {
   };
 
   useEffect(() => {
-    fetchData("/typhoon-names?isRetired=1").then((data) => {
+    fetchData<RetiredName[]>("/typhoon-names?isRetired=1").then((data) => {
       if (data) {
         setRetiredNames(data.data);
       }
@@ -85,25 +113,25 @@ const RetiredNamesContent = () => {
     currentLetter,
   });
 
-  const loadSuggestions = async (nameId) => {
-    fetchData(`/suggested-names?nameId=${nameId}`).then((data) => {
+  const loadSuggestions = async (nameId: number) => {
+    fetchData<Suggestion[]>(`/suggested-names?nameId=${nameId}`).then((data) => {
       if (data) {
         setSuggestions(data.data);
       }
     });
   };
 
-  const handleNameClick = async (name) => {
+  const handleNameClick = async (name: RetiredName) => {
     setSelectedName(name);
     await loadSuggestions(name.id);
   };
 
-  const handleApplyFilters = (filters) => {
+  const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
 
-  const handleLetterChange = (letter) => {
+  const handleLetterChange = (letter: string) => {
     updateURL(
       {
         searchName: "",

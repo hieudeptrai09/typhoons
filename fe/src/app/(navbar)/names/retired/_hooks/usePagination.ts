@@ -1,14 +1,30 @@
 import { useMemo } from "react";
 
+interface RetiredName {
+  name: string;
+}
+
+interface UsePaginationParams {
+  retiredNames: RetiredName[];
+  filteredNames: RetiredName[];
+  activeFilterCount: number;
+  currentLetter: string;
+}
+
+interface UsePaginationReturn {
+  paginatedData: RetiredName[];
+  availableLettersMap: Record<string, boolean>;
+}
+
 export const usePagination = ({
   retiredNames,
   filteredNames,
   activeFilterCount,
   currentLetter,
-}) => {
+}: UsePaginationParams): UsePaginationReturn => {
   // Get available letters (letters that have retired names)
   const availableLettersMap = useMemo(() => {
-    const map = {};
+    const map: Record<string, boolean> = {};
     retiredNames.forEach((name) => {
       const letter = name.name.charAt(0).toUpperCase();
       map[letter] = true;

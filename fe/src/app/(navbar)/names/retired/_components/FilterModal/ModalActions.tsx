@@ -1,4 +1,9 @@
-const ModalActions = ({ onClearAll, onApply }) => {
+interface ModalActionsProps {
+  onClearAll: () => void;
+  onApply: () => void;
+}
+
+const ModalActions = ({ onClearAll, onApply }: ModalActionsProps) => {
   return (
     <div className="mt-6 flex gap-3">
       <button

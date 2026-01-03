@@ -1,7 +1,20 @@
 import { Filter } from "lucide-react";
 import { getRetiredNamesTitle } from "../../_utils/fns";
 
-const FilterButton = ({ activeFilterCount, onClick, params }) => {
+interface FilterButtonParams {
+  name: string;
+  year: string;
+  country: string;
+  lang: string;
+}
+
+interface FilterButtonProps {
+  activeFilterCount: number;
+  onClick: () => void;
+  params: FilterButtonParams;
+}
+
+const FilterButton = ({ activeFilterCount, onClick, params }: FilterButtonProps) => {
   const hasFilters = activeFilterCount > 0;
   const filterText = hasFilters
     ? getRetiredNamesTitle(params.name, params.year, params.country, params.lang).join(" / ")

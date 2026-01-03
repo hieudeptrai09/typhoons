@@ -1,6 +1,18 @@
 import Image from "next/image";
 
-const SuggestionCard = ({ suggestion, hasAnyImage }) => {
+interface Suggestion {
+  replacementName: string;
+  replacementMeaning: string;
+  isChosen: number;
+  image?: string;
+}
+
+interface SuggestionCardProps {
+  suggestion: Suggestion;
+  hasAnyImage: boolean;
+}
+
+const SuggestionCard = ({ suggestion, hasAnyImage }: SuggestionCardProps) => {
   const cardClasses = Boolean(suggestion.isChosen)
     ? "bg-blue-100 border-2 border-blue-500"
     : "bg-gray-100";

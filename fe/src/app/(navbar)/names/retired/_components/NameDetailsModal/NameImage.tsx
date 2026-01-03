@@ -1,11 +1,17 @@
 import Image from "next/image";
 
-const NameImage = ({ src, alt, description }) => {
+interface NameImageProps {
+  src?: string;
+  alt: string;
+  description?: string;
+}
+
+const NameImage = ({ src, alt, description }: NameImageProps) => {
   const hasImage = src;
   const hasDescription = description;
 
   // Determine image visibility: hidden if no src and no description, invisible if no src but has description
-  const getImageVisibility = () => {
+  const getImageVisibility = (): string => {
     if (!hasImage && !hasDescription) return "hidden";
     if (!hasImage && hasDescription) return "invisible";
     return "";

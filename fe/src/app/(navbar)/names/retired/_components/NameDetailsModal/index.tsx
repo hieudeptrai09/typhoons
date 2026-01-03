@@ -3,10 +3,34 @@ import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
 
-const NameDetailsModal = ({ selectedName, suggestions, onClose }) => {
+interface RetiredName {
+  name: string;
+  meaning: string;
+  country: string;
+  position: number;
+  language: string;
+  isLanguageProblem: number;
+  image?: string;
+  description?: string;
+}
+
+interface Suggestion {
+  replacementName: string;
+  replacementMeaning: string;
+  isChosen: number;
+  image?: string;
+}
+
+interface NameDetailsModalProps {
+  selectedName: RetiredName | null;
+  suggestions: Suggestion[];
+  onClose: () => void;
+}
+
+const NameDetailsModal = ({ selectedName, suggestions, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;
 
-  const getNameColor = (selectedName) => {
+  const getNameColor = (selectedName: RetiredName): string => {
     const ilp = selectedName.isLanguageProblem;
 
     switch (ilp) {

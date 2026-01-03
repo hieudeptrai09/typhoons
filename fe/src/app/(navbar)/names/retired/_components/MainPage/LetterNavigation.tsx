@@ -1,4 +1,14 @@
-const LetterNavigation = ({ currentLetter, availableLettersMap, onLetterChange }) => {
+interface LetterNavigationProps {
+  currentLetter: string;
+  availableLettersMap: Record<string, boolean>;
+  onLetterChange: (letter: string) => void;
+}
+
+const LetterNavigation = ({
+  currentLetter,
+  availableLettersMap,
+  onLetterChange,
+}: LetterNavigationProps) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   return (

@@ -1,12 +1,32 @@
 import { useMemo } from "react";
 
+interface RetiredName {
+  name: string;
+  lastYear: number;
+  country: string;
+  isLanguageProblem: number;
+}
+
+interface UseFilteredNamesParams {
+  retiredNames: RetiredName[];
+  searchName: string;
+  selectedYear: string;
+  selectedCountry: string;
+  retirementReason: string;
+}
+
+interface UseFilteredNamesReturn {
+  filteredNames: RetiredName[];
+  activeFilterCount: number;
+}
+
 export const useFilteredNames = ({
   retiredNames,
   searchName,
   selectedYear,
   selectedCountry,
   retirementReason,
-}) => {
+}: UseFilteredNamesParams): UseFilteredNamesReturn => {
   const filteredNames = useMemo(() => {
     let filtered = [...retiredNames];
 

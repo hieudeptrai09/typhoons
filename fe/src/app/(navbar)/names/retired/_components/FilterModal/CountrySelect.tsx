@@ -1,6 +1,12 @@
 import FilterSection from "./FilterSection";
 
-const CountrySelect = ({ value, onChange, countries }) => {
+interface CountrySelectProps {
+  value: string;
+  onChange: (value: string) => void;
+  countries: string[];
+}
+
+const CountrySelect = ({ value, onChange, countries }: CountrySelectProps) => {
   return (
     <FilterSection label="Filter by Country" hasValue={Boolean(value)} onClear={() => onChange("")}>
       <select

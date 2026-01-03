@@ -1,6 +1,11 @@
 import FilterSection from "./FilterSection";
 
-const YearDigitSelector = ({ value, onChange }) => {
+interface YearDigitSelectorProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const YearDigitSelector = ({ value, onChange }: YearDigitSelectorProps) => {
   return (
     <FilterSection label="Filter by Year" hasValue={Boolean(value)} onClear={() => onChange("")}>
       <input
