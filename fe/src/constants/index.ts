@@ -75,7 +75,7 @@ export const defaultTyphoonName: TyphoonName = {
   meaning: "",
   country: "",
   language: "",
-  isRetired: 0,
+  isRetired: false,
   isLanguageProblem: 0,
 };
 
@@ -87,7 +87,7 @@ export const defaultRetiredName: RetiredName = {
 export const defaultSuggestion: Suggestion = {
   replacementName: "",
   replacementMeaning: "",
-  isChosen: 0,
+  isChosen: false,
 };
 
 export const defaultStorm: Storm = {
