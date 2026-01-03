@@ -1,13 +1,12 @@
 import Image from "next/image";
 import Modal from "../../../../../components/Modal";
-import { TyphoonName } from "../../../../../types";
+import { TyphoonName, BaseModalProps } from "../../../../../types";
 
-interface TyphoonNameModalProps {
+interface TyphoonNameModalProps extends BaseModalProps {
   selectedName: TyphoonName | null;
-  onClose: () => void;
 }
 
-const TyphoonNameModal = ({ selectedName, onClose }: TyphoonNameModalProps) => {
+const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalProps) => {
   if (!selectedName) return null;
 
   const hasImage = selectedName.image;
@@ -22,7 +21,7 @@ const TyphoonNameModal = ({ selectedName, onClose }: TyphoonNameModalProps) => {
 
   return (
     <Modal
-      isOpen={!!selectedName}
+      isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
       wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}

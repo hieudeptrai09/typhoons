@@ -20,7 +20,11 @@ const CurrentNamesPage = () => {
   return (
     <PageHeader title="Current Typhoon Names">
       <TyphoonNamesTable names={names} onNameClick={setSelectedName} />
-      <TyphoonNameModal selectedName={selectedName} onClose={() => setSelectedName(null)} />
+      <TyphoonNameModal
+        isOpen={!!selectedName}
+        selectedName={selectedName}
+        onClose={() => setSelectedName(null)}
+      />
     </PageHeader>
   );
 };

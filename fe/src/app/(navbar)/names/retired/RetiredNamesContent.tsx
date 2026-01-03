@@ -155,6 +155,7 @@ const RetiredNamesContent = () => {
       />
 
       <NameDetailsModal
+        isOpen={!!selectedName}
         selectedName={selectedName}
         suggestions={suggestions}
         onClose={() => setSelectedName(null)}

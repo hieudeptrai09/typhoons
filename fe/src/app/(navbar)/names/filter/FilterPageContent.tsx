@@ -108,10 +108,6 @@ const FilterNamesPage = () => {
     updateURL({ name: "", country: "", language: "" }, letter);
   };
 
-  const handleNameClick = (name: TyphoonName | null) => {
-    setSelectedName(name);
-  };
-
   return (
     <PageHeader title="Filter Names">
       <FilterButton
@@ -138,7 +134,7 @@ const FilterNamesPage = () => {
       <FilteredNamesTable
         filteredNames={paginatedNames}
         showImageAndDescription={showImageAndDescription}
-        onNameClick={handleNameClick}
+        onNameClick={setSelectedName}
       />
 
       <FilterModal
@@ -154,7 +150,11 @@ const FilterNamesPage = () => {
         }}
       />
 
-      <NameDetailsModal selectedName={selectedName} onClose={() => handleNameClick(null)} />
+      <NameDetailsModal
+        isOpen={!!selectedName}
+        selectedName={selectedName}
+        onClose={() => setSelectedName(null)}
+      />
     </PageHeader>
   );
 };

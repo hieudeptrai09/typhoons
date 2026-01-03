@@ -9,7 +9,12 @@ export interface NameDetailsModalProps extends BaseModalProps {
   suggestions: Suggestion[];
 }
 
-const NameDetailsModal = ({ selectedName, suggestions, onClose }: NameDetailsModalProps) => {
+const NameDetailsModal = ({
+  isOpen,
+  onClose,
+  selectedName,
+  suggestions,
+}: NameDetailsModalProps) => {
   if (!selectedName) return null;
 
   const getNameColor = (selectedName: RetiredName): string => {
@@ -31,7 +36,7 @@ const NameDetailsModal = ({ selectedName, suggestions, onClose }: NameDetailsMod
 
   return (
     <Modal
-      isOpen={!!selectedName}
+      isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
       wrapperClassName="max-w-2xl max-h-[80vh] overflow-hidden"

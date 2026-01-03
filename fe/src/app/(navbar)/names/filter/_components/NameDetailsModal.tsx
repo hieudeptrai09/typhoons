@@ -6,7 +6,7 @@ interface NameDetailsModalProps extends BaseModalProps {
   selectedName: TyphoonName | null;
 }
 
-const NameDetailsModal = ({ selectedName, onClose }: NameDetailsModalProps) => {
+const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalProps) => {
   if (!selectedName) return null;
 
   const hasImage = selectedName.image;
@@ -21,7 +21,7 @@ const NameDetailsModal = ({ selectedName, onClose }: NameDetailsModalProps) => {
 
   return (
     <Modal
-      isOpen={!!selectedName}
+      isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
       wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
