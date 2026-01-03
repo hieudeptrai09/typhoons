@@ -1,8 +1,19 @@
 import { Filter } from "lucide-react";
 
-const FilterButton = ({ onClick, params }) => {
+interface FilterButtonParams {
+  name: string;
+  country: string;
+  language: string;
+}
+
+interface FilterButtonProps {
+  onClick: () => void;
+  params: FilterButtonParams;
+}
+
+const FilterButton = ({ onClick, params }: FilterButtonProps) => {
   const getFilterText = () => {
-    const parts = [];
+    const parts: string[] = [];
     if (params.name) parts.push(params.name);
     if (params.country) parts.push(params.country);
     if (params.language) parts.push(params.language);

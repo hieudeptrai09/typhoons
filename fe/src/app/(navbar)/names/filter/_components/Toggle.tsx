@@ -1,4 +1,9 @@
-const Toggle = ({ value, onChange }) => {
+interface ToggleProps {
+  value: boolean;
+  onChange: (value: boolean) => void;
+}
+
+const Toggle = ({ value, onChange }: ToggleProps) => {
   return (
     <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end gap-3">
       <label className="text-sm font-semibold text-gray-700">Show Images & Descriptions</label>

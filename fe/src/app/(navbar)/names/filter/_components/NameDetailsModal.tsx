@@ -1,14 +1,32 @@
 import Image from "next/image";
 import Modal from "../../../../../components/Modal";
 
-const NameDetailsModal = ({ selectedName, onClose }) => {
+interface TyphoonName extends Record<string, unknown> {
+  id: number;
+  name: string;
+  meaning: string;
+  country: string;
+  language: string;
+  position: number;
+  isRetired: number;
+  isLanguageProblem: number;
+  image?: string;
+  description?: string;
+}
+
+interface NameDetailsModalProps {
+  selectedName: TyphoonName | null;
+  onClose: () => void;
+}
+
+const NameDetailsModal = ({ selectedName, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;
 
   const hasImage = selectedName.image;
   const hasDescription = selectedName.description;
 
   // Determine image visibility: hidden if no src and no description, invisible if no src but has description
-  const getImageVisibility = () => {
+  const getImageVisibility = (): string => {
     if (!hasImage && !hasDescription) return "hidden";
     if (!hasImage && hasDescription) return "invisible";
     return "";
@@ -52,7 +70,7 @@ const NameDetailsModal = ({ selectedName, onClose }) => {
           } ${!hasDescription && "self-end"}`}
         >
           <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
-            {hasImage && (
+            {hasImage && selectedName.image && (
               <Image
                 src={selectedName.image}
                 alt={selectedName.name}

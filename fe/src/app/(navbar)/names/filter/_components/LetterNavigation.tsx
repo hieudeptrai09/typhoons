@@ -1,7 +1,17 @@
-const LetterNavigation = ({ currentLetter, letterStatusMap, onLetterChange }) => {
+interface LetterNavigationProps {
+  currentLetter: string;
+  letterStatusMap: Record<string, [boolean, boolean, boolean]>;
+  onLetterChange: (letter: string) => void;
+}
+
+const LetterNavigation = ({
+  currentLetter,
+  letterStatusMap,
+  onLetterChange,
+}: LetterNavigationProps) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-  const getLetterColorClass = (letter) => {
+  const getLetterColorClass = (letter: string): string => {
     // Get status array: [hasAny, hasRetired, hasAlive]
     const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;

@@ -1,39 +1,55 @@
-// Generate dynamic page header title
-export const getPageTitle = (searchName, selectedCountry, selectedLanguage, currentLetter) => {
-  const titleParts = [];
+interface TyphoonName {
+  name: string;
+  isRetired: number;
+}
 
-  if (searchName) {
+// Generate dynamic page header title
+export const getPageTitle = (
+  searchName: string | string[] | undefined,
+  selectedCountry: string | string[] | undefined,
+  selectedLanguage: string | string[] | undefined,
+  currentLetter: string | string[] | undefined,
+): string[] => {
+  const titleParts: string[] = [];
+
+  if (searchName && typeof searchName === "string") {
     titleParts.push(`"${searchName}"`);
   }
 
-  if (selectedCountry) {
+  if (selectedCountry && typeof selectedCountry === "string") {
     titleParts.push(selectedCountry);
   }
 
-  if (selectedLanguage) {
+  if (selectedLanguage && typeof selectedLanguage === "string") {
     titleParts.push(selectedLanguage);
   }
 
   if (!searchName && !selectedCountry && !selectedLanguage) {
-    titleParts.push(`Letter ${currentLetter}`);
+    const letter = typeof currentLetter === "string" ? currentLetter : "A";
+    titleParts.push(`Letter ${letter}`);
   }
 
   return titleParts;
 };
 
-export const getPageDescription = (name, country, language, letter) => {
-  const parts = [];
+export const getPageDescription = (
+  name: string | string[] | undefined,
+  country: string | string[] | undefined,
+  language: string | string[] | undefined,
+  letter: string | string[] | undefined,
+): string => {
+  const parts: string[] = [];
 
-  if (name) {
+  if (name && typeof name === "string") {
     parts.push(`names matching "${name}"`);
   }
-  if (country) {
+  if (country && typeof country === "string") {
     parts.push(`names from ${country}`);
   }
-  if (language) {
+  if (language && typeof language === "string") {
     parts.push(`names in ${language}`);
   }
-  if (!name && !country && !language && letter) {
+  if (!name && !country && !language && letter && typeof letter === "string") {
     parts.push(`typhoon names starting with letter ${letter}`);
   }
 
@@ -46,8 +62,10 @@ export const getPageDescription = (name, country, language, letter) => {
   return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, or browse alphabetically. View complete details including meanings, images, and descriptions.";
 };
 
-export const categorizeLettersByStatus = (namesList) => {
-  const letterStatusMap = {};
+export const categorizeLettersByStatus = (
+  namesList: TyphoonName[],
+): Record<string, [boolean, boolean, boolean]> => {
+  const letterStatusMap: Record<string, [boolean, boolean, boolean]> = {};
 
   // Single pass through all names to build the map
   namesList.forEach((name) => {

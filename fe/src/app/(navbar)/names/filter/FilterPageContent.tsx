@@ -12,13 +12,32 @@ import NameDetailsModal from "./_components/NameDetailsModal";
 import Toggle from "./_components/Toggle";
 import { categorizeLettersByStatus } from "./_utils/fns";
 
+interface TyphoonName extends Record<string, unknown> {
+  id: number;
+  name: string;
+  meaning: string;
+  country: string;
+  language: string;
+  position: number;
+  isRetired: number;
+  isLanguageProblem: number;
+  image?: string;
+  description?: string;
+}
+
+interface FilterParams {
+  name: string;
+  country: string;
+  language: string;
+}
+
 const FilterNamesPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [names, setNames] = useState([]);
+  const [names, setNames] = useState<TyphoonName[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [selectedName, setSelectedName] = useState(null);
+  const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
 
   // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
@@ -31,7 +50,7 @@ const FilterNamesPage = () => {
 
   useEffect(() => {
     // Fetch all names (both current and retired)
-    fetchData("/typhoon-names").then((data) => {
+    fetchData<TyphoonName[]>("/typhoon-names").then((data) => {
       if (data) {
         setNames(data.data);
       }
@@ -84,12 +103,12 @@ const FilterNamesPage = () => {
 
   const activeFilterCount = [searchName, selectedCountry, selectedLanguage].filter(Boolean).length;
 
-  const updateURL = (filters, letter = currentLetter) => {
+  const updateURL = (filters: FilterParams, letter = currentLetter) => {
     const params = new URLSearchParams();
-    if (filters.searchName) params.set("name", filters.searchName);
-    if (filters.selectedCountry) params.set("country", filters.selectedCountry);
-    if (filters.selectedLanguage) params.set("language", filters.selectedLanguage);
-    if (!filters.searchName && !filters.selectedCountry && !filters.selectedLanguage) {
+    if (filters.name) params.set("name", filters.name);
+    if (filters.country) params.set("country", filters.country);
+    if (filters.language) params.set("language", filters.language);
+    if (!filters.name && !filters.country && !filters.language) {
       params.set("letter", letter);
     }
 
@@ -98,16 +117,16 @@ const FilterNamesPage = () => {
     router.push(newURL);
   };
 
-  const handleApplyFilters = (filters) => {
+  const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
     updateURL(filters);
   };
 
-  const handleLetterChange = (letter) => {
-    updateURL({ searchName: "", selectedCountry: "", selectedLanguage: "" }, letter);
+  const handleLetterChange = (letter: string) => {
+    updateURL({ name: "", country: "", language: "" }, letter);
   };
 
-  const handleNameClick = (name) => {
+  const handleNameClick = (name: TyphoonName | null) => {
     setSelectedName(name);
   };
 
@@ -147,9 +166,9 @@ const FilterNamesPage = () => {
         countries={countries}
         languages={languages}
         initialFilters={{
-          searchName,
-          selectedCountry,
-          selectedLanguage,
+          name: searchName,
+          country: selectedCountry,
+          language: selectedLanguage,
         }}
       />
 

@@ -2,22 +2,44 @@ import { useState, useEffect } from "react";
 import Modal from "../../../../../components/Modal";
 import FilterSection from "./FilterSection";
 
-const FilterModal = ({ isOpen, onClose, onApply, countries, languages, initialFilters }) => {
-  const [tempSearchName, setTempSearchName] = useState(initialFilters.searchName);
-  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.selectedCountry);
-  const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.selectedLanguage);
+interface FilterParams {
+  name: string;
+  country: string;
+  language: string;
+}
+
+interface FilterModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onApply: (filters: FilterParams) => void;
+  countries: string[];
+  languages: string[];
+  initialFilters: FilterParams;
+}
+
+const FilterModal = ({
+  isOpen,
+  onClose,
+  onApply,
+  countries,
+  languages,
+  initialFilters,
+}: FilterModalProps) => {
+  const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
+  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
+  const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.language);
 
   useEffect(() => {
-    setTempSearchName(initialFilters.searchName);
-    setTempSelectedCountry(initialFilters.selectedCountry);
-    setTempSelectedLanguage(initialFilters.selectedLanguage);
+    setTempSearchName(initialFilters.name);
+    setTempSelectedCountry(initialFilters.country);
+    setTempSelectedLanguage(initialFilters.language);
   }, [initialFilters]);
 
   const handleApply = () => {
     onApply({
-      searchName: tempSearchName,
-      selectedCountry: tempSelectedCountry,
-      selectedLanguage: tempSelectedLanguage,
+      name: tempSearchName,
+      country: tempSelectedCountry,
+      language: tempSelectedLanguage,
     });
   };
 

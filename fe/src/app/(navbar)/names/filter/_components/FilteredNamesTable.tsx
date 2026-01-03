@@ -1,17 +1,40 @@
-import { useMemo } from "react";
+import { useMemo, ReactNode } from "react";
 import { Check, X, Frown } from "lucide-react";
 import Image from "next/image";
-import SortableTable from "../../../../../components/SortableTable";
+import SortableTable, { TableColumn } from "../../../../../components/SortableTable";
 
-const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClick }) => {
-  const getNameColor = (name) => {
+interface TyphoonName extends Record<string, unknown> {
+  id: number;
+  name: string;
+  meaning: string;
+  country: string;
+  language: string;
+  position: number;
+  isRetired: number;
+  isLanguageProblem: number;
+  image?: string;
+  description?: string;
+}
+
+interface FilteredNamesTableProps {
+  filteredNames: TyphoonName[];
+  showImageAndDescription: boolean;
+  onNameClick: (name: TyphoonName) => void;
+}
+
+const FilteredNamesTable = ({
+  filteredNames,
+  showImageAndDescription,
+  onNameClick,
+}: FilteredNamesTableProps) => {
+  const getNameColor = (name: TyphoonName): string => {
     if (name.isLanguageProblem === 2) return "text-amber-500";
     if (Boolean(name.isRetired)) return "text-red-600";
     return "text-blue-600";
   };
 
   const columns = useMemo(() => {
-    const baseColumns = [
+    const baseColumns: TableColumn<TyphoonName>[] = [
       { key: "isRetired", label: "Retired", isSortable: true },
       { key: "name", label: "Name", isSortable: true },
       { key: "country", label: "Country", isSortable: true },
@@ -30,7 +53,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClic
     return baseColumns;
   }, [showImageAndDescription]);
 
-  const renderCell = (row, column) => {
+  const renderCell = (row: TyphoonName, column: TableColumn<TyphoonName>): ReactNode => {
     if (column.key === "name") {
       return <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>;
     }
@@ -67,7 +90,7 @@ const FilteredNamesTable = ({ filteredNames, showImageAndDescription, onNameClic
         <X className="text-gray-400" size={20} />
       );
     }
-    return row[column.key];
+    return row[column.key] as ReactNode;
   };
 
   if (filteredNames.length === 0) {
