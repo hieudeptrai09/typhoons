@@ -10,24 +10,7 @@ import {
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
-
-interface Storm {
-  name: string;
-  year: number;
-  intensity: IntensityType;
-  position: number;
-  country: string;
-  correctSpelling?: string;
-  map: string;
-}
-
-interface NameListModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  name: string;
-  storms: Storm[];
-  avgIntensity?: number;
-}
+import { NameListModalProps } from "../../../../types";
 
 const getIntensityLabel = (intensity: IntensityType): string => {
   const labels: Record<IntensityType, string> = {

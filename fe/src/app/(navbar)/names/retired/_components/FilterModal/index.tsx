@@ -5,21 +5,7 @@ import ModalActions from "./ModalActions";
 import NameSearchInput from "./NameSearchInput";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import YearDigitSelector from "./YearDigitSelector";
-
-interface FilterParams {
-  searchName: string;
-  selectedYear: string;
-  selectedCountry: string;
-  retirementReason: string;
-}
-
-interface FilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApply: (filters: FilterParams) => void;
-  countries: string[];
-  initialFilters: FilterParams;
-}
+import { RetiredFilterModalProps as FilterModalProps } from "../../../../../../types";
 
 const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
   const [tempSearchName, setTempSearchName] = useState(initialFilters.searchName);

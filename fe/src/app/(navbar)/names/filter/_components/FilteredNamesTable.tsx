@@ -2,19 +2,7 @@ import { useMemo, ReactNode } from "react";
 import { Check, X, Frown } from "lucide-react";
 import Image from "next/image";
 import SortableTable, { TableColumn } from "../../../../../components/SortableTable";
-
-interface TyphoonName extends Record<string, unknown> {
-  id: number;
-  name: string;
-  meaning: string;
-  country: string;
-  language: string;
-  position: number;
-  isRetired: number;
-  isLanguageProblem: number;
-  image?: string;
-  description?: string;
-}
+import { TyphoonName } from "../../../../../types";
 
 interface FilteredNamesTableProps {
   filteredNames: TyphoonName[];

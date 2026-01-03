@@ -1,23 +1,6 @@
 import Image from "next/image";
 import Modal from "../../../../../components/Modal";
-
-interface TyphoonName extends Record<string, unknown> {
-  id: number;
-  name: string;
-  meaning: string;
-  country: string;
-  language: string;
-  position: number;
-  isRetired: number;
-  isLanguageProblem: number;
-  image?: string;
-  description?: string;
-}
-
-interface NameDetailsModalProps {
-  selectedName: TyphoonName | null;
-  onClose: () => void;
-}
+import { TyphoonName, NameDetailsModalProps } from "../../../../../types";
 
 const NameDetailsModal = ({ selectedName, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;

@@ -12,26 +12,7 @@ import FilterModal from "./_components/FilterModal";
 import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
-
-interface Storm {
-  id: number;
-  name: string;
-  year: number;
-  intensity: IntensityType;
-  position: number;
-  country: string;
-  correctSpelling?: string;
-  map: string;
-  isStrongest?: boolean;
-  isFirst?: boolean;
-  isLast?: boolean;
-}
-
-interface DashboardParams {
-  view: string;
-  mode: string;
-  filter: string;
-}
+import { Storm, DashboardParams } from "../../../types";
 
 interface SelectedData {
   title?: string;

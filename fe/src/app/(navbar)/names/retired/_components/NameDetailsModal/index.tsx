@@ -2,30 +2,10 @@ import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
-
-interface RetiredName {
-  name: string;
-  meaning: string;
-  country: string;
-  position: number;
-  language: string;
-  isLanguageProblem: number;
-  image?: string;
-  description?: string;
-}
-
-interface Suggestion {
-  replacementName: string;
-  replacementMeaning: string;
-  isChosen: number;
-  image?: string;
-}
-
-interface NameDetailsModalProps {
-  selectedName: RetiredName | null;
-  suggestions: Suggestion[];
-  onClose: () => void;
-}
+import {
+  RetiredName,
+  RetiredNameDetailsModalProps as NameDetailsModalProps,
+} from "../../../../../../types";
 
 const NameDetailsModal = ({ selectedName, suggestions, onClose }: NameDetailsModalProps) => {
   if (!selectedName) return null;

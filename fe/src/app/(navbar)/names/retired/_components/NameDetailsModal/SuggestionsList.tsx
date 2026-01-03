@@ -1,12 +1,6 @@
 import EmptySuggestions from "./EmptySuggestions";
 import SuggestionCard from "./SuggestionCard";
-
-interface Suggestion {
-  replacementName: string;
-  replacementMeaning: string;
-  isChosen: number;
-  image?: string;
-}
+import { Suggestion } from "../../../../../../types";
 
 interface SuggestionsListProps {
   suggestions: Suggestion[];

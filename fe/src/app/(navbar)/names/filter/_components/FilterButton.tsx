@@ -1,10 +1,5 @@
 import { Filter } from "lucide-react";
-
-interface FilterButtonParams {
-  name: string;
-  country: string;
-  language: string;
-}
+import { FilterButtonParams } from "../../../../../types";
 
 interface FilterButtonProps {
   onClick: () => void;

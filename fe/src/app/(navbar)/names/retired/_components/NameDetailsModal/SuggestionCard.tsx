@@ -1,11 +1,5 @@
 import Image from "next/image";
-
-interface Suggestion {
-  replacementName: string;
-  replacementMeaning: string;
-  isChosen: number;
-  image?: string;
-}
+import { Suggestion } from "../../../../../../types";
 
 interface SuggestionCardProps {
   suggestion: Suggestion;

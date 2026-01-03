@@ -1,16 +1,7 @@
 import { Frown } from "lucide-react";
 import SortableTable, { TableColumn } from "../../../../../../components/SortableTable";
 import { ReactNode } from "react";
-
-interface RetiredName {
-  name: string;
-  meaning: string;
-  country: string;
-  note?: string;
-  lastYear: number;
-  isLanguageProblem: number;
-  [key: string]: unknown;
-}
+import { RetiredName } from "../../../../../../types";
 
 interface RetiredNamesTableProps {
   paginatedData: RetiredName[];

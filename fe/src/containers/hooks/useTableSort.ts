@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { SORTING_RANK, IntensityType } from "../../constants";
-
-type SortDirection = "asc" | "desc" | null;
+import { SortDirection } from "../../types";
 
 interface UseTableSortReturn<T> {
   sortedData: T[];

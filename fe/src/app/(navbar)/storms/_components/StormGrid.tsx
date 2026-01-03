@@ -1,10 +1,6 @@
 import { ReactNode } from "react";
 import GridCell from "./GridCell";
-
-interface Storm {
-  position: number;
-  name: string;
-}
+import { Storm } from "../../../../types";
 
 interface CellData {
   content: ReactNode;

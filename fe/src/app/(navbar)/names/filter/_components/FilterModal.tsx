@@ -1,21 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "../../../../../components/Modal";
 import FilterSection from "./FilterSection";
-
-interface FilterParams {
-  name: string;
-  country: string;
-  language: string;
-}
-
-interface FilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApply: (filters: FilterParams) => void;
-  countries: string[];
-  languages: string[];
-  initialFilters: FilterParams;
-}
+import { FilterModalProps } from "../../../../../types";
 
 const FilterModal = ({
   isOpen,

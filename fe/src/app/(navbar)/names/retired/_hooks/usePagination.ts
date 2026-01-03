@@ -1,8 +1,5 @@
 import { useMemo } from "react";
-
-interface RetiredName {
-  name: string;
-}
+import { RetiredName } from "../../../../../types";
 
 interface UsePaginationParams {
   retiredNames: RetiredName[];

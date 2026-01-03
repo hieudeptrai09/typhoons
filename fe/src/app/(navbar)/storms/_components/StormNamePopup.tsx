@@ -2,16 +2,7 @@ import { useEffect, MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
-
-interface Storm {
-  year: number;
-  intensity: IntensityType;
-}
-
-interface NameData {
-  name: string;
-  storms: Storm[];
-}
+import { Storm, NameData } from "../../../../types";
 
 interface StormNamePopupProps {
   popupRef: MutableRefObject<HTMLDivElement | null>;

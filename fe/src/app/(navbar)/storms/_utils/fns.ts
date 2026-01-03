@@ -1,15 +1,5 @@
 import { INTENSITY_RANK, IntensityType } from "../../../../constants";
-
-interface Storm {
-  name: string;
-  year: number;
-  intensity: IntensityType;
-  position: number;
-  country: string;
-  isStrongest?: boolean;
-  isFirst?: boolean;
-  isLast?: boolean;
-}
+import { Storm } from "../../../../types";
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);

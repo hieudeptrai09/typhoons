@@ -1,8 +1,4 @@
-interface LetterNavigationProps {
-  currentLetter: string;
-  letterStatusMap: Record<string, [boolean, boolean, boolean]>;
-  onLetterChange: (letter: string) => void;
-}
+import { LetterNavigationProps } from "../../../../../types";
 
 const LetterNavigation = ({
   currentLetter,

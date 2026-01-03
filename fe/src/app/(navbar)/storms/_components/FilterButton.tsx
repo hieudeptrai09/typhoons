@@ -14,12 +14,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { ReactNode } from "react";
-
-interface FilterButtonParams {
-  view: string;
-  filter?: string;
-  mode: string;
-}
+import { DashboardFilterButtonParams as FilterButtonParams } from "../../../../types";
 
 interface FilterButtonProps {
   onClick: () => void;

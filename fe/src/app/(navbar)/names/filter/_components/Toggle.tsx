@@ -1,7 +1,4 @@
-interface ToggleProps {
-  value: boolean;
-  onChange: (value: boolean) => void;
-}
+import { ToggleProps } from "../../../../../types";
 
 const Toggle = ({ value, onChange }: ToggleProps) => {
   return (

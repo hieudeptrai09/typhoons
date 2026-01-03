@@ -11,25 +11,7 @@ import {
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
-
-interface Storm {
-  name: string;
-  year: number;
-  intensity: IntensityType;
-  position: number;
-  country: string;
-  correctSpelling?: string;
-  map?: string;
-  isStrongest?: boolean;
-  isFirst?: boolean;
-  isLast?: boolean;
-}
-
-interface DashboardParams {
-  view: string;
-  mode: string;
-  filter: string;
-}
+import { Storm, DashboardParams, AverageData, NameData } from "../../../../types";
 
 interface DashboardContentProps {
   params: DashboardParams;
@@ -41,27 +23,6 @@ interface CellData {
   content: ReactNode;
   highlighted: boolean;
   avgNumber: number | null;
-}
-
-interface AverageData {
-  year?: number;
-  country?: string;
-  name?: string;
-  position?: number;
-  count: number;
-  average: string;
-  avgNumber: number;
-  [key: string]: unknown;
-}
-
-interface NameData {
-  name: string;
-  country: string;
-  position: number;
-  count: number;
-  avgIntensity: number;
-  year: number;
-  [key: string]: unknown;
 }
 
 const renderStormGridWithButtons = (

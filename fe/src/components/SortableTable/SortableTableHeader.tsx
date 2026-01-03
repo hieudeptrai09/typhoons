@@ -1,4 +1,4 @@
-type SortDirection = "asc" | "desc" | null;
+import { SortDirection } from "../../types";
 
 interface SortableTableHeaderProps<T> {
   label: string;

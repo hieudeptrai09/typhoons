@@ -1,8 +1,4 @@
-interface LetterNavigationProps {
-  currentLetter: string;
-  availableLettersMap: Record<string, boolean>;
-  onLetterChange: (letter: string) => void;
-}
+import { RetiredLetterNavigationProps as LetterNavigationProps } from "../../../../../../types";
 
 const LetterNavigation = ({
   currentLetter,

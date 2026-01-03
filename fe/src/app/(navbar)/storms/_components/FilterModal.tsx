@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
+import { DashboardParams as FilterModalParams } from "../../../../types";
 
 interface FilterOption {
   value: string;
@@ -13,12 +14,6 @@ interface ButtonGroupProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-}
-
-interface FilterModalParams {
-  view: string;
-  mode: string;
-  filter: string;
 }
 
 interface FilterModalProps {

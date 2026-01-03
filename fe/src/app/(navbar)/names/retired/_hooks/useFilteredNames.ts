@@ -1,11 +1,5 @@
 import { useMemo } from "react";
-
-interface RetiredName {
-  name: string;
-  lastYear: number;
-  country: string;
-  isLanguageProblem: number;
-}
+import { RetiredName } from "../../../../../types";
 
 interface UseFilteredNamesParams {
   retiredNames: RetiredName[];

@@ -11,34 +11,7 @@ import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
-
-interface RetiredName {
-  id: number;
-  name: string;
-  meaning: string;
-  country: string;
-  position: number;
-  language: string;
-  isLanguageProblem: number;
-  lastYear: number;
-  note?: string;
-  image?: string;
-  description?: string;
-}
-
-interface Suggestion {
-  replacementName: string;
-  replacementMeaning: string;
-  isChosen: number;
-  image?: string;
-}
-
-interface FilterParams {
-  searchName: string;
-  selectedYear: string;
-  selectedCountry: string;
-  retirementReason: string;
-}
+import { RetiredName, Suggestion, RetiredFilterParams as FilterParams } from "../../../../types";
 
 const RetiredNamesContent = () => {
   const router = useRouter();

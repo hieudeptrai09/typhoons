@@ -1,7 +1,4 @@
-interface TyphoonName {
-  name: string;
-  isRetired: number;
-}
+import { TyphoonName } from "../../../../../types";
 
 // Generate dynamic page header title
 export const getPageTitle = (

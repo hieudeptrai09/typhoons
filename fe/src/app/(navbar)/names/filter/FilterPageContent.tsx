@@ -11,25 +11,7 @@ import LetterNavigation from "./_components/LetterNavigation";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import Toggle from "./_components/Toggle";
 import { categorizeLettersByStatus } from "./_utils/fns";
-
-interface TyphoonName extends Record<string, unknown> {
-  id: number;
-  name: string;
-  meaning: string;
-  country: string;
-  language: string;
-  position: number;
-  isRetired: number;
-  isLanguageProblem: number;
-  image?: string;
-  description?: string;
-}
-
-interface FilterParams {
-  name: string;
-  country: string;
-  language: string;
-}
+import { FilterParams, TyphoonName } from "../../../../types";
 
 const FilterNamesPage = () => {
   const router = useRouter();
