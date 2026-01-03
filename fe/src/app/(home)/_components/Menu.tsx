@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { MenuProps } from "../../../types";
 
-const Menu = ({ href, label, color, hoverColor }) => {
+const Menu = ({ href, label, color, hoverColor }: MenuProps) => {
   return (
     <Link
       href={href}

@@ -5,13 +5,14 @@ import PageHeader from "../../../../components/PageHeader";
 import fetchData from "../../../../containers/utils/fetcher";
 import TyphoonNameModal from "./_components/TyphoonNamesModal";
 import TyphoonNamesTable from "./_components/TyphoonNamesTable";
+import { TyphoonName } from "../../../../types";
 
 const CurrentNamesPage = () => {
-  const [names, setNames] = useState([]);
-  const [selectedName, setSelectedName] = useState(null);
+  const [names, setNames] = useState<TyphoonName[]>([]);
+  const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
 
   useEffect(() => {
-    fetchData("/typhoon-names?isRetired=0").then((data) => {
+    fetchData<TyphoonName[]>("/typhoon-names?isRetired=0").then((data) => {
       if (data) setNames(data.data);
     });
   }, []);

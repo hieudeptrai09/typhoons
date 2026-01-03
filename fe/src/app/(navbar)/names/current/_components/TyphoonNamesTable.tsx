@@ -1,4 +1,11 @@
-const TyphoonNamesTable = ({ names, onNameClick }) => {
+import { TyphoonName } from "../../../../../types";
+
+interface TyphoonNamesTableProps {
+  names: TyphoonName[];
+  onNameClick: (name: TyphoonName) => void;
+}
+
+const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
   const rows = 10;
   const cols = 14;
 
