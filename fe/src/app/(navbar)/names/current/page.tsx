@@ -6,10 +6,11 @@ import fetchData from "../../../../containers/utils/fetcher";
 import TyphoonNameModal from "./_components/TyphoonNamesModal";
 import TyphoonNamesTable from "./_components/TyphoonNamesTable";
 import type { TyphoonName } from "../../../../types";
+import { defaultTyphoonName } from "../../../../constants";
 
 const CurrentNamesPage = () => {
   const [names, setNames] = useState<TyphoonName[]>([]);
-  const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
+  const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {

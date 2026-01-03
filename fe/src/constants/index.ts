@@ -1,4 +1,4 @@
-import type { IntensityType } from "../types";
+import type { IntensityType, RetiredName, Storm, Suggestion, TyphoonName } from "../types";
 
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
@@ -66,4 +66,36 @@ export const INTENSITY_RANK: Record<IntensityType, number> = {
   STS: 0,
   TS: 0,
   TD: -1,
+};
+
+export const defaultTyphoonName: TyphoonName = {
+  id: 0,
+  position: 0,
+  name: "",
+  meaning: "",
+  country: "",
+  language: "",
+  isRetired: 0,
+  isLanguageProblem: 0,
+};
+
+export const defaultRetiredName: RetiredName = {
+  ...defaultTyphoonName,
+  lastYear: 0,
+};
+
+export const defaultSuggestion: Suggestion = {
+  replacementName: "",
+  replacementMeaning: "",
+  isChosen: 0,
+};
+
+export const defaultStorm: Storm = {
+  id: 0,
+  name: "",
+  year: 0,
+  intensity: "5",
+  position: 0,
+  country: "",
+  map: "",
 };

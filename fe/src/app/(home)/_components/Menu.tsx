@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export interface MenuProps {
+interface MenuProps {
   href: string;
   label: string;
   color: string;

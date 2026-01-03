@@ -12,7 +12,7 @@ export interface TyphoonName {
   meaning: string;
   country: string;
   language: string;
-  isRetired: number;
+  isRetired: boolean;
   isLanguageProblem: number;
   image?: string;
   description?: string;
@@ -26,7 +26,7 @@ export interface RetiredName extends TyphoonName {
 export interface Suggestion {
   replacementName: string;
   replacementMeaning: string;
-  isChosen: number;
+  isChosen: boolean;
   image?: string;
 }
 
