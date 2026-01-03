@@ -1,9 +1,9 @@
 import { Filter } from "lucide-react";
-import type { FilterButtonParams } from "../../../../../types";
+import type { FilterParams } from "../../../../../types";
 
 interface FilterButtonProps {
   onClick: () => void;
-  params: FilterButtonParams;
+  params: FilterParams;
 }
 
 const FilterButton = ({ onClick, params }: FilterButtonProps) => {

@@ -1,3 +1,9 @@
+// Helper to normalize search params to string
+const normalizeParam = (param: string | string[] | undefined): string => {
+  if (Array.isArray(param)) return param[0] || "";
+  return param || "";
+};
+
 export const getRetiredNamesTitle = (
   name?: string | string[],
   year?: string | string[],
@@ -7,21 +13,27 @@ export const getRetiredNamesTitle = (
 ): string[] => {
   const parts: string[] = [];
 
-  if (name && typeof name === "string") {
-    parts.push(`"${name}"`);
+  const nameStr = normalizeParam(name);
+  const yearStr = normalizeParam(year);
+  const countryStr = normalizeParam(country);
+  const langStr = normalizeParam(lang);
+  const letterStr = normalizeParam(letter);
+
+  if (nameStr) {
+    parts.push(`"${nameStr}"`);
   }
 
-  if (year && typeof year === "string") {
-    parts.push(`Year ${year}`);
+  if (yearStr) {
+    parts.push(`Year ${yearStr}`);
   }
 
-  if (country && typeof country === "string") {
-    parts.push(country);
+  if (countryStr) {
+    parts.push(countryStr);
   }
 
-  if (lang && typeof lang === "string") {
+  if (langStr) {
     // Parse comma-separated values
-    const reasons = lang
+    const reasons = langStr
       .split(",")
       .map((reason) => {
         switch (reason) {
@@ -44,8 +56,8 @@ export const getRetiredNamesTitle = (
     }
   }
 
-  if (!name && !year && !country && !lang && letter && typeof letter === "string") {
-    parts.push(`Letter ${letter}`);
+  if (!nameStr && !yearStr && !countryStr && !langStr && letterStr) {
+    parts.push(`Letter ${letterStr}`);
   }
 
   return parts;
@@ -60,17 +72,23 @@ export const getRetiredNamesDescription = (
 ): string => {
   const parts: string[] = [];
 
-  if (name && typeof name === "string") {
-    parts.push(`retired typhoon name "${name}"`);
+  const nameStr = normalizeParam(name);
+  const yearStr = normalizeParam(year);
+  const countryStr = normalizeParam(country);
+  const langStr = normalizeParam(lang);
+  const letterStr = normalizeParam(letter);
+
+  if (nameStr) {
+    parts.push(`retired typhoon name "${nameStr}"`);
   }
-  if (year && typeof year === "string") {
-    parts.push(`storms from ${year}`);
+  if (yearStr) {
+    parts.push(`storms from ${yearStr}`);
   }
-  if (country && typeof country === "string") {
-    parts.push(`names from ${country}`);
+  if (countryStr) {
+    parts.push(`names from ${countryStr}`);
   }
-  if (lang && typeof lang === "string") {
-    const reasons = lang
+  if (langStr) {
+    const reasons = langStr
       .split(",")
       .map((reason) => {
         switch (reason) {
@@ -92,8 +110,8 @@ export const getRetiredNamesDescription = (
       parts.push(`names retired due to ${reasons.join(", ")}`);
     }
   }
-  if (!name && !year && !country && !lang && letter && typeof letter === "string") {
-    parts.push(`retired typhoon names starting with letter ${letter}`);
+  if (!nameStr && !yearStr && !countryStr && !langStr && letterStr) {
+    parts.push(`retired typhoon names starting with letter ${letterStr}`);
   }
 
   if (parts.length > 0) {

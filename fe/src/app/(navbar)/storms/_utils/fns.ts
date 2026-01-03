@@ -1,6 +1,12 @@
 import { INTENSITY_RANK } from "../../../../constants";
 import type { Storm, IntensityType } from "../../../../types";
 
+// Helper to normalize search params to string
+const normalizeParam = (param: string | string[] | undefined): string => {
+  if (Array.isArray(param)) return param[0] || "";
+  return param || "";
+};
+
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
   if (rounded >= 5) return "5";
@@ -51,30 +57,44 @@ export const calculateAverage = (storms: Storm[]): number => {
   return sum / storms.length;
 };
 
-export const getDashboardTitle = (view: string, mode: string, filter: string): string => {
+export const getDashboardTitle = (
+  view: string | string[] | undefined,
+  mode: string | string[] | undefined,
+  filter: string | string[] | undefined,
+): string => {
   const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-  if (!filter) filter = "";
+  const viewStr = normalizeParam(view) || "storms";
+  const modeStr = normalizeParam(mode) || "table";
+  const filterStr = normalizeParam(filter);
 
   const viewTitles: Record<string, string> = {
-    storms: mode === "list" ? "All Typhoon Names" : "All Storms",
-    highlights: `${capitalize(filter)} Typhoons by Position`,
-    average: `Average Intensity by ${capitalize(filter)}`,
+    storms: modeStr === "list" ? "All Typhoon Names" : "All Storms",
+    highlights: `${capitalize(filterStr)} Typhoons by Position`,
+    average: `Average Intensity by ${capitalize(filterStr)}`,
   };
 
-  const title = viewTitles[view];
-  return mode === "list" && view !== "storms" ? `${title} (List View)` : title;
+  const title = viewTitles[viewStr];
+  return modeStr === "list" && viewStr !== "storms" ? `${title} (List View)` : title;
 };
 
-export const getDashboardDescription = (view: string, mode: string, filter: string): string => {
-  if (view === "storms") {
-    if (mode === "list") {
+export const getDashboardDescription = (
+  view: string | string[] | undefined,
+  mode: string | string[] | undefined,
+  filter: string | string[] | undefined,
+): string => {
+  const viewStr = normalizeParam(view) || "storms";
+  const modeStr = normalizeParam(mode) || "table";
+  const filterStr = normalizeParam(filter);
+
+  if (viewStr === "storms") {
+    if (modeStr === "list") {
       return "Browse all typhoon names used in the Western Pacific basin. Click any name to see detailed storm history, including years, intensities, and track maps.";
     }
     return "View comprehensive typhoon storm data organized by position in the naming list. Track all typhoons that have occurred in the Western Pacific basin.";
   }
 
-  if (view === "highlights") {
+  if (viewStr === "highlights") {
     const highlightDescriptions: Record<string, string> = {
       strongest:
         "Explore the strongest typhoons by position - discover which names have been associated with the most powerful storms in history.",
@@ -83,12 +103,12 @@ export const getDashboardDescription = (view: string, mode: string, filter: stri
       last: "Browse the last typhoons of each season by position - see which storms closed out their respective seasons for each name position.",
     };
     return (
-      highlightDescriptions[filter] ||
+      highlightDescriptions[filterStr] ||
       "Discover highlighted typhoons with special characteristics organized by their position in the naming sequence."
     );
   }
 
-  if (view === "average") {
+  if (viewStr === "average") {
     const averageDescriptions: Record<string, string> = {
       position:
         "Analyze average typhoon intensity by position in the naming list. Compare which positions tend to produce stronger or weaker storms.",
@@ -98,7 +118,7 @@ export const getDashboardDescription = (view: string, mode: string, filter: stri
       year: "Track average typhoon intensity trends by year. Analyze how storm strength has evolved over time in the Western Pacific.",
     };
     return (
-      averageDescriptions[filter] ||
+      averageDescriptions[filterStr] ||
       "Statistical analysis of typhoon intensity data with comprehensive averaging and comparison tools."
     );
   }

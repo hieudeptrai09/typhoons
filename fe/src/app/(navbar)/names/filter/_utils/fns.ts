@@ -1,5 +1,11 @@
 import type { TyphoonName } from "../../../../../types";
 
+// Helper to normalize search params to string
+const normalizeParam = (param: string | string[] | undefined): string => {
+  if (Array.isArray(param)) return param[0] || "";
+  return param || "";
+};
+
 // Generate dynamic page header title
 export const getPageTitle = (
   searchName: string | string[] | undefined,
@@ -9,20 +15,25 @@ export const getPageTitle = (
 ): string[] => {
   const titleParts: string[] = [];
 
-  if (searchName && typeof searchName === "string") {
-    titleParts.push(`"${searchName}"`);
+  const nameStr = normalizeParam(searchName);
+  const countryStr = normalizeParam(selectedCountry);
+  const languageStr = normalizeParam(selectedLanguage);
+  const letterStr = normalizeParam(currentLetter);
+
+  if (nameStr) {
+    titleParts.push(`"${nameStr}"`);
   }
 
-  if (selectedCountry && typeof selectedCountry === "string") {
-    titleParts.push(selectedCountry);
+  if (countryStr) {
+    titleParts.push(countryStr);
   }
 
-  if (selectedLanguage && typeof selectedLanguage === "string") {
-    titleParts.push(selectedLanguage);
+  if (languageStr) {
+    titleParts.push(languageStr);
   }
 
-  if (!searchName && !selectedCountry && !selectedLanguage) {
-    const letter = typeof currentLetter === "string" ? currentLetter : "A";
+  if (!nameStr && !countryStr && !languageStr) {
+    const letter = letterStr || "A";
     titleParts.push(`Letter ${letter}`);
   }
 
@@ -37,17 +48,22 @@ export const getPageDescription = (
 ): string => {
   const parts: string[] = [];
 
-  if (name && typeof name === "string") {
-    parts.push(`names matching "${name}"`);
+  const nameStr = normalizeParam(name);
+  const countryStr = normalizeParam(country);
+  const languageStr = normalizeParam(language);
+  const letterStr = normalizeParam(letter);
+
+  if (nameStr) {
+    parts.push(`names matching "${nameStr}"`);
   }
-  if (country && typeof country === "string") {
-    parts.push(`names from ${country}`);
+  if (countryStr) {
+    parts.push(`names from ${countryStr}`);
   }
-  if (language && typeof language === "string") {
-    parts.push(`names in ${language}`);
+  if (languageStr) {
+    parts.push(`names in ${languageStr}`);
   }
-  if (!name && !country && !language && letter && typeof letter === "string") {
-    parts.push(`typhoon names starting with letter ${letter}`);
+  if (!nameStr && !countryStr && !languageStr && letterStr) {
+    parts.push(`typhoon names starting with letter ${letterStr}`);
   }
 
   if (parts.length > 0) {

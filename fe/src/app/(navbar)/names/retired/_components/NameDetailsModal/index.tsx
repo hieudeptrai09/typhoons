@@ -5,7 +5,7 @@ import SuggestionsList from "./SuggestionsList";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
 export interface NameDetailsModalProps extends BaseModalProps {
-  selectedName: RetiredName | null;
+  selectedName: RetiredName;
   suggestions: Suggestion[];
 }
 

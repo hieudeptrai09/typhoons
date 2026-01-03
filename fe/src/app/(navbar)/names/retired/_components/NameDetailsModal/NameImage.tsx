@@ -7,8 +7,8 @@ interface NameImageProps {
 }
 
 const NameImage = ({ src, alt, description }: NameImageProps) => {
-  const hasImage = src;
-  const hasDescription = description;
+  const hasImage = !!src;
+  const hasDescription = !!description;
 
   // Determine image visibility: hidden if no src and no description, invisible if no src but has description
   const getImageVisibility = (): string => {

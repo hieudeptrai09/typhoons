@@ -13,12 +13,12 @@ import {
   Calendar,
   ArrowDownToLine,
 } from "lucide-react";
-import type { DashboardFilterButtonParams as FilterButtonParams } from "../../../../types";
+import type { DashboardParams } from "../../../../types";
 import type { LucideIcon } from "lucide-react";
 
 interface FilterButtonProps {
   onClick: () => void;
-  params: FilterButtonParams;
+  params: DashboardParams;
 }
 
 const FilterButton = ({ onClick, params }: FilterButtonProps) => {

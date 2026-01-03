@@ -27,6 +27,9 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
     "Vietnam",
   ];
 
+  // Sort names by position to ensure correct ordering
+  const sortedNames = names.sort((a, b) => a.position - b.position);
+
   // Calculate equal width for each column (100% / 14 columns)
   const columnWidth = `${100 / cols}%`;
 
@@ -54,18 +57,16 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
           {[...Array(rows)].map((_, row) => (
             <tr key={row}>
               {[...Array(cols)].map((_, col) => {
-                const position = row * cols + col + 1;
-                const dataNow = names.find((n) => n.position === position);
+                const position = row * cols + col;
+                const typhoon = sortedNames[position];
 
                 return (
                   <td key={col} className="border border-stone-300 p-2 hover:bg-stone-200">
                     <button
-                      onClick={() => dataNow && onNameClick(dataNow)}
+                      onClick={() => onNameClick(typhoon)}
                       className="flex h-16 w-full items-center justify-center transition-all"
                     >
-                      <div className="text-sm font-semibold text-gray-700">
-                        {dataNow?.name || ""}
-                      </div>
+                      <div className="text-sm font-semibold text-gray-700">{typhoon.name}</div>
                     </button>
                   </td>
                 );

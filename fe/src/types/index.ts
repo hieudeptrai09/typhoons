@@ -12,7 +12,7 @@ export interface TyphoonName {
   meaning: string;
   country: string;
   language: string;
-  isRetired: number;
+  isRetired: boolean;
   isLanguageProblem: number;
   image?: string;
   description?: string;
@@ -26,7 +26,7 @@ export interface RetiredName extends TyphoonName {
 export interface Suggestion {
   replacementName: string;
   replacementMeaning: string;
-  isChosen: number;
+  isChosen: boolean;
   image?: string;
 }
 
@@ -100,25 +100,6 @@ export interface StormDetailModalProps extends BaseModalProps {
 // ===========================
 // Component Props Types
 // ===========================
-
-export interface FilterButtonParams {
-  name: string;
-  country: string;
-  language: string;
-}
-
-export interface RetiredFilterButtonParams {
-  name: string;
-  year: string;
-  country: string;
-  lang: string;
-}
-
-export interface DashboardFilterButtonParams {
-  view: string;
-  filter?: string;
-  mode: string;
-}
 
 export interface LetterNavigationProps {
   currentLetter: string;

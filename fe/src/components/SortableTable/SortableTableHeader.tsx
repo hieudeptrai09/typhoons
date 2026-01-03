@@ -10,7 +10,7 @@ interface SortableTableHeaderProps<T> {
   isSortable: boolean;
 }
 
-const SortableTableHeader = <T extends Record<string, unknown>>({
+const SortableTableHeader = <T,>({
   label,
   columnKey,
   columnTitle,

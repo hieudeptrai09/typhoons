@@ -3,12 +3,19 @@ import type { MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
-import type { NameData } from "../../../../types";
+import type { Storm } from "../../../../types";
+
+interface NameAverageData {
+  name: string;
+  average: number;
+  count: number;
+  storms: Storm[];
+}
 
 interface StormNamePopupProps {
   popupRef: MutableRefObject<HTMLDivElement | null>;
   selectedName: string | null;
-  selectedNameData: NameData | undefined;
+  selectedNameData: NameAverageData | undefined;
   nameRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
   onClose: () => void;
 }

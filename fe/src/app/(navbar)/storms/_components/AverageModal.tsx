@@ -9,11 +9,18 @@ import {
 } from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
 import StormNamePopup from "./StormNamePopup";
-import type { BaseModalProps, NameData, Storm } from "../../../../types";
+import type { BaseModalProps, Storm } from "../../../../types";
 
 interface AverageModalProps extends BaseModalProps {
   title: string;
   average: number;
+  storms: Storm[];
+}
+
+interface NameAverageData {
+  name: string;
+  average: number;
+  count: number;
   storms: Storm[];
 }
 
@@ -26,7 +33,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
   // Group storms by name and calculate average intensity for each name
   const nameAverages = getGroupedStorms(storms, "name");
 
-  const nameData: NameData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
+  const nameData: NameAverageData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
     const avg = calculateAverage(nameStorms);
     return { name, average: avg, count: nameStorms.length, storms: nameStorms };
   });

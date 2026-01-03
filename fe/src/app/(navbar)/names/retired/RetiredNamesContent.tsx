@@ -16,6 +16,7 @@ import type {
   Suggestion,
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
+import { defaultRetiredName } from "../../../../constants";
 
 const RetiredNamesContent = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const RetiredNamesContent = () => {
 
   const [retiredNames, setRetiredNames] = useState<RetiredName[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [selectedName, setSelectedName] = useState<RetiredName | null>(null);
+  const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
 

@@ -12,6 +12,7 @@ import NameDetailsModal from "./_components/NameDetailsModal";
 import Toggle from "./_components/Toggle";
 import { categorizeLettersByStatus } from "./_utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
+import { defaultTyphoonName } from "../../../../constants";
 
 const FilterNamesPage = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const FilterNamesPage = () => {
   const [names, setNames] = useState<TyphoonName[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
-  const [selectedName, setSelectedName] = useState<TyphoonName | null>(null);
+  const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
 
   // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);

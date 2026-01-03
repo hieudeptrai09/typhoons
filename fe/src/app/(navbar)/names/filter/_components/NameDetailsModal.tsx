@@ -3,14 +3,12 @@ import Modal from "../../../../../components/Modal";
 import type { TyphoonName, BaseModalProps } from "../../../../../types";
 
 interface NameDetailsModalProps extends BaseModalProps {
-  selectedName: TyphoonName | null;
+  selectedName: TyphoonName;
 }
 
 const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalProps) => {
-  if (!selectedName) return null;
-
-  const hasImage = selectedName.image;
-  const hasDescription = selectedName.description;
+  const hasImage = !!selectedName.image;
+  const hasDescription = !!selectedName.description;
 
   // Determine image visibility: hidden if no src and no description, invisible if no src but has description
   const getImageVisibility = (): string => {
@@ -57,7 +55,7 @@ const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalPro
           } ${!hasDescription && "self-end"}`}
         >
           <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
-            {hasImage && selectedName.image && (
+            {selectedName.image && (
               <Image
                 src={selectedName.image}
                 alt={selectedName.name}

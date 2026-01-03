@@ -9,9 +9,7 @@ interface UseTableSortReturn<T> {
   handleSort: (column: keyof T) => void;
 }
 
-export const useTableSort = <T extends Record<string, unknown>>(
-  data: T[],
-): UseTableSortReturn<T> => {
+export const useTableSort = <T>(data: T[]): UseTableSortReturn<T> => {
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 

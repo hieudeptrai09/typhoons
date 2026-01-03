@@ -3,7 +3,7 @@ import { useTableSort } from "../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
 import type { TableColumn } from "../../types";
 
-interface SortableTableProps<T extends Record<string, unknown>> {
+interface SortableTableProps<T> {
   data: T[];
   columns: TableColumn<T>[];
   onRowClick?: (row: T) => void;
@@ -11,7 +11,7 @@ interface SortableTableProps<T extends Record<string, unknown>> {
   className?: string;
 }
 
-const SortableTable = <T extends Record<string, unknown>>({
+const SortableTable = <T,>({
   data,
   columns,
   onRowClick,
