@@ -59,10 +59,10 @@ export interface FilterParams {
 }
 
 export interface RetiredFilterParams {
-  searchName: string;
-  selectedYear: string;
-  selectedCountry: string;
-  retirementReason: string;
+  name: string;
+  year: string;
+  country: string;
+  reason: string;
 }
 
 export interface DashboardParams {

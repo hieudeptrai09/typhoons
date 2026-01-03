@@ -14,24 +14,24 @@ interface FilterModalProps extends BaseModalProps {
 }
 
 const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
-  const [tempSearchName, setTempSearchName] = useState(initialFilters.searchName);
-  const [tempSelectedYear, setTempSelectedYear] = useState(initialFilters.selectedYear);
-  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.selectedCountry);
-  const [tempRetirementReason, setTempRetirementReason] = useState(initialFilters.retirementReason);
+  const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
+  const [tempSelectedYear, setTempSelectedYear] = useState(initialFilters.year);
+  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
+  const [tempRetirementReason, setTempRetirementReason] = useState(initialFilters.reason);
 
   useEffect(() => {
-    setTempSearchName(initialFilters.searchName);
-    setTempSelectedYear(initialFilters.selectedYear);
-    setTempSelectedCountry(initialFilters.selectedCountry);
-    setTempRetirementReason(initialFilters.retirementReason);
+    setTempSearchName(initialFilters.name);
+    setTempSelectedYear(initialFilters.year);
+    setTempSelectedCountry(initialFilters.country);
+    setTempRetirementReason(initialFilters.reason);
   }, [initialFilters]);
 
   const handleApply = () => {
     onApply({
-      searchName: tempSearchName,
-      selectedYear: tempSelectedYear,
-      selectedCountry: tempSelectedCountry,
-      retirementReason: tempRetirementReason,
+      name: tempSearchName,
+      year: tempSelectedYear,
+      country: tempSelectedCountry,
+      reason: tempRetirementReason,
     });
   };
 

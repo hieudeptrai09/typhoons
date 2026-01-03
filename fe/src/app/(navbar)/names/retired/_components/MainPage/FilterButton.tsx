@@ -11,7 +11,7 @@ interface FilterButtonProps {
 const FilterButton = ({ activeFilterCount, onClick, params }: FilterButtonProps) => {
   const hasFilters = activeFilterCount > 0;
   const filterText = hasFilters
-    ? getRetiredNamesTitle(params.name, params.year, params.country, params.lang).join(" / ")
+    ? getRetiredNamesTitle(params.name, params.year, params.country, params.reason).join(" / ")
     : "Filters";
 
   return (

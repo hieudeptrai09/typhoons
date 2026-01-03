@@ -39,26 +39,21 @@ const RetiredNamesContent = () => {
   const updateURL = (filters: FilterParams, letter: string = currentLetter) => {
     const params = new URLSearchParams();
 
-    if (filters.searchName) {
-      params.set("name", filters.searchName);
+    if (filters.name) {
+      params.set("name", filters.name);
     }
-    if (filters.selectedYear) {
-      params.set("year", filters.selectedYear.toString());
+    if (filters.year) {
+      params.set("year", filters.year.toString());
     }
-    if (filters.selectedCountry) {
-      params.set("country", filters.selectedCountry);
+    if (filters.country) {
+      params.set("country", filters.country);
     }
-    if (filters.retirementReason) {
-      params.set("lang", filters.retirementReason);
+    if (filters.reason) {
+      params.set("lang", filters.reason);
     }
 
     // Only add letter parameter if no filters are active
-    if (
-      !filters.searchName &&
-      !filters.selectedYear &&
-      !filters.selectedCountry &&
-      !filters.retirementReason
-    ) {
+    if (!filters.name && !filters.year && !filters.country && !filters.reason) {
       params.set("letter", letter);
     }
 
@@ -114,10 +109,10 @@ const RetiredNamesContent = () => {
   const handleLetterChange = (letter: string) => {
     updateURL(
       {
-        searchName: "",
-        selectedYear: "",
-        selectedCountry: "",
-        retirementReason: "",
+        name: "",
+        year: "",
+        country: "",
+        reason: "",
       },
       letter,
     );
@@ -132,7 +127,7 @@ const RetiredNamesContent = () => {
           name: searchName,
           year: selectedYear,
           country: selectedCountry,
-          lang: retirementReason,
+          reason: retirementReason,
         }}
       />
 
@@ -154,10 +149,10 @@ const RetiredNamesContent = () => {
         onApply={handleApplyFilters}
         countries={countries}
         initialFilters={{
-          searchName,
-          selectedYear,
-          selectedCountry,
-          retirementReason,
+          name: searchName,
+          year: selectedYear,
+          country: selectedCountry,
+          reason: retirementReason,
         }}
       />
 
