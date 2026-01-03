@@ -1,8 +1,9 @@
-import { useMemo, ReactNode } from "react";
+import { useMemo } from "react";
+import type { ReactNode } from "react";
 import { Check, X, Frown } from "lucide-react";
 import Image from "next/image";
-import SortableTable, { TableColumn } from "../../../../../components/SortableTable";
-import { TyphoonName } from "../../../../../types";
+import SortableTable from "../../../../../components/SortableTable";
+import type { TyphoonName, TableColumn } from "../../../../../types";
 
 interface FilteredNamesTableProps {
   filteredNames: TyphoonName[];

@@ -1,4 +1,4 @@
-import { TyphoonName } from "../../../../../types";
+import type { TyphoonName } from "../../../../../types";
 
 interface TyphoonNamesTableProps {
   names: TyphoonName[];

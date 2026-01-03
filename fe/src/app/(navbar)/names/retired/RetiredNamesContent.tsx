@@ -11,7 +11,11 @@ import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
 import { usePagination } from "./_hooks/usePagination";
-import { RetiredName, Suggestion, RetiredFilterParams as FilterParams } from "../../../../types";
+import type {
+  RetiredName,
+  Suggestion,
+  RetiredFilterParams as FilterParams,
+} from "../../../../types";
 
 const RetiredNamesContent = () => {
   const router = useRouter();

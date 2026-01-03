@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import GridCell from "./GridCell";
-import { Storm } from "../../../../types";
+import type { Storm } from "../../../../types";
 
 interface CellData {
   content: ReactNode;

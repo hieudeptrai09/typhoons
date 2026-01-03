@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { RetiredName } from "../../../../../types";
+import type { RetiredName } from "../../../../../types";
 
 interface UseFilteredNamesParams {
   retiredNames: RetiredName[];

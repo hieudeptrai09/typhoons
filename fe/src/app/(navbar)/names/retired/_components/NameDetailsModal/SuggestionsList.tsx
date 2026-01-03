@@ -1,6 +1,6 @@
 import EmptySuggestions from "./EmptySuggestions";
 import SuggestionCard from "./SuggestionCard";
-import { Suggestion } from "../../../../../../types";
+import type { Suggestion } from "../../../../../../types";
 
 interface SuggestionsListProps {
   suggestions: Suggestion[];

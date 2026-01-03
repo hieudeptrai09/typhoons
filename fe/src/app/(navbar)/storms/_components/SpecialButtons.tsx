@@ -1,4 +1,4 @@
-import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
 interface SpecialButtonsProps {

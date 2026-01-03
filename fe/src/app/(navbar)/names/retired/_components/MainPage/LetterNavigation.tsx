@@ -1,4 +1,4 @@
-import { RetiredLetterNavigationProps as LetterNavigationProps } from "../../../../../../types";
+import type { RetiredLetterNavigationProps as LetterNavigationProps } from "../../../../../../types";
 
 const LetterNavigation = ({
   currentLetter,

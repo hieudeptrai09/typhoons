@@ -2,7 +2,7 @@ import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
-import { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
+import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
 export interface NameDetailsModalProps extends BaseModalProps {
   selectedName: RetiredName | null;

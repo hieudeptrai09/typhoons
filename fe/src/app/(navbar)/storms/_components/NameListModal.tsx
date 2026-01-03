@@ -1,4 +1,5 @@
-import { useState, useRef, CSSProperties } from "react";
+import { useState, useRef } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Modal from "../../../../components/Modal";
 import {
@@ -6,11 +7,10 @@ import {
   TEXT_COLOR_BADGE,
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
-  IntensityType,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
-import { BaseModalProps, Storm } from "../../../../types";
+import type { BaseModalProps, Storm, IntensityType } from "../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
   name: string;

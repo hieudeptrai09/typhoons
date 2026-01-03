@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
+import type { ReactNode } from "react";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
 interface GridCellProps {

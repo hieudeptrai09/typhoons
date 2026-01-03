@@ -1,6 +1,6 @@
 import { Filter } from "lucide-react";
 import { getRetiredNamesTitle } from "../../_utils/fns";
-import { RetiredFilterButtonParams as FilterButtonParams } from "../../../../../../types";
+import type { RetiredFilterButtonParams as FilterButtonParams } from "../../../../../../types";
 
 interface FilterButtonProps {
   activeFilterCount: number;

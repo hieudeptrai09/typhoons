@@ -5,7 +5,7 @@ import ModalActions from "./ModalActions";
 import NameSearchInput from "./NameSearchInput";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import YearDigitSelector from "./YearDigitSelector";
-import { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
+import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 
 interface FilterModalProps extends BaseModalProps {
   onApply: (filters: RetiredFilterParams) => void;

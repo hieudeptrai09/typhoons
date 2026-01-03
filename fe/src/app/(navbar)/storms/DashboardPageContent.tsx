@@ -12,7 +12,7 @@ import FilterModal from "./_components/FilterModal";
 import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
 import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
-import { Storm, DashboardParams } from "../../../types";
+import type { Storm, DashboardParams } from "../../../types";
 
 interface SelectedData {
   title?: string;

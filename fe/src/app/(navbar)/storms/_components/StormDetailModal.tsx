@@ -1,7 +1,7 @@
 import IntensityBadge from "../../../../components/IntensityBadge";
 import Modal from "../../../../components/Modal";
-import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
-import { BaseModalProps, Storm } from "../../../../types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import type { BaseModalProps, Storm } from "../../../../types";
 
 export interface StormDetailModalProps extends BaseModalProps {
   title: string;

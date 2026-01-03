@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Suggestion } from "../../../../../../types";
+import type { Suggestion } from "../../../../../../types";
 
 interface SuggestionCardProps {
   suggestion: Suggestion;

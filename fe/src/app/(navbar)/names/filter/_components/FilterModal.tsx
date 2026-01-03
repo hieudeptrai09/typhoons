@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "../../../../../components/Modal";
 import FilterSection from "./FilterSection";
-import { BaseModalProps, FilterParams } from "../../../../../types";
+import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;

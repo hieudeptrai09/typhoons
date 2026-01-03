@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   CloudLightning,
   Star,
@@ -11,10 +12,9 @@ import {
   Globe,
   Calendar,
   ArrowDownToLine,
-  LucideIcon,
 } from "lucide-react";
-import { ReactNode } from "react";
-import { DashboardFilterButtonParams as FilterButtonParams } from "../../../../types";
+import type { DashboardFilterButtonParams as FilterButtonParams } from "../../../../types";
+import type { LucideIcon } from "lucide-react";
 
 interface FilterButtonProps {
   onClick: () => void;

@@ -1,7 +1,8 @@
-import { useMemo, ReactNode } from "react";
+import { useMemo } from "react";
+import type { ReactNode } from "react";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import SortableTable, { TableColumn } from "../../../../components/SortableTable";
-import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK, IntensityType } from "../../../../constants";
+import SortableTable from "../../../../components/SortableTable";
+import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK } from "../../../../constants";
 import {
   getHighlights,
   getIntensityFromNumber,
@@ -11,7 +12,14 @@ import {
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
-import { Storm, DashboardParams, AverageData, NameData } from "../../../../types";
+import type {
+  Storm,
+  DashboardParams,
+  AverageData,
+  NameData,
+  TableColumn,
+  IntensityType,
+} from "../../../../types";
 
 interface DashboardContentProps {
   params: DashboardParams;

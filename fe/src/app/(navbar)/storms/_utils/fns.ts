@@ -1,5 +1,5 @@
-import { INTENSITY_RANK, IntensityType } from "../../../../constants";
-import { Storm } from "../../../../types";
+import { INTENSITY_RANK } from "../../../../constants";
+import type { Storm, IntensityType } from "../../../../types";
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);

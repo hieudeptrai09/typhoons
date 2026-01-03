@@ -1,8 +1,9 @@
-import { useEffect, MutableRefObject } from "react";
+import { useEffect } from "react";
+import type { MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { BACKGROUND_BADGE, IntensityType } from "../../../../constants";
-import { Storm } from "../../../../types";
+import { BACKGROUND_BADGE } from "../../../../constants";
+import type { Storm } from "../../../../types";
 
 interface StormMapPopupProps {
   popupRef: MutableRefObject<HTMLDivElement | null>;

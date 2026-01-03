@@ -11,7 +11,7 @@ import LetterNavigation from "./_components/LetterNavigation";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import Toggle from "./_components/Toggle";
 import { categorizeLettersByStatus } from "./_utils/fns";
-import { FilterParams, TyphoonName } from "../../../../types";
+import type { FilterParams, TyphoonName } from "../../../../types";
 
 const FilterNamesPage = () => {
   const router = useRouter();

@@ -1,5 +1,3 @@
-import { IntensityType } from "../constants";
-
 // ===========================
 // Common Types
 // ===========================
@@ -169,3 +167,5 @@ export interface AverageData {
 // ===========================
 
 export type SortDirection = "asc" | "desc" | null;
+
+export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";

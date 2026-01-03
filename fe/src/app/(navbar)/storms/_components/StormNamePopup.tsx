@@ -1,8 +1,9 @@
-import { useEffect, MutableRefObject } from "react";
+import { useEffect } from "react";
+import type { MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
-import { TEXT_COLOR_WHITE_BACKGROUND, IntensityType } from "../../../../constants";
-import { Storm, NameData } from "../../../../types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import type { NameData } from "../../../../types";
 
 interface StormNamePopupProps {
   popupRef: MutableRefObject<HTMLDivElement | null>;

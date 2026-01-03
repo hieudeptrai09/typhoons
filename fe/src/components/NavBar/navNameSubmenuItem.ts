@@ -1,4 +1,5 @@
-import { List, Archive, Filter, LucideIcon } from "lucide-react";
+import { List, Archive, Filter } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export interface SubmenuItem {
   href: string;

@@ -5,7 +5,7 @@ import PageHeader from "../../../../components/PageHeader";
 import fetchData from "../../../../containers/utils/fetcher";
 import TyphoonNameModal from "./_components/TyphoonNamesModal";
 import TyphoonNamesTable from "./_components/TyphoonNamesTable";
-import { TyphoonName } from "../../../../types";
+import type { TyphoonName } from "../../../../types";
 
 const CurrentNamesPage = () => {
   const [names, setNames] = useState<TyphoonName[]>([]);

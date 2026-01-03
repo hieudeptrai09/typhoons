@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Modal from "../../../../../components/Modal";
-import { TyphoonName, BaseModalProps } from "../../../../../types";
+import type { TyphoonName, BaseModalProps } from "../../../../../types";
 
 interface TyphoonNameModalProps extends BaseModalProps {
   selectedName: TyphoonName | null;

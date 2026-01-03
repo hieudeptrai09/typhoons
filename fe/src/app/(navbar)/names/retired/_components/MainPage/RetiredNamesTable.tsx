@@ -1,7 +1,7 @@
+import type { ReactNode } from "react";
 import { Frown } from "lucide-react";
-import SortableTable, { TableColumn } from "../../../../../../components/SortableTable";
-import { ReactNode } from "react";
-import { RetiredName } from "../../../../../../types";
+import SortableTable from "../../../../../../components/SortableTable";
+import type { RetiredName, TableColumn } from "../../../../../../types";
 
 interface RetiredNamesTableProps {
   paginatedData: RetiredName[];

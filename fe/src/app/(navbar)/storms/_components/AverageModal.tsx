@@ -6,11 +6,10 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_RANK,
   BACKGROUND_HOVER_BADGE,
-  IntensityType,
 } from "../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
 import StormNamePopup from "./StormNamePopup";
-import { BaseModalProps, NameData, Storm } from "../../../../types";
+import type { BaseModalProps, NameData, Storm } from "../../../../types";
 
 interface AverageModalProps extends BaseModalProps {
   title: string;

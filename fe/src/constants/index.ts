@@ -1,6 +1,6 @@
-export const TITLE_COMMON = "Cá Tra's Typhoons App";
+import type { IntensityType } from "../types";
 
-export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
+export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
 export const BACKGROUND_BADGE: Record<IntensityType, string> = {
   TD: "#00CCFF",
