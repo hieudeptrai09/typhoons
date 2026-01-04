@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../../components/PageHeader";
+import LetterNavigation from "../../../../components/LetterNavigation";
 import fetchData from "../../../../containers/utils/fetcher";
 import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
-import LetterNavigation from "./_components/MainPage/LetterNavigation";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import { useFilteredNames } from "./_hooks/useFilteredNames";
@@ -118,6 +118,21 @@ const RetiredNamesContent = () => {
     );
   };
 
+  // Letter configuration for LetterNavigation
+  const getLetterConfig = (letter: string) => {
+    const isAvailable = availableLettersMap[letter];
+    const isActive = currentLetter === letter;
+
+    return {
+      isAvailable,
+      colorClass: isActive
+        ? "text-red-800 underline decoration-2 underline-offset-4"
+        : isAvailable
+          ? "text-red-500 underline-offset-4 hover:text-red-600 hover:underline"
+          : "cursor-not-allowed text-gray-300",
+    };
+  };
+
   return (
     <PageHeader title="Retired Typhoon Names">
       <FilterButton
@@ -134,8 +149,8 @@ const RetiredNamesContent = () => {
       {activeFilterCount === 0 && (
         <LetterNavigation
           currentLetter={currentLetter}
-          availableLettersMap={availableLettersMap}
           onLetterChange={handleLetterChange}
+          getLetterConfig={getLetterConfig}
         />
       )}
 

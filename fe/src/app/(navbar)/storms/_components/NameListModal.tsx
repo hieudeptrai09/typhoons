@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import Modal from "../../../../components/Modal";
+import Toggle from "../../../../components/Toggle";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -90,22 +91,8 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
               </div>
             )}
           </div>
-          <div className="flex flex-col items-end md:flex-row md:gap-1">
-            <label className="text-sm font-semibold text-gray-700">Show Map</label>
-            <button
-              onClick={() => setShowMap(!showMap)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                showMap ? "bg-blue-600" : "bg-gray-400"
-              }`}
-              role="switch"
-              aria-checked={showMap}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  showMap ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
+          <div className="flex flex-col items-end md:flex-row">
+            <Toggle value={showMap} onChange={setShowMap} label="Show Map" />
           </div>
         </div>
 

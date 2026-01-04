@@ -71,20 +71,3 @@ export interface TableColumn<T> {
 export type SortDirection = "asc" | "desc" | null;
 
 export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
-
-export interface LetterNavigationProps {
-  currentLetter: string;
-  letterStatusMap: Record<string, [boolean, boolean, boolean]>;
-  onLetterChange: (letter: string) => void;
-}
-
-export interface RetiredLetterNavigationProps {
-  currentLetter: string;
-  availableLettersMap: Record<string, boolean>;
-  onLetterChange: (letter: string) => void;
-}
-
-export interface ToggleProps {
-  value: boolean;
-  onChange: (value: boolean) => void;
-}

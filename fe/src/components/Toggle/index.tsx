@@ -1,9 +1,13 @@
-import type { ToggleProps } from "../../../../../types";
+interface ToggleProps {
+  value: boolean;
+  onChange: (value: boolean) => void;
+  label: string;
+}
 
-const Toggle = ({ value, onChange }: ToggleProps) => {
+const Toggle = ({ value, onChange, label }: ToggleProps) => {
   return (
-    <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end gap-3">
-      <label className="text-sm font-semibold text-gray-700">Show Images & Descriptions</label>
+    <div className="flex items-center gap-3">
+      <label className="text-sm font-semibold text-gray-700">{label}</label>
       <button
         onClick={() => onChange(!value)}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${

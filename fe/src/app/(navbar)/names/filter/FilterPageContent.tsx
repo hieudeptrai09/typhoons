@@ -3,13 +3,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../../components/PageHeader";
+import Toggle from "../../../../components/Toggle";
+import LetterNavigation from "../../../../components/LetterNavigation";
 import fetchData from "../../../../containers/utils/fetcher";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
-import LetterNavigation from "./_components/LetterNavigation";
 import NameDetailsModal from "./_components/NameDetailsModal";
-import Toggle from "./_components/Toggle";
 import { categorizeLettersByStatus } from "./_utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
 import { defaultTyphoonName } from "../../../../constants";
@@ -115,6 +115,44 @@ const FilterNamesPage = () => {
     setIsNameDetailsModalOpen(true);
   };
 
+  // Letter configuration for LetterNavigation
+  const getLetterConfig = (letter: string) => {
+    const status = letterStatusMap[letter];
+    const isActive = currentLetter === letter;
+
+    // If letter not in map, it has no names
+    if (!status || !status[0]) {
+      return {
+        isAvailable: false,
+        colorClass: "text-gray-300 cursor-not-allowed",
+      };
+    }
+
+    const hasRetired = status[1];
+    const hasAlive = status[2];
+
+    let colorClass = "";
+
+    if (hasRetired && hasAlive) {
+      colorClass = isActive
+        ? "text-blue-800 underline decoration-2"
+        : "text-blue-500 hover:text-blue-600 hover:underline";
+    } else if (hasRetired && !hasAlive) {
+      colorClass = isActive
+        ? "text-red-800 underline decoration-2"
+        : "text-red-500 hover:text-red-600 hover:underline";
+    } else if (!hasRetired && hasAlive) {
+      colorClass = isActive
+        ? "text-green-800 underline decoration-2"
+        : "text-green-500 hover:text-green-600 hover:underline";
+    }
+
+    return {
+      isAvailable: true,
+      colorClass,
+    };
+  };
+
   return (
     <PageHeader title="Filter Names">
       <FilterButton
@@ -129,13 +167,19 @@ const FilterNamesPage = () => {
       {activeFilterCount === 0 && (
         <LetterNavigation
           currentLetter={currentLetter}
-          letterStatusMap={letterStatusMap}
           onLetterChange={handleLetterChange}
+          getLetterConfig={getLetterConfig}
         />
       )}
 
       {paginatedNames.length > 0 && (
-        <Toggle value={showImageAndDescription} onChange={setShowImageAndDescription} />
+        <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end">
+          <Toggle
+            value={showImageAndDescription}
+            onChange={setShowImageAndDescription}
+            label="Show Images & Descriptions"
+          />
+        </div>
       )}
 
       <FilteredNamesTable
