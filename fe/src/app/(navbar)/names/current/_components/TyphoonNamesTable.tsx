@@ -66,7 +66,7 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
                       onClick={() => onNameClick(typhoon)}
                       className="flex h-16 w-full items-center justify-center transition-all"
                     >
-                      <div className="text-sm font-semibold text-gray-700">{typhoon.name}</div>
+                      <div className="text-sm font-semibold text-gray-700">{typhoon?.name}</div>
                     </button>
                   </td>
                 );
