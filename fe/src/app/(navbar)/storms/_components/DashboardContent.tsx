@@ -27,90 +27,33 @@ interface DashboardContentProps {
   onCellClick: (data: number | string, key: string) => void;
 }
 
-interface CellData {
-  content: ReactNode;
-  highlighted: boolean;
-  avgNumber: number | null;
-}
-
 const renderStormGridWithButtons = (
   onCellClick: (data: number | string, key: string) => void,
-  cellData: Record<number, CellData>,
-  isAverageView: boolean,
+  viewType: "storms" | "average" | "highlights",
   averageValues: Record<number, number> | null,
   stormsData: Storm[],
+  highlightedStorms?: Storm[],
+  highlightType?: string,
 ) => (
   <div>
-    <SpecialButtons
-      onCellClick={onCellClick}
-      isAverageView={isAverageView}
-      averageValues={averageValues}
-    />
+    {viewType !== "highlights" && (
+      <SpecialButtons
+        onCellClick={onCellClick}
+        isAverageView={viewType === "average"}
+        averageValues={averageValues}
+      />
+    )}
     <StormGrid
-      cellData={cellData}
+      viewType={viewType}
       onCellClick={onCellClick}
-      isClickable={true}
-      isAverageView={isAverageView}
       stormsData={stormsData}
+      averageValues={averageValues}
+      highlightedStorms={highlightedStorms}
+      highlightType={highlightType}
+      isClickable={viewType !== "highlights"}
     />
   </div>
 );
-
-const createCellData = (
-  viewType: string,
-  highlightedData: Storm[] | null = null,
-  averageValues: Record<number, number> | null = null,
-): Record<number, CellData> => {
-  const cellData: Record<number, CellData> = {};
-
-  // Initialize first 140 cells based on view type
-  for (let i = 1; i <= 140; i++) {
-    cellData[i] = {
-      content: viewType === "highlights" ? "" : `${i}`,
-      highlighted: false,
-      avgNumber: null,
-    };
-  }
-
-  // Handle different view types
-  if (viewType === "highlights" && highlightedData) {
-    const stormsByPosition: Record<number, Storm[]> = highlightedData.reduce(
-      (acc, storm) => {
-        if (!acc[storm.position]) acc[storm.position] = [];
-        acc[storm.position].push(storm);
-        return acc;
-      },
-      {} as Record<number, Storm[]>,
-    );
-
-    Object.entries(stormsByPosition).forEach(([position, storms]) => {
-      cellData[Number(position)] = {
-        content: (
-          <div className="flex flex-col items-center gap-1">
-            {storms.map((storm, idx) => (
-              <div key={idx} className="flex flex-col items-center">
-                <div className="text-xs font-bold text-gray-800">{storm.name}</div>
-                <div className="text-[10px] text-gray-600">({storm.year})</div>
-              </div>
-            ))}
-          </div>
-        ),
-        highlighted: true,
-        avgNumber: null,
-      };
-    });
-  } else if (viewType === "average" && averageValues) {
-    Object.entries(averageValues).forEach(([position, avgValue]) => {
-      cellData[Number(position)] = {
-        content: `${position}`,
-        highlighted: false,
-        avgNumber: avgValue,
-      };
-    });
-  }
-
-  return cellData;
-};
 
 const renderIntensityCell = (avgNumber: number, displayValue: string) => {
   const intensityLabel = getIntensityFromNumber(avgNumber);
@@ -205,7 +148,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     return getGroupedStorms(filteredData, params.filter);
   }, [stormsData, params.filter]);
 
-  // Compute average values for positions (only for table view)
+  // Compute average values for positions (only for average view in table mode)
   const averageValues = useMemo(() => {
     if (params.view !== "average" || params.mode !== "table") return null;
 
@@ -262,39 +205,30 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     );
   }
 
-  if (
-    (params.view === "storms" && params.mode === "table") ||
-    (params.view === "average" && params.mode === "table")
-  ) {
-    const cellData =
-      params.view === "storms"
-        ? createCellData("storms")
-        : createCellData("average", null, averageValues);
-
-    return renderStormGridWithButtons(
-      onCellClick,
-      cellData,
-      params.view === "average",
-      params.view === "average" ? averageValues : null,
-      stormsData,
-    );
+  // Handle storms view in table mode
+  if (params.view === "storms" && params.mode === "table") {
+    return renderStormGridWithButtons(onCellClick, "storms", null, stormsData);
   }
 
+  // Handle average view in table mode
+  if (params.view === "average" && params.mode === "table") {
+    return renderStormGridWithButtons(onCellClick, "average", averageValues, stormsData);
+  }
+
+  // Handle highlights view in table mode
   if (params.view === "highlights" && params.mode === "table") {
     const highlights = getHighlights(stormsData, params.filter);
-
-    const cellData = createCellData("highlights", highlights);
-    return (
-      <StormGrid
-        cellData={cellData}
-        onCellClick={onCellClick}
-        highlightType={params.filter}
-        isClickable={false}
-      />
+    return renderStormGridWithButtons(
+      onCellClick,
+      "highlights",
+      null,
+      stormsData,
+      highlights,
+      params.filter,
     );
   }
 
-  // All conditions that render SortableTable (list mode)
+  // Handle highlights view in list mode
   if (params.view === "highlights") {
     const highlights = getHighlights(stormsData, params.filter);
 
@@ -331,6 +265,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     );
   }
 
+  // Handle average view in list mode
   if (params.view === "average") {
     const data = transformAverageData(groupedStorms, params.filter);
 

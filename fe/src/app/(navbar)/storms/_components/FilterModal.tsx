@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
-import type { DashboardParams as FilterModalParams } from "../../../../types";
+import type { BaseModalProps, DashboardParams as FilterModalParams } from "../../../../types";
 
 interface FilterOption {
   value: string;
@@ -16,9 +16,7 @@ interface ButtonGroupProps {
   disabled?: boolean;
 }
 
-interface FilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface FilterModalProps extends BaseModalProps {
   onApply: (params: FilterModalParams) => void;
   currentParams: FilterModalParams;
 }
