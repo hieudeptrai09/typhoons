@@ -12,19 +12,33 @@ import {
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
-import type {
-  Storm,
-  DashboardParams,
-  AverageData,
-  NameData,
-  TableColumn,
-  IntensityType,
-} from "../../../../types";
+import type { Storm, DashboardParams, TableColumn, IntensityType } from "../../../../types";
 
 interface DashboardContentProps {
   params: DashboardParams;
   stormsData: Storm[];
   onCellClick: (data: number | string, key: string) => void;
+}
+
+interface NameData {
+  name: string;
+  country: string;
+  position: number;
+  count: number;
+  avgIntensity: number;
+  year: number;
+  [key: string]: unknown;
+}
+
+interface AverageData {
+  year?: number;
+  country?: string;
+  name?: string;
+  position?: number;
+  count: number;
+  average: string;
+  avgNumber: number;
+  [key: string]: unknown;
 }
 
 const renderStormGridWithButtons = (

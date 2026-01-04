@@ -1,10 +1,3 @@
-// ===========================
-// Common Types
-// ===========================
-// ===========================
-// Typhoon Name Types
-// ===========================
-
 export interface TyphoonName {
   id: number;
   position: number;
@@ -30,10 +23,6 @@ export interface Suggestion {
   image?: string;
 }
 
-// ===========================
-// Storm Types
-// ===========================
-
 export interface Storm {
   id: number;
   name: string;
@@ -47,10 +36,6 @@ export interface Storm {
   isFirst?: boolean;
   isLast?: boolean;
 }
-
-// ===========================
-// Filter & Modal Types
-// ===========================
 
 export interface FilterParams {
   name: string;
@@ -71,9 +56,10 @@ export interface DashboardParams {
   filter: string;
 }
 
-// ===========================
-// Table Types
-// ===========================
+export interface BaseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 export interface TableColumn<T> {
   key: keyof T;
@@ -82,24 +68,9 @@ export interface TableColumn<T> {
   title?: string;
 }
 
-// ===========================
-// Modal Props Types
-// ===========================
+export type SortDirection = "asc" | "desc" | null;
 
-// Base modal props that all modals share
-export interface BaseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export interface StormDetailModalProps extends BaseModalProps {
-  title: string;
-  storms: Storm[];
-}
-
-// ===========================
-// Component Props Types
-// ===========================
+export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
 
 export interface LetterNavigationProps {
   currentLetter: string;
@@ -117,36 +88,3 @@ export interface ToggleProps {
   value: boolean;
   onChange: (value: boolean) => void;
 }
-
-// ===========================
-// Data Aggregation Types
-// ===========================
-
-export interface NameData {
-  name: string;
-  country: string;
-  position: number;
-  count: number;
-  avgIntensity: number;
-  year: number;
-  [key: string]: unknown;
-}
-
-export interface AverageData {
-  year?: number;
-  country?: string;
-  name?: string;
-  position?: number;
-  count: number;
-  average: string;
-  avgNumber: number;
-  [key: string]: unknown;
-}
-
-// ===========================
-// Utility Types
-// ===========================
-
-export type SortDirection = "asc" | "desc" | null;
-
-export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
