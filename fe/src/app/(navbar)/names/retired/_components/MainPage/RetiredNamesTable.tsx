@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
 import { Frown } from "lucide-react";
 import SortableTable from "../../../../../../components/SortableTable";
+import { createRenderCell } from "../../../../../../containers/utils/cellRenderers";
 import type { RetiredName, TableColumn } from "../../../../../../types";
 
 interface RetiredNamesTableProps {
@@ -29,32 +29,34 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
     { key: "lastYear", label: "Year of last storm", isSortable: true },
   ];
 
-  const getNameColor = (selectedName: RetiredName): string => {
-    const ilp = selectedName.isLanguageProblem;
+  // Define color logic for each cell
+  const getCellConfig = (row: RetiredName, key: keyof RetiredName) => {
+    if (key === "name") {
+      // Color based on retirement reason
+      let colorClass = "text-red-600"; // Default: Destructive Storm
 
-    switch (ilp) {
-      case 0:
-        return "text-red-600"; // Destructive Storm
-      case 1:
-        return "text-green-600"; // Language Problem
-      case 2:
-        return "text-amber-500"; // Misspelling
-      case 3:
-        return "text-purple-600"; // Special Storm
-      default:
-        return "text-red-600"; // Default to destructive
+      switch (row.isLanguageProblem) {
+        case 0:
+          colorClass = "text-red-600"; // Destructive Storm
+          break;
+        case 1:
+          colorClass = "text-green-600"; // Language Problem
+          break;
+        case 2:
+          colorClass = "text-amber-500"; // Misspelling
+          break;
+        case 3:
+          colorClass = "text-purple-600"; // Special Storm
+          break;
+      }
+
+      return { className: colorClass };
     }
+
+    return {};
   };
 
-  const renderCell = (row: RetiredName, column: TableColumn<RetiredName>): ReactNode => {
-    if (column.key === "name") {
-      return <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>;
-    }
-    if (column.key === "note") {
-      return row.note || "-";
-    }
-    return row[column.key] as ReactNode;
-  };
+  const renderCell = createRenderCell<RetiredName>(getCellConfig);
 
   return (
     <SortableTable

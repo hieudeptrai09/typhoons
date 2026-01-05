@@ -1,8 +1,7 @@
 import { useMemo } from "react";
-import type { ReactNode } from "react";
-import { Check, X, Frown } from "lucide-react";
-import Image from "next/image";
+import { Frown } from "lucide-react";
 import SortableTable from "../../../../../components/SortableTable";
+import { createRenderCell } from "../../../../../containers/utils/cellRenderers";
 import type { TyphoonName, TableColumn } from "../../../../../types";
 
 interface FilteredNamesTableProps {
@@ -16,12 +15,6 @@ const FilteredNamesTable = ({
   showImageAndDescription,
   onNameClick,
 }: FilteredNamesTableProps) => {
-  const getNameColor = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "text-amber-500";
-    if (Boolean(name.isRetired)) return "text-red-600";
-    return "text-blue-600";
-  };
-
   const columns = useMemo(() => {
     const baseColumns: TableColumn<TyphoonName>[] = [
       { key: "isRetired", label: "Retired", isSortable: true },
@@ -42,45 +35,29 @@ const FilteredNamesTable = ({
     return baseColumns;
   }, [showImageAndDescription]);
 
-  const renderCell = (row: TyphoonName, column: TableColumn<TyphoonName>): ReactNode => {
-    if (column.key === "name") {
-      return <span className={`font-bold ${getNameColor(row)}`}>{row.name}</span>;
+  // Define color/style logic for each cell
+  const getCellConfig = (row: TyphoonName, key: keyof TyphoonName) => {
+    if (key === "name") {
+      // Determine name color based on status
+      let colorClass = "text-blue-600";
+      if (row.isLanguageProblem === 2) {
+        colorClass = "text-amber-500";
+      } else if (Boolean(row.isRetired)) {
+        colorClass = "text-red-600";
+      }
+      return { className: colorClass };
     }
-    if (column.key === "image") {
-      return (
-        <>
-          {row.image ? (
-            <div className="relative max-h-52 min-h-24 min-w-28">
-              <Image
-                src={row.image}
-                alt={row.name}
-                fill
-                className="rounded object-cover"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <span className="text-gray-400">-</span>
-          )}
-        </>
-      );
+
+    if (key === "isRetired" && Boolean(row.isRetired)) {
+      // Color for check icon based on language problem
+      const colorClass = row.isLanguageProblem === 2 ? "text-amber-500" : "text-red-600";
+      return { className: colorClass };
     }
-    if (column.key === "description") {
-      return <>{row.description || <span className="text-gray-400">-</span>}</>;
-    }
-    if (column.key === "isRetired") {
-      return Boolean(row.isRetired) ? (
-        row.isLanguageProblem === 2 ? (
-          <Check className="text-amber-500" size={20} />
-        ) : (
-          <Check className="text-red-600" size={20} />
-        )
-      ) : (
-        <X className="text-gray-400" size={20} />
-      );
-    }
-    return row[column.key] as ReactNode;
+
+    return {};
   };
+
+  const renderCell = createRenderCell<TyphoonName>(getCellConfig);
 
   if (filteredNames.length === 0) {
     return (

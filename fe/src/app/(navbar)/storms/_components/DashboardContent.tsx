@@ -1,18 +1,16 @@
 import { useMemo } from "react";
-import type { ReactNode } from "react";
-import IntensityBadge from "../../../../components/IntensityBadge";
 import SortableTable from "../../../../components/SortableTable";
-import { TEXT_COLOR_WHITE_BACKGROUND, INTENSITY_RANK } from "../../../../constants";
+import { INTENSITY_RANK, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import { createRenderCell } from "../../../../containers/utils/cellRenderers";
 import {
   getHighlights,
   getIntensityFromNumber,
-  getPositionTitle,
   calculateAverage,
   getGroupedStorms,
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
-import type { Storm, DashboardParams, TableColumn, IntensityType } from "../../../../types";
+import type { Storm, DashboardParams, TableColumn } from "../../../../types";
 
 interface DashboardContentProps {
   params: DashboardParams;
@@ -27,7 +25,6 @@ interface NameData {
   count: number;
   avgIntensity: number;
   year: number;
-  [key: string]: unknown;
 }
 
 interface AverageData {
@@ -38,7 +35,6 @@ interface AverageData {
   count: number;
   average: string;
   avgNumber: number;
-  [key: string]: unknown;
 }
 
 const renderStormGridWithButtons = (
@@ -68,16 +64,6 @@ const renderStormGridWithButtons = (
     />
   </div>
 );
-
-const renderIntensityCell = (avgNumber: number, displayValue: string) => {
-  const intensityLabel = getIntensityFromNumber(avgNumber);
-  const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-  return (
-    <span className="font-semibold" style={{ color: textColor }}>
-      {displayValue}
-    </span>
-  );
-};
 
 const transformAverageData = (
   dataMap: Record<string, Storm[]>,
@@ -130,8 +116,6 @@ const getAverageColumns = (filterType: string): TableColumn<AverageData>[] => {
   };
 
   const columns = [...columnMap[filterType]];
-
-  // Add average intensity for all
   columns.push({
     key: "average",
     label: "Average Intensity",
@@ -152,20 +136,16 @@ const getStormNameColumns = (): TableColumn<NameData>[] => {
 };
 
 const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentProps) => {
-  // Compute grouped storms based on filter
   const groupedStorms = useMemo(() => {
     let filteredData = stormsData;
     if (params.filter === "year") {
       filteredData = stormsData.filter((storm) => parseInt(storm.year.toString()) >= 2000);
     }
-
     return getGroupedStorms(filteredData, params.filter);
   }, [stormsData, params.filter]);
 
-  // Compute average values for positions (only for average view in table mode)
   const averageValues = useMemo(() => {
     if (params.view !== "average" || params.mode !== "table") return null;
-
     const positionGroups = getGroupedStorms(stormsData, "position");
     const values: Record<number, number> = {};
     Object.entries(positionGroups).forEach(([position, storms]) => {
@@ -189,32 +169,28 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       };
     });
 
+    // Define color config based on avgIntensity
+    const getCellConfig = (row: NameData, key: keyof NameData) => {
+      if (key === "name") {
+        const intensityLabel = getIntensityFromNumber(row.avgIntensity);
+        const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+        return { style: { color: textColor } };
+      }
+      return {};
+    };
+
+    const renderCell = createRenderCell<NameData>(getCellConfig);
+
     return (
       <SortableTable
         data={nameData}
         columns={getStormNameColumns()}
         onRowClick={(row) => {
-          const name = row.name;
-          if (typeof name === "string") {
-            onCellClick(name, "name");
+          if (typeof row.name === "string") {
+            onCellClick(row.name, "name");
           }
         }}
-        renderCell={(row, col): ReactNode => {
-          if (col.key === "name" && typeof row.name === "string") {
-            const avgInt = typeof row.avgIntensity === "number" ? row.avgIntensity : 0;
-            const intensityLabel = getIntensityFromNumber(avgInt);
-            const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-            return (
-              <span className="font-bold" style={{ color: textColor }}>
-                {row.name}
-              </span>
-            );
-          }
-          if (col.key === "position" && typeof row.position === "number") {
-            return getPositionTitle(row.position);
-          }
-          return row[col.key] as ReactNode;
-        }}
+        renderCell={renderCell}
       />
     );
   }
@@ -245,13 +221,15 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
   // Handle highlights view in list mode
   if (params.view === "highlights") {
     const highlights = getHighlights(stormsData, params.filter);
-
     const highlightData = highlights.map((s) => ({
       name: s.name,
       year: s.year,
       intensity: s.intensity,
       position: s.position,
     }));
+
+    // No special config needed - use default
+    const renderCell = createRenderCell<(typeof highlightData)[0]>();
 
     return (
       <SortableTable
@@ -266,15 +244,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
           },
           { key: "position", label: "Position" },
         ]}
-        renderCell={(row, col): ReactNode => {
-          if (col.key === "intensity") {
-            const intensity = row.intensity;
-            if (typeof intensity === "string" || typeof intensity === "number") {
-              return <IntensityBadge intensity={intensity as IntensityType} />;
-            }
-          }
-          return row[col.key] as ReactNode;
-        }}
+        renderCell={renderCell}
       />
     );
   }
@@ -282,6 +252,18 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
   // Handle average view in list mode
   if (params.view === "average") {
     const data = transformAverageData(groupedStorms, params.filter);
+
+    // Define color config for average column
+    const getCellConfig = (row: AverageData, key: keyof AverageData) => {
+      if (key === "average") {
+        const intensityLabel = getIntensityFromNumber(row.avgNumber);
+        const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+        return { style: { color: textColor } };
+      }
+      return {};
+    };
+
+    const renderCell = createRenderCell<AverageData>(getCellConfig);
 
     return (
       <SortableTable
@@ -293,17 +275,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
             onCellClick(value as number | string, params.filter);
           }
         }}
-        renderCell={(row, col): ReactNode => {
-          if (col.key === "average") {
-            const avgNum = typeof row.avgNumber === "number" ? row.avgNumber : 0;
-            const avg = typeof row.average === "string" ? row.average : "0";
-            return renderIntensityCell(avgNum, avg);
-          }
-          if (col.key === "position" && typeof row.position === "number") {
-            return getPositionTitle(row.position);
-          }
-          return row[col.key] as ReactNode;
-        }}
+        renderCell={renderCell}
       />
     );
   }
