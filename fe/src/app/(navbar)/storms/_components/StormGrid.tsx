@@ -132,6 +132,7 @@ const StormGrid = ({
                     className={className}
                     isClickable={isClickable}
                     stormNames={stormNames}
+                    viewType={viewType}
                   />
                 );
               })}
