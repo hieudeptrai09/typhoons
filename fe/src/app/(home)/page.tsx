@@ -20,17 +20,12 @@ const HomePage = () => {
         </p>
 
         <div className="flex w-full max-w-sm flex-col gap-6">
-          <Menu
-            href="storms"
-            label="Storms"
-            color="bg-purple-800"
-            hoverColor="hover:bg-purple-900"
-          />
-          <Menu href="names" label="Names" color="bg-purple-800" hoverColor="hover:bg-purple-900" />
+          <Menu href="storms" label="Storms" color="bg-blue-600" hoverColor="hover:bg-blue-700" />
+          <Menu href="names" label="Names" color="bg-teal-600" hoverColor="hover:bg-teal-700" />
         </div>
       </div>
 
-      <footer className="flex h-16 items-center justify-center bg-emerald-700">
+      <footer className="flex h-16 items-center justify-center bg-slate-800">
         <p className="text-center text-sm text-white">
           © {new Date().getFullYear()} {TITLE_COMMON}
         </p>
