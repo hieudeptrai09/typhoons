@@ -8,6 +8,7 @@ import {
   TEXT_COLOR_BADGE,
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
+  INTENSITY_LABEL,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
@@ -18,20 +19,6 @@ export interface NameListModalProps extends BaseModalProps {
   storms: Storm[];
   avgIntensity?: number;
 }
-
-const getIntensityLabel = (intensity: IntensityType): string => {
-  const labels: Record<IntensityType, string> = {
-    5: "Category 5 Super Typhoon",
-    4: "Category 4 Super Typhoon",
-    3: "Category 3 Typhoon",
-    2: "Category 2 Typhoon",
-    1: "Category 1 Typhoon",
-    STS: "Severe Tropical Storm",
-    TS: "Tropical Storm",
-    TD: "Tropical Depression",
-  };
-  return labels[intensity] || intensity;
-};
 
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
   const [showMap, setShowMap] = useState(false);
@@ -107,7 +94,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
               const textColor = TEXT_COLOR_BADGE[storm.intensity];
               const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
               const isHovered = hoveredYear === storm.year;
-              const intensityLabel = getIntensityLabel(storm.intensity);
+              const intensityLabel = INTENSITY_LABEL[storm.intensity];
               const stormTitle = `${intensityLabel} ${storm.name} ${storm.year}`;
 
               return (

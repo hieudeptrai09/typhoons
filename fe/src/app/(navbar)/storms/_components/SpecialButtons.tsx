@@ -25,7 +25,7 @@ const SpecialButtons = ({
       const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
       return textColor;
     }
-    return "#6A6E7D";
+    return "#374151";
   };
 
   return (

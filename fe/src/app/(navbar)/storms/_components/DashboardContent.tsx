@@ -154,7 +154,26 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     return values;
   }, [stormsData, params.view, params.mode]);
 
-  // Handle storms view in list mode - show all names
+  if (params.view === "storms" && params.mode === "table") {
+    return renderStormGridWithButtons(onCellClick, "storms", null, stormsData);
+  }
+
+  if (params.view === "average" && params.mode === "table") {
+    return renderStormGridWithButtons(onCellClick, "average", averageValues, stormsData);
+  }
+
+  if (params.view === "highlights" && params.mode === "table") {
+    const highlights = getHighlights(stormsData, params.filter);
+    return renderStormGridWithButtons(
+      onCellClick,
+      "highlights",
+      null,
+      stormsData,
+      highlights,
+      params.filter,
+    );
+  }
+
   if (params.view === "storms" && params.mode === "list") {
     const nameGroups = getGroupedStorms(stormsData, "name");
     const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => {
@@ -195,30 +214,6 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     );
   }
 
-  // Handle storms view in table mode
-  if (params.view === "storms" && params.mode === "table") {
-    return renderStormGridWithButtons(onCellClick, "storms", null, stormsData);
-  }
-
-  // Handle average view in table mode
-  if (params.view === "average" && params.mode === "table") {
-    return renderStormGridWithButtons(onCellClick, "average", averageValues, stormsData);
-  }
-
-  // Handle highlights view in table mode
-  if (params.view === "highlights" && params.mode === "table") {
-    const highlights = getHighlights(stormsData, params.filter);
-    return renderStormGridWithButtons(
-      onCellClick,
-      "highlights",
-      null,
-      stormsData,
-      highlights,
-      params.filter,
-    );
-  }
-
-  // Handle highlights view in list mode
   if (params.view === "highlights") {
     const highlights = getHighlights(stormsData, params.filter);
     const highlightData = highlights.map((s) => ({
@@ -249,7 +244,6 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     );
   }
 
-  // Handle average view in list mode
   if (params.view === "average") {
     const data = transformAverageData(groupedStorms, params.filter);
 
@@ -271,6 +265,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
         columns={getAverageColumns(params.filter)}
         onRowClick={(row) => {
           const value = row[params.filter as keyof typeof row];
+          console.log(value);
           if (value !== undefined) {
             onCellClick(value as number | string, params.filter);
           }
