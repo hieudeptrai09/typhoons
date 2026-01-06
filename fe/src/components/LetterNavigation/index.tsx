@@ -4,16 +4,11 @@ interface LetterConfig {
 }
 
 interface LetterNavigationProps {
-  currentLetter: string;
   onLetterChange: (letter: string) => void;
   getLetterConfig: (letter: string) => LetterConfig;
 }
 
-const LetterNavigation = ({
-  currentLetter,
-  onLetterChange,
-  getLetterConfig,
-}: LetterNavigationProps) => {
+const LetterNavigation = ({ onLetterChange, getLetterConfig }: LetterNavigationProps) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   return (

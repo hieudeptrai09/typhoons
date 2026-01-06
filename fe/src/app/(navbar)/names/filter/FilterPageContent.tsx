@@ -165,11 +165,7 @@ const FilterNamesPage = () => {
       />
 
       {activeFilterCount === 0 && (
-        <LetterNavigation
-          currentLetter={currentLetter}
-          onLetterChange={handleLetterChange}
-          getLetterConfig={getLetterConfig}
-        />
+        <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
       {paginatedNames.length > 0 && (

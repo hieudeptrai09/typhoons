@@ -147,11 +147,7 @@ const RetiredNamesContent = () => {
       />
 
       {activeFilterCount === 0 && (
-        <LetterNavigation
-          currentLetter={currentLetter}
-          onLetterChange={handleLetterChange}
-          getLetterConfig={getLetterConfig}
-        />
+        <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
       <div className="mx-auto max-w-4xl">
