@@ -30,7 +30,7 @@ const eslintConfig = defineConfig([
               position: "before",
             },
           ],
-          pathGroupsExcludedImportTypes: ["builtin", "type"],
+          pathGroupsExcludedImportTypes: ["builtin"],
           alphabetize: {
             order: "asc",
             caseInsensitive: true,
@@ -45,6 +45,7 @@ const eslintConfig = defineConfig([
         },
       ],
       "unused-imports/no-unused-imports": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
       "no-console": "error",
     },
   },
