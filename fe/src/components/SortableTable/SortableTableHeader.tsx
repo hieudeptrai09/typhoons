@@ -23,13 +23,13 @@ const SortableTableHeader = <T,>({
 
   const getSortIcon = () => {
     if (!isActive) {
-      return <span className="text-gray-600">⇅</span>;
+      return <span className="text-gray-700">⇅</span>;
     }
     if (currentSortDirection === "asc") {
-      return <span className="font-bold text-green-600">↑</span>;
+      return <span className="font-bold text-green-700">↑</span>;
     }
     if (currentSortDirection === "desc") {
-      return <span className="font-bold text-red-600">↓</span>;
+      return <span className="font-bold text-red-700">↓</span>;
     }
     return null;
   };

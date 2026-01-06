@@ -35,17 +35,17 @@ const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalPro
         <div className="flex-1 space-y-3">
           <div>
             <span className="font-semibold text-gray-700">Meaning:</span>
-            <span className="ml-2 text-gray-600">{selectedName.meaning}</span>
+            <span className="ml-2 text-gray-700">{selectedName.meaning}</span>
           </div>
 
           <div>
             <span className="font-semibold text-gray-700">Country:</span>
-            <span className="ml-2 text-gray-600">{selectedName.country}</span>
+            <span className="ml-2 text-gray-700">{selectedName.country}</span>
           </div>
 
           <div>
             <span className="font-semibold text-gray-700">Language:</span>
-            <span className="ml-2 text-gray-600">{selectedName.language}</span>
+            <span className="ml-2 text-gray-700">{selectedName.language}</span>
           </div>
         </div>
 
