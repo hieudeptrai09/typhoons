@@ -53,7 +53,7 @@ const SortableTable = <T,>({
               className="cursor-pointer transition-colors hover:bg-gray-100"
             >
               {columns.map((col) => (
-                <td key={String(col.key)} className="px-6 py-4 text-gray-600">
+                <td key={String(col.key)} className="px-6 py-4 text-gray-700">
                   {getCellRenderer(row, col)}
                 </td>
               ))}

@@ -57,7 +57,7 @@ const NameDetailsModal = ({
       </div>
 
       <div className="max-h-[calc(80vh-200px)] pb-6">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">Suggested Replacements</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-700">Suggested Replacements</h3>
         <SuggestionsList suggestions={suggestions} />
       </div>
     </Modal>

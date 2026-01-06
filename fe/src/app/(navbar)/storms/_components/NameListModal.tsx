@@ -65,16 +65,16 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
           <div className="flex flex-col gap-1">
             <div>
               <span className="font-semibold text-gray-700">Country:</span>
-              <span className="ml-2 text-gray-600">{storms[0].country}</span>
+              <span className="ml-2 text-gray-700">{storms[0].country}</span>
             </div>
             <div>
               <span className="font-semibold text-gray-700">Position:</span>
-              <span className="ml-2 text-gray-600">{storms[0].position}</span>
+              <span className="ml-2 text-gray-700">{storms[0].position}</span>
             </div>
             {storms[0].correctSpelling && (
               <div>
                 <span className="font-semibold text-gray-700">Correct spelling:</span>
-                <span className="ml-2 text-gray-600">{storms[0].correctSpelling}</span>
+                <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
               </div>
             )}
           </div>

@@ -28,7 +28,7 @@ const RetiredNamesPage = () => {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-stone-100">
-          <div className="text-xl text-gray-600">Loading Retired Names...</div>
+          <div className="text-xl text-gray-700">Loading Retired Names...</div>
         </div>
       }
     >

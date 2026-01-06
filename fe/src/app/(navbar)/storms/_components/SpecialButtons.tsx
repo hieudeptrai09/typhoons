@@ -30,7 +30,7 @@ const SpecialButtons = ({
 
   return (
     <div className="mb-6 flex justify-center gap-4">
-      <div className="mr-2 self-center text-sm font-semibold text-gray-600">Other Regions:</div>
+      <div className="mr-2 self-center text-sm font-semibold text-gray-700">Other Regions:</div>
       {buttons.map((button) => (
         <button
           key={button.id}

@@ -51,7 +51,7 @@ const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-start justify-between border-b border-gray-300 p-6 pb-4">
-          <h2 className={`text-2xl font-bold text-gray-800 ${titleClassName}`} style={titleStyle}>
+          <h2 className={`text-2xl font-bold text-gray-700 ${titleClassName}`} style={titleStyle}>
             {title}
           </h2>
           <button

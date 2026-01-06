@@ -25,7 +25,7 @@ const Dashboard = () => {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-stone-100">
-          <div className="text-xl text-gray-600">Loading Dashboard...</div>
+          <div className="text-xl text-gray-700">Loading Dashboard...</div>
         </div>
       }
     >
