@@ -12,7 +12,7 @@ const HomePage = () => {
         style={{ height: "calc(100vh - 64px)" }}
       >
         <a href="https://www.youtube.com/watch?v=5LtFOkH9zwU" target="_blank" className="mb-4">
-          <Image src="/logo.png" alt="web logo" loading="eager" width={500} height={167} />
+          <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
         <p className="mb-12 max-w-md text-center text-lg font-semibold text-gray-700">
