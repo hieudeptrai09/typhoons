@@ -38,7 +38,9 @@ const HomePage = () => {
       <footer className="flex h-16 items-center justify-center gap-2 bg-slate-900">
         <p className="text-center text-xs text-slate-400">
           Informational use only •{" "}
-          <span className="text-slate-300">© 2026 JEBI.SE Malakas • Cá Tra</span>
+          <span className="text-slate-300">
+            © {new Date().getFullYear()} JEBI.SE Malakas • Cá Tra
+          </span>
         </p>
       </footer>
     </div>
