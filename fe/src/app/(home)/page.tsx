@@ -15,7 +15,7 @@ const HomePage = () => {
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
-        <p className="mb-12 max-w-md text-center text-lg font-semibold text-gray-700">
+        <p className="mb-12 max-w-md text-center text-lg font-semibold text-gray-800">
           Track typhoons and explore their names
         </p>
 
