@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import GridCell from "./GridCell";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
+import GridCell from "./GridCell";
 import type { Storm } from "../../../../types";
 
 interface StormGridProps {

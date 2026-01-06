@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import LetterNavigation from "../../../../components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
 import Toggle from "../../../../components/Toggle";
-import LetterNavigation from "../../../../components/LetterNavigation";
+import { defaultTyphoonName } from "../../../../constants";
 import fetchData from "../../../../containers/utils/fetcher";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
@@ -12,7 +13,6 @@ import FilterModal from "./_components/FilterModal";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import { categorizeLettersByStatus } from "./_utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
-import { defaultTyphoonName } from "../../../../constants";
 
 const FilterNamesPage = () => {
   const router = useRouter();

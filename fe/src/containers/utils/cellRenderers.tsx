@@ -1,9 +1,9 @@
 import type { ReactNode, CSSProperties } from "react";
-import Image from "next/image";
 import { Check, X } from "lucide-react";
+import Image from "next/image";
 import IntensityBadge from "../../components/IntensityBadge";
-import type { IntensityType } from "../../types";
 import { getPositionTitle } from "./fns";
+import type { IntensityType } from "../../types";
 
 export const getCellRenderer = <T extends object>(
   key: keyof T,

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import PageHeader from "../../../../components/PageHeader";
 import LetterNavigation from "../../../../components/LetterNavigation";
+import PageHeader from "../../../../components/PageHeader";
+import { defaultRetiredName } from "../../../../constants";
 import fetchData from "../../../../containers/utils/fetcher";
 import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
@@ -16,7 +17,6 @@ import type {
   Suggestion,
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
-import { defaultRetiredName } from "../../../../constants";
 
 const RetiredNamesContent = () => {
   const router = useRouter();

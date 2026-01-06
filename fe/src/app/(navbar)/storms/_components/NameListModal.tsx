@@ -12,7 +12,7 @@ import {
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
-import type { BaseModalProps, Storm, IntensityType } from "../../../../types";
+import type { BaseModalProps, Storm } from "../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
   name: string;
