@@ -19,16 +19,6 @@ export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   return "TD";
 };
 
-export const getPositionTitle = (position: number | string, type?: string): string => {
-  const pos = typeof position === "string" ? parseInt(position) : position;
-
-  if (pos === 141) return "CPHC";
-  if (pos === 142) return "NHC";
-  if (pos === 143) return "IMD";
-  if (type === "name") return position.toString();
-  return `#${position}`;
-};
-
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   // Filter storms based on highlight type
   if (type === "strongest") {

@@ -11,8 +11,9 @@ import FilterButton from "./_components/FilterButton";
 import FilterModal from "./_components/FilterModal";
 import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
-import { getPositionTitle, getDashboardTitle } from "./_utils/fns";
+import { getDashboardTitle } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
+import { getPositionTitle } from "@/src/containers/utils/fns";
 
 interface SelectedData {
   title?: string;
@@ -64,7 +65,6 @@ export default function DashboardPageContent() {
   const handleCellClick = (data: number | string, key: string) => {
     const storms = stormsData.filter((s) => s[key as keyof Storm] === data);
 
-    // Handle storms list view - clicking on a name
     if (params.view === "storms" && params.mode === "list" && key === "name") {
       const avgIntensity =
         storms.reduce((sum, s) => {
@@ -76,29 +76,36 @@ export default function DashboardPageContent() {
       return;
     }
 
-    if (params.view === "storms" || (params.view === "average" && params.filter === "name")) {
-      setSelectedData({ title: getPositionTitle(data, params.filter), storms });
+    if (params.view === "storms" && params.mode === "table") {
+      setSelectedData({ title: getPositionTitle(Number(data)), storms });
       setIsDetailModalOpen(true);
-    } else {
-      // All other routes open average modal
-      const titleMap: Record<string, string> = {
-        position: getPositionTitle(data),
-        country: data as string,
-        year: `Year ${data}`,
-      };
-
-      const avg =
-        storms.reduce((sum, s) => {
-          return sum + INTENSITY_RANK[s.intensity];
-        }, 0) / storms.length;
-
-      setSelectedData({
-        title: titleMap[key] || getPositionTitle(data),
-        average: avg,
-        storms,
-      });
-      setIsAverageModalOpen(true);
+      return;
     }
+
+    if (params.view === "average" && params.filter === "name") {
+      setSelectedData({ title: String(data), storms });
+      setIsDetailModalOpen(true);
+      return;
+    }
+
+    // All other routes open average modal
+    const titleMap: Record<string, string> = {
+      position: getPositionTitle(Number(data)),
+      country: data as string,
+      year: `Year ${data}`,
+    };
+
+    const avg =
+      storms.reduce((sum, s) => {
+        return sum + INTENSITY_RANK[s.intensity];
+      }, 0) / storms.length;
+
+    setSelectedData({
+      title: titleMap[key],
+      average: avg,
+      storms,
+    });
+    setIsAverageModalOpen(true);
   };
 
   return (

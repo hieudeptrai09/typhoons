@@ -2,8 +2,8 @@ import type { ReactNode, CSSProperties } from "react";
 import Image from "next/image";
 import { Check, X } from "lucide-react";
 import IntensityBadge from "../../components/IntensityBadge";
-import { getPositionTitle } from "../../app/(navbar)/storms/_utils/fns";
 import type { IntensityType } from "../../types";
+import { getPositionTitle } from "./fns";
 
 export const getCellRenderer = <T extends object>(
   key: keyof T,
@@ -45,29 +45,15 @@ export const getCellRenderer = <T extends object>(
     }
 
     case "position": {
-      if (typeof value === "number") {
-        return (
-          <span className={className} style={style}>
-            {getPositionTitle(value)}
-          </span>
-        );
-      }
       return (
         <span className={className} style={style}>
-          {String(value)}
+          {getPositionTitle(Number(value))}
         </span>
       );
     }
 
     case "intensity": {
-      if (typeof value === "string" || typeof value === "number") {
-        return <IntensityBadge intensity={value as IntensityType} />;
-      }
-      return (
-        <span className={className} style={style}>
-          {String(value)}
-        </span>
-      );
+      return <IntensityBadge intensity={value as IntensityType} />;
     }
 
     case "average": {
