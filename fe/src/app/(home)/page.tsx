@@ -16,23 +16,29 @@ const HomePage = () => {
         </a>
 
         <p className="mb-12 max-w-md text-center text-lg font-semibold text-gray-700">
-          Track Typhoons and Discover Their Names
+          Track typhoons and explore their names
         </p>
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu
             href="storms"
-            label="Storms"
-            color="bg-purple-800"
-            hoverColor="hover:bg-purple-900"
+            label="Browse Storms"
+            color="bg-blue-600"
+            hoverColor="hover:bg-blue-700"
           />
-          <Menu href="names" label="Names" color="bg-purple-800" hoverColor="hover:bg-purple-900" />
+          <Menu
+            href="names"
+            label="Explore Names"
+            color="bg-teal-600"
+            hoverColor="hover:bg-teal-700"
+          />
         </div>
       </div>
 
-      <footer className="flex h-16 items-center justify-center bg-emerald-700">
-        <p className="text-center text-sm text-white">
-          © {new Date().getFullYear()} {TITLE_COMMON}
+      <footer className="flex h-16 items-center justify-center gap-2 bg-slate-900">
+        <p className="text-center text-xs text-slate-400">
+          Informational use only •{" "}
+          <span className="text-slate-300">© 2026 JEBI.SE Malakas • Cá Tra</span>
         </p>
       </footer>
     </div>
