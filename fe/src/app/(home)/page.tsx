@@ -20,8 +20,18 @@ const HomePage = () => {
         </p>
 
         <div className="flex w-full max-w-sm flex-col gap-6">
-          <Menu href="storms" label="Storms" color="bg-blue-600" hoverColor="hover:bg-blue-700" />
-          <Menu href="names" label="Names" color="bg-teal-600" hoverColor="hover:bg-teal-700" />
+          <Menu
+            href="storms"
+            label="Browse Storms"
+            color="bg-blue-600"
+            hoverColor="hover:bg-blue-700"
+          />
+          <Menu
+            href="names"
+            label="Explore Names"
+            color="bg-teal-600"
+            hoverColor="hover:bg-teal-700"
+          />
         </div>
       </div>
 
