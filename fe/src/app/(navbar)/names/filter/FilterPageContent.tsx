@@ -33,7 +33,6 @@ const FilterNamesPage = () => {
   const currentLetter = searchParams.get("letter") || "A";
 
   useEffect(() => {
-    // Fetch all names (both current and retired)
     fetchData<TyphoonName[]>("/typhoon-names").then((data) => {
       if (data) {
         setNames(data.data);
@@ -49,7 +48,7 @@ const FilterNamesPage = () => {
     return [...new Set(names.map((name) => name.language).filter(Boolean))].sort();
   }, [names]);
 
-  const filteredNames = useMemo(() => {
+  const displayedNames = useMemo(() => {
     let filtered = [...names];
 
     if (searchName) {
@@ -66,24 +65,18 @@ const FilterNamesPage = () => {
       filtered = filtered.filter((name) => name.language === selectedLanguage);
     }
 
-    return filtered;
-  }, [names, searchName, selectedCountry, selectedLanguage]);
-
-  // Sort by name and filter by current letter
-  const paginatedNames = useMemo(() => {
-    // If filters are active, show all results
-    if (searchName || selectedCountry || selectedLanguage) {
-      return filteredNames;
+    const hasActiveFilters = searchName || selectedCountry || selectedLanguage;
+    if (!hasActiveFilters) {
+      filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
     }
 
-    // Otherwise, filter by current letter
-    return filteredNames.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
-  }, [filteredNames, currentLetter, searchName, selectedCountry, selectedLanguage]);
+    return filtered;
+  }, [names, searchName, selectedCountry, selectedLanguage, currentLetter]);
 
   // Categorize letters by their retired/alive status using optimized map
   const letterStatusMap = useMemo(() => {
-    return categorizeLettersByStatus(filteredNames);
-  }, [filteredNames]);
+    return categorizeLettersByStatus(names);
+  }, [names]);
 
   const activeFilterCount = [searchName, selectedCountry, selectedLanguage].filter(Boolean).length;
 
@@ -168,7 +161,7 @@ const FilterNamesPage = () => {
         <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
-      {paginatedNames.length > 0 && (
+      {displayedNames.length > 0 && (
         <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end">
           <Toggle
             value={showImageAndDescription}
@@ -179,7 +172,7 @@ const FilterNamesPage = () => {
       )}
 
       <FilteredNamesTable
-        filteredNames={paginatedNames}
+        filteredNames={displayedNames}
         showImageAndDescription={showImageAndDescription}
         onNameClick={handleNameClick}
       />

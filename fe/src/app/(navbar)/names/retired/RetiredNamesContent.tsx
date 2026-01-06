@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LetterNavigation from "../../../../components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
@@ -10,8 +10,6 @@ import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
-import { useFilteredNames } from "./_hooks/useFilteredNames";
-import { usePagination } from "./_hooks/usePagination";
 import type {
   RetiredName,
   Suggestion,
@@ -72,20 +70,52 @@ const RetiredNamesContent = () => {
 
   const countries = [...new Set(retiredNames.map((name) => name.country))].sort();
 
-  const { filteredNames, activeFilterCount } = useFilteredNames({
-    retiredNames,
-    searchName,
-    selectedYear,
-    selectedCountry,
-    retirementReason,
-  });
+  const displayedNames = useMemo(() => {
+    let filtered = [...retiredNames];
 
-  const { paginatedData, availableLettersMap } = usePagination({
-    retiredNames,
-    filteredNames,
-    activeFilterCount,
-    currentLetter,
-  });
+    if (searchName) {
+      filtered = filtered.filter((name) =>
+        name.name.toLowerCase().includes(searchName.toLowerCase()),
+      );
+    }
+
+    if (selectedYear) {
+      filtered = filtered.filter((name) => name.lastYear === Number(selectedYear));
+    }
+
+    if (selectedCountry) {
+      filtered = filtered.filter((name) => name.country === selectedCountry);
+    }
+
+    if (retirementReason) {
+      // Parse comma-separated values
+      const selectedReasons = retirementReason.split(",").map(Number);
+      filtered = filtered.filter((name) => {
+        return selectedReasons.includes(name.isLanguageProblem);
+      });
+    }
+
+    const hasActiveFilters = searchName || selectedYear || selectedCountry || retirementReason;
+    if (!hasActiveFilters) {
+      filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
+    }
+
+    return filtered;
+  }, [retiredNames, searchName, selectedYear, selectedCountry, retirementReason, currentLetter]);
+
+  // Calculate available letters (letters that have retired names)
+  const availableLettersMap = useMemo(() => {
+    const map: Record<string, boolean> = {};
+    retiredNames.forEach((name) => {
+      const letter = name.name.charAt(0).toUpperCase();
+      map[letter] = true;
+    });
+    return map;
+  }, [retiredNames]);
+
+  const activeFilterCount = [searchName, selectedYear, selectedCountry, retirementReason].filter(
+    Boolean,
+  ).length;
 
   const loadSuggestions = async (nameId: number) => {
     fetchData<Suggestion[]>(`/suggested-names?nameId=${nameId}`).then((data) => {
@@ -151,7 +181,7 @@ const RetiredNamesContent = () => {
       )}
 
       <div className="mx-auto max-w-4xl">
-        <RetiredNamesTable paginatedData={paginatedData} onNameClick={handleNameClick} />
+        <RetiredNamesTable paginatedData={displayedNames} onNameClick={handleNameClick} />
       </div>
 
       <FilterModal
