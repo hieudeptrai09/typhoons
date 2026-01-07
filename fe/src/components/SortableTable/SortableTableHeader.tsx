@@ -1,3 +1,4 @@
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import type { SortDirection } from "../../types";
 
 interface SortableTableHeaderProps<T> {
@@ -23,13 +24,25 @@ const SortableTableHeader = <T,>({
 
   const getSortIcon = () => {
     if (!isActive) {
-      return <span className="text-white/70">⇅</span>;
+      return (
+        <span className="text-white/70">
+          <ArrowUpDown size={16} />
+        </span>
+      );
     }
     if (currentSortDirection === "asc") {
-      return <span className="font-bold text-green-300">↑</span>;
+      return (
+        <span className="font-bold text-green-400">
+          <ArrowUp size={16} />
+        </span>
+      );
     }
     if (currentSortDirection === "desc") {
-      return <span className="font-bold text-red-300">↓</span>;
+      return (
+        <span className="font-bold text-red-300">
+          <ArrowDown size={16} />
+        </span>
+      );
     }
     return null;
   };
@@ -46,7 +59,9 @@ const SortableTableHeader = <T,>({
     <th className="px-6 py-3 text-left text-sm font-semibold text-white">
       <button
         onClick={() => onSort(columnKey)}
-        className="flex w-full items-center gap-1 transition-colors hover:text-blue-200"
+        className={`flex w-full items-center gap-1 underline-offset-4 transition-colors hover:text-blue-200 ${
+          isActive ? "underline" : ""
+        }`}
         title={columnTitle}
       >
         <span>{label}</span>

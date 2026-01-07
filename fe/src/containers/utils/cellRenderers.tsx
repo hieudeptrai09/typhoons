@@ -1,5 +1,5 @@
 import type { ReactNode, CSSProperties } from "react";
-import { Check, X } from "lucide-react";
+import { Flame, Skull, Zap } from "lucide-react";
 import Image from "next/image";
 import IntensityBadge from "../../components/IntensityBadge";
 import { getPositionTitle } from "./fns";
@@ -39,9 +39,9 @@ export const getCellRenderer = <T extends object>(
 
     case "isRetired": {
       if (Boolean(value)) {
-        return <Check className={className} style={style} size={20} />;
+        return <Skull className={className} style={style} size={20} />;
       }
-      return <X className="text-green-700" size={20} />;
+      return <Flame className="text-green-700" size={20} />;
     }
 
     case "position": {
