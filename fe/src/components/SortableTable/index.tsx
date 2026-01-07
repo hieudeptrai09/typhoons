@@ -31,6 +31,7 @@ const SortableTable = <T,>({
       <table className="min-w-full overflow-hidden rounded-lg border-2 border-blue-700 bg-white shadow-md">
         <thead className="bg-blue-600">
           <tr>
+            <td className="px-6 py-3 text-left text-sm font-semibold text-white">No.</td>
             {columns.map((col) => (
               <SortableTableHeader
                 key={String(col.key)}
@@ -54,6 +55,7 @@ const SortableTable = <T,>({
                 idx % 2 === 0 ? "bg-sky-100" : "bg-white"
               }`}
             >
+              <td className="px-6 py-4 text-gray-500">{idx + 1}</td>
               {columns.map((col) => (
                 <td key={String(col.key)} className="px-6 py-4 text-gray-700">
                   {getCellRenderer(row, col)}
