@@ -50,7 +50,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
           break;
       }
 
-      return { className: colorClass };
+      return { className: `font-semibold ${colorClass}` };
     }
 
     return {};

@@ -193,7 +193,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       if (key === "name") {
         const intensityLabel = getIntensityFromNumber(row.avgIntensity);
         const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-        return { style: { color: textColor } };
+        return { className: "font-bold", style: { color: textColor } };
       }
       return {};
     };

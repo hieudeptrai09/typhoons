@@ -5,7 +5,7 @@ import IntensityBadge from "../../components/IntensityBadge";
 import { getPositionTitle } from "./fns";
 import type { IntensityType } from "../../types";
 
-export const getCellRenderer = <T extends object>(
+const getCellRenderer = <T extends object>(
   key: keyof T,
   row: T,
   className: string = "",
@@ -16,7 +16,7 @@ export const getCellRenderer = <T extends object>(
   switch (key) {
     case "name": {
       return (
-        <span className={`font-bold ${className}`} style={style}>
+        <span className={`${className}`} style={style}>
           {String(value)}
         </span>
       );
@@ -41,7 +41,7 @@ export const getCellRenderer = <T extends object>(
       if (Boolean(value)) {
         return <Skull className={className} style={style} size={20} />;
       }
-      return <Flame className="text-green-700" size={20} />;
+      return <Flame className={className} size={20} />;
     }
 
     case "position": {

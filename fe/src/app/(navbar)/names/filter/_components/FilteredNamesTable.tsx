@@ -45,12 +45,16 @@ const FilteredNamesTable = ({
       } else if (Boolean(row.isRetired)) {
         colorClass = "text-red-600";
       }
-      return { className: colorClass };
+      return { className: `font-semibold ${colorClass}` };
     }
 
-    if (key === "isRetired" && Boolean(row.isRetired)) {
-      // Color for check icon based on language problem
-      const colorClass = row.isLanguageProblem === 2 ? "text-amber-500" : "text-red-600";
+    if (key === "isRetired") {
+      // Color for retired icon based on status
+      const colorClass = row.isRetired
+        ? row.isLanguageProblem === 2
+          ? "text-amber-500"
+          : "text-red-600"
+        : "text-green-700";
       return { className: colorClass };
     }
 
