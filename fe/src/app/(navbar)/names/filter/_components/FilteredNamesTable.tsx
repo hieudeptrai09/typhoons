@@ -39,7 +39,7 @@ const FilteredNamesTable = ({
   const getCellConfig = (row: TyphoonName, key: keyof TyphoonName) => {
     if (key === "name") {
       // Determine name color based on status
-      let colorClass = "text-blue-600";
+      let colorClass = "text-green-700";
       if (row.isLanguageProblem === 2) {
         colorClass = "text-amber-500";
       } else if (Boolean(row.isRetired)) {

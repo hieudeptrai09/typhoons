@@ -41,7 +41,7 @@ export const getCellRenderer = <T extends object>(
       if (Boolean(value)) {
         return <Check className={className} style={style} size={20} />;
       }
-      return <X className="text-gray-600" size={20} />;
+      return <X className="text-green-700" size={20} />;
     }
 
     case "position": {

@@ -50,8 +50,8 @@ const SortableTable = <T,>({
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className={`cursor-pointer transition-colors hover:bg-blue-100 ${
-                idx % 2 === 0 ? "bg-sky-50" : "bg-white"
+              className={`cursor-pointer transition-colors hover:bg-blue-200 ${
+                idx % 2 === 0 ? "bg-sky-100" : "bg-white"
               }`}
             >
               {columns.map((col) => (
