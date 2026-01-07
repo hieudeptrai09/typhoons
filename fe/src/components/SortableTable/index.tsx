@@ -28,8 +28,8 @@ const SortableTable = <T,>({
 
   return (
     <div className={`mx-auto overflow-x-auto ${className}`}>
-      <table className="min-w-full overflow-hidden rounded-lg bg-white shadow-md">
-        <thead className="bg-stone-200">
+      <table className="min-w-full overflow-hidden rounded-lg border-2 border-blue-700 bg-white shadow-md">
+        <thead className="bg-blue-600">
           <tr>
             {columns.map((col) => (
               <SortableTableHeader
@@ -50,7 +50,9 @@ const SortableTable = <T,>({
             <tr
               key={idx}
               onClick={() => onRowClick && onRowClick(row)}
-              className="cursor-pointer transition-colors hover:bg-gray-100"
+              className={`cursor-pointer transition-colors hover:bg-blue-100 ${
+                idx % 2 === 0 ? "bg-sky-50" : "bg-white"
+              }`}
             >
               {columns.map((col) => (
                 <td key={String(col.key)} className="px-6 py-4 text-gray-700">
