@@ -25,7 +25,7 @@ const NameInfo = ({
     { label: "Replacement", value: replacementName, className: "font-semibold text-teal-600" },
   ];
 
-  if (!!image) {
+  if (!image) {
     fields.push({ label: "Description", value: description });
   }
 
