@@ -9,12 +9,12 @@ export interface TyphoonName {
   isLanguageProblem: number;
   image?: string;
   description?: string;
+  replacementName: string;
 }
 
 export interface RetiredName extends TyphoonName {
   lastYear: number;
   note?: string;
-  replacementName: string;
 }
 
 export interface Suggestion {
