@@ -1,5 +1,5 @@
 import type { ReactNode, CSSProperties } from "react";
-import { Flame, Skull, Zap } from "lucide-react";
+import { Flame, Skull } from "lucide-react";
 import Image from "next/image";
 import IntensityBadge from "../../components/IntensityBadge";
 import { getPositionTitle } from "./fns";
@@ -24,7 +24,7 @@ const getCellRenderer = <T extends object>(
 
     case "image": {
       if (!value) {
-        return <span className="text-gray-400">-</span>;
+        return <span className="text-gray-700">-</span>;
       }
 
       const imageSrc = String(value);
