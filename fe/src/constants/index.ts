@@ -93,6 +93,7 @@ export const defaultTyphoonName: TyphoonName = {
 export const defaultRetiredName: RetiredName = {
   ...defaultTyphoonName,
   lastYear: 0,
+  replacementName: "",
 };
 
 export const defaultSuggestion: Suggestion = {
