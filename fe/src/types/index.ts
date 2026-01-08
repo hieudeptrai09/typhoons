@@ -14,6 +14,7 @@ export interface TyphoonName {
 export interface RetiredName extends TyphoonName {
   lastYear: number;
   note?: string;
+  replacementName: string;
 }
 
 export interface Suggestion {

@@ -19,6 +19,7 @@ class TyphoonNameController
                     tn.isRetired,
                     tn.isReplaced,
                     tn.isLanguageProblem,
+                    tn.replacementName,
                     tn.note,
                     tn.language,
                     tn.lastYear,

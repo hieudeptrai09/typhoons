@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
@@ -9,12 +10,16 @@ export interface NameDetailsModalProps extends BaseModalProps {
   suggestions: Suggestion[];
 }
 
+type TabType = "info" | "suggestions";
+
 const NameDetailsModal = ({
   isOpen,
   onClose,
   selectedName,
   suggestions,
 }: NameDetailsModalProps) => {
+  const [activeTab, setActiveTab] = useState<TabType>("info");
+
   if (!selectedName) return null;
 
   const getNameColor = (selectedName: RetiredName): string => {
@@ -34,6 +39,13 @@ const NameDetailsModal = ({
     }
   };
 
+  const getTabClasses = (tab: TabType) => {
+    const isActive = activeTab === tab;
+    return `flex-1 px-6 pb-3 font-semibold transition-colors ${
+      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
+    }`;
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -42,23 +54,39 @@ const NameDetailsModal = ({
       wrapperClassName="max-w-2xl max-h-[80vh] overflow-hidden"
       titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
     >
-      <div className="mb-6 flex items-center gap-6 border-b border-gray-200 pb-4">
-        <NameInfo
-          meaning={selectedName.meaning}
-          country={selectedName.country}
-          position={selectedName.position}
-          language={selectedName.language}
-        />
-        <NameImage
-          src={selectedName.image}
-          alt={selectedName.name}
-          description={selectedName.description}
-        />
+      <div className="mb-6 flex border-b border-gray-200">
+        <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
+          Name Information
+        </button>
+        <button
+          onClick={() => setActiveTab("suggestions")}
+          className={getTabClasses("suggestions")}
+        >
+          Suggested Replacements
+        </button>
       </div>
 
-      <div className="max-h-[calc(80vh-200px)] pb-6">
-        <h3 className="mb-4 text-xl font-bold text-gray-700">Suggested Replacements</h3>
-        <SuggestionsList suggestions={suggestions} />
+      <div className="h-[calc(80vh-140px)] pb-6">
+        {activeTab === "info" && (
+          <div className="flex h-full items-center justify-center">
+            <div className="flex items-center gap-6">
+              <NameInfo
+                meaning={selectedName.meaning}
+                country={selectedName.country}
+                position={selectedName.position}
+                language={selectedName.language}
+                replacementName={selectedName.replacementName}
+              />
+              <NameImage
+                src={selectedName.image}
+                alt={selectedName.name}
+                description={selectedName.description}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "suggestions" && <SuggestionsList suggestions={suggestions} />}
       </div>
     </Modal>
   );
