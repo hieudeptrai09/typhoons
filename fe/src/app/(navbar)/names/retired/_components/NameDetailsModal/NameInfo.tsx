@@ -4,26 +4,43 @@ interface NameInfoProps {
   position: number;
   language: string;
   replacementName: string;
+  description: string;
+  image: string;
 }
 
-const NameInfo = ({ meaning, country, position, language, replacementName }: NameInfoProps) => {
+const NameInfo = ({
+  meaning,
+  country,
+  position,
+  language,
+  replacementName,
+  description,
+  image,
+}: NameInfoProps) => {
+  const fields = [
+    { label: "Meaning", value: meaning, className: "italic" },
+    { label: "Country", value: country },
+    { label: "Language", value: language },
+    { label: "Index", value: position },
+    { label: "Replacement", value: replacementName, className: "font-semibold text-teal-600" },
+  ];
+
+  if (!!image) {
+    fields.push({ label: "Description", value: description });
+  }
+
   return (
     <div className="flex-1">
-      <p className="text-gray-700">
-        <span className="font-semibold">Meaning:</span> {meaning}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold">Country:</span> {country}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold">Position:</span> {position}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold">Language:</span> {language}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold">Replacement:</span> {replacementName}
-      </p>
+      {fields.map(({ label, value, className }) => {
+        return (
+          value && (
+            <p key={label} className="pb-1 text-gray-700">
+              <span className="rounded-sm bg-blue-50 p-1 font-semibold">{label}:</span>{" "}
+              <span className={className}>{value}</span>
+            </p>
+          )
+        );
+      })}
     </div>
   );
 };

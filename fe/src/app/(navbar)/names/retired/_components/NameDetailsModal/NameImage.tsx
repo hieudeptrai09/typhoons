@@ -35,7 +35,9 @@ const NameImage = ({ src, alt, description }: NameImageProps) => {
           />
         )}
       </div>
-      <p className="text-center text-xs text-gray-700 italic">{description || ""}</p>
+      <p className="text-center text-xs leading-relaxed text-gray-700 italic">
+        {description || ""}
+      </p>
     </div>
   );
 };

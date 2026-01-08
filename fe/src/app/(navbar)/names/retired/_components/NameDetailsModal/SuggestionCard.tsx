@@ -25,7 +25,9 @@ const SuggestionCard = ({ suggestion, hasAnyImage }: SuggestionCardProps) => {
           <div className="mb-1 font-semibold text-gray-700">
             {suggestion.replacementName}
             {Boolean(suggestion.isChosen) && (
-              <span className="ml-2 rounded bg-blue-500 px-2 py-1 text-xs text-white">CHOSEN</span>
+              <span className="ml-2 rounded bg-blue-500 px-2 py-1 text-xs text-white">
+                APPROVED
+              </span>
             )}
           </div>
           <div className="text-sm text-gray-700">{suggestion.replacementMeaning}</div>

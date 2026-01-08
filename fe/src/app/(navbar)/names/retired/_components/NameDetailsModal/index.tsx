@@ -46,6 +46,9 @@ const NameDetailsModal = ({
     }`;
   };
 
+  // Check if there's any image or description to display
+  const hasImageOrDescription = !!selectedName.image;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -69,13 +72,17 @@ const NameDetailsModal = ({
       <div className="h-[calc(80vh-140px)] pb-6">
         {activeTab === "info" && (
           <div className="flex h-full items-center justify-center">
-            <div className="flex items-center gap-6">
+            <div
+              className={`flex items-center gap-6 ${!hasImageOrDescription ? "rounded-lg bg-gray-50 p-8 shadow-sm" : ""}`}
+            >
               <NameInfo
                 meaning={selectedName.meaning}
                 country={selectedName.country}
                 position={selectedName.position}
                 language={selectedName.language}
                 replacementName={selectedName.replacementName}
+                description={selectedName.description || ""}
+                image={selectedName.image || ""}
               />
               <NameImage
                 src={selectedName.image}
