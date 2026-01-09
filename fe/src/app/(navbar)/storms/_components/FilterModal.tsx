@@ -107,12 +107,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
   const filterOptions = getFilterOptions();
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Dashboard View Options"
-      wrapperClassName="max-w-lg"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Dashboard View Options" maxWidth={512}>
       <div className="mb-6 space-y-4">
         <ButtonGroup
           label="View"

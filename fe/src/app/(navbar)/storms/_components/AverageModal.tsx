@@ -54,7 +54,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
   const selectedNameData = nameData.find((d) => d.name === selectedName);
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={title} wrapperClassName="max-w-md">
+    <Modal isOpen={isOpen} onClose={handleClose} title={title} maxWidth={448}>
       <div className="space-y-3">
         <div title={JSON.stringify(INTENSITY_RANK)}>
           <span className="text-blue-700">Overall Average Intensity: </span>

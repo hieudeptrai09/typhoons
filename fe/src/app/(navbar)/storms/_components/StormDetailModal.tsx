@@ -22,7 +22,7 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
   const hasMultipleNames = nameGroups.length > 1;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} wrapperClassName="max-w-md">
+    <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth={448}>
       <div className="flex max-h-96 flex-col overflow-y-auto">
         {nameGroups.map(([name, stormGroup], groupIndex) => (
           <div key={name} className="flex flex-col gap-1.5">

@@ -43,7 +43,7 @@ const FilterModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" wrapperClassName="max-w-md">
+    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={448}>
       <div className="space-y-4">
         <FilterSection
           label="Filter by Name"

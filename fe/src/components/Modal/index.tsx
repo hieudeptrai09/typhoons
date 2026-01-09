@@ -7,7 +7,8 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  wrapperClassName?: string;
+  maxWidth?: number;
+  height?: number;
   titleClassName?: string;
   titleStyle?: CSSProperties;
 }
@@ -17,7 +18,8 @@ const Modal = ({
   onClose,
   title,
   children,
-  wrapperClassName = "",
+  maxWidth = 672, // default: 42rem (max-w-2xl equivalent)
+  height,
   titleClassName = "",
   titleStyle = {},
 }: ModalProps) => {
@@ -41,13 +43,19 @@ const Modal = ({
 
   if (!isOpen) return null;
 
+  const modalStyle: CSSProperties = {
+    maxWidth: `${maxWidth}px`,
+    ...(height && { height: `${height}px` }),
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={onClose}
     >
       <div
-        className={`flex max-h-[90vh] w-full flex-col rounded-lg bg-white ${wrapperClassName}`}
+        className="flex max-h-[90vh] w-full flex-col rounded-lg bg-white"
+        style={modalStyle}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-start justify-between border-b border-gray-300 p-6 pb-4">

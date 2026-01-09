@@ -55,7 +55,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
       isOpen={isOpen}
       onClose={handleClose}
       title={name}
-      wrapperClassName="max-w-lg"
+      maxWidth={512}
       titleClassName="!text-3xl"
       titleStyle={titleStyle}
     >

@@ -43,7 +43,7 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" wrapperClassName="max-w-2xl">
+    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={672}>
       <div className="space-y-4">
         <NameSearchInput value={tempSearchName} onChange={setTempSearchName} />
 

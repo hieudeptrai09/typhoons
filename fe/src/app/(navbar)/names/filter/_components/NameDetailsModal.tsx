@@ -15,7 +15,7 @@ const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalPro
       isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
-      wrapperClassName={hasImage ? "max-w-xl" : "max-w-lg"}
+      maxWidth={hasImage ? 576 : 512}
       titleClassName={`!text-3xl ${
         Boolean(selectedName.isRetired)
           ? selectedName.isLanguageProblem === 2

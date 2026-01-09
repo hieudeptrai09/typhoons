@@ -54,7 +54,8 @@ const NameDetailsModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
-      wrapperClassName="max-w-2xl h-[80vh]"
+      maxWidth={672}
+      height={typeof window !== "undefined" ? window.innerHeight * 0.8 : 600}
       titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
     >
       <div className="mb-6 flex border-b border-gray-200">
