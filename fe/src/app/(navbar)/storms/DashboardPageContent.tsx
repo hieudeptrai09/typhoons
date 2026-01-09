@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PageHeader from "../../../components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import fetchData from "../../../containers/utils/fetcher";
+import { getPositionTitle } from "../../../containers/utils/fns";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
 import FilterButton from "./_components/FilterButton";
@@ -13,7 +14,6 @@ import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
 import { getDashboardTitle } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
-import { getPositionTitle } from "@/src/containers/utils/fns";
 
 interface SelectedData {
   title?: string;

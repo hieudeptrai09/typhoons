@@ -265,7 +265,6 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
         columns={getAverageColumns(params.filter)}
         onRowClick={(row) => {
           const value = row[params.filter as keyof typeof row];
-          console.log(value);
           if (value !== undefined) {
             onCellClick(value as number | string, params.filter);
           }

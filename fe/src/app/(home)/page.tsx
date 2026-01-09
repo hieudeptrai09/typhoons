@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { TITLE_COMMON } from "../../constants";
 import Menu from "./_components/Menu";
 
 const HomePage = () => {

@@ -11,13 +11,10 @@ const SuggestionsList = ({ suggestions }: SuggestionsListProps) => {
     return <EmptySuggestions />;
   }
 
-  // Check if any suggestion has an image
-  const hasAnyImage = suggestions.some((s) => s.image);
-
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col items-center space-y-3">
       {suggestions.map((suggestion, sidx) => (
-        <SuggestionCard key={sidx} suggestion={suggestion} hasAnyImage={hasAnyImage} />
+        <SuggestionCard key={sidx} suggestion={suggestion} />
       ))}
     </div>
   );

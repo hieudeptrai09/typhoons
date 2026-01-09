@@ -54,7 +54,7 @@ const NameDetailsModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title={selectedName.name}
-      wrapperClassName="max-w-2xl max-h-[80vh] overflow-hidden"
+      wrapperClassName="max-w-2xl h-[80vh]"
       titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
     >
       <div className="mb-6 flex border-b border-gray-200">
@@ -69,7 +69,7 @@ const NameDetailsModal = ({
         </button>
       </div>
 
-      <div className="h-[calc(80vh-140px)] pb-6">
+      <div className="flex-1">
         {activeTab === "info" && (
           <div className="flex h-full items-center justify-center">
             <div
