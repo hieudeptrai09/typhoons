@@ -35,7 +35,7 @@ const NameInfo = ({
         return (
           value && (
             <p key={label} className="pb-1 text-gray-700">
-              <span className="rounded-sm bg-blue-50 p-1 font-semibold">{label}:</span>{" "}
+              <span className="font-semibold">{label}:</span>{" "}
               <span className={className}>{value}</span>
             </p>
           )
