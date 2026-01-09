@@ -26,7 +26,7 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
         <div className="flex-1 text-sm text-gray-700">{suggestion.replacementMeaning}</div>
 
         <div
-          className={`relative w-32 shrink-0 bg-gray-200 md:w-36 ${imageVisibilityClass}`}
+          className={`relative w-32 shrink-0 rounded-lg border border-gray-200 bg-gray-200 md:w-36 ${imageVisibilityClass}`}
           style={{ aspectRatio: "4/3" }}
         >
           {suggestion.image && (
@@ -34,7 +34,7 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
               src={suggestion.image}
               alt={suggestion.replacementName}
               fill
-              className="rounded-lg border border-gray-200 object-contain shadow-sm"
+              className="object-contain shadow-sm"
               unoptimized
             />
           )}

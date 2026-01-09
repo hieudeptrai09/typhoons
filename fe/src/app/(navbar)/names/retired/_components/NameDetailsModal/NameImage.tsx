@@ -10,35 +10,18 @@ const NameImage = ({ src, alt, description }: NameImageProps) => {
   const hasImage = !!src;
   const hasDescription = !!description;
 
-  // Determine image visibility: hidden if no src and no description, invisible if no src but has description
-  const getImageVisibility = (): string => {
-    if (!hasImage && !hasDescription) return "hidden";
-    if (!hasImage && hasDescription) return "invisible";
-    return "";
-  };
-
-  return (
-    <div
-      className={`flex flex-col gap-2 ${
-        hasDescription || hasImage ? "flex-1" : "w-0"
-      } ${!hasDescription && "self-end"}`}
-    >
-      <div className={`relative flex max-h-72 justify-center ${getImageVisibility()}`}>
-        {hasImage && (
-          <Image
-            src={src}
-            alt={alt}
-            width={400}
-            height={288}
-            className="rounded-lg object-cover shadow-md"
-            unoptimized
-          />
-        )}
+  return src ? (
+    <div className={`flex flex-1 flex-col gap-2 ${!hasDescription && "self-end"}`}>
+      <div
+        className="relative flex max-h-3/4 justify-center rounded-lg bg-gray-50"
+        style={{ aspectRatio: "4/3" }}
+      >
+        <Image src={src} alt={alt} fill className="object-contain" unoptimized />
       </div>
-      <p className="text-center text-xs leading-relaxed text-gray-700 italic">
-        {description || ""}
-      </p>
+      {description && <p className="text-center text-xs text-gray-700 italic">{description}</p>}
     </div>
+  ) : (
+    <></>
   );
 };
 

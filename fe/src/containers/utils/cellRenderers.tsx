@@ -31,8 +31,8 @@ const getCellRenderer = <T extends object>(
       const altText = "name" in row && typeof row.name === "string" ? row.name : "Image";
 
       return (
-        <div className={`relative max-h-52 min-h-24 min-w-28 ${className}`}>
-          <Image src={imageSrc} alt={altText} fill className="rounded object-cover" unoptimized />
+        <div className={`relative h-28 rounded-lg ${className}`} style={{ aspectRatio: 4 / 3 }}>
+          <Image src={imageSrc} alt={altText} fill className="object-contain" unoptimized />
         </div>
       );
     }
