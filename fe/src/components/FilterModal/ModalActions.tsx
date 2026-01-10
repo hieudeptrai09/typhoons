@@ -1,29 +1,22 @@
 interface ModalActionsProps {
   onClearAll: () => void;
   onApply: () => void;
-  clearLabel?: string;
-  applyLabel?: string;
 }
 
-const ModalActions = ({
-  onClearAll,
-  onApply,
-  clearLabel = "Clear All",
-  applyLabel = "Apply Filters",
-}: ModalActionsProps) => {
+const ModalActions = ({ onClearAll, onApply }: ModalActionsProps) => {
   return (
     <div className="mt-6 flex gap-3">
       <button
         onClick={onClearAll}
         className="flex-1 rounded-lg bg-gray-300 px-4 py-2 font-semibold text-gray-700 transition-colors hover:bg-gray-400"
       >
-        {clearLabel}
+        Clear All
       </button>
       <button
         onClick={onApply}
         className="flex-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-600"
       >
-        {applyLabel}
+        Apply
       </button>
     </div>
   );
