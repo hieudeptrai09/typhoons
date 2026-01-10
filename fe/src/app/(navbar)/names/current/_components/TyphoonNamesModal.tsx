@@ -16,7 +16,7 @@ const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalPro
       onClose={onClose}
       title={selectedName.name}
       maxWidth={hasImage ? 640 : 560}
-      titleClassName="!text-3xl !text-blue-600"
+      titleClassName="!text-blue-600"
     >
       <div>
         <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
