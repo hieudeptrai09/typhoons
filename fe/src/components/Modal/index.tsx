@@ -50,7 +50,7 @@ const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
       onClick={onClose}
     >
       <div
@@ -69,7 +69,7 @@ const Modal = ({
             <X size={24} />
           </button>
         </div>
-        <div className="flex flex-1 flex-col overflow-y-auto p-4 md:p-6">{children}</div>
+        <div className="flex flex-1 flex-col overflow-y-auto p-6">{children}</div>
       </div>
     </div>
   );

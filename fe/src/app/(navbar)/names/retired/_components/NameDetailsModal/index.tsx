@@ -72,11 +72,12 @@ const NameDetailsModal = ({
 
       <div className="flex-1">
         {activeTab === "info" && (
-          <div className="flex h-full items-center justify-center">
+          <div className="flex h-full items-start justify-center">
             <div
-              className={`flex items-center gap-3 ${!hasImageOrDescription ? "rounded-lg bg-gray-50 p-8 shadow-sm" : "w-full"}`}
+              className={`flex w-full gap-6 ${!hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""}`}
             >
               <NameInfo
+                name={selectedName.name}
                 meaning={selectedName.meaning}
                 country={selectedName.country}
                 position={selectedName.position}
