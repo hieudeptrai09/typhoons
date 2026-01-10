@@ -27,7 +27,7 @@ const NameDetailsModal = ({ isOpen, onClose, selectedName }: NameDetailsModalPro
       <div>
         <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
           <div className="flex-1 space-y-4">
-            <p className="mt-1 leading-relaxed font-semibold text-indigo-700">
+            <p className="mt-1 leading-relaxed font-semibold text-teal-600">
               {selectedName.meaning}
             </p>
 

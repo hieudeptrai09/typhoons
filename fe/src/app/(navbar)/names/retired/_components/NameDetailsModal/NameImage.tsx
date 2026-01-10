@@ -7,22 +7,21 @@ interface NameImageProps {
 }
 
 const NameImage = ({ src, alt, description }: NameImageProps) => {
-  const hasImage = !!src;
   const hasDescription = !!description;
 
   return src ? (
-    <div className={`flex flex-1 flex-col gap-2 ${!hasDescription && "self-end"}`}>
+    <div className="flex w-64 shrink-0 flex-col gap-3">
       <div
-        className="relative flex max-h-3/4 justify-center rounded-lg bg-gray-50"
+        className="relative flex justify-center overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-50 shadow-sm"
         style={{ aspectRatio: "4/3" }}
       >
         <Image src={src} alt={alt} fill className="object-contain" unoptimized />
       </div>
-      {description && <p className="text-center text-xs text-gray-700 italic">{description}</p>}
+      {hasDescription && (
+        <p className="text-center text-xs leading-relaxed text-gray-600 italic">{description}</p>
+      )}
     </div>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default NameImage;
