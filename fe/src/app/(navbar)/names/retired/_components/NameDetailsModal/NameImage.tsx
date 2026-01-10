@@ -10,7 +10,7 @@ const NameImage = ({ src, alt, description }: NameImageProps) => {
   const hasDescription = !!description;
 
   return src ? (
-    <div className="flex w-64 shrink-0 flex-col gap-3">
+    <div className="flex flex-1 flex-col gap-3">
       <div
         className="relative flex justify-center overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-50 shadow-sm"
         style={{ aspectRatio: "4/3" }}
