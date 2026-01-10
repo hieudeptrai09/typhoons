@@ -1,11 +1,6 @@
 import { INTENSITY_RANK } from "../../../../constants";
+import { normalizeParam } from "../../../../containers/utils/fns";
 import type { Storm, IntensityType } from "../../../../types";
-
-// Helper to normalize search params to string
-const normalizeParam = (param: string | string[] | undefined): string => {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-};
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);

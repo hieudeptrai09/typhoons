@@ -1,35 +1,28 @@
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import Modal from "../Modal";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../types";
 
-interface NameDetailModalProps extends BaseModalProps {
+interface NameDetailsModalProps extends BaseModalProps {
   name: TyphoonName | RetiredName;
-  titleColor?: string;
-  titleClassName?: string;
 }
 
-const NameDetailModal = ({
-  isOpen,
-  onClose,
-  name,
-  titleColor,
-  titleClassName = "!text-3xl !text-blue-600",
-}: NameDetailModalProps) => {
+const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
-  const maxWidth = hasImage ? 576 : 512;
-
-  const titleStyle: CSSProperties | undefined = titleColor ? { color: titleColor } : undefined;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       title={name.name}
-      maxWidth={maxWidth}
-      titleClassName={titleClassName}
-      titleStyle={titleStyle}
+      maxWidth={hasImage ? 576 : 512}
+      titleClassName={`!text-3xl ${
+        Boolean(name.isRetired)
+          ? name.isLanguageProblem === 2
+            ? "!text-amber-500"
+            : "!text-red-600"
+          : "!text-blue-600"
+      }`}
     >
       <div className="flex items-center gap-3">
         <div className="flex-1 space-y-3">
@@ -74,4 +67,4 @@ const NameDetailModal = ({
   );
 };
 
-export default NameDetailModal;
+export default NameDetailsModal;

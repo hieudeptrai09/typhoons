@@ -1,8 +1,4 @@
-// Helper to normalize search params to string
-const normalizeParam = (param: string | string[] | undefined): string => {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-};
+import { normalizeParam } from "../../../../../containers/utils/fns";
 
 export const getRetiredNamesTitle = (
   name?: string | string[],

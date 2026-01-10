@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ModalActions from "../../../../components/FilterModal/ModalActions";
 import Modal from "../../../../components/Modal";
 import type { BaseModalProps, DashboardParams as FilterModalParams } from "../../../../types";
 
@@ -147,20 +148,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
         />
       </div>
 
-      <div className="mt-6 flex gap-3">
-        <button
-          onClick={handleClearAll}
-          className="flex-1 rounded-lg bg-gray-300 px-4 py-2 font-semibold text-gray-700 transition-colors hover:bg-gray-400"
-        >
-          Clear All
-        </button>
-        <button
-          onClick={handleApply}
-          className="flex-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-600"
-        >
-          Apply
-        </button>
-      </div>
+      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
     </Modal>
   );
 };

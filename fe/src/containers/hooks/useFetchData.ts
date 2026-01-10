@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
@@ -28,7 +28,7 @@ export const useFetchData = <T>(endpoint: string): UseFetchDataResult<T> => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchDataAsync = async () => {
+  const fetchDataAsync = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -43,11 +43,11 @@ export const useFetchData = <T>(endpoint: string): UseFetchDataResult<T> => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [endpoint]);
 
   useEffect(() => {
     fetchDataAsync();
-  }, [endpoint]);
+  }, [endpoint, fetchDataAsync]);
 
   return { data, loading, error, refetch: fetchDataAsync };
 };

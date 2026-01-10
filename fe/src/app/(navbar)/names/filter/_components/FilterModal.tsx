@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import FilterInput from "../../../../../components/FilterModal/FilterInput";
+import FilterSelect from "../../../../../components/FilterModal/FilterSelect";
+import ModalActions from "../../../../../components/FilterModal/ModalActions";
 import Modal from "../../../../../components/Modal";
-import FilterSection from "./FilterSection";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
@@ -33,6 +35,7 @@ const FilterModal = ({
       name: tempSearchName,
       country: tempSelectedCountry,
       language: tempSelectedLanguage,
+      letter: "",
     });
   };
 
@@ -45,73 +48,31 @@ const FilterModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={448}>
       <div className="space-y-4">
-        <FilterSection
+        <FilterInput
           label="Filter by Name"
-          hasValue={Boolean(tempSearchName)}
-          onClear={() => setTempSearchName("")}
-        >
-          <input
-            type="text"
-            placeholder="Enter typhoon name..."
-            value={tempSearchName}
-            onChange={(e) => setTempSearchName(e.target.value)}
-            className="w-full rounded-lg border border-gray-400 px-4 py-2 text-blue-600 outline-none focus:border-blue-500"
-          />
-        </FilterSection>
+          value={tempSearchName}
+          onChange={setTempSearchName}
+          placeholder="Enter typhoon name..."
+        />
 
-        <FilterSection
+        <FilterSelect
           label="Filter by Country"
-          hasValue={Boolean(tempSelectedCountry)}
-          onClear={() => setTempSelectedCountry("")}
-        >
-          <select
-            value={tempSelectedCountry}
-            onChange={(e) => setTempSelectedCountry(e.target.value)}
-            className="w-full rounded-lg border border-gray-400 px-4 py-2 text-blue-500 outline-none focus:border-blue-500"
-          >
-            <option value="">All Countries</option>
-            {countries.map((country) => (
-              <option key={country} value={country}>
-                {country}
-              </option>
-            ))}
-          </select>
-        </FilterSection>
+          value={tempSelectedCountry}
+          onChange={setTempSelectedCountry}
+          options={countries}
+          placeholder="All Countries"
+        />
 
-        <FilterSection
+        <FilterSelect
           label="Filter by Language"
-          hasValue={Boolean(tempSelectedLanguage)}
-          onClear={() => setTempSelectedLanguage("")}
-        >
-          <select
-            value={tempSelectedLanguage}
-            onChange={(e) => setTempSelectedLanguage(e.target.value)}
-            className="w-full rounded-lg border border-gray-400 px-4 py-2 text-blue-500 outline-none focus:border-blue-500"
-          >
-            <option value="">All Languages</option>
-            {languages.map((language) => (
-              <option key={language} value={language}>
-                {language}
-              </option>
-            ))}
-          </select>
-        </FilterSection>
+          value={tempSelectedLanguage}
+          onChange={setTempSelectedLanguage}
+          options={languages}
+          placeholder="All Languages"
+        />
       </div>
 
-      <div className="mt-6 flex gap-3">
-        <button
-          onClick={handleClearAll}
-          className="flex-1 rounded-lg bg-gray-300 px-4 py-2 font-semibold text-gray-700 transition-colors hover:bg-gray-400"
-        >
-          Clear All
-        </button>
-        <button
-          onClick={handleApply}
-          className="flex-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-600"
-        >
-          Apply Filters
-        </button>
-      </div>
+      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
     </Modal>
   );
 };

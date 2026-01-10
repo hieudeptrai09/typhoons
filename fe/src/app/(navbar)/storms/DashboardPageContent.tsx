@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import PageHeader from "../../../components/PageHeader";
+import Waiting from "../../../components/Waiting";
 import { INTENSITY_RANK } from "../../../constants";
-import fetchData from "../../../containers/utils/fetcher";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
+import { useURLParams } from "../../../containers/hooks/useURLParams";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
@@ -24,48 +25,31 @@ interface SelectedData {
 }
 
 export default function DashboardPageContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { params, updateParams } = useURLParams<DashboardParams>();
+  const { data: stormsData, loading, error } = useFetchData<Storm[]>("/storms");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
-  const [stormsData, setStormsData] = useState<Storm[]>([]);
 
-  // Initialize params from URL searchParams
-  const params: DashboardParams = {
-    view: searchParams.get("view") || "storms",
-    mode: searchParams.get("mode") || "table",
-    filter: searchParams.get("filter") || "",
-  };
+  // Get params with defaults
+  const view = params.view || "storms";
+  const mode = params.mode || "table";
+  const filter = params.filter || "";
 
-  useEffect(() => {
-    const loadStorms = async () => {
-      const result = await fetchData<Storm[]>("/storms");
-      if (result) {
-        setStormsData(result.data);
-      }
-    };
-
-    loadStorms();
-  }, []);
+  const currentParams: DashboardParams = { view, mode, filter };
 
   const handleApplyFilter = (newParams: DashboardParams) => {
     setIsFilterModalOpen(false);
-
-    const searchParams = new URLSearchParams();
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value) searchParams.set(key, value);
-    });
-    router.push(`/storms${searchParams.toString() ? `?${searchParams}` : ""}`);
+    updateParams(newParams, true);
   };
 
   const handleCellClick = (data: number | string, key: string) => {
-    const storms = stormsData.filter((s) => s[key as keyof Storm] === data);
+    const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
-    if (params.view === "storms" && params.mode === "list" && key === "name") {
+    if (view === "storms" && mode === "list" && key === "name") {
       const avgIntensity =
         storms.reduce((sum, s) => {
           return sum + INTENSITY_RANK[s.intensity];
@@ -76,13 +60,13 @@ export default function DashboardPageContent() {
       return;
     }
 
-    if (params.view === "storms" && params.mode === "table") {
+    if (view === "storms" && mode === "table") {
       setSelectedData({ title: getPositionTitle(Number(data)), storms });
       setIsDetailModalOpen(true);
       return;
     }
 
-    if (params.view === "average" && params.filter === "name") {
+    if (view === "average" && filter === "name") {
       setSelectedData({ title: String(data), storms });
       setIsDetailModalOpen(true);
       return;
@@ -108,18 +92,30 @@ export default function DashboardPageContent() {
     setIsAverageModalOpen(true);
   };
 
-  return (
-    <PageHeader title={getDashboardTitle(params.view, params.mode, params.filter)}>
-      <FilterButton onClick={() => setIsFilterModalOpen(true)} params={params} />
+  if (loading) {
+    return <Waiting content="Loading Current Names..." />;
+  }
 
-      <DashboardContent params={params} stormsData={stormsData} onCellClick={handleCellClick} />
+  if (error) {
+    return <Waiting content="There are some errors during loading data..." />;
+  }
+
+  return (
+    <PageHeader title={getDashboardTitle(view, mode, filter)}>
+      <FilterButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+
+      <DashboardContent
+        params={currentParams}
+        stormsData={stormsData || []}
+        onCellClick={handleCellClick}
+      />
 
       <FilterModal
-        key={JSON.stringify(params)}
+        key={JSON.stringify(currentParams)}
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilter}
-        currentParams={params}
+        currentParams={currentParams}
       />
 
       <StormDetailModal

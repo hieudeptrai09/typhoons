@@ -7,7 +7,6 @@ interface NameImageProps {
 }
 
 const NameImage = ({ src, alt, description }: NameImageProps) => {
-  const hasImage = !!src;
   const hasDescription = !!description;
 
   return src ? (
