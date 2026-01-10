@@ -1,14 +1,10 @@
-// Helper to normalize search params to string
-const normalizeParam = (param: string | string[] | undefined): string => {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-};
+import { normalizeParam } from "../../../../../containers/utils/fns";
 
 export const getRetiredNamesTitle = (
   name?: string | string[],
   year?: string | string[],
   country?: string | string[],
-  lang?: string | string[],
+  reason?: string | string[],
   letter?: string | string[],
 ): string[] => {
   const parts: string[] = [];
@@ -16,7 +12,7 @@ export const getRetiredNamesTitle = (
   const nameStr = normalizeParam(name);
   const yearStr = normalizeParam(year);
   const countryStr = normalizeParam(country);
-  const langStr = normalizeParam(lang);
+  const reasonStr = normalizeParam(reason);
   const letterStr = normalizeParam(letter);
 
   if (nameStr) {
@@ -31,9 +27,9 @@ export const getRetiredNamesTitle = (
     parts.push(countryStr);
   }
 
-  if (langStr) {
+  if (reasonStr) {
     // Parse comma-separated values
-    const reasons = langStr
+    const reasons = reasonStr
       .split(",")
       .map((reason) => {
         switch (reason) {
@@ -56,7 +52,7 @@ export const getRetiredNamesTitle = (
     }
   }
 
-  if (!nameStr && !yearStr && !countryStr && !langStr && letterStr) {
+  if (!nameStr && !yearStr && !countryStr && !reasonStr && letterStr) {
     parts.push(`Letter ${letterStr}`);
   }
 
@@ -67,7 +63,7 @@ export const getRetiredNamesDescription = (
   name?: string | string[],
   year?: string | string[],
   country?: string | string[],
-  lang?: string | string[],
+  reason?: string | string[],
   letter?: string | string[],
 ): string => {
   const parts: string[] = [];
@@ -75,7 +71,7 @@ export const getRetiredNamesDescription = (
   const nameStr = normalizeParam(name);
   const yearStr = normalizeParam(year);
   const countryStr = normalizeParam(country);
-  const langStr = normalizeParam(lang);
+  const reasonStr = normalizeParam(reason);
   const letterStr = normalizeParam(letter);
 
   if (nameStr) {
@@ -87,8 +83,8 @@ export const getRetiredNamesDescription = (
   if (countryStr) {
     parts.push(`names from ${countryStr}`);
   }
-  if (langStr) {
-    const reasons = langStr
+  if (reasonStr) {
+    const reasons = reasonStr
       .split(",")
       .map((reason) => {
         switch (reason) {
@@ -110,7 +106,7 @@ export const getRetiredNamesDescription = (
       parts.push(`names retired due to ${reasons.join(", ")}`);
     }
   }
-  if (!nameStr && !yearStr && !countryStr && !langStr && letterStr) {
+  if (!nameStr && !yearStr && !countryStr && !reasonStr && letterStr) {
     parts.push(`retired typhoon names starting with letter ${letterStr}`);
   }
 

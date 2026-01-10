@@ -42,6 +42,7 @@ export interface FilterParams {
   name: string;
   country: string;
   language: string;
+  letter?: string;
 }
 
 export interface RetiredFilterParams {
@@ -49,6 +50,7 @@ export interface RetiredFilterParams {
   year: string;
   country: string;
   reason: string;
+  letter?: string;
 }
 
 export interface DashboardParams {

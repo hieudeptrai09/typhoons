@@ -1,4 +1,4 @@
-import { Frown } from "lucide-react";
+import FrownNotFound from "../../../../../../components/FrownNotFound";
 import SortableTable from "../../../../../../components/SortableTable";
 import { createRenderCell } from "../../../../../../containers/utils/cellRenderers";
 import type { RetiredName, TableColumn } from "../../../../../../types";
@@ -10,15 +10,7 @@ interface RetiredNamesTableProps {
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProps) => {
   if (!paginatedData || paginatedData.length === 0) {
-    return (
-      <div className="mx-auto max-w-4xl p-8 text-center">
-        <Frown className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-        <h3 className="mb-2 text-xl font-semibold text-gray-700">No Results Found</h3>
-        <p className="text-gray-500">
-          No retired typhoon names match your current filters. Try adjusting your search criteria.
-        </p>
-      </div>
-    );
+    return <FrownNotFound />;
   }
 
   const columns: TableColumn<RetiredName>[] = [

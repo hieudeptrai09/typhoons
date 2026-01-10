@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useMemo } from "react";
 import LetterNavigation from "../../../../components/LetterNavigation";
 import PageHeader from "../../../../components/PageHeader";
+import Waiting from "../../../../components/Waiting";
 import { defaultRetiredName } from "../../../../constants";
-import fetchData from "../../../../containers/utils/fetcher";
+import { useFetchData } from "../../../../containers/hooks/useFetchData";
+import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
@@ -17,61 +18,31 @@ import type {
 } from "../../../../types";
 
 const RetiredNamesContent = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const [retiredNames, setRetiredNames] = useState<RetiredName[]>([]);
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
 
-  // Initialize filters from URL parameters
-  const searchName = searchParams.get("name") || "";
-  const selectedYear = searchParams.get("year") || "";
-  const selectedCountry = searchParams.get("country") || "";
-  const retirementReason = searchParams.get("lang") || "";
-  const currentLetter = searchParams.get("letter") || "A";
+  const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
+  const {
+    data: retiredNames,
+    loading,
+    error,
+  } = useFetchData<RetiredName[]>("/typhoon-names?isRetired=1");
+  const { data: suggestions = [], refetch: refetchSuggestions } = useFetchData<Suggestion[]>(
+    selectedName.id ? `/suggested-names?nameId=${selectedName.id}` : "",
+  );
 
-  // Update URL when filters change
-  const updateURL = (filters: FilterParams, letter: string = currentLetter) => {
-    const params = new URLSearchParams();
+  // Get URL params with defaults
+  const searchName = params.name || "";
+  const selectedYear = params.year || "";
+  const selectedCountry = params.country || "";
+  const retirementReason = params.reason || "";
+  const currentLetter = params.letter || "A";
 
-    if (filters.name) {
-      params.set("name", filters.name);
-    }
-    if (filters.year) {
-      params.set("year", filters.year.toString());
-    }
-    if (filters.country) {
-      params.set("country", filters.country);
-    }
-    if (filters.reason) {
-      params.set("lang", filters.reason);
-    }
-
-    // Only add letter parameter if no filters are active
-    if (!filters.name && !filters.year && !filters.country && !filters.reason) {
-      params.set("letter", letter);
-    }
-
-    const queryString = params.toString();
-    const newURL = queryString ? `/names/retired?${queryString}` : "/names/retired";
-    router.push(newURL);
-  };
-
-  useEffect(() => {
-    fetchData<RetiredName[]>("/typhoon-names?isRetired=1").then((data) => {
-      if (data) {
-        setRetiredNames(data.data);
-      }
-    });
-  }, []);
-
-  const countries = [...new Set(retiredNames.map((name) => name.country))].sort();
+  const countries = [...new Set((retiredNames || []).map((name) => name.country))].sort();
 
   const displayedNames = useMemo(() => {
-    let filtered = [...retiredNames];
+    let filtered = [...(retiredNames || [])];
 
     if (searchName) {
       filtered = filtered.filter((name) =>
@@ -88,7 +59,6 @@ const RetiredNamesContent = () => {
     }
 
     if (retirementReason) {
-      // Parse comma-separated values
       const selectedReasons = retirementReason.split(",").map(Number);
       filtered = filtered.filter((name) => {
         return selectedReasons.includes(name.isLanguageProblem);
@@ -103,10 +73,9 @@ const RetiredNamesContent = () => {
     return filtered;
   }, [retiredNames, searchName, selectedYear, selectedCountry, retirementReason, currentLetter]);
 
-  // Calculate available letters (letters that have retired names)
   const availableLettersMap = useMemo(() => {
     const map: Record<string, boolean> = {};
-    retiredNames.forEach((name) => {
+    (retiredNames || []).forEach((name) => {
       const letter = name.name.charAt(0).toUpperCase();
       map[letter] = true;
     });
@@ -117,38 +86,45 @@ const RetiredNamesContent = () => {
     Boolean,
   ).length;
 
-  const loadSuggestions = async (nameId: number) => {
-    fetchData<Suggestion[]>(`/suggested-names?nameId=${nameId}`).then((data) => {
-      if (data) {
-        setSuggestions(data.data);
-      }
-    });
-  };
-
   const handleNameClick = async (name: RetiredName) => {
     setSelectedName(name);
     setIsNameDetailsModalOpen(true);
-    await loadSuggestions(name.id);
+    if (name.id) {
+      refetchSuggestions();
+    }
   };
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-    updateURL(filters);
+
+    const newParams: FilterParams & { letter?: string } = {
+      name: filters.name,
+      year: filters.year,
+      country: filters.country,
+      reason: filters.reason,
+    };
+
+    // Only include letter if no other filters
+    if (!filters.name && !filters.year && !filters.country && !filters.reason) {
+      newParams.letter = currentLetter;
+    }
+
+    updateParams(newParams, true);
   };
 
   const handleLetterChange = (letter: string) => {
-    updateURL(
+    updateParams(
       {
         name: "",
         year: "",
         country: "",
         reason: "",
+        letter,
       },
-      letter,
+      true,
     );
   };
 
-  // Letter configuration for LetterNavigation
   const getLetterConfig = (letter: string) => {
     const isAvailable = availableLettersMap[letter];
     const isActive = currentLetter === letter;
@@ -162,6 +138,14 @@ const RetiredNamesContent = () => {
           : "cursor-not-allowed text-gray-300",
     };
   };
+
+  if (loading) {
+    return <Waiting content="Loading Current Names..." />;
+  }
+
+  if (error) {
+    return <Waiting content="There are some errors during loading data..." />;
+  }
 
   return (
     <PageHeader title="Retired Typhoon Names">
@@ -200,7 +184,7 @@ const RetiredNamesContent = () => {
       <NameDetailsModal
         isOpen={isNameDetailsModalOpen}
         selectedName={selectedName}
-        suggestions={suggestions}
+        suggestions={suggestions || []}
         onClose={() => setIsNameDetailsModalOpen(false)}
       />
     </PageHeader>

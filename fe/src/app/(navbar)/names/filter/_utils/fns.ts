@@ -1,10 +1,5 @@
+import { normalizeParam } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
-
-// Helper to normalize search params to string
-const normalizeParam = (param: string | string[] | undefined): string => {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-};
 
 // Generate dynamic page header title
 export const getPageTitle = (

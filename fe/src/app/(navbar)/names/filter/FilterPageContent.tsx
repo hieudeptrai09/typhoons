@@ -1,55 +1,45 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useMemo } from "react";
 import LetterNavigation from "../../../../components/LetterNavigation";
+import NameDetailsModal from "../../../../components/NameDetailsModal";
 import PageHeader from "../../../../components/PageHeader";
 import Toggle from "../../../../components/Toggle";
+import Waiting from "../../../../components/Waiting";
 import { defaultTyphoonName } from "../../../../constants";
-import fetchData from "../../../../containers/utils/fetcher";
+import { useFetchData } from "../../../../containers/hooks/useFetchData";
+import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
-import NameDetailsModal from "./_components/NameDetailsModal";
 import { categorizeLettersByStatus } from "./_utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
 
 const FilterNamesPage = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
+  const { data: names, loading, error } = useFetchData<TyphoonName[]>("/typhoon-names");
 
-  const [names, setNames] = useState<TyphoonName[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
-
-  // Toggle for showing images and descriptions
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
 
-  // Initialize filters from URL
-  const searchName = searchParams.get("name") || "";
-  const selectedCountry = searchParams.get("country") || "";
-  const selectedLanguage = searchParams.get("language") || "";
-  const currentLetter = searchParams.get("letter") || "A";
-
-  useEffect(() => {
-    fetchData<TyphoonName[]>("/typhoon-names").then((data) => {
-      if (data) {
-        setNames(data.data);
-      }
-    });
-  }, []);
+  // Get URL params with defaults
+  const searchName = params.name || "";
+  const selectedCountry = params.country || "";
+  const selectedLanguage = params.language || "";
+  const currentLetter = params.letter || "A";
 
   const countries = useMemo(() => {
-    return [...new Set(names.map((name) => name.country))].sort();
+    return [...new Set((names || []).map((name) => name.country))].sort();
   }, [names]);
 
   const languages = useMemo(() => {
-    return [...new Set(names.map((name) => name.language).filter(Boolean))].sort();
+    return [...new Set((names || []).map((name) => name.language).filter(Boolean))].sort();
   }, [names]);
 
   const displayedNames = useMemo(() => {
-    let filtered = [...names];
+    let filtered = [...(names || [])];
 
     if (searchName) {
       filtered = filtered.filter((name) =>
@@ -73,34 +63,31 @@ const FilterNamesPage = () => {
     return filtered;
   }, [names, searchName, selectedCountry, selectedLanguage, currentLetter]);
 
-  // Categorize letters by their retired/alive status using optimized map
   const letterStatusMap = useMemo(() => {
-    return categorizeLettersByStatus(names);
+    return categorizeLettersByStatus(names || []);
   }, [names]);
 
   const activeFilterCount = [searchName, selectedCountry, selectedLanguage].filter(Boolean).length;
 
-  const updateURL = (filters: FilterParams, letter = currentLetter) => {
-    const params = new URLSearchParams();
-    if (filters.name) params.set("name", filters.name);
-    if (filters.country) params.set("country", filters.country);
-    if (filters.language) params.set("language", filters.language);
-    if (!filters.name && !filters.country && !filters.language) {
-      params.set("letter", letter);
-    }
-
-    const queryString = params.toString();
-    const newURL = queryString ? `/names/filter?${queryString}` : "/names/filter";
-    router.push(newURL);
-  };
-
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-    updateURL(filters);
+
+    const newParams: FilterParams & { letter?: string } = {
+      name: filters.name,
+      country: filters.country,
+      language: filters.language,
+    };
+
+    // Only include letter if no other filters
+    if (!filters.name && !filters.country && !filters.language) {
+      newParams.letter = currentLetter;
+    }
+
+    updateParams(newParams, true);
   };
 
   const handleLetterChange = (letter: string) => {
-    updateURL({ name: "", country: "", language: "" }, letter);
+    updateParams({ name: "", country: "", language: "", letter }, true);
   };
 
   const handleNameClick = (name: TyphoonName) => {
@@ -108,12 +95,10 @@ const FilterNamesPage = () => {
     setIsNameDetailsModalOpen(true);
   };
 
-  // Letter configuration for LetterNavigation
   const getLetterConfig = (letter: string) => {
     const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;
 
-    // If letter not in map, it has no names
     if (!status || !status[0]) {
       return {
         isAvailable: false,
@@ -145,6 +130,14 @@ const FilterNamesPage = () => {
       colorClass,
     };
   };
+
+  if (loading) {
+    return <Waiting content="Loading Current Names..." />;
+  }
+
+  if (error) {
+    return <Waiting content="There are some errors during loading data..." />;
+  }
 
   return (
     <PageHeader title="Filter Names">
@@ -192,7 +185,7 @@ const FilterNamesPage = () => {
 
       <NameDetailsModal
         isOpen={isNameDetailsModalOpen}
-        selectedName={selectedName}
+        name={selectedName}
         onClose={() => setIsNameDetailsModalOpen(false)}
       />
     </PageHeader>

@@ -16,7 +16,7 @@ const ModalActions = ({ onClearAll, onApply }: ModalActionsProps) => {
         onClick={onApply}
         className="flex-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-600"
       >
-        Apply Filters
+        Apply
       </button>
     </div>
   );

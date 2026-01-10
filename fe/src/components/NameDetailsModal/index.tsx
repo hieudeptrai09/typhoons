@@ -1,38 +1,42 @@
 import Image from "next/image";
-import Modal from "../../../../../components/Modal";
-import type { TyphoonName, BaseModalProps } from "../../../../../types";
+import Modal from "../Modal";
+import type { TyphoonName, RetiredName, BaseModalProps } from "../../types";
 
-interface TyphoonNameModalProps extends BaseModalProps {
-  selectedName: TyphoonName;
+interface NameDetailsModalProps extends BaseModalProps {
+  name: TyphoonName | RetiredName;
 }
 
-const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalProps) => {
-  const hasImage = !!selectedName.image;
-  const hasDescription = !!selectedName.description;
+const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
+  const hasImage = !!name.image;
+  const hasDescription = !!name.description;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={selectedName.name}
+      title={name.name}
       maxWidth={hasImage ? 640 : 560}
-      titleClassName="!text-blue-600"
+      titleClassName={`${
+        Boolean(name.isRetired)
+          ? name.isLanguageProblem === 2
+            ? "!text-amber-500"
+            : "!text-red-600"
+          : "!text-blue-600"
+      }`}
     >
       <div>
         <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
           <div className="flex-1 space-y-4">
-            <p className="mt-1 leading-relaxed font-semibold text-teal-600">
-              {selectedName.meaning}
-            </p>
+            <p className="mt-1 leading-relaxed font-semibold text-teal-600">{name.meaning}</p>
 
             <div className="space-y-2 border-l-2 border-slate-200 pl-4">
               <div className="text-sm">
                 <span className="font-medium text-slate-600">From:</span>
-                <span className="ml-2 text-slate-700">{selectedName.country}</span>
+                <span className="ml-2 text-slate-700">{name.country}</span>
               </div>
               <div className="text-sm">
                 <span className="font-medium text-slate-600">Language:</span>
-                <span className="ml-2 text-slate-700">{selectedName.language}</span>
+                <span className="ml-2 text-slate-700">{name.language}</span>
               </div>
             </div>
 
@@ -41,12 +45,12 @@ const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalPro
                 <div className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">
                   Note
                 </div>
-                <p className="text-sm leading-relaxed text-slate-700">{selectedName.description}</p>
+                <p className="text-sm leading-relaxed text-slate-700">{name.description}</p>
               </div>
             )}
           </div>
 
-          {selectedName.image && (
+          {name.image && (
             <div className="min-w-0 flex-1">
               <div className="sticky top-0">
                 <div
@@ -54,8 +58,8 @@ const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalPro
                   style={{ aspectRatio: "4/3" }}
                 >
                   <Image
-                    src={selectedName.image}
-                    alt={selectedName.name}
+                    src={name.image}
+                    alt={name.name}
                     fill
                     className="object-contain"
                     unoptimized
@@ -63,7 +67,7 @@ const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalPro
                 </div>
                 {hasDescription && (
                   <p className="mt-3 text-center text-xs leading-relaxed text-slate-600 italic">
-                    {selectedName.description}
+                    {name.description}
                   </p>
                 )}
               </div>
@@ -75,4 +79,4 @@ const TyphoonNameModal = ({ isOpen, onClose, selectedName }: TyphoonNameModalPro
   );
 };
 
-export default TyphoonNameModal;
+export default NameDetailsModal;

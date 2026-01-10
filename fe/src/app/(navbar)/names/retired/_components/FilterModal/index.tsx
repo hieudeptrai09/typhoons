@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
+import FilterInput from "../../../../../../components/FilterModal/FilterInput";
+import FilterSelect from "../../../../../../components/FilterModal/FilterSelect";
+import ModalActions from "../../../../../../components/FilterModal/ModalActions";
 import Modal from "../../../../../../components/Modal";
-import CountrySelect from "./CountrySelect";
-import ModalActions from "./ModalActions";
-import NameSearchInput from "./NameSearchInput";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
-import YearDigitSelector from "./YearDigitSelector";
 import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 
 interface FilterModalProps extends BaseModalProps {
@@ -32,6 +31,7 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
       year: tempSelectedYear,
       country: tempSelectedCountry,
       reason: tempRetirementReason,
+      letter: "",
     });
   };
 
@@ -45,14 +45,29 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={672}>
       <div className="space-y-4">
-        <NameSearchInput value={tempSearchName} onChange={setTempSearchName} />
+        <FilterInput
+          label="Filter by Name"
+          value={tempSearchName}
+          onChange={setTempSearchName}
+          placeholder="Enter typhoon name..."
+        />
 
-        <YearDigitSelector value={tempSelectedYear} onChange={setTempSelectedYear} />
+        <FilterInput
+          label="Filter by Year"
+          value={tempSelectedYear}
+          onChange={setTempSelectedYear}
+          placeholder="Enter year..."
+          type="number"
+          min="2000"
+          max="2100"
+        />
 
-        <CountrySelect
+        <FilterSelect
+          label="Filter by Country"
           value={tempSelectedCountry}
           onChange={setTempSelectedCountry}
-          countries={countries}
+          options={countries}
+          placeholder="All Countries"
         />
 
         <RetirementReasonCheckbox value={tempRetirementReason} onChange={setTempRetirementReason} />
