@@ -23,29 +23,31 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth={448}>
-      <div className="flex max-h-96 flex-col overflow-y-auto">
-        {nameGroups.map(([name, stormGroup], groupIndex) => (
-          <div key={name} className="flex flex-col gap-1.5">
-            {stormGroup.map((storm, index) => (
-              <div key={index} className="flex items-center">
-                <IntensityBadge intensity={storm.intensity} />
-                <span
-                  className="ml-1.5"
-                  style={{
-                    color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity],
-                  }}
-                >
-                  {storm.name} {storm.year}
-                </span>
-              </div>
-            ))}
+      {() => (
+        <div className="flex max-h-96 flex-col overflow-y-auto">
+          {nameGroups.map(([name, stormGroup], groupIndex) => (
+            <div key={name} className="flex flex-col gap-1.5">
+              {stormGroup.map((storm, index) => (
+                <div key={index} className="flex items-center">
+                  <IntensityBadge intensity={storm.intensity} />
+                  <span
+                    className="ml-1.5"
+                    style={{
+                      color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity],
+                    }}
+                  >
+                    {storm.name} {storm.year}
+                  </span>
+                </div>
+              ))}
 
-            {hasMultipleNames && groupIndex < nameGroups.length - 1 && (
-              <div className="my-3 border-b border-gray-300"></div>
-            )}
-          </div>
-        ))}
-      </div>
+              {hasMultipleNames && groupIndex < nameGroups.length - 1 && (
+                <div className="my-3 border-b border-gray-300"></div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </Modal>
   );
 };

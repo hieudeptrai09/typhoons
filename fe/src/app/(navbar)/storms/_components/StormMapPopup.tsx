@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import type { MutableRefObject } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { BACKGROUND_BADGE } from "../../../../constants";
 import type { Storm } from "../../../../types";
 
 interface StormMapPopupProps {
@@ -10,6 +9,8 @@ interface StormMapPopupProps {
   selectedStorm: Storm | null;
   stormRefs: MutableRefObject<Record<number, HTMLDivElement | null>>;
   selectedStormIndex: number | null;
+  modalContainerRef: MutableRefObject<HTMLDivElement | null>;
+  borderColor: string;
   onClose: () => void;
 }
 
@@ -18,6 +19,8 @@ const StormMapPopup = ({
   selectedStorm,
   stormRefs,
   selectedStormIndex,
+  modalContainerRef,
+  borderColor,
   onClose,
 }: StormMapPopupProps) => {
   // Update popup position relative to the selected storm element
@@ -25,37 +28,18 @@ const StormMapPopup = ({
     const updatePosition = () => {
       const stormElementRef =
         selectedStormIndex !== null ? stormRefs?.current[selectedStormIndex] : null;
+      const modalContainer = modalContainerRef.current;
 
-      if (selectedStorm && stormElementRef && popupRef.current) {
+      if (selectedStorm && stormElementRef && popupRef.current && modalContainer) {
         const stormRect = stormElementRef.getBoundingClientRect();
+        const containerRect = modalContainer.getBoundingClientRect();
 
-        const popupHeight = 262; // Fixed height for map popup
-        const popupWidth = stormRect.width - 5; // Fixed width for map popup
-        const gap = 4;
+        const popupHeight = 230; // Adjusted height for map popup without title
+        const popupWidth = stormRect.width - 16;
 
-        // Use fixed positioning relative to viewport
-        let top = stormRect.bottom + gap;
-        let left = stormRect.left;
-
-        // Adjust if popup would go below viewport
-        if (top + popupHeight > window.innerHeight) {
-          top = stormRect.top - popupHeight - gap;
-        }
-
-        // Adjust if popup would go off right edge
-        if (left + popupWidth > window.innerWidth) {
-          left = window.innerWidth - popupWidth - gap;
-        }
-
-        // Adjust if popup would go off left edge
-        if (left < gap) {
-          left = gap;
-        }
-
-        // If top would be negative, set it to gap
-        if (top < gap) {
-          top = gap;
-        }
+        const scrollTop = modalContainer.scrollTop;
+        const top = stormRect.bottom - containerRect.top + scrollTop;
+        const left = stormRect.left - containerRect.left + 8;
 
         popupRef.current.style.top = `${top}px`;
         popupRef.current.style.left = `${left}px`;
@@ -67,17 +51,19 @@ const StormMapPopup = ({
     // Initial position
     updatePosition();
 
-    // Update position on scroll
-    if (selectedStorm) {
-      window.addEventListener("scroll", updatePosition, true);
-      window.addEventListener("resize", updatePosition);
-    }
+    // Update position on scroll within the modal
+    if (selectedStorm && modalContainerRef.current) {
+      const modalContainer = modalContainerRef.current;
 
-    return () => {
-      window.removeEventListener("scroll", updatePosition, true);
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex]);
+      modalContainer.addEventListener("scroll", updatePosition);
+      window.addEventListener("resize", updatePosition);
+
+      return () => {
+        modalContainer.removeEventListener("scroll", updatePosition);
+        window.removeEventListener("resize", updatePosition);
+      };
+    }
+  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex, modalContainerRef]);
 
   // Close popup when clicking outside
   useEffect(() => {
@@ -103,25 +89,21 @@ const StormMapPopup = ({
     };
   }, [selectedStorm, popupRef, stormRefs, onClose, selectedStormIndex]);
 
-  if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "") {
+  if (
+    !selectedStorm ||
+    !selectedStorm.map ||
+    selectedStorm.map.trim() === "" ||
+    !modalContainerRef.current
+  ) {
     return null;
   }
-
-  const stormTitle = `${selectedStorm.name} ${selectedStorm.year}`;
-  const borderColor = BACKGROUND_BADGE[selectedStorm.intensity];
 
   return createPortal(
     <div
       ref={popupRef}
-      className="fixed z-50 flex flex-col overflow-hidden rounded-lg border-2 bg-white shadow-xl"
-      style={{ borderColor: borderColor }}
+      className="absolute z-50 flex flex-col overflow-hidden rounded-b-md border-2 border-t-0 bg-white shadow-xl"
+      style={{ borderColor }}
     >
-      <div
-        className="shrink-0 border-b-2 px-4 py-2 font-semibold"
-        style={{ borderBottomColor: borderColor }}
-      >
-        <span className="text-blue-700">{stormTitle}</span>
-      </div>
       <div className="relative flex-1 overflow-hidden p-2">
         <Image
           src={selectedStorm.map}
@@ -132,7 +114,7 @@ const StormMapPopup = ({
         />
       </div>
     </div>,
-    document.body,
+    modalContainerRef.current,
   );
 };
 

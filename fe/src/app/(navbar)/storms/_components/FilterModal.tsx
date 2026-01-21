@@ -109,46 +109,50 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Dashboard View Options" maxWidth={512}>
-      <div className="mb-6 space-y-4">
-        <ButtonGroup
-          label="View"
-          options={[
-            { value: "storms", label: "Storms" },
-            { value: "highlights", label: "Highlights" },
-            { value: "average", label: "Average" },
-          ]}
-          value={view}
-          onChange={handleViewChange}
-        />
+      {() => (
+        <>
+          <div className="mb-6 space-y-4">
+            <ButtonGroup
+              label="View"
+              options={[
+                { value: "storms", label: "Storms" },
+                { value: "highlights", label: "Highlights" },
+                { value: "average", label: "Average" },
+              ]}
+              value={view}
+              onChange={handleViewChange}
+            />
 
-        <ButtonGroup
-          label="Filter by"
-          options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
-          value={filter}
-          onChange={handleFilterChange}
-          disabled={isFilterDisabled}
-        />
+            <ButtonGroup
+              label="Filter by"
+              options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
+              value={filter}
+              onChange={handleFilterChange}
+              disabled={isFilterDisabled}
+            />
 
-        <ButtonGroup
-          label="Mode"
-          options={[
-            {
-              value: "table",
-              label: "Table",
-              disabled: isModeTableOptionDisabled,
-            },
-            {
-              value: "list",
-              label: "List",
-              disabled: isModeListOptionDisabled,
-            },
-          ]}
-          value={mode}
-          onChange={setMode}
-        />
-      </div>
+            <ButtonGroup
+              label="Mode"
+              options={[
+                {
+                  value: "table",
+                  label: "Table",
+                  disabled: isModeTableOptionDisabled,
+                },
+                {
+                  value: "list",
+                  label: "List",
+                  disabled: isModeListOptionDisabled,
+                },
+              ]}
+              value={mode}
+              onChange={setMode}
+            />
+          </div>
 
-      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+        </>
+      )}
     </Modal>
   );
 };

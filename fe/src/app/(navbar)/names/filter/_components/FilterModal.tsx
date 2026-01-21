@@ -47,32 +47,36 @@ const FilterModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={448}>
-      <div className="space-y-4">
-        <FilterInput
-          label="Filter by Name"
-          value={tempSearchName}
-          onChange={setTempSearchName}
-          placeholder="Enter typhoon name..."
-        />
+      {() => (
+        <>
+          <div className="space-y-4">
+            <FilterInput
+              label="Filter by Name"
+              value={tempSearchName}
+              onChange={setTempSearchName}
+              placeholder="Enter typhoon name..."
+            />
 
-        <FilterSelect
-          label="Filter by Country"
-          value={tempSelectedCountry}
-          onChange={setTempSelectedCountry}
-          options={countries}
-          placeholder="All Countries"
-        />
+            <FilterSelect
+              label="Filter by Country"
+              value={tempSelectedCountry}
+              onChange={setTempSelectedCountry}
+              options={countries}
+              placeholder="All Countries"
+            />
 
-        <FilterSelect
-          label="Filter by Language"
-          value={tempSelectedLanguage}
-          onChange={setTempSelectedLanguage}
-          options={languages}
-          placeholder="All Languages"
-        />
-      </div>
+            <FilterSelect
+              label="Filter by Language"
+              value={tempSelectedLanguage}
+              onChange={setTempSelectedLanguage}
+              options={languages}
+              placeholder="All Languages"
+            />
+          </div>
 
-      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+        </>
+      )}
     </Modal>
   );
 };

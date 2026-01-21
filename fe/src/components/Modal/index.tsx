@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { ReactNode, CSSProperties } from "react";
 import { X } from "lucide-react";
 
@@ -6,7 +6,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  children: ReactNode;
+  children: (modalContainerRef: React.RefObject<HTMLDivElement | null>) => ReactNode;
   maxWidth?: number;
   height?: number;
   titleClassName?: string;
@@ -23,6 +23,8 @@ const Modal = ({
   titleClassName = "",
   titleStyle = {},
 }: ModalProps) => {
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isOpen) {
       const isDesktop = window.innerWidth >= 768; // md breakpoint
@@ -69,7 +71,9 @@ const Modal = ({
             <X size={24} />
           </button>
         </div>
-        <div className="flex flex-1 flex-col overflow-y-auto p-6">{children}</div>
+        <div ref={modalContainerRef} className="relative flex flex-1 flex-col overflow-y-auto p-6">
+          {children(modalContainerRef)}
+        </div>
       </div>
     </div>
   );

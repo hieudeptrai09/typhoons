@@ -44,36 +44,43 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={672}>
-      <div className="space-y-4">
-        <FilterInput
-          label="Filter by Name"
-          value={tempSearchName}
-          onChange={setTempSearchName}
-          placeholder="Enter typhoon name..."
-        />
+      {() => (
+        <>
+          <div className="space-y-4">
+            <FilterInput
+              label="Filter by Name"
+              value={tempSearchName}
+              onChange={setTempSearchName}
+              placeholder="Enter typhoon name..."
+            />
 
-        <FilterInput
-          label="Filter by Year"
-          value={tempSelectedYear}
-          onChange={setTempSelectedYear}
-          placeholder="Enter year..."
-          type="number"
-          min="2000"
-          max="2100"
-        />
+            <FilterInput
+              label="Filter by Year"
+              value={tempSelectedYear}
+              onChange={setTempSelectedYear}
+              placeholder="Enter year..."
+              type="number"
+              min="2000"
+              max="2100"
+            />
 
-        <FilterSelect
-          label="Filter by Country"
-          value={tempSelectedCountry}
-          onChange={setTempSelectedCountry}
-          options={countries}
-          placeholder="All Countries"
-        />
+            <FilterSelect
+              label="Filter by Country"
+              value={tempSelectedCountry}
+              onChange={setTempSelectedCountry}
+              options={countries}
+              placeholder="All Countries"
+            />
 
-        <RetirementReasonCheckbox value={tempRetirementReason} onChange={setTempRetirementReason} />
-      </div>
+            <RetirementReasonCheckbox
+              value={tempRetirementReason}
+              onChange={setTempRetirementReason}
+            />
+          </div>
 
-      <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
+        </>
+      )}
     </Modal>
   );
 };

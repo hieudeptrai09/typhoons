@@ -17,6 +17,8 @@ interface StormNamePopupProps {
   selectedName: string | null;
   selectedNameData: NameAverageData | undefined;
   nameRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
+  modalContainerRef: MutableRefObject<HTMLDivElement | null>;
+  borderColor: string;
   onClose: () => void;
 }
 
@@ -25,59 +27,55 @@ const StormNamePopup = ({
   selectedName,
   selectedNameData,
   nameRefs,
+  modalContainerRef,
+  borderColor,
   onClose,
 }: StormNamePopupProps) => {
-  const getHeight = (length: number): number => {
-    if (length === 1) return 56;
-    else if (length === 2) return 102;
-    else if (length === 3) return 148;
-    else return 150;
-  };
-
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
       const nameElementRef = selectedName ? nameRefs.current[selectedName] : null;
+      const modalContainer = modalContainerRef.current;
 
-      if (selectedName && nameElementRef && popupRef.current && selectedNameData) {
+      if (
+        selectedName &&
+        nameElementRef &&
+        popupRef.current &&
+        selectedNameData &&
+        modalContainer
+      ) {
         const nameRect = nameElementRef.getBoundingClientRect();
+        const containerRect = modalContainer.getBoundingClientRect();
 
-        const popupMaxHeight = 41 + getHeight(selectedNameData.storms.length);
-        const popupWidth = nameRect.width;
-        const gap = 4;
+        // const popupMaxHeight = getHeight(selectedNameData.storms.length);
+        const popupWidth = nameRect.width - 16;
 
-        // Use fixed positioning relative to viewport
-        let top = nameRect.bottom + gap;
-        const left = nameRect.left;
-
-        // Adjust top if popup would go below viewport
-        if (top + popupMaxHeight > window.innerHeight) {
-          top = window.innerHeight - popupMaxHeight - gap;
-        }
-        // If top would be negative or above container top, set it to 0
-        if (top < 0) {
-          top = 0;
-        }
+        const scrollTop = modalContainer.scrollTop;
+        const top = nameRect.bottom - containerRect.top + scrollTop;
+        const left = nameRect.left - containerRect.left + 8;
 
         popupRef.current.style.top = `${top}px`;
         popupRef.current.style.left = `${left}px`;
-        popupRef.current.style.width = `${popupWidth - 5}px`;
-        popupRef.current.style.maxHeight = `${popupMaxHeight}px`;
+        popupRef.current.style.width = `${popupWidth}px`;
       }
     };
 
     // Initial position
     updatePosition();
 
-    // Update position on scroll
-    if (selectedName) {
-      window.addEventListener("scroll", updatePosition, true);
-    }
+    // Update position on scroll within the modal
+    if (selectedName && modalContainerRef.current) {
+      const modalContainer = modalContainerRef.current;
 
-    return () => {
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [selectedName, nameRefs, popupRef, selectedNameData]);
+      modalContainer.addEventListener("scroll", updatePosition);
+      window.addEventListener("resize", updatePosition);
+
+      return () => {
+        modalContainer.removeEventListener("scroll", updatePosition);
+        window.removeEventListener("resize", updatePosition);
+      };
+    }
+  }, [selectedName, nameRefs, popupRef, selectedNameData, modalContainerRef]);
 
   // Close popup when clicking outside
   useEffect(() => {
@@ -102,24 +100,17 @@ const StormNamePopup = ({
     };
   }, [selectedName, popupRef, nameRefs, onClose]);
 
-  if (!selectedName || !selectedNameData) {
+  if (!selectedName || !selectedNameData || !modalContainerRef.current) {
     return null;
   }
 
   return createPortal(
     <div
       ref={popupRef}
-      className="fixed z-50 flex flex-col rounded-lg border-2 border-blue-500 bg-white shadow-xl"
+      className="absolute z-50 flex flex-col rounded-b-lg border-2 border-t-0 bg-white shadow-xl"
+      style={{ borderColor }}
     >
-      <div className="shrink-0 border-b-2 px-4 py-2 font-semibold text-blue-700">
-        All <span className="font-bold text-purple-600">{selectedName}</span> storms:
-      </div>
-      <div
-        className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-4 py-2"
-        style={{
-          minHeight: `${getHeight(selectedNameData.storms.length)}px`,
-        }}
-      >
+      <div className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-4 py-2">
         {selectedNameData.storms.map((storm, index) => (
           <div key={index} className="flex items-center gap-2">
             <IntensityBadge intensity={storm.intensity} />
@@ -135,7 +126,7 @@ const StormNamePopup = ({
         ))}
       </div>
     </div>,
-    document.body,
+    modalContainerRef.current,
   );
 };
 

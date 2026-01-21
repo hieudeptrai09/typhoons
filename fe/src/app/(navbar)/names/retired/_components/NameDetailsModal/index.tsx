@@ -58,45 +58,49 @@ const NameDetailsModal = ({
       height={typeof window !== "undefined" ? window.innerHeight * 0.8 : 600}
       titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
     >
-      <div className="mb-6 flex border-b border-gray-200">
-        <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
-          Name Information
-        </button>
-        <button
-          onClick={() => setActiveTab("suggestions")}
-          className={getTabClasses("suggestions")}
-        >
-          Suggested Replacements
-        </button>
-      </div>
-
-      <div className="flex-1">
-        {activeTab === "info" && (
-          <div className="flex h-full items-start justify-center">
-            <div
-              className={`flex w-full gap-6 ${!hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""}`}
+      {() => (
+        <>
+          <div className="mb-6 flex border-b border-gray-200">
+            <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
+              Name Information
+            </button>
+            <button
+              onClick={() => setActiveTab("suggestions")}
+              className={getTabClasses("suggestions")}
             >
-              <NameInfo
-                name={selectedName.name}
-                meaning={selectedName.meaning}
-                country={selectedName.country}
-                position={selectedName.position}
-                language={selectedName.language}
-                replacementName={selectedName.replacementName}
-                description={selectedName.description || ""}
-                image={selectedName.image || ""}
-              />
-              <NameImage
-                src={selectedName.image}
-                alt={selectedName.name}
-                description={selectedName.description}
-              />
-            </div>
+              Suggested Replacements
+            </button>
           </div>
-        )}
 
-        {activeTab === "suggestions" && <SuggestionsList suggestions={suggestions} />}
-      </div>
+          <div className="flex-1">
+            {activeTab === "info" && (
+              <div className="flex h-full items-start justify-center">
+                <div
+                  className={`flex w-full gap-6 ${!hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""}`}
+                >
+                  <NameInfo
+                    name={selectedName.name}
+                    meaning={selectedName.meaning}
+                    country={selectedName.country}
+                    position={selectedName.position}
+                    language={selectedName.language}
+                    replacementName={selectedName.replacementName}
+                    description={selectedName.description || ""}
+                    image={selectedName.image || ""}
+                  />
+                  <NameImage
+                    src={selectedName.image}
+                    alt={selectedName.name}
+                    description={selectedName.description}
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeTab === "suggestions" && <SuggestionsList suggestions={suggestions} />}
+          </div>
+        </>
+      )}
     </Modal>
   );
 };
