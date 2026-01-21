@@ -145,7 +145,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
             selectedStorm={selectedStormData}
             stormRefs={stormRefs}
             selectedStormIndex={selectedStorm}
-            modalContainerRef={modalContainerRef as React.MutableRefObject<HTMLDivElement | null>}
+            modalContainerRef={modalContainerRef as React.RefObject<HTMLDivElement | null>}
             borderColor={selectedBorderColor}
             onClose={() => setSelectedStorm(null)}
           />

@@ -121,7 +121,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
             selectedName={selectedName}
             selectedNameData={selectedNameData}
             nameRefs={nameRefs}
-            modalContainerRef={modalContainerRef as React.MutableRefObject<HTMLDivElement | null>}
+            modalContainerRef={modalContainerRef as React.RefObject<HTMLDivElement | null>}
             borderColor={selectedBorderColor}
             onClose={() => setSelectedName(null)}
           />

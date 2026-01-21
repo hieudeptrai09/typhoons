@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { createPortal } from "react-dom";
 import IntensityBadge from "../../../../components/IntensityBadge";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
@@ -13,11 +13,11 @@ interface NameAverageData {
 }
 
 interface StormNamePopupProps {
-  popupRef: MutableRefObject<HTMLDivElement | null>;
+  popupRef: RefObject<HTMLDivElement | null>;
   selectedName: string | null;
   selectedNameData: NameAverageData | undefined;
-  nameRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
-  modalContainerRef: MutableRefObject<HTMLDivElement | null>;
+  nameRefs: RefObject<Record<string, HTMLDivElement | null>>;
+  modalContainerRef: RefObject<HTMLDivElement | null>;
   borderColor: string;
   onClose: () => void;
 }
@@ -34,7 +34,7 @@ const StormNamePopup = ({
   // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
-      const nameElementRef = selectedName ? nameRefs.current[selectedName] : null;
+      const nameElementRef = selectedName ? nameRefs.current?.[selectedName] : null;
       const modalContainer = modalContainerRef.current;
 
       if (
@@ -47,7 +47,6 @@ const StormNamePopup = ({
         const nameRect = nameElementRef.getBoundingClientRect();
         const containerRect = modalContainer.getBoundingClientRect();
 
-        // const popupMaxHeight = getHeight(selectedNameData.storms.length);
         const popupWidth = nameRect.width - 16;
 
         const scrollTop = modalContainer.scrollTop;
@@ -79,7 +78,7 @@ const StormNamePopup = ({
 
   // Close popup when clicking outside
   useEffect(() => {
-    const nameElementRef = selectedName ? nameRefs?.current[selectedName] : null;
+    const nameElementRef = selectedName ? nameRefs?.current?.[selectedName] : null;
     const handleClickOutside = (event: MouseEvent) => {
       if (
         selectedName &&

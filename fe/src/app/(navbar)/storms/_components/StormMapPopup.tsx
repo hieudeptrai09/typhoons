@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Storm } from "../../../../types";
 
 interface StormMapPopupProps {
-  popupRef: MutableRefObject<HTMLDivElement | null>;
+  popupRef: RefObject<HTMLDivElement | null>;
   selectedStorm: Storm | null;
-  stormRefs: MutableRefObject<Record<number, HTMLDivElement | null>>;
+  stormRefs: RefObject<Record<number, HTMLDivElement | null>>;
   selectedStormIndex: number | null;
-  modalContainerRef: MutableRefObject<HTMLDivElement | null>;
+  modalContainerRef: RefObject<HTMLDivElement | null>;
   borderColor: string;
   onClose: () => void;
 }
@@ -27,7 +27,7 @@ const StormMapPopup = ({
   useEffect(() => {
     const updatePosition = () => {
       const stormElementRef =
-        selectedStormIndex !== null ? stormRefs?.current[selectedStormIndex] : null;
+        selectedStormIndex !== null ? stormRefs?.current?.[selectedStormIndex] : null;
       const modalContainer = modalContainerRef.current;
 
       if (selectedStorm && stormElementRef && popupRef.current && modalContainer) {
@@ -68,7 +68,7 @@ const StormMapPopup = ({
   // Close popup when clicking outside
   useEffect(() => {
     const stormElementRef =
-      selectedStormIndex !== null ? stormRefs?.current[selectedStormIndex] : null;
+      selectedStormIndex !== null ? stormRefs?.current?.[selectedStormIndex] : null;
     const handleClickOutside = (event: MouseEvent) => {
       if (
         selectedStorm &&
