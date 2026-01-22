@@ -10,7 +10,7 @@ const HomePage = () => {
         className="flex flex-col items-center justify-center p-8"
         style={{ height: "calc(100vh - 64px)" }}
       >
-        <a href="https://www.youtube.com/watch?v=5LtFOkH9zwU" target="_blank" className="mb-4">
+        <a href="https://www.facebook.com/profile.php?id=61586585781960" target="_blank" className="mb-4">
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
