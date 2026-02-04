@@ -1,5 +1,21 @@
 import type { IntensityType, RetiredName, Storm, Suggestion, TyphoonName } from "../types";
 
+// Import flag components from country-flag-icons
+import KH from "country-flag-icons/react/3x2/KH"; // Cambodia
+import CN from "country-flag-icons/react/3x2/CN"; // China
+import KP from "country-flag-icons/react/3x2/KP"; // North Korea
+import HK from "country-flag-icons/react/3x2/HK"; // Hong Kong
+import JP from "country-flag-icons/react/3x2/JP"; // Japan
+import LA from "country-flag-icons/react/3x2/LA"; // Laos
+import MO from "country-flag-icons/react/3x2/MO"; // Macao
+import MY from "country-flag-icons/react/3x2/MY"; // Malaysia
+import FM from "country-flag-icons/react/3x2/FM"; // Micronesia
+import PH from "country-flag-icons/react/3x2/PH"; // Philippines
+import KR from "country-flag-icons/react/3x2/KR"; // South Korea
+import TH from "country-flag-icons/react/3x2/TH"; // Thailand
+import US from "country-flag-icons/react/3x2/US"; // USA
+import VN from "country-flag-icons/react/3x2/VN"; // Vietnam
+
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
 export const BACKGROUND_BADGE: Record<IntensityType, string> = {
@@ -110,4 +126,25 @@ export const defaultStorm: Storm = {
   position: 0,
   country: "",
   map: "",
+};
+
+// Country flag component mapping
+export const COUNTRY_FLAG_COMPONENTS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  Cambodia: KH,
+  China: CN,
+  "DPR Korea": KP,
+  "HK, China": HK,
+  Japan: JP,
+  "Laos PDR": LA,
+  "Macao, China": MO,
+  Malaysia: MY,
+  Micronesia: FM,
+  Philippines: PH,
+  "RO Korea": KR,
+  Thailand: TH,
+  "U.S.A.": US,
+  Vietnam: VN,
 };

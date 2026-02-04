@@ -1,3 +1,4 @@
+import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import type { TyphoonName } from "../../../../../types";
 
 interface TyphoonNamesTableProps {
@@ -9,23 +10,8 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
   const rows = 10;
   const cols = 14;
 
-  // Country names for each column (based on WMO typhoon naming convention)
-  const countries = [
-    "Cambodia",
-    "China",
-    "North Korea",
-    "Hong Kong",
-    "Japan",
-    "Laos",
-    "Macao",
-    "Malaysia",
-    "Micronesia",
-    "Philippines",
-    "South Korea",
-    "Thailand",
-    "USA",
-    "Vietnam",
-  ];
+  // Derive country names and flag components from COUNTRY_FLAG_COMPONENTS
+  const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
 
   // Sort names by position to ensure correct ordering
   const sortedNames = names.sort((a, b) => a.position - b.position);
@@ -43,12 +29,13 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
         </colgroup>
         <thead>
           <tr>
-            {countries.map((country, index) => (
-              <th
-                key={index}
-                className="border border-sky-300 bg-sky-600 p-2 text-sm font-semibold text-white"
-              >
-                {country}
+            {countryEntries.map(([countryName, FlagComponent], index) => (
+              <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
+                <div className="flex items-center justify-center">
+                  <div className="h-7 w-10 overflow-hidden rounded border border-white/30 shadow-sm">
+                    <FlagComponent className="h-full w-full object-cover" />
+                  </div>
+                </div>
               </th>
             ))}
           </tr>

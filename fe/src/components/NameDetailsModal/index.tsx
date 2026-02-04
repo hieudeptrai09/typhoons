@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Modal from "../Modal";
+import { COUNTRY_FLAG_COMPONENTS } from "../../constants";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../types";
 
 interface NameDetailsModalProps extends BaseModalProps {
@@ -9,6 +10,7 @@ interface NameDetailsModalProps extends BaseModalProps {
 const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
+  const FlagComponent = COUNTRY_FLAG_COMPONENTS[name.country];
 
   return (
     <Modal
@@ -28,17 +30,28 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
         <div>
           <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
             <div className="flex-1 space-y-4">
-              <p className="mt-1 leading-relaxed font-semibold text-teal-600">{name.meaning}</p>
+              <div>
+                <div className="text-sm font-medium text-slate-500">Meaning</div>
+                <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
+                  {name.meaning}
+                </p>
+              </div>
 
-              <div className="space-y-2 border-l-2 border-slate-200 pl-4">
-                <div className="text-sm">
-                  <span className="font-medium text-slate-600">From:</span>
-                  <span className="ml-2 text-slate-700">{name.country}</span>
+              <div className="border-t border-slate-200 pt-3">
+                <div className="mb-2 text-sm font-medium text-slate-500">Origin</div>
+                <div className="flex items-center gap-3">
+                  {FlagComponent && (
+                    <div className="h-8 w-12 overflow-hidden rounded border border-slate-300 shadow-sm">
+                      <FlagComponent className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="text-base font-semibold text-slate-800">{name.country}</div>
                 </div>
-                <div className="text-sm">
-                  <span className="font-medium text-slate-600">Language:</span>
-                  <span className="ml-2 text-slate-700">{name.language}</span>
-                </div>
+              </div>
+
+              <div className="border-t border-slate-200 pt-3">
+                <div className="text-sm font-medium text-slate-500">Language</div>
+                <div className="mt-1 text-base text-slate-700">{name.language}</div>
               </div>
 
               {!hasImage && hasDescription && (

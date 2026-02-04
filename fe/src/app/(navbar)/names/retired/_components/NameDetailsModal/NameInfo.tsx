@@ -1,3 +1,5 @@
+import { COUNTRY_FLAG_COMPONENTS } from "../../../../../../constants";
+
 interface NameInfoProps {
   name: string;
   meaning: string;
@@ -19,13 +21,25 @@ const NameInfo = ({
   description,
   image,
 }: NameInfoProps) => {
+  const FlagComponent = COUNTRY_FLAG_COMPONENTS[country];
+
   return (
     <div className="flex-1 space-y-4">
       <div className="border-b-2 border-gray-300 pb-3">
         <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
-        <p className="mt-1 text-sm text-gray-600 italic">
-          <span className="font-medium">{`origin: ${language} (${country})`}</span>
-        </p>
+
+        <div className="mt-2 flex items-center gap-2">
+          {FlagComponent && (
+            <div className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm">
+              <FlagComponent className="h-full w-full object-cover" />
+            </div>
+          )}
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">{country}</span>
+            <span className="mx-1">•</span>
+            <span className="italic">{language}</span>
+          </p>
+        </div>
       </div>
 
       <div className="space-y-3">
