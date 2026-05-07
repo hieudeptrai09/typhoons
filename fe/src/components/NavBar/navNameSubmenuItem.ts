@@ -1,4 +1,4 @@
-import { List, Archive, Filter } from "lucide-react";
+import { List, Archive, Filter, History } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export interface SubmenuItem {
@@ -20,6 +20,12 @@ export const getNamesSubmenu = (currentPath: string): (SubmenuItem & { isActive:
       icon: Archive,
       label: "Retired Names",
       isActive: currentPath === "/names/retired/",
+    },
+    {
+      href: "/names/history",
+      icon: History,
+      label: "Name History",
+      isActive: currentPath === "/names/history/",
     },
     {
       href: "/names/filter",
