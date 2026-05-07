@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 import SortableTable from "../../../../components/SortableTable";
-import { INTENSITY_RANK, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
+import {
+  INTENSITY_RANK,
+  TEXT_COLOR_WHITE_BACKGROUND,
+  COUNTRY_FLAG_COMPONENTS,
+} from "../../../../constants";
 import { createRenderCell } from "../../../../containers/utils/cellRenderers";
 import {
   getHighlights,
@@ -10,6 +14,7 @@ import {
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
+import type { ReactNode } from "react";
 import type { Storm, DashboardParams, TableColumn } from "../../../../types";
 
 interface DashboardContentProps {
@@ -188,17 +193,31 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       };
     });
 
-    // Define color config based on avgIntensity
-    const getCellConfig = (row: NameData, key: keyof NameData) => {
-      if (key === "name") {
+    const renderCell = (row: NameData, column: TableColumn<NameData>): ReactNode => {
+      if (column.key === "name") {
         const intensityLabel = getIntensityFromNumber(row.avgIntensity);
         const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-        return { className: "font-bold", style: { color: textColor } };
+        return (
+          <span className="font-bold" style={{ color: textColor }}>
+            {row.name}
+          </span>
+        );
       }
-      return {};
+      if (column.key === "country") {
+        const FlagComponent = COUNTRY_FLAG_COMPONENTS[row.country];
+        return FlagComponent ? (
+          <div
+            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+            title={row.country}
+          >
+            <FlagComponent className="h-full w-full object-cover" />
+          </div>
+        ) : (
+          <span>{row.country}</span>
+        );
+      }
+      return createRenderCell<NameData>()(row, column);
     };
-
-    const renderCell = createRenderCell<NameData>(getCellConfig);
 
     return (
       <SortableTable
@@ -247,17 +266,31 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
   if (params.view === "average") {
     const data = transformAverageData(groupedStorms, params.filter);
 
-    // Define color config for average column
-    const getCellConfig = (row: AverageData, key: keyof AverageData) => {
-      if (key === "average") {
+    const renderCell = (row: AverageData, column: TableColumn<AverageData>): ReactNode => {
+      if (column.key === "average") {
         const intensityLabel = getIntensityFromNumber(row.avgNumber);
         const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-        return { style: { color: textColor } };
+        return (
+          <span className="font-semibold" style={{ color: textColor }}>
+            {String(row.average)}
+          </span>
+        );
       }
-      return {};
+      if (column.key === "country") {
+        const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country)];
+        return FlagComponent ? (
+          <div
+            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+            title={String(row.country)}
+          >
+            <FlagComponent className="h-full w-full object-cover" />
+          </div>
+        ) : (
+          <span>{String(row.country)}</span>
+        );
+      }
+      return createRenderCell<AverageData>()(row, column);
     };
-
-    const renderCell = createRenderCell<AverageData>(getCellConfig);
 
     return (
       <SortableTable
