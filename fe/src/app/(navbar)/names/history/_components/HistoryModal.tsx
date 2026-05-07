@@ -1,7 +1,7 @@
-import Modal from "../../../../components/Modal";
-import { useFetchData } from "../../../../containers/hooks/useFetchData";
-import { getPositionTitle } from "../../../../containers/utils/fns";
-import type { BaseModalProps, TyphoonName, Storm } from "../../../../types";
+import Modal from "../../../../../components/Modal";
+import { useFetchData } from "../../../../../containers/hooks/useFetchData";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
+import type { BaseModalProps, TyphoonName, Storm } from "../../../../../types";
 
 interface HistoryModalProps extends BaseModalProps {
   position: number;

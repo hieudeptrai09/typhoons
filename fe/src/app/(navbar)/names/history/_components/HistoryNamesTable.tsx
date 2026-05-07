@@ -1,10 +1,25 @@
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../constants";
-import type { TyphoonName } from "../../../../types";
+import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import type { TyphoonName } from "../../../../../types";
 
 interface HistoryNamesTableProps {
   names: TyphoonName[];
   onCellClick: (position: number, positionNames: TyphoonName[]) => void;
 }
+
+const getCellTextColor = (count: number): string => {
+  switch (count) {
+    case 1:
+      return "text-green-600";
+    case 2:
+      return "text-blue-600";
+    case 3:
+      return "text-amber-600";
+    case 4:
+      return "text-red-600";
+    default:
+      return "text-purple-600"; // 5+
+  }
+};
 
 const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
   const rows = 10;
@@ -13,7 +28,6 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
   const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
   const columnWidth = `${100 / cols}%`;
 
-  // Group names by position, excluding misspelling retirements (isLanguageProblem === 2)
   const namesByPosition: Record<number, TyphoonName[]> = {};
   names.forEach((name) => {
     if (name.isLanguageProblem === 2) return;
@@ -50,6 +64,8 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
               {[...Array(cols)].map((_, col) => {
                 const position = row * cols + col + 1;
                 const positionNames = namesByPosition[position] || [];
+                const count = positionNames.length;
+                const textColorClass = getCellTextColor(count);
 
                 return (
                   <td
@@ -63,20 +79,17 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
                     }
                   >
                     <div className="flex min-h-16 w-full flex-col items-center justify-center gap-0.5 px-1 py-1">
-                      {positionNames.length === 0 ? (
+                      {count === 0 ? (
                         <span className="text-xs text-gray-300">—</span>
                       ) : (
-                        positionNames.map((name, idx) => {
-                          const colorClass = name.isRetired ? "text-red-500" : "text-green-700";
-                          return (
-                            <div
-                              key={idx}
-                              className={`text-center text-xs leading-tight font-semibold ${colorClass}`}
-                            >
-                              {name.name}
-                            </div>
-                          );
-                        })
+                        positionNames.map((name, idx) => (
+                          <div
+                            key={idx}
+                            className={`text-center text-xs leading-tight font-semibold ${textColorClass}`}
+                          >
+                            {name.name}
+                          </div>
+                        ))
                       )}
                     </div>
                   </td>

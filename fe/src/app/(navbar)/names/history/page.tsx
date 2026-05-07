@@ -4,8 +4,8 @@ import { useState } from "react";
 import PageHeader from "../../../../components/PageHeader";
 import Waiting from "../../../../components/Waiting";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
-import HistoryModal from "./HistoryModal";
-import HistoryNamesTable from "./HistoryNamesTable";
+import HistoryNamesTable from "./_components/HistoryNamesTable";
+import HistoryModal from "./_components/HistoryModal";
 import type { TyphoonName } from "../../../../types";
 
 const HistoryNamesPage = () => {
@@ -30,7 +30,7 @@ const HistoryNamesPage = () => {
   }
 
   return (
-    <PageHeader title="History of Typhoon Names">
+    <PageHeader title="Typhoon Name History">
       <HistoryNamesTable names={names || []} onCellClick={handleCellClick} />
 
       {selectedPosition !== null && (
