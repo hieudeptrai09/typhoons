@@ -24,7 +24,7 @@ export const getNamesSubmenu = (currentPath: string): (SubmenuItem & { isActive:
     {
       href: "/names/history",
       icon: History,
-      label: "Name History",
+      label: "History of Name",
       isActive: currentPath === "/names/history/",
     },
     {
