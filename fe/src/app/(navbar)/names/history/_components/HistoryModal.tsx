@@ -1,3 +1,5 @@
+import { useState } from "react";
+import Image from "next/image";
 import Modal from "../../../../../components/Modal";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
@@ -9,11 +11,13 @@ interface HistoryModalProps extends BaseModalProps {
 }
 
 const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModalProps) => {
-  if (!isOpen) return null;
+  const [expandedNameId, setExpandedNameId] = useState<number | null>(null);
 
   const { data: storms, loading } = useFetchData<Storm[]>(
-    position ? `/storms?position=${position}` : "",
+    isOpen && position ? `/storms?position=${position}` : "",
   );
+
+  if (!isOpen) return null;
 
   const stormsByName: Record<string, Storm[]> = {};
   (storms || []).forEach((storm) => {
@@ -23,7 +27,6 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
 
   const positionTitle = getPositionTitle(position);
 
-  // Sort by the first storm year for each name ascending; names with no storms go to the end
   const sortedNames = [...positionNames].sort((a, b) => {
     const aStorms = stormsByName[a.name] || [];
     const bStorms = stormsByName[b.name] || [];
@@ -38,8 +41,20 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     return "text-green-700";
   };
 
+  const handleNameClick = (id: number) => {
+    setExpandedNameId((prev) => (prev === id ? null : id));
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={positionTitle} maxWidth={400} height={280}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        setExpandedNameId(null);
+        onClose();
+      }}
+      title={positionTitle}
+      maxWidth={480}
+    >
       {() => (
         <div>
           {loading ? (
@@ -47,20 +62,69 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
           ) : positionNames.length === 0 ? (
             <div className="py-4 text-center text-gray-500">No names at this position.</div>
           ) : (
-            <div>
+            <div className="space-y-1">
               {sortedNames.map((name) => {
                 const nameStorms = stormsByName[name.name] || [];
                 const count = nameStorms.length;
                 const years = nameStorms.map((s) => s.year).join(", ");
                 const colorClass = getNameColor(name);
+                const isExpanded = expandedNameId === name.id;
+
+                const hasExpandable = !!name.image;
 
                 return (
-                  <div key={name.id} className="flex items-baseline gap-2 py-1">
-                    <span className="min-w-8 text-sm font-bold text-gray-400">
-                      {count > 0 ? `x${count}` : "x0"}
-                    </span>
-                    <span className={`font-semibold ${colorClass}`}>{name.name}</span>
-                    {count > 0 && <span className="text-sm text-gray-500">({years})</span>}
+                  <div key={name.id} className="overflow-hidden rounded-lg">
+                    {/* Row — always visible */}
+                    <button
+                      onClick={() => hasExpandable && handleNameClick(name.id)}
+                      className={`flex w-full items-baseline gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                        isExpanded
+                          ? "rounded-b-none bg-sky-50"
+                          : hasExpandable
+                            ? "hover:bg-stone-100"
+                            : "cursor-default"
+                      }`}
+                    >
+                      <span className="min-w-8 shrink-0 text-sm font-bold text-gray-400">
+                        {count > 0 ? `x${count}` : "x0"}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div>
+                          <span className={`font-semibold ${colorClass}`}>{name.name}</span>
+                          {count > 0 && (
+                            <span className="ml-1 text-sm text-gray-500">({years})</span>
+                          )}
+                        </div>
+                        {name.meaning && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-teal-700 italic">
+                            {name.meaning}
+                          </p>
+                        )}
+                        {name.description && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-gray-600">
+                            {name.description}
+                          </p>
+                        )}
+                      </div>
+                    </button>
+
+                    {/* Expanded detail panel — image only */}
+                    {isExpanded && name.image && (
+                      <div className="rounded-b-lg border-t border-sky-100 bg-sky-50 px-4 py-3">
+                        <div
+                          className="relative mx-auto overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
+                          style={{ width: 160, aspectRatio: "4/3" }}
+                        >
+                          <Image
+                            src={name.image}
+                            alt={name.name}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
