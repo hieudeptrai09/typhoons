@@ -1,7 +1,7 @@
 import { COUNTRY_FLAG_COMPONENTS } from "../../../constants";
-import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 import ImageWithLoader from "../../components/ImageWithLoader";
 import Modal from "../../components/Modal";
+import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
 interface NameDetailsModalProps extends BaseModalProps {
   name: TyphoonName | RetiredName;

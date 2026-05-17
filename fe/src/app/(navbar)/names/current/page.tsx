@@ -3,8 +3,8 @@
 import { useState } from "react";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import Loader from "../../../../components/components/Loader";
-import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import PageHeader from "../../../../components/components/PageHeader";
+import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import TyphoonNamesTable from "./_components/TyphoonNamesTable";

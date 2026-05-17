@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import type { ComponentProps } from "react";
+import Image from "next/image";
 import Loader from "../Loader";
 
 type ImageWithLoaderProps = ComponentProps<typeof Image>;

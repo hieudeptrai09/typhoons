@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import type { ReactNode } from "react";
 import SortableTable from "../../../../components/components/SortableTable";
 import {
   INTENSITY_RANK,
@@ -14,7 +15,6 @@ import {
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
 import StormGrid from "./StormGrid";
-import type { ReactNode } from "react";
 import type { Storm, DashboardParams, TableColumn } from "../../../../types";
 
 interface DashboardContentProps {

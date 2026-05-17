@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import Modal from "../../../../../components/components/Modal";
 import FilterInput from "../../../../../components/ui/FilterModal/FilterInput";
 import FilterSelect from "../../../../../components/ui/FilterModal/FilterSelect";
 import ModalActions from "../../../../../components/ui/FilterModal/ModalActions";
-import Modal from "../../../../../components/components/Modal";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
