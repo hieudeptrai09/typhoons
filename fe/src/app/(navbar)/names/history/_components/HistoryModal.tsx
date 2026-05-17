@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import ImageWithLoader from "../../../../../components/ImageWithLoader";
-import Loader from "../../../../../components/Loader";
-import Modal from "../../../../../components/Modal";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import Loader from "../../../../../components/components/Loader";
+import Modal from "../../../../../components/components/Modal";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { BaseModalProps, TyphoonName, Storm } from "../../../../../types";

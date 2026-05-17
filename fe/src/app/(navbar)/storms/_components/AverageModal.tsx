@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import Modal from "../../../../components/Modal";
+import Modal from "../../../../components/components/Modal";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,

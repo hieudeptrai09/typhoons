@@ -1,7 +1,7 @@
 import type { ReactNode, CSSProperties } from "react";
 import { Flame, Skull } from "lucide-react";
-import ImageWithLoader from "../../components/ImageWithLoader";
-import IntensityBadge from "../../components/IntensityBadge";
+import ImageWithLoader from "../../components/components/ImageWithLoader";
+import IntensityBadge from "../../components/components/IntensityBadge";
 import { getPositionTitle } from "./fns";
 import type { IntensityType } from "../../types";
 

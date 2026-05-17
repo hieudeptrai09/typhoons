@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import type { CSSProperties } from "react";
-import ImageWithLoader from "../../../../components/ImageWithLoader";
-import Modal from "../../../../components/Modal";
-import Toggle from "../../../../components/Toggle";
+import ImageWithLoader from "../../../../components/components/ImageWithLoader";
+import Modal from "../../../../components/components/Modal";
+import Toggle from "../../../../components/components/Toggle";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getPageDescription, getPageTitle } from "./_utils/fns";
-import FilterNamesPage from "./FilterPageContent";
+import FilterNamesContent from "./FilterPageContent";
 import type { Metadata } from "next";
 
 type Props = {
@@ -22,7 +22,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-const RetiredNamesPage = () => {
+const FilterNamesPage = () => {
   return (
     <Suspense
       fallback={
@@ -31,9 +31,9 @@ const RetiredNamesPage = () => {
         </div>
       }
     >
-      <FilterNamesPage />
+      <FilterNamesContent />
     </Suspense>
   );
 };
 
-export default RetiredNamesPage;
+export default FilterNamesPage;

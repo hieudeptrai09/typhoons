@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import FilterInput from "../../../../../../components/FilterModal/FilterInput";
-import FilterSelect from "../../../../../../components/FilterModal/FilterSelect";
-import ModalActions from "../../../../../../components/FilterModal/ModalActions";
-import Modal from "../../../../../../components/Modal";
+import Modal from "../../../../../../components/components/Modal";
+import FilterInput from "../../../../../../components/ui/FilterModal/FilterInput";
+import FilterSelect from "../../../../../../components/ui/FilterModal/FilterSelect";
+import ModalActions from "../../../../../../components/ui/FilterModal/ModalActions";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 

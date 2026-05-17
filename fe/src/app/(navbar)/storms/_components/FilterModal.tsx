@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ModalActions from "../../../../components/FilterModal/ModalActions";
-import Modal from "../../../../components/Modal";
+import Modal from "../../../../components/components/Modal";
+import ModalActions from "../../../../components/ui/FilterModal/ModalActions";
 import type { BaseModalProps, DashboardParams as FilterModalParams } from "../../../../types";
 
 interface FilterOption {

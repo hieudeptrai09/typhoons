@@ -1,5 +1,5 @@
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import type { SortDirection } from "../../types";
+import type { SortDirection } from "../../../types";
 
 interface SortableTableHeaderProps<T> {
   label: string;

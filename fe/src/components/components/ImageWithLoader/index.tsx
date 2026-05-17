@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import type { ComponentProps } from "react";
+import Image from "next/image";
 import Loader from "../Loader";
 
 type ImageWithLoaderProps = ComponentProps<typeof Image>;
@@ -20,7 +20,7 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
       )}
 
       {hasError && (
-<div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-xs text-gray-600">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-xs text-gray-600">
           No image
         </div>
       )}

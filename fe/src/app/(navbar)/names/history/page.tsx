@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import FrownNotFound from "../../../../components/FrownNotFound";
-import Loader from "../../../../components/Loader";
-import PageHeader from "../../../../components/PageHeader";
+import FrownNotFound from "../../../../components/components/FrownNotFound";
+import Loader from "../../../../components/components/Loader";
+import PageHeader from "../../../../components/components/PageHeader";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
-import HistoryNamesTable from "./_components/HistoryNamesTable";
 import HistoryModal from "./_components/HistoryModal";
+import HistoryNamesTable from "./_components/HistoryNamesTable";
 import type { TyphoonName } from "../../../../types";
 
 const HistoryNamesPage = () => {

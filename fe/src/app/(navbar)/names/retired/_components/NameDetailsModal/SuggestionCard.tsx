@@ -1,4 +1,4 @@
-import ImageWithLoader from "../../../../../../components/ImageWithLoader";
+import ImageWithLoader from "../../../../../../components/components/ImageWithLoader";
 import type { Suggestion } from "../../../../../../types";
 
 interface SuggestionCardProps {
