@@ -28,6 +28,7 @@ const FilterNamesPage = () => {
   const searchName = params.name || "";
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
+  const searchPosition = params.position || "";
   const currentLetter = params.letter || "A";
 
   const countries = useMemo(() => {
@@ -55,19 +56,25 @@ const FilterNamesPage = () => {
       filtered = filtered.filter((name) => name.language === selectedLanguage);
     }
 
-    const hasActiveFilters = searchName || selectedCountry || selectedLanguage;
+    if (searchPosition) {
+      filtered = filtered.filter((name) => name.position === Number(searchPosition));
+    }
+
+    const hasActiveFilters = searchName || selectedCountry || selectedLanguage || searchPosition;
     if (!hasActiveFilters) {
       filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
-  }, [names, searchName, selectedCountry, selectedLanguage, currentLetter]);
+  }, [names, searchName, selectedCountry, selectedLanguage, searchPosition, currentLetter]);
 
   const letterStatusMap = useMemo(() => {
     return categorizeLettersByStatus(names || []);
   }, [names]);
 
-  const activeFilterCount = [searchName, selectedCountry, selectedLanguage].filter(Boolean).length;
+  const activeFilterCount = [searchName, selectedCountry, selectedLanguage, searchPosition].filter(
+    Boolean,
+  ).length;
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
@@ -76,9 +83,10 @@ const FilterNamesPage = () => {
       name: filters.name,
       country: filters.country,
       language: filters.language,
+      position: filters.position,
     };
 
-    if (!filters.name && !filters.country && !filters.language) {
+    if (!filters.name && !filters.country && !filters.language && !filters.position) {
       newParams.letter = currentLetter;
     }
 
@@ -86,7 +94,7 @@ const FilterNamesPage = () => {
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams({ name: "", country: "", language: "", letter }, true);
+    updateParams({ name: "", country: "", language: "", position: "", letter }, true);
   };
 
   const handleNameClick = (name: TyphoonName) => {
@@ -139,7 +147,12 @@ const FilterNamesPage = () => {
     <PageHeader title="Filter Names">
       <FilterButton
         onClick={() => setIsFilterModalOpen(true)}
-        params={{ name: searchName, country: selectedCountry, language: selectedLanguage }}
+        params={{
+          name: searchName,
+          country: selectedCountry,
+          language: selectedLanguage,
+          position: searchPosition,
+        }}
       />
 
       {activeFilterCount === 0 && (
@@ -168,7 +181,12 @@ const FilterNamesPage = () => {
         onApply={handleApplyFilters}
         countries={countries}
         languages={languages}
-        initialFilters={{ name: searchName, country: selectedCountry, language: selectedLanguage }}
+        initialFilters={{
+          name: searchName,
+          country: selectedCountry,
+          language: selectedLanguage,
+          position: searchPosition,
+        }}
       />
 
       <NameDetailsModal

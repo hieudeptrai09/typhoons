@@ -9,13 +9,13 @@ type MetadataProps = {
 
 export async function generateMetadata({ searchParams }: MetadataProps): Promise<Metadata> {
   const params = await searchParams;
-  const { name, year, country, reason } = params;
+  const { name, year, country, reason, position } = params;
   const letter = params.letter === undefined ? "A" : params.letter;
 
-  const titleParts = getRetiredNamesTitle(name, year, country, reason, letter);
+  const titleParts = getRetiredNamesTitle(name, year, country, reason, letter, position);
   const title =
     titleParts.length > 0 ? `Retired Names: ${titleParts.join(" • ")}` : "Retired Typhoon Names";
-  const description = getRetiredNamesDescription(name, year, country, reason, letter);
+  const description = getRetiredNamesDescription(name, year, country, reason, letter, position);
 
   return {
     title: title,

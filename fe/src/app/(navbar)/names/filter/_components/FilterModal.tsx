@@ -23,11 +23,13 @@ const FilterModal = ({
   const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
   const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
   const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.language);
+  const [tempPosition, setTempPosition] = useState(initialFilters.position);
 
   useEffect(() => {
     setTempSearchName(initialFilters.name);
     setTempSelectedCountry(initialFilters.country);
     setTempSelectedLanguage(initialFilters.language);
+    setTempPosition(initialFilters.position);
   }, [initialFilters]);
 
   const handleApply = () => {
@@ -35,6 +37,7 @@ const FilterModal = ({
       name: tempSearchName,
       country: tempSelectedCountry,
       language: tempSelectedLanguage,
+      position: tempPosition,
       letter: "",
     });
   };
@@ -43,6 +46,7 @@ const FilterModal = ({
     setTempSearchName("");
     setTempSelectedCountry("");
     setTempSelectedLanguage("");
+    setTempPosition("");
   };
 
   return (
@@ -71,6 +75,16 @@ const FilterModal = ({
               onChange={setTempSelectedLanguage}
               options={languages}
               placeholder="All Languages"
+            />
+
+            <FilterInput
+              label="Filter by Position"
+              value={tempPosition}
+              onChange={setTempPosition}
+              placeholder="Enter position (1–140)..."
+              type="number"
+              min="1"
+              max="140"
             />
           </div>
 

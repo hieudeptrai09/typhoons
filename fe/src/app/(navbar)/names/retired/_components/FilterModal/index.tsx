@@ -17,12 +17,14 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
   const [tempSelectedYear, setTempSelectedYear] = useState(initialFilters.year);
   const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
   const [tempRetirementReason, setTempRetirementReason] = useState(initialFilters.reason);
+  const [tempPosition, setTempPosition] = useState(initialFilters.position);
 
   useEffect(() => {
     setTempSearchName(initialFilters.name);
     setTempSelectedYear(initialFilters.year);
     setTempSelectedCountry(initialFilters.country);
     setTempRetirementReason(initialFilters.reason);
+    setTempPosition(initialFilters.position);
   }, [initialFilters]);
 
   const handleApply = () => {
@@ -31,6 +33,7 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
       year: tempSelectedYear,
       country: tempSelectedCountry,
       reason: tempRetirementReason,
+      position: tempPosition,
       letter: "",
     });
   };
@@ -40,6 +43,7 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
     setTempSelectedYear("");
     setTempSelectedCountry("");
     setTempRetirementReason("");
+    setTempPosition("");
   };
 
   return (
@@ -70,6 +74,16 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
               onChange={setTempSelectedCountry}
               options={countries}
               placeholder="All Countries"
+            />
+
+            <FilterInput
+              label="Filter by Position"
+              value={tempPosition}
+              onChange={setTempPosition}
+              placeholder="Enter position (1–140)..."
+              type="number"
+              min="1"
+              max="140"
             />
 
             <RetirementReasonCheckbox
