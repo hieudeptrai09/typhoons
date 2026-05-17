@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import Loader from "../../../../../components/components/Loader";
 import Modal from "../../../../../components/components/Modal";
@@ -12,10 +12,9 @@ interface HistoryModalProps extends BaseModalProps {
 }
 
 const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModalProps) => {
-  const [expandedNameId, setExpandedNameId] = useState<number | null>(null);
-  // Tracks which position the last completed fetch belongs to.
-  // Prevents storms from position X flashing when switching to position Y.
-  const [fetchedPosition, setFetchedPosition] = useState<number | null>(null);
+  const [expandedState, setExpandedState] = useState<{ position: number; nameId: number } | null>(
+    null,
+  );
 
   const {
     data: stormsRaw,
@@ -23,20 +22,16 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     error,
   } = useFetchData<Storm[]>(isOpen && position ? `/storms?position=${position}` : "");
 
-  useEffect(() => {
-    if (!loading && position) {
-      setFetchedPosition(position);
-    }
-  }, [loading, position]);
-
-  // Reset expanded row whenever position changes
-  useEffect(() => {
-    setExpandedNameId(null);
-  }, [position]);
-
   if (!isOpen) return null;
 
-  const isStormsReady = !loading && fetchedPosition === position;
+  const expandedNameId = expandedState?.position === position ? expandedState.nameId : null;
+
+  const isStormsReady =
+    !loading &&
+    (stormsRaw == null ||
+      stormsRaw.length === 0 ||
+      stormsRaw.every((s) => s.position === position));
+
   const storms = isStormsReady ? (stormsRaw ?? []) : [];
 
   const stormsByName: Record<string, Storm[]> = {};
@@ -61,15 +56,17 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     return "text-green-700";
   };
 
-  const handleNameClick = (id: number) => {
-    setExpandedNameId((prev) => (prev === id ? null : id));
+  const handleNameClick = (nameId: number) => {
+    setExpandedState((prev) =>
+      prev?.position === position && prev.nameId === nameId ? null : { position, nameId },
+    );
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => {
-        setExpandedNameId(null);
+        setExpandedState(null);
         onClose();
       }}
       title={positionTitle}

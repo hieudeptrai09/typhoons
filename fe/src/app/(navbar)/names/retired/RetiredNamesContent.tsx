@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
 import Loader from "../../../../components/components/Loader";
@@ -22,7 +22,6 @@ const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
-  const [fetchedNameId, setFetchedNameId] = useState<number | null>(null);
 
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
   const {
@@ -30,6 +29,7 @@ const RetiredNamesContent = () => {
     loading,
     error,
   } = useFetchData<RetiredName[]>("/typhoon-names?isRetired=1");
+
   const {
     data: suggestionsRaw = [],
     loading: suggestionsLoading,
@@ -38,14 +38,8 @@ const RetiredNamesContent = () => {
     selectedName.id ? `/suggested-names?nameId=${selectedName.id}` : "",
   );
 
-  useEffect(() => {
-    if (!suggestionsLoading && selectedName.id) {
-      setFetchedNameId(selectedName.id);
-    }
-  }, [suggestionsLoading, selectedName.id]);
-
-  const isSuggestionsReady = !suggestionsLoading && fetchedNameId === selectedName.id;
-  const suggestions = isSuggestionsReady ? suggestionsRaw : [];
+  const isSuggestionsReady = !suggestionsLoading;
+  const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
 
   const searchName = params.name || "";
   const selectedYear = params.year || "";
@@ -193,7 +187,7 @@ const RetiredNamesContent = () => {
         <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <RetiredNamesTable paginatedData={displayedNames} onNameClick={handleNameClick} />
       </div>
 
@@ -214,7 +208,7 @@ const RetiredNamesContent = () => {
       <NameDetailsModal
         isOpen={isNameDetailsModalOpen}
         selectedName={selectedName}
-        suggestions={suggestions ? suggestions : []}
+        suggestions={suggestions}
         suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
         suggestionsError={suggestionsError}
         onClose={() => setIsNameDetailsModalOpen(false)}

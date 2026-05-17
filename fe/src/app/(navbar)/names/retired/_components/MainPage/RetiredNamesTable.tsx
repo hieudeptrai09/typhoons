@@ -55,6 +55,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
       columns={columns}
       onRowClick={onNameClick}
       renderCell={renderCell}
+      className="max-w-5xl"
     />
   );
 };

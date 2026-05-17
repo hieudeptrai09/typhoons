@@ -28,6 +28,7 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
       {!hasError && (
         <Image
           {...props}
+          alt={props.alt || ""}
           className={`transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"} ${className ?? ""}`}
           onLoad={() => setIsLoading(false)}
           onError={() => {

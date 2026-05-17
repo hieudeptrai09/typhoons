@@ -9,7 +9,7 @@ interface StormMapPopupProps {
   selectedStorm: Storm | null;
   stormRefs: RefObject<Record<number, HTMLDivElement | null>>;
   selectedStormIndex: number | null;
-  modalContainerRef: RefObject<HTMLDivElement | null>;
+  modalContainer: HTMLDivElement | null;
   borderColor: string;
   onClose: () => void;
 }
@@ -19,7 +19,7 @@ const StormMapPopup = ({
   selectedStorm,
   stormRefs,
   selectedStormIndex,
-  modalContainerRef,
+  modalContainer,
   borderColor,
   onClose,
 }: StormMapPopupProps) => {
@@ -27,7 +27,6 @@ const StormMapPopup = ({
     const updatePosition = () => {
       const stormElementRef =
         selectedStormIndex !== null ? stormRefs?.current?.[selectedStormIndex] : null;
-      const modalContainer = modalContainerRef.current;
 
       if (selectedStorm && stormElementRef && popupRef.current && modalContainer) {
         const stormRect = stormElementRef.getBoundingClientRect();
@@ -49,8 +48,7 @@ const StormMapPopup = ({
 
     updatePosition();
 
-    if (selectedStorm && modalContainerRef.current) {
-      const modalContainer = modalContainerRef.current;
+    if (selectedStorm && modalContainer) {
       modalContainer.addEventListener("scroll", updatePosition);
       window.addEventListener("resize", updatePosition);
       return () => {
@@ -58,7 +56,7 @@ const StormMapPopup = ({
         window.removeEventListener("resize", updatePosition);
       };
     }
-  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex, modalContainerRef]);
+  }, [selectedStorm, popupRef, stormRefs, selectedStormIndex, modalContainer]);
 
   useEffect(() => {
     const stormElementRef =
@@ -82,12 +80,7 @@ const StormMapPopup = ({
     };
   }, [selectedStorm, popupRef, stormRefs, onClose, selectedStormIndex]);
 
-  if (
-    !selectedStorm ||
-    !selectedStorm.map ||
-    selectedStorm.map.trim() === "" ||
-    !modalContainerRef.current
-  ) {
+  if (!selectedStorm || !selectedStorm.map || selectedStorm.map.trim() === "" || !modalContainer) {
     return null;
   }
 
@@ -107,7 +100,7 @@ const StormMapPopup = ({
         />
       </div>
     </div>,
-    modalContainerRef.current,
+    modalContainer,
   );
 };
 

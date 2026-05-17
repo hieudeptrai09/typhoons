@@ -17,7 +17,7 @@ interface StormNamePopupProps {
   selectedName: string | null;
   selectedNameData: NameAverageData | undefined;
   nameRefs: RefObject<Record<string, HTMLDivElement | null>>;
-  modalContainerRef: RefObject<HTMLDivElement | null>;
+  modalContainer: HTMLDivElement | null;
   borderColor: string;
   onClose: () => void;
 }
@@ -27,15 +27,13 @@ const StormNamePopup = ({
   selectedName,
   selectedNameData,
   nameRefs,
-  modalContainerRef,
+  modalContainer,
   borderColor,
   onClose,
 }: StormNamePopupProps) => {
-  // Update popup position relative to the selected name element
   useEffect(() => {
     const updatePosition = () => {
       const nameElementRef = selectedName ? nameRefs.current?.[selectedName] : null;
-      const modalContainer = modalContainerRef.current;
 
       if (
         selectedName &&
@@ -59,13 +57,9 @@ const StormNamePopup = ({
       }
     };
 
-    // Initial position
     updatePosition();
 
-    // Update position on scroll within the modal
-    if (selectedName && modalContainerRef.current) {
-      const modalContainer = modalContainerRef.current;
-
+    if (selectedName && modalContainer) {
       modalContainer.addEventListener("scroll", updatePosition);
       window.addEventListener("resize", updatePosition);
 
@@ -74,9 +68,8 @@ const StormNamePopup = ({
         window.removeEventListener("resize", updatePosition);
       };
     }
-  }, [selectedName, nameRefs, popupRef, selectedNameData, modalContainerRef]);
+  }, [selectedName, nameRefs, popupRef, selectedNameData, modalContainer]);
 
-  // Close popup when clicking outside
   useEffect(() => {
     const nameElementRef = selectedName ? nameRefs?.current?.[selectedName] : null;
     const handleClickOutside = (event: MouseEvent) => {
@@ -99,7 +92,7 @@ const StormNamePopup = ({
     };
   }, [selectedName, popupRef, nameRefs, onClose]);
 
-  if (!selectedName || !selectedNameData || !modalContainerRef.current) {
+  if (!selectedName || !selectedNameData || !modalContainer) {
     return null;
   }
 
@@ -125,7 +118,7 @@ const StormNamePopup = ({
         ))}
       </div>
     </div>,
-    modalContainerRef.current,
+    modalContainer,
   );
 };
 
