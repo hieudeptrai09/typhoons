@@ -1,5 +1,5 @@
-import IntensityBadge from "../../../../components/IntensityBadge";
-import Modal from "../../../../components/Modal";
+import IntensityBadge from "../../../../components/components/IntensityBadge";
+import Modal from "../../../../components/components/Modal";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import type { BaseModalProps, Storm } from "../../../../types";
 

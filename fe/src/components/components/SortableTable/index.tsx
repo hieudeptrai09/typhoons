@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { useTableSort } from "../../containers/hooks/useTableSort";
+import { useTableSort } from "../../../containers/hooks/useTableSort";
 import SortableTableHeader from "./SortableTableHeader";
-import type { TableColumn } from "../../types";
+import type { TableColumn } from "../../../types";
 
 interface SortableTableProps<T> {
   data: T[];

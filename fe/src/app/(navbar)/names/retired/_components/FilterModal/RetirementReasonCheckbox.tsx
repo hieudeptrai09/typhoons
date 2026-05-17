@@ -1,4 +1,4 @@
-import FilterSection from "../../../../../../components/FilterModal/FilterSection";
+import FilterSection from "../../../../../../components/ui/FilterModal/FilterSection";
 
 interface ReasonOption {
   value: string;

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import FrownNotFound from "../../../../../components/FrownNotFound";
-import SortableTable from "../../../../../components/SortableTable";
+import FrownNotFound from "../../../../../components/components/FrownNotFound";
+import SortableTable from "../../../../../components/components/SortableTable";
 import { createRenderCell } from "../../../../../containers/utils/cellRenderers";
 import type { TyphoonName, TableColumn } from "../../../../../types";
 

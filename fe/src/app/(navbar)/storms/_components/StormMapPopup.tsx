@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { RefObject } from "react";
 import { createPortal } from "react-dom";
-import ImageWithLoader from "../../../../components/ImageWithLoader";
+import ImageWithLoader from "../../../../components/components/ImageWithLoader";
 import type { Storm } from "../../../../types";
 
 interface StormMapPopupProps {

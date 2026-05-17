@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import FrownNotFound from "../../../../components/FrownNotFound";
-import LetterNavigation from "../../../../components/LetterNavigation";
-import Loader from "../../../../components/Loader";
-import NameDetailsModal from "../../../../components/NameDetailsModal";
-import PageHeader from "../../../../components/PageHeader";
-import Toggle from "../../../../components/Toggle";
+import FrownNotFound from "../../../../components/components/FrownNotFound";
+import LetterNavigation from "../../../../components/components/LetterNavigation";
+import Loader from "../../../../components/components/Loader";
+import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
+import PageHeader from "../../../../components/components/PageHeader";
+import Toggle from "../../../../components/components/Toggle";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import FrownNotFound from "../../../../components/FrownNotFound";
-import LetterNavigation from "../../../../components/LetterNavigation";
-import Loader from "../../../../components/Loader";
-import PageHeader from "../../../../components/PageHeader";
+import FrownNotFound from "../../../../components/components/FrownNotFound";
+import LetterNavigation from "../../../../components/components/LetterNavigation";
+import Loader from "../../../../components/components/Loader";
+import PageHeader from "../../../../components/components/PageHeader";
 import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
