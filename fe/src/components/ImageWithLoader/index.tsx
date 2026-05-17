@@ -20,7 +20,7 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
       )}
 
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-xs text-gray-400">
+<div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-xs text-gray-600">
           No image
         </div>
       )}
