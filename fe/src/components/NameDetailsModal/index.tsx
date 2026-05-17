@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "../ImageWithLoader";
 import Modal from "../Modal";
 import { COUNTRY_FLAG_COMPONENTS } from "../../constants";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../types";
@@ -71,7 +71,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
                     className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
                     style={{ aspectRatio: "4/3" }}
                   >
-                    <Image
+                    <ImageWithLoader
                       src={name.image}
                       alt={name.name}
                       fill

@@ -1,6 +1,6 @@
 import type { ReactNode, CSSProperties } from "react";
 import { Flame, Skull } from "lucide-react";
-import Image from "next/image";
+import ImageWithLoader from "../../components/ImageWithLoader";
 import IntensityBadge from "../../components/IntensityBadge";
 import { getPositionTitle } from "./fns";
 import type { IntensityType } from "../../types";
@@ -32,7 +32,13 @@ const getCellRenderer = <T extends object>(
 
       return (
         <div className={`relative h-28 rounded-lg ${className}`} style={{ aspectRatio: 4 / 3 }}>
-          <Image src={imageSrc} alt={altText} fill className="object-contain" unoptimized />
+          <ImageWithLoader
+            src={imageSrc}
+            alt={altText}
+            fill
+            className="object-contain"
+            unoptimized
+          />
         </div>
       );
     }
@@ -64,7 +70,6 @@ const getCellRenderer = <T extends object>(
       );
     }
 
-    // Default rendering for all other keys
     default: {
       if (!value) {
         return <span className="text-gray-700">-</span>;
@@ -85,7 +90,6 @@ export const createRenderCell = <T extends object>(
     const config = getCellConfig?.(row, column.key) || {};
     const className = config.className || "";
     const style = config.style;
-
     return getCellRenderer(column.key, row, className, style);
   };
 };

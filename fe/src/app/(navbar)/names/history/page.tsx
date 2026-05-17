@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import FrownNotFound from "../../../../components/FrownNotFound";
+import Loader from "../../../../components/Loader";
 import PageHeader from "../../../../components/PageHeader";
-import Waiting from "../../../../components/Waiting";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import HistoryNamesTable from "./_components/HistoryNamesTable";
 import HistoryModal from "./_components/HistoryModal";
@@ -22,11 +23,15 @@ const HistoryNamesPage = () => {
   };
 
   if (loading) {
-    return <Waiting content="Loading Name History..." />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Waiting content="There are some errors during loading data..." />;
+    return <FrownNotFound />;
   }
 
   return (

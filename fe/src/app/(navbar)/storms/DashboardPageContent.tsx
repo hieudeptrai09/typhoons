@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import FrownNotFound from "../../../components/FrownNotFound";
+import Loader from "../../../components/Loader";
 import PageHeader from "../../../components/PageHeader";
-import Waiting from "../../../components/Waiting";
 import { INTENSITY_RANK } from "../../../constants";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../containers/hooks/useURLParams";
@@ -34,7 +35,6 @@ export default function DashboardPageContent() {
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
-  // Get params with defaults
   const view = params.view || "storms";
   const mode = params.mode || "table";
   const filter = params.filter || "";
@@ -51,10 +51,7 @@ export default function DashboardPageContent() {
 
     if (view === "storms" && mode === "list" && key === "name") {
       const avgIntensity =
-        storms.reduce((sum, s) => {
-          return sum + INTENSITY_RANK[s.intensity];
-        }, 0) / storms.length;
-
+        storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
       setSelectedData({ name: data as string, storms, avgIntensity });
       setIsNameListModalOpen(true);
       return;
@@ -72,32 +69,28 @@ export default function DashboardPageContent() {
       return;
     }
 
-    // All other routes open average modal
     const titleMap: Record<string, string> = {
       position: getPositionTitle(Number(data)),
       country: data as string,
       year: `Year ${data}`,
     };
 
-    const avg =
-      storms.reduce((sum, s) => {
-        return sum + INTENSITY_RANK[s.intensity];
-      }, 0) / storms.length;
+    const avg = storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
 
-    setSelectedData({
-      title: titleMap[key],
-      average: avg,
-      storms,
-    });
+    setSelectedData({ title: titleMap[key], average: avg, storms });
     setIsAverageModalOpen(true);
   };
 
   if (loading) {
-    return <Waiting content="Loading Current Names..." />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Waiting content="There are some errors during loading data..." />;
+    return <FrownNotFound />;
   }
 
   return (

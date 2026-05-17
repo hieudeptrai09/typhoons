@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import type { CSSProperties } from "react";
-import Image from "next/image";
+import ImageWithLoader from "../../../../components/ImageWithLoader";
 import Modal from "../../../../components/Modal";
 import Toggle from "../../../../components/Toggle";
 import {
@@ -27,7 +27,6 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
   const stormRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Calculate title color based on average intensity
   const intensityLabel = getIntensityFromNumber(avgIntensity);
   const titleColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
 
@@ -63,7 +62,6 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
     >
       {(modalContainerRef) => (
         <div className="space-y-4">
-          {/* Storm Information and Toggle - all in one line */}
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <div className="flex flex-col gap-1">
               <div>
@@ -86,7 +84,6 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
             </div>
           </div>
 
-          {/* Storms List */}
           <div>
             <h3 className="mb-3 font-semibold text-gray-700">
               All {name} Storms ({storms.length})
@@ -97,8 +94,8 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
                 const textColor = TEXT_COLOR_BADGE[storm.intensity];
                 const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
                 const isHovered = hoveredYear === storm.year;
-                const intensityLabel = INTENSITY_LABEL[storm.intensity];
-                const stormTitle = `${intensityLabel} ${storm.name} ${storm.year}`;
+                const label = INTENSITY_LABEL[storm.intensity];
+                const stormTitle = `${label} ${storm.name} ${storm.year}`;
 
                 return (
                   <div
@@ -124,7 +121,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
                       </div>
                       {showMap && (
                         <div className="relative h-32 w-48 shrink-0">
-                          <Image
+                          <ImageWithLoader
                             src={storm.map}
                             alt={`${storm.name} ${storm.year} track`}
                             fill

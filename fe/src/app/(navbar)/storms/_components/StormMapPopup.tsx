@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { RefObject } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import ImageWithLoader from "../../../../components/ImageWithLoader";
 import type { Storm } from "../../../../types";
 
 interface StormMapPopupProps {
@@ -23,7 +23,6 @@ const StormMapPopup = ({
   borderColor,
   onClose,
 }: StormMapPopupProps) => {
-  // Update popup position relative to the selected storm element
   useEffect(() => {
     const updatePosition = () => {
       const stormElementRef =
@@ -34,7 +33,7 @@ const StormMapPopup = ({
         const stormRect = stormElementRef.getBoundingClientRect();
         const containerRect = modalContainer.getBoundingClientRect();
 
-        const popupHeight = 230; // Adjusted height for map popup without title
+        const popupHeight = 230;
         const popupWidth = stormRect.width - 16;
 
         const scrollTop = modalContainer.scrollTop;
@@ -48,16 +47,12 @@ const StormMapPopup = ({
       }
     };
 
-    // Initial position
     updatePosition();
 
-    // Update position on scroll within the modal
     if (selectedStorm && modalContainerRef.current) {
       const modalContainer = modalContainerRef.current;
-
       modalContainer.addEventListener("scroll", updatePosition);
       window.addEventListener("resize", updatePosition);
-
       return () => {
         modalContainer.removeEventListener("scroll", updatePosition);
         window.removeEventListener("resize", updatePosition);
@@ -65,7 +60,6 @@ const StormMapPopup = ({
     }
   }, [selectedStorm, popupRef, stormRefs, selectedStormIndex, modalContainerRef]);
 
-  // Close popup when clicking outside
   useEffect(() => {
     const stormElementRef =
       selectedStormIndex !== null ? stormRefs?.current?.[selectedStormIndex] : null;
@@ -83,7 +77,6 @@ const StormMapPopup = ({
     if (selectedStorm) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -105,7 +98,7 @@ const StormMapPopup = ({
       style={{ borderColor }}
     >
       <div className="relative flex-1 overflow-hidden p-2">
-        <Image
+        <ImageWithLoader
           src={selectedStorm.map}
           alt={`${selectedStorm.name} ${selectedStorm.year} track`}
           fill

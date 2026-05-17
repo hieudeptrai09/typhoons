@@ -1,5 +1,6 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
+import ImageWithLoader from "../../../../../components/ImageWithLoader";
+import Loader from "../../../../../components/Loader";
 import Modal from "../../../../../components/Modal";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
@@ -12,15 +13,34 @@ interface HistoryModalProps extends BaseModalProps {
 
 const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModalProps) => {
   const [expandedNameId, setExpandedNameId] = useState<number | null>(null);
+  // Tracks which position the last completed fetch belongs to.
+  // Prevents storms from position X flashing when switching to position Y.
+  const [fetchedPosition, setFetchedPosition] = useState<number | null>(null);
 
-  const { data: storms, loading } = useFetchData<Storm[]>(
-    isOpen && position ? `/storms?position=${position}` : "",
-  );
+  const {
+    data: stormsRaw,
+    loading,
+    error,
+  } = useFetchData<Storm[]>(isOpen && position ? `/storms?position=${position}` : "");
+
+  useEffect(() => {
+    if (!loading && position) {
+      setFetchedPosition(position);
+    }
+  }, [loading, position]);
+
+  // Reset expanded row whenever position changes
+  useEffect(() => {
+    setExpandedNameId(null);
+  }, [position]);
 
   if (!isOpen) return null;
 
+  const isStormsReady = !loading && fetchedPosition === position;
+  const storms = isStormsReady ? (stormsRaw ?? []) : [];
+
   const stormsByName: Record<string, Storm[]> = {};
-  (storms || []).forEach((storm) => {
+  storms.forEach((storm) => {
     if (!stormsByName[storm.name]) stormsByName[storm.name] = [];
     stormsByName[storm.name].push(storm);
   });
@@ -57,8 +77,12 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     >
       {() => (
         <div>
-          {loading ? (
-            <div className="py-4 text-center text-gray-500">Loading storms...</div>
+          {loading || !isStormsReady ? (
+            <div className="flex justify-center py-8">
+              <Loader size="md" />
+            </div>
+          ) : error ? (
+            <div className="py-4 text-center text-gray-500">Failed to load storm data.</div>
           ) : positionNames.length === 0 ? (
             <div className="py-4 text-center text-gray-500">No names at this position.</div>
           ) : (
@@ -69,12 +93,10 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                 const years = nameStorms.map((s) => s.year).join(", ");
                 const colorClass = getNameColor(name);
                 const isExpanded = expandedNameId === name.id;
-
                 const hasExpandable = !!name.image;
 
                 return (
                   <div key={name.id} className="overflow-hidden rounded-lg">
-                    {/* Row — always visible */}
                     <button
                       onClick={() => hasExpandable && handleNameClick(name.id)}
                       className={`flex w-full items-baseline gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
@@ -108,14 +130,13 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                       </div>
                     </button>
 
-                    {/* Expanded detail panel — image only */}
                     {isExpanded && name.image && (
                       <div className="rounded-b-lg border-t border-sky-100 bg-sky-50 px-4 py-3">
                         <div
                           className="relative mx-auto overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
                           style={{ width: 160, aspectRatio: "4/3" }}
                         >
-                          <Image
+                          <ImageWithLoader
                             src={name.image}
                             alt={name.name}
                             fill
