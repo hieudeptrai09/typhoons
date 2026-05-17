@@ -9,12 +9,12 @@ type Props = {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
-  const { name, country, language } = params;
+  const { name, country, language, position } = params;
   const letter = params.letter === undefined ? "A" : params.letter;
 
-  const titleParts = getPageTitle(name, country, language, letter);
+  const titleParts = getPageTitle(name, country, language, letter, position);
   const title = titleParts ? `Filter Names: ${titleParts.join(" • ")}` : "Filter Names";
-  const description = getPageDescription(name, country, language, letter);
+  const description = getPageDescription(name, country, language, letter, position);
 
   return {
     title: title,

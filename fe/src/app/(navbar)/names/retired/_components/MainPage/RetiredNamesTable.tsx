@@ -17,28 +17,27 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
     { key: "name", label: "Name", isSortable: true },
     { key: "meaning", label: "Meaning", isSortable: false },
     { key: "country", label: "Country", isSortable: true },
+    { key: "position", label: "Position", isSortable: true },
     { key: "note", label: "Note", isSortable: false },
     { key: "lastYear", label: "Year of last storm", isSortable: true },
   ];
 
-  // Define color logic for each cell
   const getCellConfig = (row: RetiredName, key: keyof RetiredName) => {
     if (key === "name") {
-      // Color based on retirement reason
-      let colorClass = "text-red-600"; // Default: Destructive Storm
+      let colorClass = "text-red-600";
 
       switch (row.isLanguageProblem) {
         case 0:
-          colorClass = "text-red-600"; // Destructive Storm
+          colorClass = "text-red-600";
           break;
         case 1:
-          colorClass = "text-green-600"; // Language Problem
+          colorClass = "text-green-600";
           break;
         case 2:
-          colorClass = "text-amber-500"; // Misspelling
+          colorClass = "text-amber-500";
           break;
         case 3:
-          colorClass = "text-purple-600"; // Special Storm
+          colorClass = "text-purple-600";
           break;
       }
 

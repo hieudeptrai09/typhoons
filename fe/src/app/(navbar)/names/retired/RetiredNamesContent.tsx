@@ -22,9 +22,6 @@ const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
-  // Tracks which nameId the last completed suggestions fetch belongs to.
-  // When it differs from selectedName.id, we know a new fetch is in-flight
-  // and must not show the previous name's suggestions.
   const [fetchedNameId, setFetchedNameId] = useState<number | null>(null);
 
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
@@ -41,14 +38,12 @@ const RetiredNamesContent = () => {
     selectedName.id ? `/suggested-names?nameId=${selectedName.id}` : "",
   );
 
-  // Mark the fetch as settled only when loading finishes for the current name.
   useEffect(() => {
     if (!suggestionsLoading && selectedName.id) {
       setFetchedNameId(selectedName.id);
     }
   }, [suggestionsLoading, selectedName.id]);
 
-  // Show suggestions only when the fetched data actually belongs to the selected name.
   const isSuggestionsReady = !suggestionsLoading && fetchedNameId === selectedName.id;
   const suggestions = isSuggestionsReady ? suggestionsRaw : [];
 
@@ -56,6 +51,7 @@ const RetiredNamesContent = () => {
   const selectedYear = params.year || "";
   const selectedCountry = params.country || "";
   const retirementReason = params.reason || "";
+  const searchPosition = params.position || "";
   const currentLetter = params.letter || "A";
 
   const countries = [...new Set((retiredNames || []).map((name) => name.country))].sort();
@@ -82,13 +78,26 @@ const RetiredNamesContent = () => {
       filtered = filtered.filter((name) => selectedReasons.includes(name.isLanguageProblem));
     }
 
-    const hasActiveFilters = searchName || selectedYear || selectedCountry || retirementReason;
+    if (searchPosition) {
+      filtered = filtered.filter((name) => name.position === Number(searchPosition));
+    }
+
+    const hasActiveFilters =
+      searchName || selectedYear || selectedCountry || retirementReason || searchPosition;
     if (!hasActiveFilters) {
       filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
-  }, [retiredNames, searchName, selectedYear, selectedCountry, retirementReason, currentLetter]);
+  }, [
+    retiredNames,
+    searchName,
+    selectedYear,
+    selectedCountry,
+    retirementReason,
+    searchPosition,
+    currentLetter,
+  ]);
 
   const availableLettersMap = useMemo(() => {
     const map: Record<string, boolean> = {};
@@ -99,9 +108,13 @@ const RetiredNamesContent = () => {
     return map;
   }, [retiredNames]);
 
-  const activeFilterCount = [searchName, selectedYear, selectedCountry, retirementReason].filter(
-    Boolean,
-  ).length;
+  const activeFilterCount = [
+    searchName,
+    selectedYear,
+    selectedCountry,
+    retirementReason,
+    searchPosition,
+  ].filter(Boolean).length;
 
   const handleNameClick = (name: RetiredName) => {
     setSelectedName(name);
@@ -116,9 +129,16 @@ const RetiredNamesContent = () => {
       year: filters.year,
       country: filters.country,
       reason: filters.reason,
+      position: filters.position,
     };
 
-    if (!filters.name && !filters.year && !filters.country && !filters.reason) {
+    if (
+      !filters.name &&
+      !filters.year &&
+      !filters.country &&
+      !filters.reason &&
+      !filters.position
+    ) {
       newParams.letter = currentLetter;
     }
 
@@ -126,7 +146,7 @@ const RetiredNamesContent = () => {
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams({ name: "", year: "", country: "", reason: "", letter }, true);
+    updateParams({ name: "", year: "", country: "", reason: "", position: "", letter }, true);
   };
 
   const getLetterConfig = (letter: string) => {
@@ -165,6 +185,7 @@ const RetiredNamesContent = () => {
           year: selectedYear,
           country: selectedCountry,
           reason: retirementReason,
+          position: searchPosition,
         }}
       />
 
@@ -186,6 +207,7 @@ const RetiredNamesContent = () => {
           year: selectedYear,
           country: selectedCountry,
           reason: retirementReason,
+          position: searchPosition,
         }}
       />
 

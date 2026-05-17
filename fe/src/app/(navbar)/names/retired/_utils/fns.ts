@@ -6,6 +6,7 @@ export const getRetiredNamesTitle = (
   country?: string | string[],
   reason?: string | string[],
   letter?: string | string[],
+  position?: string | string[],
 ): string[] => {
   const parts: string[] = [];
 
@@ -14,6 +15,7 @@ export const getRetiredNamesTitle = (
   const countryStr = normalizeParam(country);
   const reasonStr = normalizeParam(reason);
   const letterStr = normalizeParam(letter);
+  const positionStr = normalizeParam(position);
 
   if (nameStr) {
     parts.push(`"${nameStr}"`);
@@ -27,8 +29,11 @@ export const getRetiredNamesTitle = (
     parts.push(countryStr);
   }
 
+  if (positionStr) {
+    parts.push(`Position #${positionStr}`);
+  }
+
   if (reasonStr) {
-    // Parse comma-separated values
     const reasons = reasonStr
       .split(",")
       .map((reason) => {
@@ -52,7 +57,7 @@ export const getRetiredNamesTitle = (
     }
   }
 
-  if (!nameStr && !yearStr && !countryStr && !reasonStr && letterStr) {
+  if (!nameStr && !yearStr && !countryStr && !reasonStr && !positionStr && letterStr) {
     parts.push(`Letter ${letterStr}`);
   }
 
@@ -65,6 +70,7 @@ export const getRetiredNamesDescription = (
   country?: string | string[],
   reason?: string | string[],
   letter?: string | string[],
+  position?: string | string[],
 ): string => {
   const parts: string[] = [];
 
@@ -73,6 +79,7 @@ export const getRetiredNamesDescription = (
   const countryStr = normalizeParam(country);
   const reasonStr = normalizeParam(reason);
   const letterStr = normalizeParam(letter);
+  const positionStr = normalizeParam(position);
 
   if (nameStr) {
     parts.push(`retired typhoon name "${nameStr}"`);
@@ -82,6 +89,9 @@ export const getRetiredNamesDescription = (
   }
   if (countryStr) {
     parts.push(`names from ${countryStr}`);
+  }
+  if (positionStr) {
+    parts.push(`names at position #${positionStr}`);
   }
   if (reasonStr) {
     const reasons = reasonStr
@@ -106,7 +116,7 @@ export const getRetiredNamesDescription = (
       parts.push(`names retired due to ${reasons.join(", ")}`);
     }
   }
-  if (!nameStr && !yearStr && !countryStr && !reasonStr && letterStr) {
+  if (!nameStr && !yearStr && !countryStr && !reasonStr && !positionStr && letterStr) {
     parts.push(`retired typhoon names starting with letter ${letterStr}`);
   }
 

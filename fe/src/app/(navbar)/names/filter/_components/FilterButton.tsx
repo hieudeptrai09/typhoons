@@ -12,6 +12,7 @@ const FilterButton = ({ onClick, params }: FilterButtonProps) => {
     if (params.name) parts.push(params.name);
     if (params.country) parts.push(params.country);
     if (params.language) parts.push(params.language);
+    if (params.position) parts.push(`Position #${params.position}`);
     return parts.length > 0 ? parts.join(" / ") : "Filters";
   };
 

@@ -1,12 +1,12 @@
 import { normalizeParam } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 
-// Generate dynamic page header title
 export const getPageTitle = (
   searchName: string | string[] | undefined,
   selectedCountry: string | string[] | undefined,
   selectedLanguage: string | string[] | undefined,
   currentLetter: string | string[] | undefined,
+  position?: string | string[] | undefined,
 ): string[] => {
   const titleParts: string[] = [];
 
@@ -14,6 +14,7 @@ export const getPageTitle = (
   const countryStr = normalizeParam(selectedCountry);
   const languageStr = normalizeParam(selectedLanguage);
   const letterStr = normalizeParam(currentLetter);
+  const positionStr = normalizeParam(position);
 
   if (nameStr) {
     titleParts.push(`"${nameStr}"`);
@@ -27,7 +28,11 @@ export const getPageTitle = (
     titleParts.push(languageStr);
   }
 
-  if (!nameStr && !countryStr && !languageStr) {
+  if (positionStr) {
+    titleParts.push(`Position #${positionStr}`);
+  }
+
+  if (!nameStr && !countryStr && !languageStr && !positionStr) {
     const letter = letterStr || "A";
     titleParts.push(`Letter ${letter}`);
   }
@@ -40,6 +45,7 @@ export const getPageDescription = (
   country: string | string[] | undefined,
   language: string | string[] | undefined,
   letter: string | string[] | undefined,
+  position?: string | string[] | undefined,
 ): string => {
   const parts: string[] = [];
 
@@ -47,6 +53,7 @@ export const getPageDescription = (
   const countryStr = normalizeParam(country);
   const languageStr = normalizeParam(language);
   const letterStr = normalizeParam(letter);
+  const positionStr = normalizeParam(position);
 
   if (nameStr) {
     parts.push(`names matching "${nameStr}"`);
@@ -57,7 +64,10 @@ export const getPageDescription = (
   if (languageStr) {
     parts.push(`names in ${languageStr}`);
   }
-  if (!nameStr && !countryStr && !languageStr && letterStr) {
+  if (positionStr) {
+    parts.push(`names at position #${positionStr}`);
+  }
+  if (!nameStr && !countryStr && !languageStr && !positionStr && letterStr) {
     parts.push(`typhoon names starting with letter ${letterStr}`);
   }
 
@@ -67,7 +77,7 @@ export const getPageDescription = (
     )}. Browse both current and retired typhoon names with detailed information about their meanings and origins.`;
   }
 
-  return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, or browse alphabetically. View complete details including meanings, images, and descriptions.";
+  return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, position, or browse alphabetically. View complete details including meanings, images, and descriptions.";
 };
 
 export const categorizeLettersByStatus = (
@@ -75,24 +85,20 @@ export const categorizeLettersByStatus = (
 ): Record<string, [boolean, boolean, boolean]> => {
   const letterStatusMap: Record<string, [boolean, boolean, boolean]> = {};
 
-  // Single pass through all names to build the map
   namesList.forEach((name) => {
     const letter = name.name.charAt(0).toUpperCase();
     const isRetired = Boolean(name.isRetired);
 
-    // Initialize letter if not exists: [hasAny, hasRetired, hasAlive]
     if (!letterStatusMap[letter]) {
       letterStatusMap[letter] = [false, false, false];
     }
 
-    // Mark as available (has at least one name)
     letterStatusMap[letter][0] = true;
 
-    // Mark status
     if (isRetired) {
-      letterStatusMap[letter][1] = true; // Has retired
+      letterStatusMap[letter][1] = true;
     } else {
-      letterStatusMap[letter][2] = true; // Has alive
+      letterStatusMap[letter][2] = true;
     }
   });
 
