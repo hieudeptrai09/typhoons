@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import FrownNotFound from "../../../../components/FrownNotFound";
+import Loader from "../../../../components/Loader";
 import NameDetailsModal from "../../../../components/NameDetailsModal";
 import PageHeader from "../../../../components/PageHeader";
-import Waiting from "../../../../components/Waiting";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import TyphoonNamesTable from "./_components/TyphoonNamesTable";
@@ -21,11 +22,15 @@ const CurrentNamesPage = () => {
   };
 
   if (loading) {
-    return <Waiting content="Loading Current Names..." />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Waiting content="There are some errors during loading data..." />;
+    return <FrownNotFound />;
   }
 
   return (

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "../../../../../../components/ImageWithLoader";
 
 interface NameImageProps {
   src?: string;
@@ -15,7 +15,7 @@ const NameImage = ({ src, alt, description }: NameImageProps) => {
         className="relative flex justify-center overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-50 shadow-sm"
         style={{ aspectRatio: "4/3" }}
       >
-        <Image src={src} alt={alt} fill className="object-contain" unoptimized />
+        <ImageWithLoader src={src} alt={alt} fill className="object-contain" unoptimized />
       </div>
       {hasDescription && (
         <p className="text-center text-xs leading-relaxed text-gray-600 italic">{description}</p>

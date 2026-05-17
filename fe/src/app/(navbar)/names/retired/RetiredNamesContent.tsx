@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import FrownNotFound from "../../../../components/FrownNotFound";
 import LetterNavigation from "../../../../components/LetterNavigation";
+import Loader from "../../../../components/Loader";
 import PageHeader from "../../../../components/PageHeader";
-import Waiting from "../../../../components/Waiting";
 import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
@@ -21,6 +22,10 @@ const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
+  // Tracks which nameId the last completed suggestions fetch belongs to.
+  // When it differs from selectedName.id, we know a new fetch is in-flight
+  // and must not show the previous name's suggestions.
+  const [fetchedNameId, setFetchedNameId] = useState<number | null>(null);
 
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
   const {
@@ -28,11 +33,25 @@ const RetiredNamesContent = () => {
     loading,
     error,
   } = useFetchData<RetiredName[]>("/typhoon-names?isRetired=1");
-  const { data: suggestions = [], refetch: refetchSuggestions } = useFetchData<Suggestion[]>(
+  const {
+    data: suggestionsRaw = [],
+    loading: suggestionsLoading,
+    error: suggestionsError,
+  } = useFetchData<Suggestion[]>(
     selectedName.id ? `/suggested-names?nameId=${selectedName.id}` : "",
   );
 
-  // Get URL params with defaults
+  // Mark the fetch as settled only when loading finishes for the current name.
+  useEffect(() => {
+    if (!suggestionsLoading && selectedName.id) {
+      setFetchedNameId(selectedName.id);
+    }
+  }, [suggestionsLoading, selectedName.id]);
+
+  // Show suggestions only when the fetched data actually belongs to the selected name.
+  const isSuggestionsReady = !suggestionsLoading && fetchedNameId === selectedName.id;
+  const suggestions = isSuggestionsReady ? suggestionsRaw : [];
+
   const searchName = params.name || "";
   const selectedYear = params.year || "";
   const selectedCountry = params.country || "";
@@ -60,9 +79,7 @@ const RetiredNamesContent = () => {
 
     if (retirementReason) {
       const selectedReasons = retirementReason.split(",").map(Number);
-      filtered = filtered.filter((name) => {
-        return selectedReasons.includes(name.isLanguageProblem);
-      });
+      filtered = filtered.filter((name) => selectedReasons.includes(name.isLanguageProblem));
     }
 
     const hasActiveFilters = searchName || selectedYear || selectedCountry || retirementReason;
@@ -86,12 +103,9 @@ const RetiredNamesContent = () => {
     Boolean,
   ).length;
 
-  const handleNameClick = async (name: RetiredName) => {
+  const handleNameClick = (name: RetiredName) => {
     setSelectedName(name);
     setIsNameDetailsModalOpen(true);
-    if (name.id) {
-      refetchSuggestions();
-    }
   };
 
   const handleApplyFilters = (filters: FilterParams) => {
@@ -104,7 +118,6 @@ const RetiredNamesContent = () => {
       reason: filters.reason,
     };
 
-    // Only include letter if no other filters
     if (!filters.name && !filters.year && !filters.country && !filters.reason) {
       newParams.letter = currentLetter;
     }
@@ -113,16 +126,7 @@ const RetiredNamesContent = () => {
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams(
-      {
-        name: "",
-        year: "",
-        country: "",
-        reason: "",
-        letter,
-      },
-      true,
-    );
+    updateParams({ name: "", year: "", country: "", reason: "", letter }, true);
   };
 
   const getLetterConfig = (letter: string) => {
@@ -140,11 +144,15 @@ const RetiredNamesContent = () => {
   };
 
   if (loading) {
-    return <Waiting content="Loading Current Names..." />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Waiting content="There are some errors during loading data..." />;
+    return <FrownNotFound />;
   }
 
   return (
@@ -184,7 +192,9 @@ const RetiredNamesContent = () => {
       <NameDetailsModal
         isOpen={isNameDetailsModalOpen}
         selectedName={selectedName}
-        suggestions={suggestions || []}
+        suggestions={suggestions ? suggestions : []}
+        suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
+        suggestionsError={suggestionsError}
         onClose={() => setIsNameDetailsModalOpen(false)}
       />
     </PageHeader>

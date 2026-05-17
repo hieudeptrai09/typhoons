@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import FrownNotFound from "../../../../components/FrownNotFound";
 import LetterNavigation from "../../../../components/LetterNavigation";
+import Loader from "../../../../components/Loader";
 import NameDetailsModal from "../../../../components/NameDetailsModal";
 import PageHeader from "../../../../components/PageHeader";
 import Toggle from "../../../../components/Toggle";
-import Waiting from "../../../../components/Waiting";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
@@ -24,7 +25,6 @@ const FilterNamesPage = () => {
   const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
 
-  // Get URL params with defaults
   const searchName = params.name || "";
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
@@ -78,7 +78,6 @@ const FilterNamesPage = () => {
       language: filters.language,
     };
 
-    // Only include letter if no other filters
     if (!filters.name && !filters.country && !filters.language) {
       newParams.letter = currentLetter;
     }
@@ -100,15 +99,11 @@ const FilterNamesPage = () => {
     const isActive = currentLetter === letter;
 
     if (!status || !status[0]) {
-      return {
-        isAvailable: false,
-        colorClass: "text-gray-300 cursor-not-allowed",
-      };
+      return { isAvailable: false, colorClass: "text-gray-300 cursor-not-allowed" };
     }
 
     const hasRetired = status[1];
     const hasAlive = status[2];
-
     let colorClass = "";
 
     if (hasRetired && hasAlive) {
@@ -125,29 +120,26 @@ const FilterNamesPage = () => {
         : "text-green-500 hover:text-green-600 hover:underline";
     }
 
-    return {
-      isAvailable: true,
-      colorClass,
-    };
+    return { isAvailable: true, colorClass };
   };
 
   if (loading) {
-    return <Waiting content="Loading Current Names..." />;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <Loader size="lg" />
+      </div>
+    );
   }
 
   if (error) {
-    return <Waiting content="There are some errors during loading data..." />;
+    return <FrownNotFound />;
   }
 
   return (
     <PageHeader title="Filter Names">
       <FilterButton
         onClick={() => setIsFilterModalOpen(true)}
-        params={{
-          name: searchName,
-          country: selectedCountry,
-          language: selectedLanguage,
-        }}
+        params={{ name: searchName, country: selectedCountry, language: selectedLanguage }}
       />
 
       {activeFilterCount === 0 && (
@@ -176,11 +168,7 @@ const FilterNamesPage = () => {
         onApply={handleApplyFilters}
         countries={countries}
         languages={languages}
-        initialFilters={{
-          name: searchName,
-          country: selectedCountry,
-          language: selectedLanguage,
-        }}
+        initialFilters={{ name: searchName, country: selectedCountry, language: selectedLanguage }}
       />
 
       <NameDetailsModal

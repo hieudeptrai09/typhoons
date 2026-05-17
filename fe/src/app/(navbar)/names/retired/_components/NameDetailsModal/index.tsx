@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Loader from "../../../../../../components/Loader";
 import Modal from "../../../../../../components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
@@ -8,6 +9,8 @@ import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../
 export interface NameDetailsModalProps extends BaseModalProps {
   selectedName: RetiredName;
   suggestions: Suggestion[];
+  suggestionsLoading?: boolean;
+  suggestionsError?: Error | null;
 }
 
 type TabType = "info" | "suggestions";
@@ -17,25 +20,25 @@ const NameDetailsModal = ({
   onClose,
   selectedName,
   suggestions,
+  suggestionsLoading = false,
+  suggestionsError = null,
 }: NameDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("info");
 
   if (!selectedName) return null;
 
   const getNameColor = (selectedName: RetiredName): string => {
-    const ilp = selectedName.isLanguageProblem;
-
-    switch (ilp) {
+    switch (selectedName.isLanguageProblem) {
       case 0:
-        return "!text-red-600"; // Destructive Storm
+        return "!text-red-600";
       case 1:
-        return "!text-green-600"; // Language Problem
+        return "!text-green-600";
       case 2:
-        return "!text-amber-500"; // Misspelling
+        return "!text-amber-500";
       case 3:
-        return "!text-purple-600"; // Special Storm
+        return "!text-purple-600";
       default:
-        return "!text-red-600"; // Default to destructive
+        return "!text-red-600";
     }
   };
 
@@ -46,8 +49,23 @@ const NameDetailsModal = ({
     }`;
   };
 
-  // Check if there's any image or description to display
   const hasImageOrDescription = !!selectedName.image;
+
+  const renderSuggestionsContent = () => {
+    if (suggestionsLoading) {
+      return (
+        <div className="flex justify-center py-8">
+          <Loader size="md" />
+        </div>
+      );
+    }
+    if (suggestionsError) {
+      return (
+        <div className="py-4 text-center text-gray-500">Failed to load suggested replacements.</div>
+      );
+    }
+    return <SuggestionsList suggestions={suggestions} />;
+  };
 
   return (
     <Modal
@@ -97,7 +115,7 @@ const NameDetailsModal = ({
               </div>
             )}
 
-            {activeTab === "suggestions" && <SuggestionsList suggestions={suggestions} />}
+            {activeTab === "suggestions" && renderSuggestionsContent()}
           </div>
         </>
       )}
