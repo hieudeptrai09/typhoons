@@ -16,7 +16,7 @@ import FilterModal from "./_components/FilterModal";
 import { categorizeLettersByStatus } from "./_utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
 
-const FilterNamesPage = () => {
+const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
   const { data: names, loading, error } = useFetchData<TyphoonName[]>("/typhoon-names");
 
@@ -198,4 +198,4 @@ const FilterNamesPage = () => {
   );
 };
 
-export default FilterNamesPage;
+export default FilterNamesContent;
