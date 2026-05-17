@@ -11,7 +11,7 @@ const SIZE_MAP = {
 const Loader = ({ size = "md" }: LoaderProps) => {
   const sizeClass = SIZE_MAP[size];
   return (
-    <div className="relative shrink-0" style={{ width: "fit-content" }}>
+<div className="relative shrink-0" style={{ width: "fit-content" }} role="status" aria-label="Loading">
       <div
         className={`rounded-full border-blue-200 ${sizeClass}`}
         style={{ borderStyle: "solid" }}
