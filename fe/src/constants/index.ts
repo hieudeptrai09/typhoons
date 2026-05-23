@@ -1,4 +1,3 @@
-
 // Import flag components from country-flag-icons
 import CN from "country-flag-icons/react/3x2/CN"; // China
 import FM from "country-flag-icons/react/3x2/FM"; // Micronesia
@@ -104,6 +103,7 @@ export const defaultTyphoonName: TyphoonName = {
   language: "",
   isRetired: false,
   isLanguageProblem: 0,
+  tag: "",
 };
 
 export const defaultRetiredName: RetiredName = {
