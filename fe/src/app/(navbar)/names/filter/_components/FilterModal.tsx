@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Modal from "../../../../../components/components/Modal";
 import FilterInput from "../../../../../components/ui/FilterModal/FilterInput";
 import FilterSelect from "../../../../../components/ui/FilterModal/FilterSelect";
@@ -27,14 +27,6 @@ const FilterModal = ({
   const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.language);
   const [tempPosition, setTempPosition] = useState(initialFilters.position);
   const [tempSelectedTag, setTempSelectedTag] = useState(initialFilters.tag ?? "");
-
-  useEffect(() => {
-    setTempSearchName(initialFilters.name);
-    setTempSelectedCountry(initialFilters.country);
-    setTempSelectedLanguage(initialFilters.language);
-    setTempPosition(initialFilters.position);
-    setTempSelectedTag(initialFilters.tag ?? "");
-  }, [initialFilters]);
 
   const handleApply = () => {
     onApply({

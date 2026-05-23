@@ -237,6 +237,7 @@ const FilterNamesContent = () => {
       )}
 
       <FilterModal
+        key={`${searchName}-${selectedCountry}-${selectedLanguage}-${searchPosition}-${selectedTag}`}
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilters}
