@@ -9,6 +9,7 @@ export interface FilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;
   countries: string[];
   languages: string[];
+  tags: string[];
   initialFilters: FilterParams;
 }
 
@@ -18,18 +19,21 @@ const FilterModal = ({
   onApply,
   countries,
   languages,
+  tags,
   initialFilters,
 }: FilterModalProps) => {
   const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
   const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
   const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.language);
   const [tempPosition, setTempPosition] = useState(initialFilters.position);
+  const [tempSelectedTag, setTempSelectedTag] = useState(initialFilters.tag ?? "");
 
   useEffect(() => {
     setTempSearchName(initialFilters.name);
     setTempSelectedCountry(initialFilters.country);
     setTempSelectedLanguage(initialFilters.language);
     setTempPosition(initialFilters.position);
+    setTempSelectedTag(initialFilters.tag ?? "");
   }, [initialFilters]);
 
   const handleApply = () => {
@@ -38,6 +42,7 @@ const FilterModal = ({
       country: tempSelectedCountry,
       language: tempSelectedLanguage,
       position: tempPosition,
+      tag: tempSelectedTag,
       letter: "",
     });
   };
@@ -47,6 +52,7 @@ const FilterModal = ({
     setTempSelectedCountry("");
     setTempSelectedLanguage("");
     setTempPosition("");
+    setTempSelectedTag("");
   };
 
   return (
@@ -75,6 +81,14 @@ const FilterModal = ({
               onChange={setTempSelectedLanguage}
               options={languages}
               placeholder="All Languages"
+            />
+
+            <FilterSelect
+              label="Filter by Tag"
+              value={tempSelectedTag}
+              onChange={setTempSelectedTag}
+              options={tags}
+              placeholder="All Tags"
             />
 
             <FilterInput

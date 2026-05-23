@@ -9,6 +9,7 @@ import {
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_LABEL,
+  COUNTRY_FLAG_COMPONENTS,
 } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 import StormMapPopup from "./StormMapPopup";
@@ -34,7 +35,6 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
   const stormRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Read ref.current inside an effect — runs after render, never during render.
   useEffect(() => {
     setModalContainer(modalContainerRef.current);
   }, [modalContainerRef]);
@@ -48,13 +48,21 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
     ? BACKGROUND_BADGE[selectedStormData.intensity]
     : "";
 
+  const FlagComponent = COUNTRY_FLAG_COMPONENTS[storms[0].country];
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
-          <div>
+          <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-700">Country:</span>
-            <span className="ml-2 text-gray-700">{storms[0].country}</span>
+            {FlagComponent ? (
+              <div className="h-5 w-8 overflow-hidden rounded border border-gray-300 shadow-sm">
+                <FlagComponent className="h-full w-full object-cover" />
+              </div>
+            ) : (
+              <span className="text-gray-700">{storms[0].country}</span>
+            )}
           </div>
           <div>
             <span className="font-semibold text-gray-700">Position:</span>

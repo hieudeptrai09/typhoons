@@ -24,7 +24,8 @@ class TyphoonNameController
                     tn.language,
                     tn.lastYear,
                     tn.image,
-                    tn.description
+                    tn.description,
+                    tn.tag
                   FROM typhoonnames tn
                   INNER JOIN positions p ON tn.position = p.id";
 
