@@ -9,6 +9,7 @@ export interface TyphoonName {
   isLanguageProblem: number;
   image?: string;
   description?: string;
+  tag: string;
 }
 
 export interface RetiredName extends TyphoonName {
@@ -43,6 +44,7 @@ export interface FilterParams {
   country: string;
   language: string;
   position: string;
+  tag: string;
   letter?: string;
 }
 
