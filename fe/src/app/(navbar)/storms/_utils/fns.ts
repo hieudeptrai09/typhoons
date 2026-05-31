@@ -15,7 +15,6 @@ export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
 };
 
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
-  // Filter storms based on highlight type
   if (type === "strongest") {
     return stormsData.filter((storm) => Boolean(storm.isStrongest));
   } else if (type === "first") {
@@ -27,7 +26,6 @@ export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
 };
 
 export const getGroupedStorms = (stormsData: Storm[], groupBy: string): Record<string, Storm[]> => {
-  // Group storms by specified field (position, name, country, or year)
   const grouped: Record<string, Storm[]> = {};
   stormsData.forEach((storm) => {
     const key = storm[groupBy as keyof Storm]?.toString() || "";
@@ -40,6 +38,29 @@ export const getGroupedStorms = (stormsData: Storm[], groupBy: string): Record<s
 export const calculateAverage = (storms: Storm[]): number => {
   const sum = storms.reduce((acc, s) => acc + INTENSITY_RANK[s.intensity], 0);
   return sum / storms.length;
+};
+
+export const calculateDistances = (
+  stormsData: Storm[],
+  groupBy: "position" | "name",
+): Record<string, number> => {
+  const grouped = getGroupedStorms(stormsData, groupBy);
+  const result: Record<string, number> = {};
+
+  Object.entries(grouped).forEach(([key, groupStorms]) => {
+    const years = groupStorms.map((s) => s.year).sort((a, b) => a - b);
+    if (years.length <= 1) {
+      result[key] = 0;
+      return;
+    }
+    const gaps: number[] = [];
+    for (let i = 1; i < years.length; i++) {
+      gaps.push(years[i] - years[i - 1]);
+    }
+    result[key] = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+  });
+
+  return result;
 };
 
 export const getDashboardTitle = (
@@ -57,6 +78,7 @@ export const getDashboardTitle = (
     storms: modeStr === "list" ? "All Typhoon Names" : "All Storms",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filterStr)}`,
+    distance: `Average Gap Between Storms by ${capitalize(filterStr)}`,
   };
 
   const title = viewTitles[viewStr];
@@ -105,6 +127,18 @@ export const getDashboardDescription = (
     return (
       averageDescriptions[filterStr] ||
       "Statistical analysis of typhoon intensity data with comprehensive averaging and comparison tools."
+    );
+  }
+
+  if (viewStr === "distance") {
+    const distanceDescriptions: Record<string, string> = {
+      position:
+        "View the average number of years between consecutive storms at each naming position. Identify which slots see more or less frequent activity.",
+      name: "Explore the average year-gap between storms sharing the same typhoon name. See how often each name is recycled in the naming cycle.",
+    };
+    return (
+      distanceDescriptions[filterStr] ||
+      "Analyze the temporal spacing between storms grouped by position or name."
     );
   }
 

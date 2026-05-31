@@ -69,6 +69,14 @@ export default function DashboardPageContent() {
       return;
     }
 
+    // Distance view: clicking a position or name opens the storm detail modal
+    if (view === "distance") {
+      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
+      setSelectedData({ title, storms });
+      setIsDetailModalOpen(true);
+      return;
+    }
+
     const titleMap: Record<string, string> = {
       position: getPositionTitle(Number(data)),
       country: data as string,

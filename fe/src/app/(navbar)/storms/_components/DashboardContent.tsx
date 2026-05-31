@@ -11,6 +11,7 @@ import {
   getHighlights,
   getIntensityFromNumber,
   calculateAverage,
+  calculateDistances,
   getGroupedStorms,
 } from "../_utils/fns";
 import SpecialButtons from "./SpecialButtons";
@@ -41,6 +42,21 @@ interface AverageData {
   average: string;
   avgNumber: number;
 }
+
+interface DistanceData {
+  position?: number | string;
+  name?: string;
+  country?: string;
+  count: number;
+  distance: string;
+  distanceNumber: number;
+}
+
+const getDistanceColor = (years: number): string => {
+  if (years < 6.0) return "#16a34a"; // green-600
+  if (years === 6.0) return "#2563eb"; // blue-600
+  return "#dc2626"; // red-600
+};
 
 const renderStormGridWithButtons = (
   onCellClick: (data: number | string, key: string) => void,
@@ -97,6 +113,34 @@ const transformAverageData = (
   });
 };
 
+const transformDistanceData = (
+  distanceMap: Record<string, number>,
+  groupedStorms: Record<string, Storm[]>,
+  filterType: "position" | "name",
+): DistanceData[] => {
+  return Object.entries(distanceMap).map(([key, dist]) => {
+    const storms = groupedStorms[key] || [];
+    const base = {
+      count: storms.length,
+      distance: dist === 0 ? "N/A" : dist.toFixed(2),
+      distanceNumber: dist,
+    };
+    if (filterType === "position") {
+      return {
+        position: parseInt(key) || key,
+        country: storms[0]?.country || "",
+        ...base,
+      } as DistanceData;
+    }
+    return {
+      name: key,
+      country: storms[0]?.country || "",
+      position: storms[0]?.position,
+      ...base,
+    } as DistanceData;
+  });
+};
+
 const getAverageColumns = (filterType: string): TableColumn<AverageData>[] => {
   const columnMap: Record<string, TableColumn<AverageData>[]> = {
     year: [
@@ -130,6 +174,29 @@ const getAverageColumns = (filterType: string): TableColumn<AverageData>[] => {
   return columns;
 };
 
+const getDistanceColumns = (filterType: "position" | "name"): TableColumn<DistanceData>[] => {
+  const base: TableColumn<DistanceData>[] =
+    filterType === "position"
+      ? [
+          { key: "position", label: "Position" },
+          { key: "country", label: "Country" },
+          { key: "count", label: "Storm Count" },
+        ]
+      : [
+          { key: "name", label: "Name" },
+          { key: "country", label: "Country" },
+          { key: "position", label: "Position" },
+          { key: "count", label: "Storm Count" },
+        ];
+
+  base.push({
+    key: "distance",
+    label: "Avg Gap (years)",
+    title: "Average number of years between consecutive storms in this group",
+  });
+  return base;
+};
+
 const getStormNameColumns = (): TableColumn<NameData>[] => {
   return [
     { key: "name", label: "Name" },
@@ -138,6 +205,67 @@ const getStormNameColumns = (): TableColumn<NameData>[] => {
     { key: "count", label: "Storm Count" },
     { key: "year", label: "Last Year" },
   ];
+};
+
+// ─── Distance grid (position mode, table) ────────────────────────────────────
+interface DistanceGridProps {
+  distanceValues: Record<number, number>;
+  stormsData: Storm[];
+  onCellClick: (position: number, key: string) => void;
+}
+
+const DistanceGrid = ({ distanceValues, stormsData, onCellClick }: DistanceGridProps) => {
+  const rows = 10;
+  const cols = 14;
+
+  const getStormNamesForPosition = (position: number): string[] => {
+    const storms = stormsData.filter((s) => s.position === position);
+    return [...new Set(storms.map((s) => s.name))];
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="mx-auto min-w-full border-collapse">
+        <colgroup>
+          {[...Array(cols)].map((_, idx) => (
+            <col key={idx} style={{ width: `${100 / cols}%` }} />
+          ))}
+        </colgroup>
+        <tbody>
+          {[...Array(rows)].map((_, row) => (
+            <tr key={row}>
+              {[...Array(cols)].map((_, col) => {
+                const position = row * cols + col + 1;
+                const dist = distanceValues[position];
+                const color = dist !== undefined ? getDistanceColor(dist) : "#9ca3af";
+                const label = dist === undefined ? "—" : dist === 0 ? "N/A" : dist.toFixed(2) + "y";
+                const stormNames = getStormNamesForPosition(position);
+
+                return (
+                  <td
+                    key={col}
+                    className="relative cursor-pointer border-2 border-stone-200 p-2 hover:bg-stone-200"
+                    onClick={() => onCellClick(position, "position")}
+                  >
+                    {stormNames.length > 0 && (
+                      <div className="absolute top-0 text-[7px] text-stone-100">
+                        {stormNames.join(", ")}
+                      </div>
+                    )}
+                    <div className="relative z-2 flex h-16 w-full items-center justify-center">
+                      <div className="text-center text-sm font-bold" style={{ color }}>
+                        {label}
+                      </div>
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentProps) => {
@@ -159,6 +287,23 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     return values;
   }, [stormsData, params.view, params.mode]);
 
+  // ── distance values for grid (position table mode) ──────────────────────
+  const distanceValues = useMemo(() => {
+    if (params.view !== "distance") return null;
+    const filterType = (params.filter || "position") as "position" | "name";
+    const distances = calculateDistances(stormsData, filterType);
+    // Convert string keys to numbers for position mode
+    if (filterType === "position") {
+      const result: Record<number, number> = {};
+      Object.entries(distances).forEach(([k, v]) => {
+        result[Number(k)] = v;
+      });
+      return result;
+    }
+    return distances as unknown as Record<number, number>;
+  }, [stormsData, params.view, params.filter]);
+
+  // ── storms view ─────────────────────────────────────────────────────────
   if (params.view === "storms" && params.mode === "table") {
     return renderStormGridWithButtons(onCellClick, "storms", null, stormsData);
   }
@@ -242,7 +387,6 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       position: s.position,
     }));
 
-    // No special config needed - use default
     const renderCell = createRenderCell<(typeof highlightData)[0]>();
 
     return (
@@ -300,6 +444,75 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
           const value = row[params.filter as keyof typeof row];
           if (value !== undefined) {
             onCellClick(value as number | string, params.filter);
+          }
+        }}
+        renderCell={renderCell}
+      />
+    );
+  }
+
+  // ── distance view ────────────────────────────────────────────────────────
+  if (params.view === "distance") {
+    const filterType = (params.filter || "position") as "position" | "name";
+
+    // Table mode: position grid (only valid for position filter)
+    if (params.mode === "table" && filterType === "position") {
+      const positionDistances = distanceValues as Record<number, number>;
+      return (
+        <div>
+          <SpecialButtons
+            onCellClick={onCellClick}
+            isAverageView={false}
+            averageValues={null}
+            distanceValues={positionDistances}
+          />
+          <DistanceGrid
+            distanceValues={positionDistances}
+            stormsData={stormsData}
+            onCellClick={onCellClick}
+          />
+        </div>
+      );
+    }
+
+    // List mode: sortable table
+    const distances = calculateDistances(stormsData, filterType);
+    const grouped = getGroupedStorms(stormsData, filterType);
+    const data = transformDistanceData(distances, grouped, filterType);
+
+    const renderCell = (row: DistanceData, column: TableColumn<DistanceData>): ReactNode => {
+      if (column.key === "distance") {
+        const color = row.distanceNumber === 0 ? "#9ca3af" : getDistanceColor(row.distanceNumber);
+        return (
+          <span className="font-semibold" style={{ color }}>
+            {String(row.distance)}
+          </span>
+        );
+      }
+      if (column.key === "country") {
+        const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country)];
+        return FlagComponent ? (
+          <div
+            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+            title={String(row.country)}
+          >
+            <FlagComponent className="h-full w-full object-cover" />
+          </div>
+        ) : (
+          <span>{String(row.country)}</span>
+        );
+      }
+      return createRenderCell<DistanceData>()(row, column);
+    };
+
+    return (
+      <SortableTable
+        data={data}
+        columns={getDistanceColumns(filterType)}
+        onRowClick={(row) => {
+          const value = filterType === "position" ? row.position : row.name;
+          if (value !== undefined) {
+            onCellClick(value as number | string, filterType);
           }
         }}
         renderCell={renderCell}

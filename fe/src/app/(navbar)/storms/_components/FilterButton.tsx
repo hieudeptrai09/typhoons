@@ -12,6 +12,7 @@ import {
   Globe,
   Calendar,
   ArrowDownToLine,
+  Ruler,
 } from "lucide-react";
 import type { DashboardParams } from "../../../../types";
 import type { LucideIcon } from "lucide-react";
@@ -31,6 +32,7 @@ const FilterButton = ({ onClick, params }: FilterButtonProps) => {
         storms: CloudLightning,
         highlights: Star,
         average: Activity,
+        distance: Ruler,
       },
       filter: {
         strongest: Zap,

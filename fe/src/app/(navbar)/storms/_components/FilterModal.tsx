@@ -56,39 +56,77 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
   const [filter, setFilter] = useState(currentParams.filter || "");
   const [mode, setMode] = useState(currentParams.mode || "table");
 
-  const getFilterOptions = (): string[] => {
-    if (view === "highlights") return ["strongest", "first", "last"];
-    if (view === "average") return ["position", "name", "country", "year"];
+  const getFilterOptions = (): FilterOption[] => {
+    if (view === "highlights") {
+      return [
+        { value: "strongest", label: "Strongest" },
+        { value: "first", label: "First" },
+        { value: "last", label: "Last" },
+      ];
+    }
+    if (view === "average") {
+      return [
+        { value: "position", label: "Position" },
+        { value: "name", label: "Name" },
+        { value: "country", label: "Country" },
+        { value: "year", label: "Year" },
+      ];
+    }
+    if (view === "distance") {
+      return [
+        { value: "position", label: "Position" },
+        { value: "name", label: "Name" },
+      ];
+    }
     return [];
   };
 
   const getDefaultFilter = (viewType: string): string => {
     if (viewType === "highlights") return "strongest";
     if (viewType === "average") return "position";
+    if (viewType === "distance") return "position";
     return "";
   };
 
   const isFilterDisabled = view === "storms";
+
+  // Table mode is only valid for distance+position; for all other distance combos → list only
   const isModeTableOptionDisabled =
-    view === "average" && (filter === "name" || filter === "country" || filter === "year");
+    (view === "average" && (filter === "name" || filter === "country" || filter === "year")) ||
+    (view === "distance" && filter === "name");
+
+  // For distance view, table is only available when filter === "position"
   const isModeListOptionDisabled = false;
 
   const handleViewChange = (newView: string) => {
     setView(newView);
-    if (newView === "highlights" || newView === "average") {
-      setFilter(getDefaultFilter(newView));
-    } else {
-      setFilter("");
+    const defaultFilter = getDefaultFilter(newView);
+    setFilter(defaultFilter);
+    // Reset mode sensibly
+    if (newView === "distance") {
+      setMode("table"); // position is default, table is valid for position
+    } else if (
+      newView === "average" &&
+      (filter === "name" || filter === "country" || filter === "year")
+    ) {
+      setMode("list");
     }
   };
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
+    // Force list mode when table is not applicable
     if (
       view === "average" &&
       (newFilter === "name" || newFilter === "country" || newFilter === "year")
     ) {
       setMode("list");
+    }
+    if (view === "distance" && newFilter === "name") {
+      setMode("list");
+    }
+    if (view === "distance" && newFilter === "position") {
+      setMode("table");
     }
   };
 
@@ -118,6 +156,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
                 { value: "storms", label: "Storms" },
                 { value: "highlights", label: "Highlights" },
                 { value: "average", label: "Average" },
+                { value: "distance", label: "Distance" },
               ]}
               value={view}
               onChange={handleViewChange}
@@ -125,7 +164,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
 
             <ButtonGroup
               label="Filter by"
-              options={filterOptions.map((opt) => ({ value: opt, label: opt }))}
+              options={filterOptions}
               value={filter}
               onChange={handleFilterChange}
               disabled={isFilterDisabled}
