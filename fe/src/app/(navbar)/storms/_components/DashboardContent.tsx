@@ -252,7 +252,10 @@ const DistanceGrid = ({ distanceValues, stormsData, onCellClick }: DistanceGridP
                         {stormNames.join(", ")}
                       </div>
                     )}
-                    <div className="relative z-2 flex h-16 w-full items-center justify-center">
+                    <div
+                      title={stormNames.join(", ")}
+                      className="relative z-2 flex h-16 w-full items-center justify-center"
+                    >
                       <div className="text-center text-sm font-bold" style={{ color }}>
                         {label}
                       </div>
