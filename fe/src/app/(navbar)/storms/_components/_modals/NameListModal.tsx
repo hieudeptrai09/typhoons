@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { CSSProperties, RefObject } from "react";
-import { Modal } from "antd";
+import { Modal, Switch } from "antd";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import Toggle from "../../../../../components/components/Toggle";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -75,8 +74,9 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end md:flex-row">
-          <Toggle value={showMap} onChange={setShowMap} label="Show Map" />
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">Show Map</span>
+          <Switch checked={showMap} onChange={setShowMap} />
         </div>
       </div>
 
@@ -147,7 +147,6 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
 };
 
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
-  // StormMapPopup portals into this div, which sits inside antd's modal body.
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const titleStyle: CSSProperties = {

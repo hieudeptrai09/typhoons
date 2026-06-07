@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Switch } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
 import Loader from "../../../../components/components/Loader";
 import PageHeader from "../../../../components/components/PageHeader";
-import Toggle from "../../../../components/components/Toggle";
 import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
@@ -122,7 +122,6 @@ const FilterNamesContent = () => {
   const handleRemoveTag = (key: keyof FilterParams, value?: string) => {
     const current = params[key] || "";
 
-    // For multi-value fields, remove just the one value; for single-value, clear entirely
     const multiKeys: (keyof FilterParams)[] = ["country", "language", "tag"];
     const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
 
@@ -236,12 +235,11 @@ const FilterNamesContent = () => {
       {viewMode === "list" ? (
         <>
           {displayedNames.length > 0 && (
-            <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end">
-              <Toggle
-                value={showImageAndDescription}
-                onChange={setShowImageAndDescription}
-                label="Show Images & Descriptions"
-              />
+            <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end gap-3">
+              <span className="text-sm font-semibold text-gray-700">
+                Show Images & Descriptions
+              </span>
+              <Switch checked={showImageAndDescription} onChange={setShowImageAndDescription} />
             </div>
           )}
           <FilteredNamesTable
