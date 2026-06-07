@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { Modal } from "antd";
 import Loader from "../../../../../../components/components/Loader";
-import Modal from "../../../../../../components/components/Modal";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
@@ -27,18 +27,18 @@ const NameDetailsModal = ({
 
   if (!selectedName) return null;
 
-  const getNameColor = (selectedName: RetiredName): string => {
-    switch (selectedName.isLanguageProblem) {
+  const getNameColorClass = (name: RetiredName): string => {
+    switch (name.isLanguageProblem) {
       case 0:
-        return "!text-red-600";
+        return "text-red-600";
       case 1:
-        return "!text-green-600";
+        return "text-green-600";
       case 2:
-        return "!text-amber-500";
+        return "text-amber-500";
       case 3:
-        return "!text-purple-600";
+        return "text-purple-600";
       default:
-        return "!text-red-600";
+        return "text-red-600";
     }
   };
 
@@ -69,56 +69,70 @@ const NameDetailsModal = ({
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={selectedName.name}
-      maxWidth={672}
-      height={typeof window !== "undefined" ? window.innerHeight * 0.8 : 600}
-      titleClassName={`!text-3xl ${getNameColor(selectedName)}`}
+      open={isOpen}
+      onCancel={onClose}
+      width={672}
+      footer={null}
+      centered
+      destroyOnHidden
+      title={
+        <span className={`text-3xl font-bold ${getNameColorClass(selectedName)}`}>
+          {selectedName.name}
+        </span>
+      }
+      styles={{
+        body: {
+          height: typeof window !== "undefined" ? window.innerHeight * 0.8 - 120 : 480,
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+        },
+      }}
     >
-      {() => (
-        <>
-          <div className="mb-6 flex border-b border-gray-200">
-            <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
-              Name Information
-            </button>
-            <button
-              onClick={() => setActiveTab("suggestions")}
-              className={getTabClasses("suggestions")}
-            >
-              Suggested Replacements
-            </button>
-          </div>
+      <div className="flex flex-1 flex-col pt-4">
+        {/* Tabs */}
+        <div className="mb-6 flex border-b border-gray-200">
+          <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
+            Name Information
+          </button>
+          <button
+            onClick={() => setActiveTab("suggestions")}
+            className={getTabClasses("suggestions")}
+          >
+            Suggested Replacements
+          </button>
+        </div>
 
-          <div className="flex-1">
-            {activeTab === "info" && (
-              <div className="flex h-full items-start justify-center">
-                <div
-                  className={`flex w-full gap-6 ${!hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""}`}
-                >
-                  <NameInfo
-                    name={selectedName.name}
-                    meaning={selectedName.meaning}
-                    country={selectedName.country}
-                    position={selectedName.position}
-                    language={selectedName.language}
-                    replacementName={selectedName.replacementName}
-                    description={selectedName.description || ""}
-                    image={selectedName.image || ""}
-                  />
-                  <NameImage
-                    src={selectedName.image}
-                    alt={selectedName.name}
-                    description={selectedName.description}
-                  />
-                </div>
+        <div className="flex-1">
+          {activeTab === "info" && (
+            <div className="flex h-full items-start justify-center">
+              <div
+                className={`flex w-full gap-6 ${
+                  !hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""
+                }`}
+              >
+                <NameInfo
+                  name={selectedName.name}
+                  meaning={selectedName.meaning}
+                  country={selectedName.country}
+                  position={selectedName.position}
+                  language={selectedName.language}
+                  replacementName={selectedName.replacementName}
+                  description={selectedName.description || ""}
+                  image={selectedName.image || ""}
+                />
+                <NameImage
+                  src={selectedName.image}
+                  alt={selectedName.name}
+                  description={selectedName.description}
+                />
               </div>
-            )}
+            </div>
+          )}
 
-            {activeTab === "suggestions" && renderSuggestionsContent()}
-          </div>
-        </>
-      )}
+          {activeTab === "suggestions" && renderSuggestionsContent()}
+        </div>
+      </div>
     </Modal>
   );
 };

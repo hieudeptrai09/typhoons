@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { CSSProperties, RefObject } from "react";
+import { Modal } from "antd";
 import ImageWithLoader from "../../../../components/components/ImageWithLoader";
-import Modal from "../../../../components/components/Modal";
 import Toggle from "../../../../components/components/Toggle";
 import {
   BACKGROUND_BADGE,
@@ -147,6 +147,9 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
 };
 
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
+  // StormMapPopup portals into this div, which sits inside antd's modal body.
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+
   const titleStyle: CSSProperties = {
     color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgIntensity)],
   };
@@ -154,10 +157,22 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
   if (!storms || storms.length === 0) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={name} maxWidth={512} titleStyle={titleStyle}>
-      {(modalContainerRef) => (
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={512}
+      footer={null}
+      centered
+      destroyOnHidden
+      title={
+        <span className="text-2xl font-bold" style={titleStyle}>
+          {name}
+        </span>
+      }
+    >
+      <div ref={modalContainerRef} className="relative overflow-y-auto pt-4">
         <NameListModalInner name={name} storms={storms} modalContainerRef={modalContainerRef} />
-      )}
+      </div>
     </Modal>
   );
 };

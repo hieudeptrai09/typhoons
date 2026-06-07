@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import Modal from "../../../../../../components/components/Modal";
+import { Modal, Button } from "antd";
 import FilterInput from "../../../../../../components/ui/FilterModal/FilterInput";
 import FilterSelect from "../../../../../../components/ui/FilterModal/FilterSelect";
-import ModalActions from "../../../../../../components/ui/FilterModal/ModalActions";
 import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
 import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 
@@ -47,54 +46,60 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={672}>
-      {() => (
-        <>
-          <div className="space-y-4">
-            <FilterInput
-              label="Filter by Name"
-              value={tempSearchName}
-              onChange={setTempSearchName}
-              placeholder="Enter typhoon name..."
-            />
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={672}
+      centered
+      destroyOnHidden
+      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      footer={[
+        <Button key="clear" onClick={handleClearAll}>
+          Clear All
+        </Button>,
+        <Button key="apply" type="primary" onClick={handleApply}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <div className="space-y-4 py-4">
+        <FilterInput
+          label="Filter by Name"
+          value={tempSearchName}
+          onChange={setTempSearchName}
+          placeholder="Enter typhoon name..."
+        />
 
-            <FilterInput
-              label="Filter by Year"
-              value={tempSelectedYear}
-              onChange={setTempSelectedYear}
-              placeholder="Enter year..."
-              type="number"
-              min="2000"
-              max="2100"
-            />
+        <FilterInput
+          label="Filter by Year"
+          value={tempSelectedYear}
+          onChange={setTempSelectedYear}
+          placeholder="Enter year..."
+          type="number"
+          min="2000"
+          max="2100"
+        />
 
-            <FilterSelect
-              label="Filter by Country"
-              value={tempSelectedCountry}
-              onChange={setTempSelectedCountry}
-              options={countries}
-              placeholder="All Countries"
-            />
+        <FilterSelect
+          label="Filter by Country"
+          value={tempSelectedCountry}
+          onChange={setTempSelectedCountry}
+          options={countries}
+          placeholder="All Countries"
+        />
 
-            <FilterInput
-              label="Filter by Position"
-              value={tempPosition}
-              onChange={setTempPosition}
-              placeholder="Enter position (1–140)..."
-              type="number"
-              min="1"
-              max="140"
-            />
+        <FilterInput
+          label="Filter by Position"
+          value={tempPosition}
+          onChange={setTempPosition}
+          placeholder="Enter position (1–140)..."
+          type="number"
+          min="1"
+          max="140"
+        />
 
-            <RetirementReasonCheckbox
-              value={tempRetirementReason}
-              onChange={setTempRetirementReason}
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </>
-      )}
+        <RetirementReasonCheckbox value={tempRetirementReason} onChange={setTempRetirementReason} />
+      </div>
     </Modal>
   );
 };

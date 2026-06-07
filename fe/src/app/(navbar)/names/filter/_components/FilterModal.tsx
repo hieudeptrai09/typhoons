@@ -1,8 +1,7 @@
 import { useState } from "react";
-import Modal from "../../../../../components/components/Modal";
+import { Modal, Button } from "antd";
 import FilterInput from "../../../../../components/ui/FilterModal/FilterInput";
 import FilterSelect from "../../../../../components/ui/FilterModal/FilterSelect";
-import ModalActions from "../../../../../components/ui/FilterModal/ModalActions";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
@@ -48,55 +47,64 @@ const FilterModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={448}>
-      {() => (
-        <>
-          <div className="space-y-4">
-            <FilterInput
-              label="Filter by Name"
-              value={tempSearchName}
-              onChange={setTempSearchName}
-              placeholder="Enter typhoon name..."
-            />
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={448}
+      centered
+      destroyOnHidden
+      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      footer={[
+        <Button key="clear" onClick={handleClearAll}>
+          Clear All
+        </Button>,
+        <Button key="apply" type="primary" onClick={handleApply}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <div className="space-y-4 py-4">
+        <FilterInput
+          label="Filter by Name"
+          value={tempSearchName}
+          onChange={setTempSearchName}
+          placeholder="Enter typhoon name..."
+        />
 
-            <FilterSelect
-              label="Filter by Country"
-              value={tempSelectedCountry}
-              onChange={setTempSelectedCountry}
-              options={countries}
-              placeholder="All Countries"
-            />
+        <FilterSelect
+          label="Filter by Country"
+          value={tempSelectedCountry}
+          onChange={setTempSelectedCountry}
+          options={countries}
+          placeholder="All Countries"
+        />
 
-            <FilterSelect
-              label="Filter by Language"
-              value={tempSelectedLanguage}
-              onChange={setTempSelectedLanguage}
-              options={languages}
-              placeholder="All Languages"
-            />
+        <FilterSelect
+          label="Filter by Language"
+          value={tempSelectedLanguage}
+          onChange={setTempSelectedLanguage}
+          options={languages}
+          placeholder="All Languages"
+        />
 
-            <FilterSelect
-              label="Filter by Tag"
-              value={tempSelectedTag}
-              onChange={setTempSelectedTag}
-              options={tags}
-              placeholder="All Tags"
-            />
+        <FilterSelect
+          label="Filter by Tag"
+          value={tempSelectedTag}
+          onChange={setTempSelectedTag}
+          options={tags}
+          placeholder="All Tags"
+        />
 
-            <FilterInput
-              label="Filter by Position"
-              value={tempPosition}
-              onChange={setTempPosition}
-              placeholder="Enter position (1–140)..."
-              type="number"
-              min="1"
-              max="140"
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </>
-      )}
+        <FilterInput
+          label="Filter by Position"
+          value={tempPosition}
+          onChange={setTempPosition}
+          placeholder="Enter position (1–140)..."
+          type="number"
+          min="1"
+          max="140"
+        />
+      </div>
     </Modal>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Modal from "../../../../components/components/Modal";
-import ModalActions from "../../../../components/ui/FilterModal/ModalActions";
+import { Modal, Button } from "antd";
 import type { BaseModalProps, DashboardParams as FilterModalParams } from "../../../../types";
 
 interface FilterOption {
@@ -90,21 +89,16 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
 
   const isFilterDisabled = view === "storms";
 
-  // Table mode is only valid for distance+position; for all other distance combos → list only
   const isModeTableOptionDisabled =
     (view === "average" && (filter === "name" || filter === "country" || filter === "year")) ||
     (view === "distance" && filter === "name");
-
-  // For distance view, table is only available when filter === "position"
-  const isModeListOptionDisabled = false;
 
   const handleViewChange = (newView: string) => {
     setView(newView);
     const defaultFilter = getDefaultFilter(newView);
     setFilter(defaultFilter);
-    // Reset mode sensibly
     if (newView === "distance") {
-      setMode("table"); // position is default, table is valid for position
+      setMode("table");
     } else if (
       newView === "average" &&
       (filter === "name" || filter === "country" || filter === "year")
@@ -115,19 +109,14 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
-    // Force list mode when table is not applicable
     if (
       view === "average" &&
       (newFilter === "name" || newFilter === "country" || newFilter === "year")
     ) {
       setMode("list");
     }
-    if (view === "distance" && newFilter === "name") {
-      setMode("list");
-    }
-    if (view === "distance" && newFilter === "position") {
-      setMode("table");
-    }
+    if (view === "distance" && newFilter === "name") setMode("list");
+    if (view === "distance" && newFilter === "position") setMode("table");
   };
 
   const handleClearAll = () => {
@@ -137,8 +126,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
   };
 
   const handleApply = () => {
-    const params: FilterModalParams = { view, mode, filter };
-    onApply(params);
+    onApply({ view, mode, filter });
   };
 
   if (!isOpen) return null;
@@ -146,52 +134,53 @@ const FilterModal = ({ isOpen, onClose, onApply, currentParams }: FilterModalPro
   const filterOptions = getFilterOptions();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Dashboard View Options" maxWidth={512}>
-      {() => (
-        <>
-          <div className="mb-6 space-y-4">
-            <ButtonGroup
-              label="View"
-              options={[
-                { value: "storms", label: "Storms" },
-                { value: "highlights", label: "Highlights" },
-                { value: "average", label: "Average" },
-                { value: "distance", label: "Distance" },
-              ]}
-              value={view}
-              onChange={handleViewChange}
-            />
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={512}
+      centered
+      destroyOnHidden
+      title={<span className="text-xl font-bold text-gray-700">Dashboard View Options</span>}
+      footer={[
+        <Button key="clear" onClick={handleClearAll}>
+          Clear All
+        </Button>,
+        <Button key="apply" type="primary" onClick={handleApply}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <div className="space-y-4 py-4">
+        <ButtonGroup
+          label="View"
+          options={[
+            { value: "storms", label: "Storms" },
+            { value: "highlights", label: "Highlights" },
+            { value: "average", label: "Average" },
+            { value: "distance", label: "Distance" },
+          ]}
+          value={view}
+          onChange={handleViewChange}
+        />
 
-            <ButtonGroup
-              label="Filter by"
-              options={filterOptions}
-              value={filter}
-              onChange={handleFilterChange}
-              disabled={isFilterDisabled}
-            />
+        <ButtonGroup
+          label="Filter by"
+          options={filterOptions}
+          value={filter}
+          onChange={handleFilterChange}
+          disabled={isFilterDisabled}
+        />
 
-            <ButtonGroup
-              label="Mode"
-              options={[
-                {
-                  value: "table",
-                  label: "Table",
-                  disabled: isModeTableOptionDisabled,
-                },
-                {
-                  value: "list",
-                  label: "List",
-                  disabled: isModeListOptionDisabled,
-                },
-              ]}
-              value={mode}
-              onChange={setMode}
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </>
-      )}
+        <ButtonGroup
+          label="Mode"
+          options={[
+            { value: "table", label: "Table", disabled: isModeTableOptionDisabled },
+            { value: "list", label: "List" },
+          ]}
+          value={mode}
+          onChange={setMode}
+        />
+      </div>
     </Modal>
   );
 };
