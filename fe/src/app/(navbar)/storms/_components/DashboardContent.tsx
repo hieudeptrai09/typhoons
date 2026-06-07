@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
-import SortableTable from "../../../../components/components/SortableTable";
+import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import {
   INTENSITY_RANK,
   TEXT_COLOR_WHITE_BACKGROUND,
@@ -53,9 +54,9 @@ interface DistanceData {
 }
 
 const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a"; // green-600
-  if (years === 6.0) return "#2563eb"; // blue-600
-  return "#dc2626"; // red-600
+  if (years < 6.0) return "#16a34a";
+  if (years === 6.0) return "#2563eb";
+  return "#dc2626";
 };
 
 const renderStormGridWithButtons = (
@@ -92,23 +93,13 @@ const transformAverageData = (
 ): AverageData[] => {
   return Object.entries(dataMap).map(([key, storms]) => {
     const avgValue = calculateAverage(storms);
-    const baseData = {
-      count: storms.length,
-      average: avgValue.toFixed(2),
-      avgNumber: avgValue,
-    };
-
+    const baseData = { count: storms.length, average: avgValue.toFixed(2), avgNumber: avgValue };
     const dataTypeMap: Record<string, Partial<AverageData>> = {
       year: { year: parseInt(key) },
       country: { country: key },
-      name: {
-        name: key,
-        country: storms[0].country,
-        position: storms[0].position,
-      },
+      name: { name: key, country: storms[0].country, position: storms[0].position },
       position: { position: parseInt(key), country: storms[0].country },
     };
-
     return { ...dataTypeMap[filterType], ...baseData } as AverageData;
   });
 };
@@ -141,73 +132,210 @@ const transformDistanceData = (
   });
 };
 
-const getAverageColumns = (filterType: string): TableColumn<AverageData>[] => {
-  const columnMap: Record<string, TableColumn<AverageData>[]> = {
-    year: [
-      { key: "year", label: "Year" },
-      { key: "count", label: "Count" },
-    ],
-    country: [
-      { key: "country", label: "Country" },
-      { key: "count", label: "Count" },
-    ],
-    name: [
-      { key: "name", label: "Name" },
-      { key: "country", label: "Country" },
-      { key: "count", label: "Count" },
-      { key: "position", label: "Position" },
-    ],
-    position: [
-      { key: "position", label: "Position" },
-      { key: "country", label: "Country" },
-      { key: "count", label: "Count" },
-    ],
-  };
+// ── Column factories ─────────────────────────────────────────────────────────
 
-  const columns = [...columnMap[filterType]];
-  columns.push({
-    key: "average",
-    label: "Average Intensity",
-    title: JSON.stringify(INTENSITY_RANK),
-  });
+const makeStormNameColumns = (): ColumnsType<NameData> => [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a, b) => a.name.localeCompare(b.name),
+    render: (_, row) => {
+      const intensityLabel = getIntensityFromNumber(row.avgIntensity);
+      const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+      return (
+        <span className="font-bold" style={{ color: textColor }}>
+          {row.name}
+        </span>
+      );
+    },
+  },
+  {
+    title: "Country",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => a.country.localeCompare(b.country),
+    render: (_, row) => {
+      const FlagComponent = COUNTRY_FLAG_COMPONENTS[row.country];
+      return FlagComponent ? (
+        <div
+          className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+          title={row.country}
+        >
+          <FlagComponent className="h-full w-full object-cover" />
+        </div>
+      ) : (
+        <span>{row.country}</span>
+      );
+    },
+  },
+  {
+    title: "Position",
+    dataIndex: "position",
+    key: "position",
+    sorter: (a, b) => a.position - b.position,
+  },
+  {
+    title: "Storm Count",
+    dataIndex: "count",
+    key: "count",
+    sorter: (a, b) => a.count - b.count,
+  },
+  {
+    title: "Last Year",
+    dataIndex: "year",
+    key: "year",
+    sorter: (a, b) => a.year - b.year,
+  },
+];
 
-  return columns;
-};
+const makeAverageColumns = (filterType: string): ColumnsType<AverageData> => {
+  const base: ColumnsType<AverageData> = [];
 
-const getDistanceColumns = (filterType: "position" | "name"): TableColumn<DistanceData>[] => {
-  const base: TableColumn<DistanceData>[] =
-    filterType === "position"
-      ? [
-          { key: "position", label: "Position" },
-          { key: "country", label: "Country" },
-          { key: "count", label: "Storm Count" },
-        ]
-      : [
-          { key: "name", label: "Name" },
-          { key: "country", label: "Country" },
-          { key: "position", label: "Position" },
-          { key: "count", label: "Storm Count" },
-        ];
+  if (filterType === "year")
+    base.push({
+      title: "Year",
+      dataIndex: "year",
+      key: "year",
+      sorter: (a, b) => (a.year ?? 0) - (b.year ?? 0),
+    });
+  if (filterType === "country" || filterType === "name" || filterType === "position") {
+    if (filterType !== "year") {
+      if (filterType === "position") {
+        base.push({
+          title: "Position",
+          dataIndex: "position",
+          key: "position",
+          sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
+        });
+      }
+      if (filterType === "name") {
+        base.push({
+          title: "Name",
+          dataIndex: "name",
+          key: "name",
+          sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
+        });
+      }
+      if (filterType === "country" || filterType === "name" || filterType === "position") {
+        base.push({
+          title: "Country",
+          dataIndex: "country",
+          key: "country",
+          sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
+          render: (_, row) => {
+            const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country ?? "")];
+            return FlagComponent ? (
+              <div
+                className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+                title={String(row.country)}
+              >
+                <FlagComponent className="h-full w-full object-cover" />
+              </div>
+            ) : (
+              <span>{String(row.country)}</span>
+            );
+          },
+        });
+      }
+    }
+  }
 
   base.push({
-    key: "distance",
-    label: "Avg Gap (years)",
-    title: "Average number of years between consecutive storms in this group",
+    title: "Count",
+    dataIndex: "count",
+    key: "count",
+    sorter: (a, b) => a.count - b.count,
   });
+  base.push({
+    title: "Average Intensity",
+    dataIndex: "average",
+    key: "average",
+    sorter: (a, b) => a.avgNumber - b.avgNumber,
+    render: (_, row) => {
+      const intensityLabel = getIntensityFromNumber(row.avgNumber);
+      const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
+      return (
+        <span className="font-semibold" style={{ color: textColor }}>
+          {row.average}
+        </span>
+      );
+    },
+  });
+
   return base;
 };
 
-const getStormNameColumns = (): TableColumn<NameData>[] => {
-  return [
-    { key: "name", label: "Name" },
-    { key: "country", label: "Country" },
-    { key: "position", label: "Position" },
-    { key: "count", label: "Storm Count" },
-    { key: "year", label: "Last Year" },
-  ];
+const makeDistanceColumns = (filterType: "position" | "name"): ColumnsType<DistanceData> => {
+  const base: ColumnsType<DistanceData> = [];
+
+  if (filterType === "position") {
+    base.push({
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      sorter: (a, b) => Number(a.position ?? 0) - Number(b.position ?? 0),
+    });
+  } else {
+    base.push({
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
+    });
+    base.push({
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      sorter: (a, b) => Number(a.position ?? 0) - Number(b.position ?? 0),
+    });
+  }
+
+  base.push({
+    title: "Country",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
+    render: (_, row) => {
+      const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country ?? "")];
+      return FlagComponent ? (
+        <div
+          className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+          title={String(row.country)}
+        >
+          <FlagComponent className="h-full w-full object-cover" />
+        </div>
+      ) : (
+        <span>{String(row.country)}</span>
+      );
+    },
+  });
+
+  base.push({
+    title: "Storm Count",
+    dataIndex: "count",
+    key: "count",
+    sorter: (a, b) => a.count - b.count,
+  });
+  base.push({
+    title: "Avg Gap (years)",
+    dataIndex: "distance",
+    key: "distance",
+    sorter: (a, b) => a.distanceNumber - b.distanceNumber,
+    render: (_, row) => {
+      const color = row.distanceNumber === 0 ? "#9ca3af" : getDistanceColor(row.distanceNumber);
+      return (
+        <span className="font-semibold" style={{ color }}>
+          {row.distance}
+        </span>
+      );
+    },
+  });
+
+  return base;
 };
 
-// ─── Distance grid (position mode, table) ────────────────────────────────────
+// ── Distance grid (position mode, table) ────────────────────────────────────
 interface DistanceGridProps {
   distanceValues: Record<number, number>;
   stormsData: Storm[];
@@ -271,6 +399,8 @@ const DistanceGrid = ({ distanceValues, stormsData, onCellClick }: DistanceGridP
   );
 };
 
+// ── Main component ───────────────────────────────────────────────────────────
+
 const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentProps) => {
   const groupedStorms = useMemo(() => {
     let filteredData = stormsData;
@@ -290,12 +420,10 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     return values;
   }, [stormsData, params.view, params.mode]);
 
-  // ── distance values for grid (position table mode) ──────────────────────
   const distanceValues = useMemo(() => {
     if (params.view !== "distance") return null;
     const filterType = (params.filter || "position") as "position" | "name";
     const distances = calculateDistances(stormsData, filterType);
-    // Convert string keys to numbers for position mode
     if (filterType === "position") {
       const result: Record<number, number> = {};
       Object.entries(distances).forEach(([k, v]) => {
@@ -306,7 +434,7 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     return distances as unknown as Record<number, number>;
   }, [stormsData, params.view, params.filter]);
 
-  // ── storms view ─────────────────────────────────────────────────────────
+  // ── storms grid ──────────────────────────────────────────────────────────
   if (params.view === "storms" && params.mode === "table") {
     return renderStormGridWithButtons(onCellClick, "storms", null, stormsData);
   }
@@ -327,60 +455,34 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
     );
   }
 
+  // ── storms list ──────────────────────────────────────────────────────────
   if (params.view === "storms" && params.mode === "list") {
     const nameGroups = getGroupedStorms(stormsData, "name");
-    const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => {
-      const avgIntensity = calculateAverage(storms);
-      return {
-        name,
-        country: storms[0].country,
-        position: storms[0].position,
-        count: storms.length,
-        avgIntensity,
-        year: storms[storms.length - 1].year,
-      };
-    });
-
-    const renderCell = (row: NameData, column: TableColumn<NameData>): ReactNode => {
-      if (column.key === "name") {
-        const intensityLabel = getIntensityFromNumber(row.avgIntensity);
-        const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-        return (
-          <span className="font-bold" style={{ color: textColor }}>
-            {row.name}
-          </span>
-        );
-      }
-      if (column.key === "country") {
-        const FlagComponent = COUNTRY_FLAG_COMPONENTS[row.country];
-        return FlagComponent ? (
-          <div
-            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-            title={row.country}
-          >
-            <FlagComponent className="h-full w-full object-cover" />
-          </div>
-        ) : (
-          <span>{row.country}</span>
-        );
-      }
-      return createRenderCell<NameData>()(row, column);
-    };
+    const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => ({
+      name,
+      country: storms[0].country,
+      position: storms[0].position,
+      count: storms.length,
+      avgIntensity: calculateAverage(storms),
+      year: storms[storms.length - 1].year,
+    }));
 
     return (
-      <SortableTable
-        data={nameData}
-        columns={getStormNameColumns()}
-        onRowClick={(row) => {
-          if (typeof row.name === "string") {
-            onCellClick(row.name, "name");
-          }
-        }}
-        renderCell={renderCell}
-      />
+      <div className="mx-auto overflow-x-auto">
+        <Table<NameData>
+          dataSource={nameData}
+          columns={makeStormNameColumns()}
+          rowKey="name"
+          onRow={(row) => ({ onClick: () => onCellClick(row.name, "name") })}
+          rowClassName="cursor-pointer"
+          pagination={false}
+          size="middle"
+        />
+      </div>
     );
   }
 
+  // ── highlights list ──────────────────────────────────────────────────────
   if (params.view === "highlights") {
     const highlights = getHighlights(stormsData, params.filter);
     const highlightData = highlights.map((s) => ({
@@ -390,67 +492,62 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       position: s.position,
     }));
 
+    const cols: TableColumn<(typeof highlightData)[0]>[] = [
+      { key: "name", label: "Name" },
+      { key: "year", label: "Year" },
+      { key: "intensity", label: "Intensity", title: JSON.stringify(INTENSITY_RANK) },
+      { key: "position", label: "Position" },
+    ];
+
     const renderCell = createRenderCell<(typeof highlightData)[0]>();
 
+    const antdCols: ColumnsType<(typeof highlightData)[0]> = cols.map((col) => ({
+      title: col.label,
+      dataIndex: col.key as string,
+      key: col.key as string,
+      sorter: (a, b) => {
+        const aVal = a[col.key];
+        const bVal = b[col.key];
+        if (typeof aVal === "number" && typeof bVal === "number") return aVal - bVal;
+        return String(aVal ?? "").localeCompare(String(bVal ?? ""));
+      },
+      render: (_: unknown, record: (typeof highlightData)[0]) => renderCell(record, col),
+    }));
+
     return (
-      <SortableTable
-        data={highlightData}
-        columns={[
-          { key: "name", label: "Name" },
-          { key: "year", label: "Year" },
-          {
-            key: "intensity",
-            label: "Intensity",
-            title: JSON.stringify(INTENSITY_RANK),
-          },
-          { key: "position", label: "Position" },
-        ]}
-        renderCell={renderCell}
-      />
+      <div className="mx-auto overflow-x-auto">
+        <Table
+          dataSource={highlightData}
+          columns={antdCols}
+          rowKey={(r) => `${r.name}-${r.year}`}
+          pagination={false}
+          size="middle"
+        />
+      </div>
     );
   }
 
+  // ── average list ─────────────────────────────────────────────────────────
   if (params.view === "average") {
     const data = transformAverageData(groupedStorms, params.filter);
 
-    const renderCell = (row: AverageData, column: TableColumn<AverageData>): ReactNode => {
-      if (column.key === "average") {
-        const intensityLabel = getIntensityFromNumber(row.avgNumber);
-        const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
-        return (
-          <span className="font-semibold" style={{ color: textColor }}>
-            {String(row.average)}
-          </span>
-        );
-      }
-      if (column.key === "country") {
-        const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country)];
-        return FlagComponent ? (
-          <div
-            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-            title={String(row.country)}
-          >
-            <FlagComponent className="h-full w-full object-cover" />
-          </div>
-        ) : (
-          <span>{String(row.country)}</span>
-        );
-      }
-      return createRenderCell<AverageData>()(row, column);
-    };
-
     return (
-      <SortableTable
-        data={data}
-        columns={getAverageColumns(params.filter)}
-        onRowClick={(row) => {
-          const value = row[params.filter as keyof typeof row];
-          if (value !== undefined) {
-            onCellClick(value as number | string, params.filter);
-          }
-        }}
-        renderCell={renderCell}
-      />
+      <div className="mx-auto overflow-x-auto">
+        <Table<AverageData>
+          dataSource={data}
+          columns={makeAverageColumns(params.filter)}
+          rowKey={(r) => String(r.year ?? r.country ?? r.name ?? r.position ?? Math.random())}
+          onRow={(row) => ({
+            onClick: () => {
+              const value = row[params.filter as keyof AverageData];
+              if (value !== undefined) onCellClick(value as number | string, params.filter);
+            },
+          })}
+          rowClassName="cursor-pointer"
+          pagination={false}
+          size="middle"
+        />
+      </div>
     );
   }
 
@@ -458,7 +555,6 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
   if (params.view === "distance") {
     const filterType = (params.filter || "position") as "position" | "name";
 
-    // Table mode: position grid (only valid for position filter)
     if (params.mode === "table" && filterType === "position") {
       const positionDistances = distanceValues as Record<number, number>;
       return (
@@ -478,48 +574,27 @@ const DashboardContent = ({ params, stormsData, onCellClick }: DashboardContentP
       );
     }
 
-    // List mode: sortable table
     const distances = calculateDistances(stormsData, filterType);
     const grouped = getGroupedStorms(stormsData, filterType);
     const data = transformDistanceData(distances, grouped, filterType);
 
-    const renderCell = (row: DistanceData, column: TableColumn<DistanceData>): ReactNode => {
-      if (column.key === "distance") {
-        const color = row.distanceNumber === 0 ? "#9ca3af" : getDistanceColor(row.distanceNumber);
-        return (
-          <span className="font-semibold" style={{ color }}>
-            {String(row.distance)}
-          </span>
-        );
-      }
-      if (column.key === "country") {
-        const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country)];
-        return FlagComponent ? (
-          <div
-            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-            title={String(row.country)}
-          >
-            <FlagComponent className="h-full w-full object-cover" />
-          </div>
-        ) : (
-          <span>{String(row.country)}</span>
-        );
-      }
-      return createRenderCell<DistanceData>()(row, column);
-    };
-
     return (
-      <SortableTable
-        data={data}
-        columns={getDistanceColumns(filterType)}
-        onRowClick={(row) => {
-          const value = filterType === "position" ? row.position : row.name;
-          if (value !== undefined) {
-            onCellClick(value as number | string, filterType);
-          }
-        }}
-        renderCell={renderCell}
-      />
+      <div className="mx-auto overflow-x-auto">
+        <Table<DistanceData>
+          dataSource={data}
+          columns={makeDistanceColumns(filterType)}
+          rowKey={(r) => String(r.position ?? r.name ?? Math.random())}
+          onRow={(row) => ({
+            onClick: () => {
+              const value = filterType === "position" ? row.position : row.name;
+              if (value !== undefined) onCellClick(value as number | string, filterType);
+            },
+          })}
+          rowClassName="cursor-pointer"
+          pagination={false}
+          size="middle"
+        />
+      </div>
     );
   }
 
