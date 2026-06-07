@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { Table } from "antd";
+import { Flame, Skull } from "lucide-react";
 import type { ColumnsType } from "antd/es/table";
 import FrownNotFound from "../../../../../components/components/FrownNotFound";
-import { createRenderCell } from "../../../../../containers/utils/cellRenderers";
-import type { TyphoonName, TableColumn } from "../../../../../types";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
+import type { TyphoonName } from "../../../../../types";
 
 interface FilteredNamesTableProps {
   filteredNames: TyphoonName[];
@@ -17,56 +19,97 @@ const FilteredNamesTable = ({
   onNameClick,
 }: FilteredNamesTableProps) => {
   const tableColumns = useMemo<ColumnsType<TyphoonName>>(() => {
-    const baseColumns: TableColumn<TyphoonName>[] = [
-      { key: "isRetired", label: "Retired", isSortable: true },
-      { key: "name", label: "Name", isSortable: true },
-      { key: "country", label: "Country", isSortable: true },
-      { key: "language", label: "Language", isSortable: true },
-      { key: "position", label: "Position", isSortable: true },
-      { key: "meaning", label: "Meaning", isSortable: false },
+    const getNameColor = (row: TyphoonName): string => {
+      if (row.isLanguageProblem === 2) return "text-amber-500";
+      if (Boolean(row.isRetired)) return "text-red-600";
+      return "text-green-700";
+    };
+
+    const getRetiredColor = (row: TyphoonName): string => {
+      if (!row.isRetired) return "text-green-700";
+      if (row.isLanguageProblem === 2) return "text-amber-500";
+      return "text-red-600";
+    };
+
+    const cols: ColumnsType<TyphoonName> = [
+      {
+        title: "Retired",
+        dataIndex: "isRetired",
+        key: "isRetired",
+        sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
+        render: (_, record) =>
+          record.isRetired ? (
+            <Skull className={getRetiredColor(record)} size={20} />
+          ) : (
+            <Flame className="text-green-700" size={20} />
+          ),
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        render: (_, record) => (
+          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
+        ),
+      },
+      {
+        title: "Country",
+        dataIndex: "country",
+        key: "country",
+        sorter: (a, b) => a.country.localeCompare(b.country),
+      },
+      {
+        title: "Language",
+        dataIndex: "language",
+        key: "language",
+        sorter: (a, b) => (a.language ?? "").localeCompare(b.language ?? ""),
+      },
+      {
+        title: "Position",
+        dataIndex: "position",
+        key: "position",
+        sorter: (a, b) => a.position - b.position,
+        render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+      },
+      {
+        title: "Meaning",
+        dataIndex: "meaning",
+        key: "meaning",
+      },
     ];
 
     if (showImageAndDescription) {
-      baseColumns.push(
-        { key: "image", label: "Image", isSortable: false },
-        { key: "description", label: "Description", isSortable: false },
+      cols.push(
+        {
+          title: "Image",
+          dataIndex: "image",
+          key: "image",
+          render: (_, record) =>
+            record.image ? (
+              <div className="relative h-28 rounded-lg" style={{ aspectRatio: "4/3" }}>
+                <ImageWithLoader
+                  src={record.image}
+                  alt={record.name}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+            ) : (
+              <span className="text-gray-700">-</span>
+            ),
+        },
+        {
+          title: "Description",
+          dataIndex: "description",
+          key: "description",
+          render: (_, record) => <span className="text-gray-700">{record.description || "-"}</span>,
+        },
       );
     }
 
-    const getCellConfig = (row: TyphoonName, key: keyof TyphoonName) => {
-      if (key === "name") {
-        let colorClass = "text-green-700";
-        if (row.isLanguageProblem === 2) colorClass = "text-amber-500";
-        else if (Boolean(row.isRetired)) colorClass = "text-red-600";
-        return { className: `font-semibold ${colorClass}` };
-      }
-      if (key === "isRetired") {
-        const colorClass = row.isRetired
-          ? row.isLanguageProblem === 2
-            ? "text-amber-500"
-            : "text-red-600"
-          : "text-green-700";
-        return { className: colorClass };
-      }
-      return {};
-    };
-
-    const renderCell = createRenderCell<TyphoonName>(getCellConfig);
-
-    return baseColumns.map((col) => ({
-      title: col.label,
-      dataIndex: col.key as string,
-      key: col.key as string,
-      sorter: col.isSortable
-        ? (a: TyphoonName, b: TyphoonName) => {
-            const aVal = a[col.key];
-            const bVal = b[col.key];
-            if (typeof aVal === "number" && typeof bVal === "number") return aVal - bVal;
-            return String(aVal ?? "").localeCompare(String(bVal ?? ""));
-          }
-        : undefined,
-      render: (_: unknown, record: TyphoonName) => renderCell(record, col),
-    }));
+    return cols;
   }, [showImageAndDescription]);
 
   if (filteredNames.length === 0) {

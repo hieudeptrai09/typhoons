@@ -1,10 +1,11 @@
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { INTENSITY_RANK } from "../../../../../constants";
-import { createRenderCell } from "../../../../../containers/utils/cellRenderers";
+import IntensityBadge from "../../../../../components/components/IntensityBadge";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getHighlights } from "../../_utils/fns";
 import StormGrid from "../_components/StormGrid";
-import type { Storm, DashboardParams, TableColumn } from "../../../../../types";
+import type { Storm, DashboardParams, IntensityType } from "../../../../../types";
 
 interface HighlightsViewProps {
   params: DashboardParams;
@@ -15,32 +16,38 @@ interface HighlightsViewProps {
 interface HighlightRow {
   name: string;
   year: number;
-  intensity: string;
+  intensity: IntensityType;
   position: number;
 }
 
-const tableColumns: TableColumn<HighlightRow>[] = [
-  { key: "name", label: "Name" },
-  { key: "year", label: "Year" },
-  { key: "intensity", label: "Intensity", title: JSON.stringify(INTENSITY_RANK) },
-  { key: "position", label: "Position" },
+const columns: ColumnsType<HighlightRow> = [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a, b) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "Year",
+    dataIndex: "year",
+    key: "year",
+    sorter: (a, b) => a.year - b.year,
+  },
+  {
+    title: "Intensity",
+    dataIndex: "intensity",
+    key: "intensity",
+    sorter: (a, b) => INTENSITY_RANK[a.intensity] - INTENSITY_RANK[b.intensity],
+    render: (_, record) => <IntensityBadge intensity={record.intensity} />,
+  },
+  {
+    title: "Position",
+    dataIndex: "position",
+    key: "position",
+    sorter: (a, b) => a.position - b.position,
+    render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+  },
 ];
-
-const renderCell = createRenderCell<HighlightRow>();
-
-const makeAntdColumns = (): ColumnsType<HighlightRow> =>
-  tableColumns.map((col) => ({
-    title: col.label,
-    dataIndex: col.key as string,
-    key: col.key as string,
-    sorter: (a, b) => {
-      const aVal = a[col.key];
-      const bVal = b[col.key];
-      if (typeof aVal === "number" && typeof bVal === "number") return aVal - bVal;
-      return String(aVal ?? "").localeCompare(String(bVal ?? ""));
-    },
-    render: (_: unknown, record: HighlightRow) => renderCell(record, col),
-  }));
 
 const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps) => {
   const highlights = getHighlights(stormsData, params.filter);
@@ -69,7 +76,7 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
     <div className="mx-auto overflow-x-auto">
       <Table<HighlightRow>
         dataSource={highlightData}
-        columns={makeAntdColumns()}
+        columns={columns}
         rowKey={(r) => `${r.name}-${r.year}`}
         pagination={false}
         size="middle"

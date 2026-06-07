@@ -1,72 +1,81 @@
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import FrownNotFound from "../../../../../../components/components/FrownNotFound";
-import { createRenderCell } from "../../../../../../containers/utils/cellRenderers";
-import type { RetiredName, TableColumn } from "../../../../../../types";
+import { getPositionTitle } from "../../../../../../containers/utils/fns";
+import type { RetiredName } from "../../../../../../types";
 
 interface RetiredNamesTableProps {
   paginatedData: RetiredName[];
   onNameClick: (name: RetiredName) => void;
 }
 
-const columns: TableColumn<RetiredName>[] = [
-  { key: "name", label: "Name", isSortable: true },
-  { key: "meaning", label: "Meaning", isSortable: false },
-  { key: "country", label: "Country", isSortable: true },
-  { key: "position", label: "Position", isSortable: true },
-  { key: "note", label: "Note", isSortable: false },
-  { key: "lastYear", label: "Year of last storm", isSortable: true },
-];
-
-const getCellConfig = (row: RetiredName, key: keyof RetiredName) => {
-  if (key === "name") {
-    let colorClass = "text-red-600";
-    switch (row.isLanguageProblem) {
-      case 0:
-        colorClass = "text-red-600";
-        break;
-      case 1:
-        colorClass = "text-green-600";
-        break;
-      case 2:
-        colorClass = "text-amber-500";
-        break;
-      case 3:
-        colorClass = "text-purple-600";
-        break;
-    }
-    return { className: `font-semibold ${colorClass}` };
+const getNameColor = (row: RetiredName): string => {
+  switch (row.isLanguageProblem) {
+    case 0:
+      return "text-red-600";
+    case 1:
+      return "text-green-600";
+    case 2:
+      return "text-amber-500";
+    case 3:
+      return "text-purple-600";
+    default:
+      return "text-red-600";
   }
-  return {};
 };
 
-const renderCell = createRenderCell<RetiredName>(getCellConfig);
+const columns: ColumnsType<RetiredName> = [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a, b) => a.name.localeCompare(b.name),
+    render: (_, record) => (
+      <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
+    ),
+  },
+  {
+    title: "Meaning",
+    dataIndex: "meaning",
+    key: "meaning",
+  },
+  {
+    title: "Country",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => a.country.localeCompare(b.country),
+  },
+  {
+    title: "Position",
+    dataIndex: "position",
+    key: "position",
+    sorter: (a, b) => a.position - b.position,
+    render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+  },
+  {
+    title: "Note",
+    dataIndex: "note",
+    key: "note",
+    render: (_, record) => <span className="text-gray-700">{record.note || "-"}</span>,
+  },
+  {
+    title: "Year of last storm",
+    dataIndex: "lastYear",
+    key: "lastYear",
+    sorter: (a, b) => a.lastYear - b.lastYear,
+  },
+];
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProps) => {
   if (!paginatedData || paginatedData.length === 0) {
     return <FrownNotFound />;
   }
 
-  const tableColumns: ColumnsType<RetiredName> = columns.map((col) => ({
-    title: col.label,
-    dataIndex: col.key as string,
-    key: col.key as string,
-    sorter: col.isSortable
-      ? (a: RetiredName, b: RetiredName) => {
-          const aVal = a[col.key];
-          const bVal = b[col.key];
-          if (typeof aVal === "number" && typeof bVal === "number") return aVal - bVal;
-          return String(aVal ?? "").localeCompare(String(bVal ?? ""));
-        }
-      : undefined,
-    render: (_: unknown, record: RetiredName) => renderCell(record, col),
-  }));
-
   return (
     <div className="mx-auto max-w-5xl overflow-x-auto">
       <Table<RetiredName>
         dataSource={paginatedData}
-        columns={tableColumns}
+        columns={columns}
         rowKey="id"
         onRow={(record) => ({ onClick: () => onNameClick(record) })}
         rowClassName="cursor-pointer"
