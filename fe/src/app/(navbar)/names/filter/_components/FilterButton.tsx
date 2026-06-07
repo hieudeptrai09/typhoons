@@ -6,16 +6,15 @@ interface FilterButtonProps {
   params: FilterParams;
 }
 
+const fmtMulti = (val: string) => val.split(",").filter(Boolean).join(", ");
+
 const FilterButton = ({ onClick, params }: FilterButtonProps) => {
-  const getFilterText = () => {
-    const parts: string[] = [];
-    if (params.name) parts.push(params.name);
-    if (params.country) parts.push(params.country);
-    if (params.language) parts.push(params.language);
-    if (params.position) parts.push(`Position #${params.position}`);
-    if (params.tag) parts.push(`#${params.tag}`); // ← add this
-    return parts.length > 0 ? parts.join(" / ") : "Filters";
-  };
+  const parts: string[] = [];
+  if (params.name) parts.push(params.name);
+  if (params.country) parts.push(fmtMulti(params.country));
+  if (params.language) parts.push(fmtMulti(params.language));
+  if (params.position) parts.push(`Position #${params.position}`);
+  if (params.tag) parts.push(fmtMulti(params.tag));
 
   return (
     <div className="mx-auto mb-6 max-w-4xl">
@@ -24,7 +23,7 @@ const FilterButton = ({ onClick, params }: FilterButtonProps) => {
         className="mx-auto flex items-center gap-2 rounded-lg bg-emerald-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-emerald-600"
       >
         <Filter size={20} />
-        {getFilterText()}
+        {parts.length > 0 ? parts.join(" / ") : "Filters"}
       </button>
     </div>
   );

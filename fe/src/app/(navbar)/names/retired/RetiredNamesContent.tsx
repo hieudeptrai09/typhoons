@@ -18,6 +18,8 @@ import type {
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
 
+const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
+
 const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -41,45 +43,44 @@ const RetiredNamesContent = () => {
   const isSuggestionsReady = !suggestionsLoading;
   const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
 
+  // Single-value params
   const searchName = params.name || "";
   const selectedYear = params.year || "";
+  const searchPosition = params.position || "";
+  // Multi-value params (comma-strings)
   const selectedCountry = params.country || "";
   const retirementReason = params.reason || "";
-  const searchPosition = params.position || "";
   const currentLetter = params.letter || "A";
 
-  const countries = [...new Set((retiredNames || []).map((name) => name.country))].sort();
+  const countryArr = toArr(selectedCountry);
+  const reasonArr = toArr(retirementReason).map(Number);
+
+  const countries = [...new Set((retiredNames || []).map((n) => n.country))].sort();
 
   const displayedNames = useMemo(() => {
     let filtered = [...(retiredNames || [])];
 
     if (searchName) {
-      filtered = filtered.filter((name) =>
-        name.name.toLowerCase().includes(searchName.toLowerCase()),
-      );
+      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
     }
-
     if (selectedYear) {
-      filtered = filtered.filter((name) => name.lastYear === Number(selectedYear));
+      filtered = filtered.filter((n) => n.lastYear === Number(selectedYear));
     }
-
-    if (selectedCountry) {
-      filtered = filtered.filter((name) => name.country === selectedCountry);
+    if (countryArr.length > 0) {
+      filtered = filtered.filter((n) => countryArr.includes(n.country));
     }
-
-    if (retirementReason) {
-      const selectedReasons = retirementReason.split(",").map(Number);
-      filtered = filtered.filter((name) => selectedReasons.includes(name.isLanguageProblem));
+    if (reasonArr.length > 0) {
+      filtered = filtered.filter((n) => reasonArr.includes(n.isLanguageProblem));
     }
-
     if (searchPosition) {
-      filtered = filtered.filter((name) => name.position === Number(searchPosition));
+      filtered = filtered.filter((n) => n.position === Number(searchPosition));
     }
 
     const hasActiveFilters =
-      searchName || selectedYear || selectedCountry || retirementReason || searchPosition;
+      searchName || selectedYear || countryArr.length > 0 || reasonArr.length > 0 || searchPosition;
+
     if (!hasActiveFilters) {
-      filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
+      filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
@@ -87,17 +88,16 @@ const RetiredNamesContent = () => {
     retiredNames,
     searchName,
     selectedYear,
-    selectedCountry,
-    retirementReason,
+    countryArr,
+    reasonArr,
     searchPosition,
     currentLetter,
   ]);
 
   const availableLettersMap = useMemo(() => {
     const map: Record<string, boolean> = {};
-    (retiredNames || []).forEach((name) => {
-      const letter = name.name.charAt(0).toUpperCase();
-      map[letter] = true;
+    (retiredNames || []).forEach((n) => {
+      map[n.name.charAt(0).toUpperCase()] = true;
     });
     return map;
   }, [retiredNames]);
@@ -117,7 +117,6 @@ const RetiredNamesContent = () => {
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-
     const newParams: FilterParams & { letter?: string } = {
       name: filters.name,
       year: filters.year,
@@ -125,17 +124,9 @@ const RetiredNamesContent = () => {
       reason: filters.reason,
       position: filters.position,
     };
-
-    if (
-      !filters.name &&
-      !filters.year &&
-      !filters.country &&
-      !filters.reason &&
-      !filters.position
-    ) {
-      newParams.letter = currentLetter;
-    }
-
+    const hasFilters =
+      filters.name || filters.year || filters.country || filters.reason || filters.position;
+    if (!hasFilters) newParams.letter = currentLetter;
     updateParams(newParams, true);
   };
 
@@ -146,7 +137,6 @@ const RetiredNamesContent = () => {
   const getLetterConfig = (letter: string) => {
     const isAvailable = availableLettersMap[letter];
     const isActive = currentLetter === letter;
-
     return {
       isAvailable,
       colorClass: isActive
@@ -165,9 +155,7 @@ const RetiredNamesContent = () => {
     );
   }
 
-  if (error) {
-    return <FrownNotFound />;
-  }
+  if (error) return <FrownNotFound />;
 
   return (
     <PageHeader title="Retired Typhoon Names">

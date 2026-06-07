@@ -19,6 +19,8 @@ import type { FilterParams, TyphoonName } from "../../../../types";
 
 type ViewMode = "list" | "table";
 
+const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
+
 const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
   const { data: names, loading, error } = useFetchData<TyphoonName[]>("/typhoon-names");
@@ -29,70 +31,66 @@ const FilterNamesContent = () => {
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
 
+  // Single-value params
   const searchName = params.name || "";
+  const searchPosition = params.position || "";
+  // Multi-value params (comma-strings)
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
-  const searchPosition = params.position || "";
   const selectedTag = params.tag || "";
   const currentLetter = params.letter || "A";
 
-  const countries = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.country))].sort();
-  }, [names]);
+  const countryArr = toArr(selectedCountry);
+  const languageArr = toArr(selectedLanguage);
+  const tagArr = toArr(selectedTag);
 
-  const languages = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.language).filter(Boolean))].sort();
-  }, [names]);
-
-  const tags = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.tag).filter(Boolean) as string[])].sort();
-  }, [names]);
+  const countries = useMemo(
+    () => [...new Set((names || []).map((n) => n.country))].sort(),
+    [names],
+  );
+  const languages = useMemo(
+    () => [...new Set((names || []).map((n) => n.language).filter(Boolean))].sort(),
+    [names],
+  );
+  const tags = useMemo(
+    () => [...new Set((names || []).map((n) => n.tag).filter(Boolean) as string[])].sort(),
+    [names],
+  );
 
   const displayedNames = useMemo(() => {
     let filtered = [...(names || [])];
 
     if (searchName) {
-      filtered = filtered.filter((name) =>
-        name.name.toLowerCase().includes(searchName.toLowerCase()),
-      );
+      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
     }
-
-    if (selectedCountry) {
-      filtered = filtered.filter((name) => name.country === selectedCountry);
+    if (countryArr.length > 0) {
+      filtered = filtered.filter((n) => countryArr.includes(n.country));
     }
-
-    if (selectedLanguage) {
-      filtered = filtered.filter((name) => name.language === selectedLanguage);
+    if (languageArr.length > 0) {
+      filtered = filtered.filter((n) => languageArr.includes(n.language));
     }
-
+    if (tagArr.length > 0) {
+      filtered = filtered.filter((n) => tagArr.includes(n.tag));
+    }
     if (searchPosition) {
-      filtered = filtered.filter((name) => name.position === Number(searchPosition));
-    }
-
-    if (selectedTag) {
-      filtered = filtered.filter((name) => name.tag === selectedTag);
+      filtered = filtered.filter((n) => n.position === Number(searchPosition));
     }
 
     const hasActiveFilters =
-      searchName || selectedCountry || selectedLanguage || searchPosition || selectedTag;
+      searchName ||
+      countryArr.length > 0 ||
+      languageArr.length > 0 ||
+      tagArr.length > 0 ||
+      searchPosition;
+
     if (!hasActiveFilters) {
-      filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
+      filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
-  }, [
-    names,
-    searchName,
-    selectedCountry,
-    selectedLanguage,
-    searchPosition,
-    selectedTag,
-    currentLetter,
-  ]);
+  }, [names, searchName, countryArr, languageArr, tagArr, searchPosition, currentLetter]);
 
-  const letterStatusMap = useMemo(() => {
-    return categorizeLettersByStatus(names || []);
-  }, [names]);
+  const letterStatusMap = useMemo(() => categorizeLettersByStatus(names || []), [names]);
 
   const activeFilterCount = [
     searchName,
@@ -104,7 +102,6 @@ const FilterNamesContent = () => {
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-
     const newParams: FilterParams & { letter?: string } = {
       name: filters.name,
       country: filters.country,
@@ -112,17 +109,9 @@ const FilterNamesContent = () => {
       position: filters.position,
       tag: filters.tag,
     };
-
-    if (
-      !filters.name &&
-      !filters.country &&
-      !filters.language &&
-      !filters.position &&
-      !filters.tag
-    ) {
-      newParams.letter = currentLetter;
-    }
-
+    const hasFilters =
+      filters.name || filters.country || filters.language || filters.position || filters.tag;
+    if (!hasFilters) newParams.letter = currentLetter;
     updateParams(newParams, true);
   };
 
@@ -155,7 +144,7 @@ const FilterNamesContent = () => {
       colorClass = isActive
         ? "text-red-800 underline decoration-2"
         : "text-red-500 hover:text-red-600 hover:underline";
-    } else if (!hasRetired && hasAlive) {
+    } else {
       colorClass = isActive
         ? "text-green-800 underline decoration-2"
         : "text-green-500 hover:text-green-600 hover:underline";
@@ -172,9 +161,7 @@ const FilterNamesContent = () => {
     );
   }
 
-  if (error) {
-    return <FrownNotFound />;
-  }
+  if (error) return <FrownNotFound />;
 
   return (
     <PageHeader title="Filter Names">

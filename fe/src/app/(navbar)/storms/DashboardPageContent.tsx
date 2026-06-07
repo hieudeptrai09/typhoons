@@ -11,7 +11,7 @@ import { getPositionTitle } from "../../../containers/utils/fns";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
 import FilterButton from "./_components/FilterButton";
-import FilterModal from "./_components/FilterModal";
+import DashboardModal from "./_components/DashboardModal";
 import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
 import { getDashboardTitle } from "./_utils/fns";
@@ -111,7 +111,7 @@ export default function DashboardPageContent() {
         onCellClick={handleCellClick}
       />
 
-      <FilterModal
+      <DashboardModal
         key={JSON.stringify(currentParams)}
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}

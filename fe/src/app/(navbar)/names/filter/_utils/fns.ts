@@ -1,43 +1,34 @@
 import { normalizeParam } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 
+const toArr = (val: string) => val.split(",").filter(Boolean);
+const fmt = (val: string) => toArr(val).join(", ");
+
 export const getPageTitle = (
-  searchName: string | string[] | undefined,
-  selectedCountry: string | string[] | undefined,
-  selectedLanguage: string | string[] | undefined,
-  currentLetter: string | string[] | undefined,
+  name: string | string[] | undefined,
+  country: string | string[] | undefined,
+  language: string | string[] | undefined,
+  letter: string | string[] | undefined,
   position?: string | string[] | undefined,
 ): string[] => {
-  const titleParts: string[] = [];
+  const parts: string[] = [];
 
-  const nameStr = normalizeParam(searchName);
-  const countryStr = normalizeParam(selectedCountry);
-  const languageStr = normalizeParam(selectedLanguage);
-  const letterStr = normalizeParam(currentLetter);
+  const nameStr = normalizeParam(name);
+  const countryStr = normalizeParam(country);
+  const languageStr = normalizeParam(language);
+  const letterStr = normalizeParam(letter);
   const positionStr = normalizeParam(position);
 
-  if (nameStr) {
-    titleParts.push(`"${nameStr}"`);
-  }
-
-  if (countryStr) {
-    titleParts.push(countryStr);
-  }
-
-  if (languageStr) {
-    titleParts.push(languageStr);
-  }
-
-  if (positionStr) {
-    titleParts.push(`Position #${positionStr}`);
-  }
+  if (nameStr) parts.push(`"${fmt(nameStr)}"`);
+  if (countryStr) parts.push(fmt(countryStr));
+  if (languageStr) parts.push(fmt(languageStr));
+  if (positionStr) parts.push(`Position ${fmt(positionStr)}`);
 
   if (!nameStr && !countryStr && !languageStr && !positionStr) {
-    const letter = letterStr || "A";
-    titleParts.push(`Letter ${letter}`);
+    parts.push(`Letter ${letterStr || "A"}`);
   }
 
-  return titleParts;
+  return parts;
 };
 
 export const getPageDescription = (
@@ -55,18 +46,11 @@ export const getPageDescription = (
   const letterStr = normalizeParam(letter);
   const positionStr = normalizeParam(position);
 
-  if (nameStr) {
-    parts.push(`names matching "${nameStr}"`);
-  }
-  if (countryStr) {
-    parts.push(`names from ${countryStr}`);
-  }
-  if (languageStr) {
-    parts.push(`names in ${languageStr}`);
-  }
-  if (positionStr) {
-    parts.push(`names at position #${positionStr}`);
-  }
+  if (nameStr) parts.push(`names matching "${fmt(nameStr)}"`);
+  if (countryStr) parts.push(`names from ${fmt(countryStr)}`);
+  if (languageStr) parts.push(`names in ${fmt(languageStr)}`);
+  if (positionStr) parts.push(`names at position ${fmt(positionStr)}`);
+
   if (!nameStr && !countryStr && !languageStr && !positionStr && letterStr) {
     parts.push(`typhoon names starting with letter ${letterStr}`);
   }
@@ -89,17 +73,11 @@ export const categorizeLettersByStatus = (
     const letter = name.name.charAt(0).toUpperCase();
     const isRetired = Boolean(name.isRetired);
 
-    if (!letterStatusMap[letter]) {
-      letterStatusMap[letter] = [false, false, false];
-    }
+    if (!letterStatusMap[letter]) letterStatusMap[letter] = [false, false, false];
 
     letterStatusMap[letter][0] = true;
-
-    if (isRetired) {
-      letterStatusMap[letter][1] = true;
-    } else {
-      letterStatusMap[letter][2] = true;
-    }
+    if (isRetired) letterStatusMap[letter][1] = true;
+    else letterStatusMap[letter][2] = true;
   });
 
   return letterStatusMap;
