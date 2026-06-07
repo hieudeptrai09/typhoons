@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Modal } from "antd";
-import Loader from "../../../../../../components/components/Loader";
+import { Modal, Spin } from "antd";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
@@ -55,7 +54,7 @@ const NameDetailsModal = ({
     if (suggestionsLoading) {
       return (
         <div className="flex justify-center py-8">
-          <Loader size="md" />
+          <Spin size="medium" />
         </div>
       );
     }

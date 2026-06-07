@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import { calculateDistances, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import type { Storm, DashboardParams } from "../../../../../types";
+import type { ColumnsType } from "antd/es/table";
 
 interface DistanceViewProps {
   params: DashboardParams;

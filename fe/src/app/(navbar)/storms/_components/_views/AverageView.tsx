@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import { TEXT_COLOR_WHITE_BACKGROUND, COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
+import type { ColumnsType } from "antd/es/table";
 
 interface AverageViewProps {
   params: DashboardParams;

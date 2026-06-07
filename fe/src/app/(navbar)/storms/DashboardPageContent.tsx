@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { Spin } from "antd";
 import FrownNotFound from "../../../components/components/FrownNotFound";
-import Loader from "../../../components/components/Loader";
 import PageHeader from "../../../components/components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../containers/hooks/useURLParams";
 import { getPositionTitle } from "../../../containers/utils/fns";
-import AverageModal from "./_components/_modals/AverageModal";
-import DashboardContent from "./_components/DashboardContent";
 import DashboardViewButton from "./_components/_components/DashboardViewButton";
+import AverageModal from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
+import DashboardContent from "./_components/DashboardContent";
 import { getDashboardTitle } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
 
@@ -92,7 +92,7 @@ export default function DashboardPageContent() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Loader size="lg" />
+        <Spin size="large" />
       </div>
     );
   }

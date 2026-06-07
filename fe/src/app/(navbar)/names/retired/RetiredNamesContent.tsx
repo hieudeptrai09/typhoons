@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Spin } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
-import Loader from "../../../../components/components/Loader";
 import PageHeader from "../../../../components/components/PageHeader";
 import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
@@ -173,7 +173,7 @@ const RetiredNamesContent = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Loader size="lg" />
+        <Spin size="large" />
       </div>
     );
   }

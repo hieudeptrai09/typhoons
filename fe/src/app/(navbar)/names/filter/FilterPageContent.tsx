@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Switch } from "antd";
+import { Spin, Switch } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
-import Loader from "../../../../components/components/Loader";
 import PageHeader from "../../../../components/components/PageHeader";
 import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
@@ -179,7 +178,7 @@ const FilterNamesContent = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Loader size="lg" />
+        <Spin size="large" />
       </div>
     );
   }

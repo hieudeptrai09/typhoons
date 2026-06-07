@@ -1,8 +1,8 @@
 import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import FrownNotFound from "../../../../../../components/components/FrownNotFound";
 import { getPositionTitle } from "../../../../../../containers/utils/fns";
 import type { RetiredName } from "../../../../../../types";
+import type { ColumnsType } from "antd/es/table";
 
 interface RetiredNamesTableProps {
   paginatedData: RetiredName[];

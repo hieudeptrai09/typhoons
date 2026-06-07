@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Button, Modal } from "antd";
+import { Button, Modal, Spin } from "antd";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import Loader from "../../../../../components/components/Loader";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { BaseModalProps, TyphoonName, Storm } from "../../../../../types";
@@ -78,7 +77,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       <div className="pt-4">
         {loading || !isStormsReady ? (
           <div className="flex justify-center py-8">
-            <Loader size="md" />
+            <Spin size="medium" />
           </div>
         ) : error ? (
           <div className="py-4 text-center text-gray-500">Failed to load storm data.</div>
