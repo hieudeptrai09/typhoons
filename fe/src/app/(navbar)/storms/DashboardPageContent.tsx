@@ -10,7 +10,7 @@ import { useURLParams } from "../../../containers/hooks/useURLParams";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import AverageModal from "./_components/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
-import FilterButton from "./_components/FilterButton";
+import DashboardViewButton from "./_components/DashboardViewButton";
 import DashboardModal from "./_components/DashboardModal";
 import NameListModal from "./_components/NameListModal";
 import StormDetailModal from "./_components/StormDetailModal";
@@ -103,7 +103,7 @@ export default function DashboardPageContent() {
 
   return (
     <PageHeader title={getDashboardTitle(view, mode, filter)}>
-      <FilterButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+      <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
 
       <DashboardContent
         params={currentParams}

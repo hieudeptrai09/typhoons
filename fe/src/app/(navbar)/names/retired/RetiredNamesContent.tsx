@@ -9,6 +9,7 @@ import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import FilterModal from "./_components/FilterModal";
+import ActiveFilterTags from "./_components/MainPage/ActiveFilterTags";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
@@ -19,6 +20,11 @@ import type {
 } from "../../../../types";
 
 const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
+const removeFromCommaString = (val: string, item: string) =>
+  val
+    .split(",")
+    .filter((v) => v !== item)
+    .join(",");
 
 const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
@@ -43,11 +49,9 @@ const RetiredNamesContent = () => {
   const isSuggestionsReady = !suggestionsLoading;
   const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
 
-  // Single-value params
   const searchName = params.name || "";
   const selectedYear = params.year || "";
   const searchPosition = params.position || "";
-  // Multi-value params (comma-strings)
   const selectedCountry = params.country || "";
   const retirementReason = params.reason || "";
   const currentLetter = params.letter || "A";
@@ -130,6 +134,25 @@ const RetiredNamesContent = () => {
     updateParams(newParams, true);
   };
 
+  const handleRemoveTag = (key: keyof FilterParams, value?: string) => {
+    const current = params[key] || "";
+
+    const multiKeys: (keyof FilterParams)[] = ["country", "reason"];
+    const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
+
+    const newParams = { ...params, [key]: newVal };
+
+    const hasFilters =
+      newParams.name ||
+      newParams.year ||
+      newParams.country ||
+      newParams.reason ||
+      newParams.position;
+    if (!hasFilters) newParams.letter = currentLetter;
+
+    updateParams(newParams as FilterParams & { letter?: string }, true);
+  };
+
   const handleLetterChange = (letter: string) => {
     updateParams({ name: "", year: "", country: "", reason: "", position: "", letter }, true);
   };
@@ -160,7 +183,6 @@ const RetiredNamesContent = () => {
   return (
     <PageHeader title="Retired Typhoon Names">
       <FilterButton
-        activeFilterCount={activeFilterCount}
         onClick={() => setIsFilterModalOpen(true)}
         params={{
           name: searchName,
@@ -169,6 +191,17 @@ const RetiredNamesContent = () => {
           reason: retirementReason,
           position: searchPosition,
         }}
+      />
+
+      <ActiveFilterTags
+        params={{
+          name: searchName,
+          year: selectedYear,
+          country: selectedCountry,
+          reason: retirementReason,
+          position: searchPosition,
+        }}
+        onRemove={handleRemoveTag}
       />
 
       {activeFilterCount === 0 && (

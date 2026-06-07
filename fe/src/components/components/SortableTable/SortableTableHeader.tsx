@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import type { SortDirection } from "../../../types";
 
@@ -23,27 +24,11 @@ const SortableTableHeader = <T,>({
   const isActive = currentSortColumn === columnKey;
 
   const getSortIcon = () => {
-    if (!isActive) {
-      return (
-        <span className="text-white/70">
-          <ArrowUpDown size={16} />
-        </span>
-      );
-    }
-    if (currentSortDirection === "asc") {
-      return (
-        <span className="font-bold text-green-400">
-          <ArrowUp size={16} />
-        </span>
-      );
-    }
-    if (currentSortDirection === "desc") {
-      return (
-        <span className="font-bold text-red-300">
-          <ArrowDown size={16} />
-        </span>
-      );
-    }
+    if (!isActive) return <ArrowUpDown size={14} className="opacity-60" />;
+    if (currentSortDirection === "asc")
+      return <ArrowUp size={14} className="font-bold text-green-400" />;
+    if (currentSortDirection === "desc")
+      return <ArrowDown size={14} className="font-bold text-red-300" />;
     return null;
   };
 
@@ -57,16 +42,16 @@ const SortableTableHeader = <T,>({
 
   return (
     <th className="px-6 py-3 text-left text-sm font-semibold text-white">
-      <button
-        onClick={() => onSort(columnKey)}
-        className={`flex w-full items-center gap-1 underline-offset-4 transition-colors hover:text-blue-200 ${
-          isActive ? "underline" : ""
-        }`}
+      <Button
+        type="text"
         title={columnTitle}
+        onClick={() => onSort(columnKey)}
+        icon={getSortIcon()}
+        iconPosition="end"
+        className={`!p-0 !font-semibold !text-white hover:!bg-transparent hover:!text-blue-200 ${isActive ? "!underline underline-offset-4" : ""}`}
       >
-        <span>{label}</span>
-        <span className="text-lg">{getSortIcon()}</span>
-      </button>
+        {label}
+      </Button>
     </th>
   );
 };

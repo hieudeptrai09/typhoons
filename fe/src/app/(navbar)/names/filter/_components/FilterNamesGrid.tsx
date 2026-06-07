@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import type { TyphoonName } from "../../../../../types";
 
@@ -16,7 +17,6 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
 
   const filteredIds = new Set(filteredNames.map((n) => n.id));
 
-  // Group all names by position
   const namesByPosition = allNames.reduce<Record<number, TyphoonName[]>>((acc, name) => {
     if (!acc[name.position]) acc[name.position] = [];
     acc[name.position].push(name);
@@ -24,9 +24,9 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
   }, {});
 
   const getNameColor = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "text-amber-600";
-    if (Boolean(name.isRetired)) return "text-red-700";
-    return "text-green-800";
+    if (name.isLanguageProblem === 2) return "#d97706"; // amber-600
+    if (Boolean(name.isRetired)) return "#b91c1c"; // red-700
+    return "#166534"; // green-800
   };
 
   const getCellBg = (name: TyphoonName): string => {
@@ -35,7 +35,6 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
     return "bg-emerald-100";
   };
 
-  // green (0) > red (1) > amber (2)
   const getColorPriority = (name: TyphoonName): number => {
     if (!Boolean(name.isRetired)) return 0;
     if (name.isLanguageProblem === 2) return 2;
@@ -77,20 +76,21 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
                 const matchedNames = positionNames.filter((n) => filteredIds.has(n.id));
                 const hasMatch = matchedNames.length > 0;
 
-                // Cell color driven by highest priority match: green > red > amber
                 const cellBg = hasMatch ? getCellBg(getHighestPriorityName(matchedNames)) : "";
 
                 return (
                   <td key={col} className={`border border-stone-300 p-0 ${cellBg}`}>
                     <div className="flex min-h-16 w-full flex-col items-center justify-center gap-0.5 px-1 py-1">
                       {matchedNames.map((name) => (
-                        <button
+                        <Button
                           key={name.id}
+                          type="text"
                           onClick={() => onNameClick(name)}
-                          className={`w-full text-center text-xs leading-tight font-semibold transition-colors hover:underline ${getNameColor(name)}`}
+                          className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
+                          style={{ color: getNameColor(name) }}
                         >
                           {name.name}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </td>

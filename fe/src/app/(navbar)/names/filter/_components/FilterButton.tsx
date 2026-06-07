@@ -1,3 +1,4 @@
+import { Badge, Button } from "antd";
 import { Filter } from "lucide-react";
 import type { FilterParams } from "../../../../../types";
 
@@ -6,25 +7,26 @@ interface FilterButtonProps {
   params: FilterParams;
 }
 
-const fmtMulti = (val: string) => val.split(",").filter(Boolean).join(", ");
-
 const FilterButton = ({ onClick, params }: FilterButtonProps) => {
-  const parts: string[] = [];
-  if (params.name) parts.push(params.name);
-  if (params.country) parts.push(fmtMulti(params.country));
-  if (params.language) parts.push(fmtMulti(params.language));
-  if (params.position) parts.push(`Position #${params.position}`);
-  if (params.tag) parts.push(fmtMulti(params.tag));
+  const count = [params.name, params.country, params.language, params.position, params.tag].filter(
+    Boolean,
+  ).length;
 
   return (
-    <div className="mx-auto mb-6 max-w-4xl">
-      <button
-        onClick={onClick}
-        className="mx-auto flex items-center gap-2 rounded-lg bg-emerald-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-emerald-600"
-      >
-        <Filter size={20} />
-        {parts.length > 0 ? parts.join(" / ") : "Filters"}
-      </button>
+    <div className="mx-auto mb-4 max-w-4xl">
+      <div className="flex justify-center">
+        <Badge count={count} color="#10b981">
+          <Button
+            type="primary"
+            icon={<Filter size={16} />}
+            onClick={onClick}
+            style={{ backgroundColor: "#10b981", borderColor: "#10b981" }}
+            className="!px-6 !py-5 !font-semibold hover:!border-emerald-600 hover:!bg-emerald-600"
+          >
+            Filters
+          </Button>
+        </Badge>
+      </div>
     </div>
   );
 };

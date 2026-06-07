@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
 import { getIntensityFromNumber } from "../_utils/fns";
 
@@ -52,15 +53,15 @@ const SpecialButtons = ({
       {buttons.map((button) => {
         const { color, suffix } = getButtonContent(button.id);
         return (
-          <button
+          <Button
             key={button.id}
             onClick={() => onCellClick(button.id, "position")}
-            className="rounded-lg border border-stone-300 bg-stone-100 px-6 py-3 font-semibold shadow-sm transition-colors hover:bg-stone-200"
             style={{ color }}
+            className="!font-semibold"
           >
             {button.label}
             {suffix}
-          </button>
+          </Button>
         );
       })}
     </div>

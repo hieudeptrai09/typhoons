@@ -1,44 +1,32 @@
+import { Badge, Button } from "antd";
 import { Filter } from "lucide-react";
 import type { RetiredFilterParams } from "../../../../../../types";
 
 interface FilterButtonProps {
-  activeFilterCount: number;
   onClick: () => void;
   params: RetiredFilterParams;
 }
 
-const REASON_LABELS: Record<string, string> = {
-  "0": "Destructive",
-  "1": "Language",
-  "2": "Misspelling",
-  "3": "Special",
-};
-
-const fmtMulti = (val: string) => val.split(",").filter(Boolean).join(", ");
-const fmtReason = (val: string) =>
-  val
-    .split(",")
-    .filter(Boolean)
-    .map((r) => REASON_LABELS[r] ?? r)
-    .join(", ");
-
-const FilterButton = ({ activeFilterCount, onClick, params }: FilterButtonProps) => {
-  const parts: string[] = [];
-  if (params.name) parts.push(params.name);
-  if (params.year) parts.push(`Year ${params.year}`);
-  if (params.country) parts.push(fmtMulti(params.country));
-  if (params.position) parts.push(`Position #${params.position}`);
-  if (params.reason) parts.push(fmtReason(params.reason));
+const FilterButton = ({ onClick, params }: FilterButtonProps) => {
+  const count = [params.name, params.year, params.country, params.reason, params.position].filter(
+    Boolean,
+  ).length;
 
   return (
-    <div className="mx-auto mb-6 max-w-4xl">
-      <button
-        onClick={onClick}
-        className="mx-auto flex items-center gap-2 rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-orange-600"
-      >
-        <Filter size={20} />
-        {activeFilterCount > 0 ? parts.join(" / ") : "Filters"}
-      </button>
+    <div className="mx-auto mb-4 max-w-4xl">
+      <div className="flex justify-center">
+        <Badge count={count} color="#f97316">
+          <Button
+            type="primary"
+            icon={<Filter size={16} />}
+            onClick={onClick}
+            style={{ backgroundColor: "#f97316", borderColor: "#f97316" }}
+            className="!px-6 !py-5 !font-semibold hover:!border-orange-600 hover:!bg-orange-600"
+          >
+            Filters
+          </Button>
+        </Badge>
+      </div>
     </div>
   );
 };

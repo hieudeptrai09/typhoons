@@ -10,6 +10,7 @@ import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
+import ActiveFilterTags from "./_components/ActiveFilterTags";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
@@ -20,6 +21,11 @@ import type { FilterParams, TyphoonName } from "../../../../types";
 type ViewMode = "list" | "table";
 
 const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
+const removeFromCommaString = (val: string, item: string) =>
+  val
+    .split(",")
+    .filter((v) => v !== item)
+    .join(",");
 
 const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
@@ -31,10 +37,8 @@ const FilterNamesContent = () => {
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
 
-  // Single-value params
   const searchName = params.name || "";
   const searchPosition = params.position || "";
-  // Multi-value params (comma-strings)
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
   const selectedTag = params.tag || "";
@@ -115,6 +119,26 @@ const FilterNamesContent = () => {
     updateParams(newParams, true);
   };
 
+  const handleRemoveTag = (key: keyof FilterParams, value?: string) => {
+    const current = params[key] || "";
+
+    // For multi-value fields, remove just the one value; for single-value, clear entirely
+    const multiKeys: (keyof FilterParams)[] = ["country", "language", "tag"];
+    const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
+
+    const newParams = { ...params, [key]: newVal };
+
+    const hasFilters =
+      newParams.name ||
+      newParams.country ||
+      newParams.language ||
+      newParams.position ||
+      newParams.tag;
+    if (!hasFilters) newParams.letter = currentLetter;
+
+    updateParams(newParams, true);
+  };
+
   const handleLetterChange = (letter: string) => {
     updateParams({ name: "", country: "", language: "", position: "", tag: "", letter }, true);
   };
@@ -177,6 +201,17 @@ const FilterNamesContent = () => {
           }}
         />
       </div>
+
+      <ActiveFilterTags
+        params={{
+          name: searchName,
+          country: selectedCountry,
+          language: selectedLanguage,
+          position: searchPosition,
+          tag: selectedTag,
+        }}
+        onRemove={handleRemoveTag}
+      />
 
       <div className="mx-auto mb-6 flex max-w-4xl justify-center gap-6">
         {(["list", "table"] as ViewMode[]).map((mode) => (

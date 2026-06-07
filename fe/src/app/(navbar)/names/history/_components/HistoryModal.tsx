@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import Loader from "../../../../../components/components/Loader";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
@@ -50,10 +50,10 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     return aFirst - bFirst;
   });
 
-  const getNameColor = (name: TyphoonName) => {
-    if (name.isLanguageProblem === 2) return "text-amber-500";
-    if (name.isRetired) return "text-red-500";
-    return "text-green-700";
+  const getNameColor = (name: TyphoonName): string => {
+    if (name.isLanguageProblem === 2) return "#f59e0b"; // amber-500
+    if (name.isRetired) return "#ef4444"; // red-500
+    return "#15803d"; // green-700
   };
 
   const handleNameClick = (nameId: number) => {
@@ -90,42 +90,45 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
               const nameStorms = stormsByName[name.name] || [];
               const count = nameStorms.length;
               const years = nameStorms.map((s) => s.year).join(", ");
-              const colorClass = getNameColor(name);
               const isExpanded = expandedNameId === name.id;
               const hasExpandable = !!name.image;
 
               return (
                 <div key={name.id} className="overflow-hidden rounded-lg">
-                  <button
+                  <Button
+                    type="text"
+                    disabled={!hasExpandable}
                     onClick={() => hasExpandable && handleNameClick(name.id)}
-                    className={`flex w-full items-baseline gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                      isExpanded
-                        ? "rounded-b-none bg-sky-50"
-                        : hasExpandable
-                          ? "hover:bg-stone-100"
-                          : "cursor-default"
-                    }`}
+                    className={`!h-auto !w-full !rounded-lg !px-3 !py-2 !text-left ${
+                      isExpanded ? "!rounded-b-none !bg-sky-50" : ""
+                    } ${!hasExpandable ? "!cursor-default" : ""}`}
                   >
-                    <span className="min-w-8 shrink-0 text-sm font-bold text-gray-400">
-                      {count > 0 ? `x${count}` : "x0"}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div>
-                        <span className={`font-semibold ${colorClass}`}>{name.name}</span>
-                        {count > 0 && <span className="ml-1 text-sm text-gray-500">({years})</span>}
+                    <div className="flex w-full items-baseline gap-2">
+                      <span className="min-w-8 shrink-0 text-sm font-bold text-gray-400">
+                        {count > 0 ? `x${count}` : "x0"}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div>
+                          <span className="font-semibold" style={{ color: getNameColor(name) }}>
+                            {name.name}
+                          </span>
+                          {count > 0 && (
+                            <span className="ml-1 text-sm text-gray-500">({years})</span>
+                          )}
+                        </div>
+                        {name.meaning && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-teal-700 italic">
+                            {name.meaning}
+                          </p>
+                        )}
+                        {name.description && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-gray-600">
+                            {name.description}
+                          </p>
+                        )}
                       </div>
-                      {name.meaning && (
-                        <p className="mt-0.5 text-xs leading-relaxed text-teal-700 italic">
-                          {name.meaning}
-                        </p>
-                      )}
-                      {name.description && (
-                        <p className="mt-0.5 text-xs leading-relaxed text-gray-600">
-                          {name.description}
-                        </p>
-                      )}
                     </div>
-                  </button>
+                  </Button>
 
                   {isExpanded && name.image && (
                     <div className="rounded-b-lg border-t border-sky-100 bg-sky-50 px-4 py-3">
