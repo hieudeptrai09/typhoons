@@ -15,7 +15,7 @@ import {
   ArrowDownToLine,
   Ruler,
 } from "lucide-react";
-import type { DashboardParams } from "../../../../types";
+import type { DashboardParams } from "../../../../../types";
 import type { LucideIcon } from "lucide-react";
 
 interface FilterButtonProps {

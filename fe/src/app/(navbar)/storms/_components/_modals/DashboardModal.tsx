@@ -16,7 +16,7 @@ import {
   Calendar,
   X,
 } from "lucide-react";
-import type { BaseModalProps, DashboardParams } from "../../../../types";
+import type { BaseModalProps, DashboardParams } from "../../../../../types";
 
 interface DashboardModalProps extends BaseModalProps {
   onApply: (params: DashboardParams) => void;

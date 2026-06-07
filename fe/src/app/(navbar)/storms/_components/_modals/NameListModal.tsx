@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import type { CSSProperties, RefObject } from "react";
 import { Modal } from "antd";
-import ImageWithLoader from "../../../../components/components/ImageWithLoader";
-import Toggle from "../../../../components/components/Toggle";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import Toggle from "../../../../../components/components/Toggle";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -10,10 +10,10 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_LABEL,
   COUNTRY_FLAG_COMPONENTS,
-} from "../../../../constants";
-import { getIntensityFromNumber } from "../_utils/fns";
-import StormMapPopup from "./StormMapPopup";
-import type { BaseModalProps, Storm } from "../../../../types";
+} from "../../../../../constants";
+import { getIntensityFromNumber } from "../../_utils/fns";
+import StormMapPopup from "../_popups/StormMapPopup";
+import type { BaseModalProps, Storm } from "../../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
   name: string;

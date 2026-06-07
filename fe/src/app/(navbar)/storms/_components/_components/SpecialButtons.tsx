@@ -1,6 +1,6 @@
 import { Button } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
-import { getIntensityFromNumber } from "../_utils/fns";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import { getIntensityFromNumber } from "../../_utils/fns";
 
 // ≤ 5.xx → green, = 6.0 → blue, > 6.0 → red
 const getDistanceColor = (years: number): string => {

@@ -8,12 +8,12 @@ import { INTENSITY_RANK } from "../../../constants";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../containers/hooks/useURLParams";
 import { getPositionTitle } from "../../../containers/utils/fns";
-import AverageModal from "./_components/AverageModal";
+import AverageModal from "./_components/_modals/AverageModal";
 import DashboardContent from "./_components/DashboardContent";
-import DashboardViewButton from "./_components/DashboardViewButton";
-import DashboardModal from "./_components/DashboardModal";
-import NameListModal from "./_components/NameListModal";
-import StormDetailModal from "./_components/StormDetailModal";
+import DashboardViewButton from "./_components/_components/DashboardViewButton";
+import DashboardModal from "./_components/_modals/DashboardModal";
+import NameListModal from "./_components/_modals/NameListModal";
+import StormDetailModal from "./_components/_modals/StormDetailModal";
 import { getDashboardTitle } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
 
