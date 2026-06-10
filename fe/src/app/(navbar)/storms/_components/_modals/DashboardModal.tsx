@@ -127,6 +127,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
       width={480}
       centered
       destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className="text-xl font-bold text-gray-700">Dashboard View</span>}
       footer={[
         <Button key="reset" onClick={handleReset}>

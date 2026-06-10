@@ -61,6 +61,7 @@ const FilterModal = ({
           });
         }
       }}
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
       footer={[
         <Button key="clear" onClick={() => form.resetFields()}>

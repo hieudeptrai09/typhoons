@@ -163,6 +163,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
       footer={null}
       centered
       destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={
         <span className="text-2xl font-bold" style={titleStyle}>
           {name}

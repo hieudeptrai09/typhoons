@@ -26,6 +26,7 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
       footer={null}
       centered
       destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
     >
       <div className="flex max-h-96 flex-col overflow-y-auto pt-4">

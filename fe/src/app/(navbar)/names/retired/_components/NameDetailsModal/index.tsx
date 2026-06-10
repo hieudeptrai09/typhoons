@@ -80,6 +80,7 @@ const NameDetailsModal = ({
         </span>
       }
       styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: {
           height: typeof window !== "undefined" ? window.innerHeight * 0.8 - 120 : 480,
           overflowY: "auto",

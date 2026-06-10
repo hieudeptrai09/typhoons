@@ -24,7 +24,7 @@ interface FilterButtonProps {
 }
 
 const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
-  const iconSize = 16;
+  const iconSize = 20;
 
   const iconMap: Record<string, Record<string, LucideIcon>> = {
     view: {
@@ -65,7 +65,7 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
     return icons.reduce<ReactNode[]>((acc, icon, index) => {
       if (index > 0) {
         acc.push(
-          <span key={`sep-${index}`} className="mx-1 opacity-70">
+          <span key={`sep-${index}`} className="mx-1 text-white">
             /
           </span>,
         );
@@ -84,7 +84,7 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
           style={{ backgroundColor: "#a855f7", borderColor: "#a855f7" }}
           className="!px-6 !py-5 !font-semibold hover:!border-purple-600 hover:!bg-purple-600"
         >
-          <span className="flex items-center gap-1">{buildIconNodes()}</span>
+          <span className="flex items-center gap-2">{buildIconNodes()}</span>
         </Button>
       </div>
     </div>
