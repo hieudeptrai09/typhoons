@@ -38,7 +38,16 @@ const transformData = (dataMap: Record<string, Storm[]>, filterType: string): Av
   });
 
 const makeColumns = (filterType: string): ColumnsType<AverageData> => {
-  const cols: ColumnsType<AverageData> = [];
+  const cols: ColumnsType<AverageData> = [
+    {
+      title: "#",
+      key: "order",
+      width: 52,
+      render: (_: unknown, __: AverageData, index: number) => (
+        <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+      ),
+    },
+  ];
 
   if (filterType === "year") {
     cols.push({
@@ -70,7 +79,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
       dataIndex: "country",
       key: "country",
       sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
-      render: (_, row) => {
+      render: (_: unknown, row: AverageData) => {
         const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country ?? "")];
         return FlagComponent ? (
           <div
@@ -97,7 +106,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
     dataIndex: "average",
     key: "average",
     sorter: (a, b) => a.avgNumber - b.avgNumber,
-    render: (_, row) => {
+    render: (_: unknown, row: AverageData) => {
       const textColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(row.avgNumber)];
       return (
         <span className="font-semibold" style={{ color: textColor }}>
@@ -137,7 +146,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   const data = transformData(groupedStorms, params.filter);
 
   return (
-    <div className="mx-auto overflow-x-auto">
+    <div className="mx-auto max-w-3xl">
       <Table<AverageData>
         dataSource={data}
         columns={makeColumns(params.filter)}
@@ -148,9 +157,13 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
             if (value !== undefined) onCellClick(value as number | string, params.filter);
           },
         })}
-        rowClassName="cursor-pointer"
+        rowClassName={(_record, index) =>
+          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+        }
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );

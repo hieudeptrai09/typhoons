@@ -26,11 +26,19 @@ const getNameColor = (row: RetiredName): string => {
 
 const columns: ColumnsType<RetiredName> = [
   {
+    title: "#",
+    key: "order",
+    width: 52,
+    render: (_: unknown, __: RetiredName, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+    ),
+  },
+  {
     title: "Name",
     dataIndex: "name",
     key: "name",
     sorter: (a, b) => a.name.localeCompare(b.name),
-    render: (_, record) => (
+    render: (_: unknown, record: RetiredName) => (
       <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
     ),
   },
@@ -50,13 +58,15 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "position",
     key: "position",
     sorter: (a, b) => a.position - b.position,
-    render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+    render: (_: unknown, record: RetiredName) => <span>{getPositionTitle(record.position)}</span>,
   },
   {
     title: "Note",
     dataIndex: "note",
     key: "note",
-    render: (_, record) => <span className="text-gray-700">{record.note || "-"}</span>,
+    render: (_: unknown, record: RetiredName) => (
+      <span className="text-gray-700">{record.note || "-"}</span>
+    ),
   },
   {
     title: "Year of last storm",
@@ -72,15 +82,19 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-5xl overflow-x-auto">
+    <div className="mx-auto max-w-4xl">
       <Table<RetiredName>
         dataSource={paginatedData}
         columns={columns}
         rowKey="id"
         onRow={(record) => ({ onClick: () => onNameClick(record) })}
-        rowClassName="cursor-pointer"
+        rowClassName={(_record, index) =>
+          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+        }
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );

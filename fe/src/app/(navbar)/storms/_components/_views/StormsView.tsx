@@ -24,11 +24,19 @@ interface NameData {
 
 const makeColumns = (): ColumnsType<NameData> => [
   {
+    title: "#",
+    key: "order",
+    width: 52,
+    render: (_: unknown, __: NameData, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+    ),
+  },
+  {
     title: "Name",
     dataIndex: "name",
     key: "name",
     sorter: (a, b) => a.name.localeCompare(b.name),
-    render: (_, row) => {
+    render: (_: unknown, row: NameData) => {
       const intensityLabel = getIntensityFromNumber(row.avgIntensity);
       const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
       return (
@@ -43,7 +51,7 @@ const makeColumns = (): ColumnsType<NameData> => [
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_, row) => {
+    render: (_: unknown, row: NameData) => {
       const FlagComponent = COUNTRY_FLAG_COMPONENTS[row.country];
       return FlagComponent ? (
         <div
@@ -108,15 +116,19 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto overflow-x-auto">
+    <div className="mx-auto max-w-3xl">
       <Table<NameData>
         dataSource={nameData}
         columns={makeColumns()}
         rowKey="name"
         onRow={(row) => ({ onClick: () => onCellClick(row.name, "name") })}
-        rowClassName="cursor-pointer"
+        rowClassName={(_record, index) =>
+          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+        }
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );

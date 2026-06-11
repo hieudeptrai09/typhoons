@@ -24,3 +24,35 @@ body {
   color: var(--foreground);
   font-family: inherit;
 }
+
+.typhoon-table .ant-table-thead th {
+  background-color: #0284c7 !important; /* sky-600 */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.typhoon-table .ant-table-thead .ant-table-column-sorter {
+  color: #bae6fd !important; /* sky-200 — keeps arrows visible on dark header */
+}
+
+/* Keep active-sort header the same colour — no darkening */
+.typhoon-table .ant-table-thead th.ant-table-column-sort {
+  background-color: #0284c7 !important;
+}
+
+/* Remove the grey tint Ant Design puts on body cells in the sorted column */
+.typhoon-table .ant-table-tbody td.ant-table-column-sort {
+  background-color: transparent !important;
+}
+
+/* Keep sorted-column cells consistent with normal cells on row hover */
+.typhoon-table .ant-table-tbody tr:hover td.ant-table-column-sort {
+  background: var(--ant-table-row-hover-bg) !important;
+}
+
+/* No internal scroll container — use the global page scrollbar */
+.typhoon-table .ant-table-wrapper,
+.typhoon-table .ant-table-body,
+.typhoon-table .ant-table-content {
+  overflow: visible !important;
+}

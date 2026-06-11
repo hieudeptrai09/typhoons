@@ -22,6 +22,14 @@ interface HighlightRow {
 
 const columns: ColumnsType<HighlightRow> = [
   {
+    title: "#",
+    key: "order",
+    width: 52,
+    render: (_: unknown, __: HighlightRow, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+    ),
+  },
+  {
     title: "Name",
     dataIndex: "name",
     key: "name",
@@ -38,14 +46,14 @@ const columns: ColumnsType<HighlightRow> = [
     dataIndex: "intensity",
     key: "intensity",
     sorter: (a, b) => INTENSITY_RANK[a.intensity] - INTENSITY_RANK[b.intensity],
-    render: (_, record) => <IntensityBadge intensity={record.intensity} />,
+    render: (_: unknown, record: HighlightRow) => <IntensityBadge intensity={record.intensity} />,
   },
   {
     title: "Position",
     dataIndex: "position",
     key: "position",
     sorter: (a, b) => a.position - b.position,
-    render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+    render: (_: unknown, record: HighlightRow) => <span>{getPositionTitle(record.position)}</span>,
   },
 ];
 
@@ -73,13 +81,16 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto overflow-x-auto">
+    <div className="mx-auto max-w-2xl">
       <Table<HighlightRow>
         dataSource={highlightData}
         columns={columns}
         rowKey={(r) => `${r.name}-${r.year}`}
+        rowClassName={(_record, index) => (index % 2 === 0 ? "bg-white" : "bg-sky-100")}
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );

@@ -33,11 +33,19 @@ const FilteredNamesTable = ({
 
     const cols: ColumnsType<TyphoonName> = [
       {
+        title: "#",
+        key: "order",
+        width: 52,
+        render: (_: unknown, __: TyphoonName, index: number) => (
+          <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+        ),
+      },
+      {
         title: "Retired",
         dataIndex: "isRetired",
         key: "isRetired",
         sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
-        render: (_, record) =>
+        render: (_: unknown, record: TyphoonName) =>
           record.isRetired ? (
             <Skull className={getRetiredColor(record)} size={20} />
           ) : (
@@ -49,7 +57,7 @@ const FilteredNamesTable = ({
         dataIndex: "name",
         key: "name",
         sorter: (a, b) => a.name.localeCompare(b.name),
-        render: (_, record) => (
+        render: (_: unknown, record: TyphoonName) => (
           <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
         ),
       },
@@ -70,7 +78,9 @@ const FilteredNamesTable = ({
         dataIndex: "position",
         key: "position",
         sorter: (a, b) => a.position - b.position,
-        render: (_, record) => <span>{getPositionTitle(record.position)}</span>,
+        render: (_: unknown, record: TyphoonName) => (
+          <span>{getPositionTitle(record.position)}</span>
+        ),
       },
       {
         title: "Meaning",
@@ -85,7 +95,7 @@ const FilteredNamesTable = ({
           title: "Image",
           dataIndex: "image",
           key: "image",
-          render: (_, record) =>
+          render: (_: unknown, record: TyphoonName) =>
             record.image ? (
               <div className="relative h-28 rounded-lg" style={{ aspectRatio: "4/3" }}>
                 <ImageWithLoader
@@ -104,7 +114,9 @@ const FilteredNamesTable = ({
           title: "Description",
           dataIndex: "description",
           key: "description",
-          render: (_, record) => <span className="text-gray-700">{record.description || "-"}</span>,
+          render: (_: unknown, record: TyphoonName) => (
+            <span className="text-gray-700">{record.description || "-"}</span>
+          ),
         },
       );
     }
@@ -117,17 +129,19 @@ const FilteredNamesTable = ({
   }
 
   return (
-    <div
-      className={`mx-auto overflow-x-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}`}
-    >
+    <div className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}`}>
       <Table<TyphoonName>
         dataSource={filteredNames}
         columns={tableColumns}
         rowKey="id"
         onRow={(record) => ({ onClick: () => onNameClick(record) })}
-        rowClassName="cursor-pointer"
+        rowClassName={(_record, index) =>
+          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+        }
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );

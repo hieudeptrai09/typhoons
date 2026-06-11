@@ -55,7 +55,16 @@ const transformData = (
   });
 
 const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceData> => {
-  const cols: ColumnsType<DistanceData> = [];
+  const cols: ColumnsType<DistanceData> = [
+    {
+      title: "#",
+      key: "order",
+      width: 52,
+      render: (_: unknown, __: DistanceData, index: number) => (
+        <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+      ),
+    },
+  ];
 
   if (filterType === "position") {
     cols.push({
@@ -84,7 +93,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceData>
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
-    render: (_, row) => {
+    render: (_: unknown, row: DistanceData) => {
       const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country ?? "")];
       return FlagComponent ? (
         <div
@@ -111,7 +120,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceData>
     dataIndex: "distance",
     key: "distance",
     sorter: (a, b) => a.distanceNumber - b.distanceNumber,
-    render: (_, row) => {
+    render: (_: unknown, row: DistanceData) => {
       const color = row.distanceNumber === 0 ? "#9ca3af" : getDistanceColor(row.distanceNumber);
       return (
         <span className="font-semibold" style={{ color }}>
@@ -227,7 +236,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   const data = transformData(calculateDistances(stormsData, filterType), grouped, filterType);
 
   return (
-    <div className="mx-auto overflow-x-auto">
+    <div className="mx-auto max-w-3xl">
       <Table<DistanceData>
         dataSource={data}
         columns={makeColumns(filterType)}
@@ -238,9 +247,13 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
             if (value !== undefined) onCellClick(value as number | string, filterType);
           },
         })}
-        rowClassName="cursor-pointer"
+        rowClassName={(_record, index) =>
+          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+        }
         pagination={false}
-        size="middle"
+        size="large"
+        className="typhoon-table"
+        scroll={undefined}
       />
     </div>
   );
