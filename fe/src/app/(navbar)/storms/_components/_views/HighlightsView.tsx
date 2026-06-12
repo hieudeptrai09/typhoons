@@ -34,6 +34,7 @@ const columns: ColumnsType<HighlightRow> = [
     dataIndex: "name",
     key: "name",
     sorter: (a, b) => a.name.localeCompare(b.name),
+    render: (_: unknown, row: HighlightRow) => <span className="font-semibold">{row.name}</span>,
   },
   {
     title: "Year",
@@ -81,8 +82,9 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-xl">
       <Table<HighlightRow>
+        key={params.filter}
         dataSource={highlightData}
         columns={columns}
         rowKey={(r) => `${r.name}-${r.year}`}

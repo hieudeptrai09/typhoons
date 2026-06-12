@@ -1,6 +1,7 @@
 import { Table } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND, COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
@@ -40,7 +41,7 @@ const makeColumns = (): ColumnsType<NameData> => [
       const intensityLabel = getIntensityFromNumber(row.avgIntensity);
       const textColor = TEXT_COLOR_WHITE_BACKGROUND[intensityLabel];
       return (
-        <span className="font-bold" style={{ color: textColor }}>
+        <span className="font-semibold" style={{ color: textColor }}>
           {row.name}
         </span>
       );
@@ -70,6 +71,7 @@ const makeColumns = (): ColumnsType<NameData> => [
     dataIndex: "position",
     key: "position",
     sorter: (a, b) => a.position - b.position,
+    render: (_: unknown, row: NameData) => <span>{getPositionTitle(row.position)}</span>,
   },
   {
     title: "Storm Count",
@@ -116,7 +118,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-xl">
       <Table<NameData>
         dataSource={nameData}
         columns={makeColumns()}

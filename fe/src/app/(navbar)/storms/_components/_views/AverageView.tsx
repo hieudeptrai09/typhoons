@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Table } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND, COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
@@ -28,95 +29,159 @@ const transformData = (dataMap: Record<string, Storm[]>, filterType: string): Av
   Object.entries(dataMap).map(([key, storms]) => {
     const avgValue = calculateAverage(storms);
     const base = { count: storms.length, average: avgValue.toFixed(2), avgNumber: avgValue };
-    const extras: Record<string, Partial<AverageData>> = {
-      year: { year: parseInt(key) },
-      country: { country: key },
-      name: { name: key, country: storms[0].country, position: storms[0].position },
-      position: { position: parseInt(key), country: storms[0].country },
-    };
-    return { ...extras[filterType], ...base } as AverageData;
+
+    switch (filterType) {
+      case "year":
+        return { year: parseInt(key), ...base };
+      case "country":
+        return { country: key, ...base };
+      case "name":
+        return {
+          name: key,
+          country: storms[0].country,
+          position: storms[0].position,
+          ...base,
+        };
+      case "position":
+      default:
+        return {
+          position: parseInt(key),
+          country: storms[0].country,
+          ...base,
+        };
+    }
   });
 
+const FlagCell = ({ country }: { country: string }) => {
+  const FlagComponent = COUNTRY_FLAG_COMPONENTS[country];
+  return FlagComponent ? (
+    <div
+      className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
+      title={country}
+    >
+      <FlagComponent className="h-full w-full object-cover" />
+    </div>
+  ) : (
+    <span>{country}</span>
+  );
+};
+
+const AvgIntensityCell = ({ avgNumber, average }: { avgNumber: number; average: string }) => {
+  const textColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgNumber)];
+  return (
+    <span className="font-semibold" style={{ color: textColor }}>
+      {average}
+    </span>
+  );
+};
+
 const makeColumns = (filterType: string): ColumnsType<AverageData> => {
-  const cols: ColumnsType<AverageData> = [
-    {
-      title: "#",
-      key: "order",
-      width: 52,
-      render: (_: unknown, __: AverageData, index: number) => (
-        <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
-      ),
-    },
-  ];
+  const orderCol: ColumnsType<AverageData>[number] = {
+    title: "#",
+    key: "order",
+    width: 52,
+    render: (_: unknown, __: AverageData, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+    ),
+  };
 
-  if (filterType === "year") {
-    cols.push({
-      title: "Year",
-      dataIndex: "year",
-      key: "year",
-      sorter: (a, b) => (a.year ?? 0) - (b.year ?? 0),
-    });
-  }
-  if (filterType === "position") {
-    cols.push({
-      title: "Position",
-      dataIndex: "position",
-      key: "position",
-      sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
-    });
-  }
-  if (filterType === "name") {
-    cols.push({
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
-    });
-  }
-  if (filterType !== "year") {
-    cols.push({
-      title: "Country",
-      dataIndex: "country",
-      key: "country",
-      sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
-      render: (_: unknown, row: AverageData) => {
-        const FlagComponent = COUNTRY_FLAG_COMPONENTS[String(row.country ?? "")];
-        return FlagComponent ? (
-          <div
-            className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-            title={String(row.country)}
-          >
-            <FlagComponent className="h-full w-full object-cover" />
-          </div>
-        ) : (
-          <span>{String(row.country)}</span>
-        );
-      },
-    });
-  }
-
-  cols.push({
+  const countCol: ColumnsType<AverageData>[number] = {
     title: "Count",
     dataIndex: "count",
     key: "count",
     sorter: (a, b) => a.count - b.count,
-  });
-  cols.push({
+  };
+
+  const avgCol: ColumnsType<AverageData>[number] = {
     title: "Average Intensity",
     dataIndex: "average",
     key: "average",
     sorter: (a, b) => a.avgNumber - b.avgNumber,
-    render: (_: unknown, row: AverageData) => {
-      const textColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(row.avgNumber)];
-      return (
-        <span className="font-semibold" style={{ color: textColor }}>
-          {row.average}
-        </span>
-      );
-    },
-  });
+    render: (_: unknown, row: AverageData) => (
+      <AvgIntensityCell avgNumber={row.avgNumber} average={row.average} />
+    ),
+  };
 
-  return cols;
+  const countryCol: ColumnsType<AverageData>[number] = {
+    title: "Country",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
+    render: (_: unknown, row: AverageData) => <FlagCell country={row.country ?? ""} />,
+  };
+
+  switch (filterType) {
+    case "year":
+      return [
+        orderCol,
+        {
+          title: "Year",
+          dataIndex: "year",
+          key: "year",
+          sorter: (a, b) => (a.year ?? 0) - (b.year ?? 0),
+        },
+        countCol,
+        avgCol,
+      ];
+
+    case "country":
+      return [
+        orderCol,
+        {
+          title: "Country",
+          dataIndex: "country",
+          key: "country",
+          sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
+          render: (_: unknown, row: AverageData) => <FlagCell country={row.country ?? ""} />,
+        },
+        countCol,
+        avgCol,
+      ];
+
+    case "name":
+      return [
+        orderCol,
+        {
+          title: "Name",
+          dataIndex: "name",
+          key: "name",
+          sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
+          render: (_: unknown, row: AverageData) => (
+            <span className="font-semibold">{row.name}</span>
+          ),
+        },
+        countryCol,
+        countCol,
+        {
+          title: "Position",
+          dataIndex: "position",
+          key: "position",
+          sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
+          render: (_: unknown, row: AverageData) => (
+            <span>{row.position !== undefined ? getPositionTitle(row.position) : ""}</span>
+          ),
+        },
+        avgCol,
+      ];
+
+    case "position":
+    default:
+      return [
+        orderCol,
+        {
+          title: "Position",
+          dataIndex: "position",
+          key: "position",
+          sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
+          render: (_: unknown, row: AverageData) => (
+            <span>{row.position !== undefined ? getPositionTitle(row.position) : ""}</span>
+          ),
+        },
+        countryCol,
+        countCol,
+        avgCol,
+      ];
+  }
 };
 
 const AverageView = ({ params, stormsData, averageValues, onCellClick }: AverageViewProps) => {
@@ -145,12 +210,20 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
 
   const data = transformData(groupedStorms, params.filter);
 
+  const widthClass: Record<string, string> = {
+    position: "max-w-2xl",
+    name: "max-w-2xl",
+    country: "max-w-lg",
+    year: "max-w-lg",
+  };
+
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"}`}>
       <Table<AverageData>
+        key={params.filter}
         dataSource={data}
         columns={makeColumns(params.filter)}
-        rowKey={(r) => String(r.year ?? r.country ?? r.name ?? r.position ?? Math.random())}
+        rowKey={(r) => String(Math.random())}
         onRow={(row) => ({
           onClick: () => {
             const value = row[params.filter as keyof AverageData];
