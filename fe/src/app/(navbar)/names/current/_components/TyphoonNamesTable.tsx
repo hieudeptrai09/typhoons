@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import CountryFlag from "../../../../../components/components/CountryFlag";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
 import type { TyphoonName } from "../../../../../types";
 
@@ -27,12 +28,10 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
         </colgroup>
         <thead>
           <tr>
-            {countryEntries.map(([countryName, FlagComponent], index) => (
+            {countryEntries.map(([countryName], index) => (
               <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
                 <div className="flex items-center justify-center">
-                  <div className="h-7 w-10 overflow-hidden rounded border border-white/30 shadow-sm">
-                    <FlagComponent className="h-full w-full object-cover" />
-                  </div>
+                  <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />
                 </div>
               </th>
             ))}

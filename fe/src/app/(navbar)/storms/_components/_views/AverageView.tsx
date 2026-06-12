@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Table } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND, COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import CountryFlag from "../../../../../components/components/CountryFlag";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
@@ -52,20 +53,6 @@ const transformData = (dataMap: Record<string, Storm[]>, filterType: string): Av
     }
   });
 
-const FlagCell = ({ country }: { country: string }) => {
-  const FlagComponent = COUNTRY_FLAG_COMPONENTS[country];
-  return FlagComponent ? (
-    <div
-      className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-      title={country}
-    >
-      <FlagComponent className="h-full w-full object-cover" />
-    </div>
-  ) : (
-    <span>{country}</span>
-  );
-};
-
 const AvgIntensityCell = ({ avgNumber, average }: { avgNumber: number; average: string }) => {
   const textColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgNumber)];
   return (
@@ -107,7 +94,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
-    render: (_: unknown, row: AverageData) => <FlagCell country={row.country ?? ""} />,
+    render: (_: unknown, row: AverageData) => <CountryFlag country={row.country ?? ""} />,
   };
 
   switch (filterType) {
@@ -132,7 +119,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
           dataIndex: "country",
           key: "country",
           sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
-          render: (_: unknown, row: AverageData) => <FlagCell country={row.country ?? ""} />,
+          render: (_: unknown, row: AverageData) => <CountryFlag country={row.country ?? ""} />,
         },
         countCol,
         avgCol,

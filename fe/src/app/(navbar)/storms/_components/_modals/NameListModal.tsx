@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { CSSProperties, RefObject } from "react";
 import { Modal, Switch } from "antd";
+import CountryFlag from "../../../../../components/components/CountryFlag";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import {
   BACKGROUND_BADGE,
@@ -8,7 +9,6 @@ import {
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_LABEL,
-  COUNTRY_FLAG_COMPONENTS,
 } from "../../../../../constants";
 import { getIntensityFromNumber } from "../../_utils/fns";
 import StormMapPopup from "../_popups/StormMapPopup";
@@ -47,21 +47,13 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
     ? BACKGROUND_BADGE[selectedStormData.intensity]
     : "";
 
-  const FlagComponent = COUNTRY_FLAG_COMPONENTS[storms[0].country];
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-700">Country:</span>
-            {FlagComponent ? (
-              <div className="h-5 w-8 overflow-hidden rounded border border-gray-300 shadow-sm">
-                <FlagComponent className="h-full w-full object-cover" />
-              </div>
-            ) : (
-              <span className="text-gray-700">{storms[0].country}</span>
-            )}
+            <CountryFlag country={storms[0].country} className="h-5 w-8" />
           </div>
           <div>
             <span className="font-semibold text-gray-700">Position:</span>

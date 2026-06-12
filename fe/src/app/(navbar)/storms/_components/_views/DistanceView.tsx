@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Table } from "antd";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import CountryFlag from "../../../../../components/components/CountryFlag";
 import { calculateDistances, getGroupedStorms } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
@@ -38,20 +38,6 @@ const getDistanceColor = (years: number): string => {
 };
 
 const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
-
-const CountryCell = ({ country }: { country: string }) => {
-  const FlagComponent = COUNTRY_FLAG_COMPONENTS[country];
-  return FlagComponent ? (
-    <div
-      className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-      title={country}
-    >
-      <FlagComponent className="h-full w-full object-cover" />
-    </div>
-  ) : (
-    <span>{country}</span>
-  );
-};
 
 const DistanceCell = ({
   distanceNumber,
@@ -91,7 +77,7 @@ const positionColumns: ColumnsType<PositionRow> = [
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: PositionRow) => <CountryCell country={row.country} />,
+    render: (_: unknown, row: PositionRow) => <CountryFlag country={row.country} />,
   },
   {
     title: "Storm Count",
@@ -124,7 +110,7 @@ const nameColumns: ColumnsType<NameRow> = [
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: NameRow) => <CountryCell country={row.country} />,
+    render: (_: unknown, row: NameRow) => <CountryFlag country={row.country} />,
   },
   {
     title: "Position",
@@ -192,7 +178,6 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     );
   }
 
-  // List mode — position
   if (filterType === "position") {
     const data: PositionRow[] = Object.entries(distanceMap).map(([key, dist]) => {
       const storms = groupedStorms[key] || [];
@@ -225,7 +210,6 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     );
   }
 
-  // List mode — name
   const data: NameRow[] = Object.entries(distanceMap).map(([key, dist]) => {
     const storms = groupedStorms[key] || [];
     return {

@@ -1,5 +1,6 @@
 import { Table } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND, COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import CountryFlag from "../../../../../components/components/CountryFlag";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
@@ -52,19 +53,7 @@ const makeColumns = (): ColumnsType<NameData> => [
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: NameData) => {
-      const FlagComponent = COUNTRY_FLAG_COMPONENTS[row.country];
-      return FlagComponent ? (
-        <div
-          className="h-7 w-10 overflow-hidden rounded border border-gray-300 shadow-sm"
-          title={row.country}
-        >
-          <FlagComponent className="h-full w-full object-cover" />
-        </div>
-      ) : (
-        <span>{row.country}</span>
-      );
-    },
+    render: (_: unknown, row: NameData) => <CountryFlag country={row.country} />,
   },
   {
     title: "Position",

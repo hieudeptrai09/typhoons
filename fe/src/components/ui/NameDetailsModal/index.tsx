@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../constants";
+import CountryFlag from "../../../components/components/CountryFlag";
 import ImageWithLoader from "../../components/ImageWithLoader";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
@@ -10,7 +10,6 @@ interface NameDetailsModalProps extends BaseModalProps {
 const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
-  const FlagComponent = COUNTRY_FLAG_COMPONENTS[name.country];
 
   const titleColorClass = Boolean(name.isRetired)
     ? name.isLanguageProblem === 2
@@ -42,11 +41,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
             <div className="border-t border-slate-200 pt-3">
               <div className="mb-2 text-sm font-medium text-slate-500">Origin</div>
               <div className="flex items-center gap-3">
-                {FlagComponent && (
-                  <div className="h-8 w-12 overflow-hidden rounded border border-slate-300 shadow-sm">
-                    <FlagComponent className="h-full w-full object-cover" />
-                  </div>
-                )}
+                <CountryFlag country={name.country} className="h-8 w-12" />
                 <div className="text-base font-semibold text-slate-800">{name.country}</div>
               </div>
             </div>
