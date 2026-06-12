@@ -25,6 +25,10 @@ body {
   font-family: inherit;
 }
 
+.ant-segmented {
+  background: #d1d5db !important;
+}
+
 .typhoon-table .ant-table-thead th {
   background-color: #0284c7 !important; /* sky-600 */
   color: #ffffff !important;
@@ -35,9 +39,10 @@ body {
   color: #bae6fd !important; /* sky-200 — keeps arrows visible on dark header */
 }
 
-/* Keep active-sort header the same colour — no darkening */
+/* Active-sort header darkens to sky-700 */
 .typhoon-table .ant-table-thead th.ant-table-column-sort {
-  background-color: #0284c7 !important;
+  background-color: #0369a1 !important; /* sky-700 */
+  text-decoration: underline !important;
 }
 
 /* Remove the grey tint Ant Design puts on body cells in the sorted column */
@@ -45,9 +50,19 @@ body {
   background-color: transparent !important;
 }
 
-/* Keep sorted-column cells consistent with normal cells on row hover */
+/* Sorted column: white rows → sky-50, sky-100 rows → sky-200 */
+.typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
+  background-color: #f0f9ff !important; /* sky-50 — subtle on white rows */
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
+  background-color: #bae6fd !important; /* sky-200 */
+}
+
+/* Hover: zinc-200 for all cells on the hovered row */
+.typhoon-table .ant-table-tbody tr:hover td,
 .typhoon-table .ant-table-tbody tr:hover td.ant-table-column-sort {
-  background: var(--ant-table-row-hover-bg) !important;
+  background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
 /* No internal scroll container — use the global page scrollbar */

@@ -74,7 +74,7 @@ interface SectionProps {
 
 const Section = ({ label, children }: SectionProps) => (
   <div className="flex flex-col gap-2">
-    <span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">{label}</span>
+    <span className="text-xs font-semibold tracking-widest text-gray-600 uppercase">{label}</span>
     {children}
   </div>
 );

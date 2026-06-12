@@ -33,12 +33,12 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
           type="text"
           icon={<BookText size={20} />}
           iconPosition="start"
-          className={`!text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-semibold" : ""}`}
+          className={`!text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
         >
           <span>Names</span>
           <ChevronDown
             size={16}
-            className={`ml-1 transition-transform ${isNamesOpen ? "rotate-180" : ""}`}
+            className={`transition-transform ${isNamesOpen ? "rotate-180" : ""}`}
           />
         </Button>
 

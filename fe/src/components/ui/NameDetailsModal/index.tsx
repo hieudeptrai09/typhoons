@@ -26,6 +26,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       footer={null}
       centered
       destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
       <div className="pt-4">

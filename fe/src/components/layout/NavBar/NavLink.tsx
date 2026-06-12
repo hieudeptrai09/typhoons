@@ -16,7 +16,7 @@ const NavLink = ({ href, icon: Icon, label, isActive, onClick }: NavLinkProps) =
       <Button
         type="text"
         icon={<Icon size={20} />}
-        className={`!text-white hover:!bg-white/30 hover:!text-white ${isActive ? "!font-semibold" : ""}`}
+        className={`!text-white hover:!bg-white/30 hover:!text-white ${isActive ? "!font-bold" : ""}`}
       >
         {label}
       </Button>

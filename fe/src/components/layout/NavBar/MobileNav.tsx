@@ -38,7 +38,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
             onClick={() => setIsNamesExpanded(!isNamesExpanded)}
             icon={<BookText size={20} />}
             iconPosition="start"
-            className={`!w-full !justify-between !text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-semibold" : ""}`}
+            className={`!w-full !justify-between !text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
           >
             <span className="flex-1 text-left">Names</span>
             <ChevronDown
