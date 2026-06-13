@@ -162,11 +162,8 @@ const RetiredNamesContent = () => {
     const isActive = currentLetter === letter;
     return {
       isAvailable,
-      colorClass: isActive
-        ? "text-red-800 underline decoration-2 underline-offset-4"
-        : isAvailable
-          ? "text-red-500 underline-offset-4 hover:text-red-600 hover:underline"
-          : "cursor-not-allowed text-gray-300",
+      color: !isAvailable ? "#d1d5db" : isActive ? "#991b1b" : "#ef4444",
+      isActive: !!isAvailable && isActive,
     };
   };
 
