@@ -9,7 +9,6 @@ import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import FilterModal from "./_components/FilterModal";
-import ActiveFilterTags from "./_components/MainPage/ActiveFilterTags";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
@@ -188,17 +187,6 @@ const RetiredNamesContent = () => {
           reason: retirementReason,
           position: searchPosition,
         }}
-      />
-
-      <ActiveFilterTags
-        params={{
-          name: searchName,
-          year: selectedYear,
-          country: selectedCountry,
-          reason: retirementReason,
-          position: searchPosition,
-        }}
-        onRemove={handleRemoveTag}
       />
 
       {activeFilterCount === 0 && (

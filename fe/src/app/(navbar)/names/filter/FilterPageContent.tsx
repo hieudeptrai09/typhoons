@@ -9,7 +9,6 @@ import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
-import ActiveFilterTags from "./_components/ActiveFilterTags";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
@@ -188,17 +187,6 @@ const FilterNamesContent = () => {
           }}
         />
       </div>
-
-      <ActiveFilterTags
-        params={{
-          name: searchName,
-          country: selectedCountry,
-          language: selectedLanguage,
-          position: searchPosition,
-          tag: selectedTag,
-        }}
-        onRemove={handleRemoveTag}
-      />
 
       <div className="mx-auto mb-6 flex max-w-4xl justify-center gap-6">
         {(["list", "table"] as ViewMode[]).map((mode) => (
