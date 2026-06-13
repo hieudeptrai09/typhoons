@@ -6,8 +6,6 @@ import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
-import StormNameGrid from "../_components/StormNameGrid";
-import AverageYearGridView from "./AverageYearGridView";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
@@ -182,7 +180,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return getGroupedStorms(filtered, params.filter);
   }, [stormsData, params.filter]);
 
-  // Average by name keyed as Record<string, number> for StormNameGrid
+  // Average by name keyed as Record<string, number> for "names" grid view
   const nameAverageValues = useMemo<Record<string, number> | null>(() => {
     if (params.filter !== "name") return null;
     const result: Record<string, number> = {};
@@ -192,20 +190,21 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return result;
   }, [groupedStorms, params.filter]);
 
-  // Average / name / table → StormNameGrid with color
+  // Average / name / table → names grid with intensity colors
   if (params.filter === "name" && params.mode === "table") {
     return (
-      <StormNameGrid
+      <StormGrid
+        viewType="names"
         stormsData={stormsData}
         onCellClick={onCellClick}
-        averageValues={nameAverageValues ?? undefined}
+        nameAverageValues={nameAverageValues ?? undefined}
       />
     );
   }
 
-  // Average / year / table → year list + highlights grid
+  // Average / year / table → year highlights grid
   if (params.filter === "year" && params.mode === "table") {
-    return <AverageYearGridView stormsData={stormsData} onCellClick={onCellClick} />;
+    return <StormGrid viewType="yearHighlights" stormsData={stormsData} onCellClick={onCellClick} />;
   }
 
   // Average / position / table → classic StormGrid

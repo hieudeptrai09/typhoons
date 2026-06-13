@@ -5,7 +5,6 @@ import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
-import StormNameGrid from "../_components/StormNameGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
@@ -109,7 +108,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
           isAverageView={false}
           averageValues={averageValues}
         />
-        <StormNameGrid stormsData={stormsData} onCellClick={onCellClick} />
+        <StormGrid viewType="names" stormsData={stormsData} onCellClick={onCellClick} />
       </div>
     );
   }
