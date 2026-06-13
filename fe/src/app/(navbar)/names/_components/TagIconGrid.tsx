@@ -103,7 +103,7 @@ const CellContent = ({
           <span className="text-xs text-gray-300">—</span>
         ) : (
           sortByOldest(historyNames).map((n) => (
-            <NameButton key={n.id} name={n} size={14} onNameClick={onNameClick} />
+            <NameButton key={n.id} name={n} size={15} onNameClick={onNameClick} />
           ))
         )}
       </div>
