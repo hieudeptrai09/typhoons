@@ -77,11 +77,13 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
   const columnWidth = `${100 / cols}%`;
 
   const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
+    if (n.isLanguageProblem === 2) return acc;
     acc[n.position] = n;
     return acc;
   }, {});
 
   const historyByPosition = names.reduce<Record<number, TyphoonName[]>>((acc, n) => {
+    if (n.isLanguageProblem === 2) return acc;
     if (!acc[n.position]) acc[n.position] = [];
     acc[n.position].push(n);
     return acc;
@@ -91,7 +93,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
     setExpandedPosition((prev) => (prev === position ? null : position));
   };
 
-  const renderExpanded = (historyNames: TyphoonName[]) => (
+  const renderExpanded = (historyNames: TyphoonName[], position: number) => (
     <div className="flex min-h-16 flex-col items-center justify-center gap-1 py-1">
       {sortByOldest(historyNames).map((n) => (
         <button
@@ -163,14 +165,39 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
                         onClick={() => handleCellClick(position)}
                       >
                         {isExpanded ? (
-                          renderExpanded(historyNames)
+                          <div className="flex min-h-16 items-center justify-center p-1">
+                            {currentName ? (
+                              <button
+                                title={currentName.name}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onNameClick(currentName);
+                                }}
+                                className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-1 hover:bg-stone-100"
+                              >
+                                <TagIcon tag={currentName.tag} size={20} />
+                              </button>
+                            ) : (
+                              <span className="text-xs text-gray-300">—</span>
+                            )}
+                          </div>
                         ) : (
                           <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
                             {historyNames.length === 0 ? (
                               <span className="text-xs text-gray-300">—</span>
                             ) : (
                               sortByOldest(historyNames).map((n) => (
-                                <TagIcon key={n.id} tag={n.tag} size={15} />
+                                <button
+                                  key={n.id}
+                                  title={n.name}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onNameClick(n);
+                                  }}
+                                  className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
+                                >
+                                  <TagIcon tag={n.tag} size={15} />
+                                </button>
                               ))
                             )}
                           </div>
@@ -188,17 +215,17 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
                       onClick={() => handleCellClick(position)}
                     >
                       {isExpanded ? (
-                        renderExpanded(historyNames)
+                        renderExpanded(historyNames, position)
                       ) : (
                         <div className="flex min-h-16 items-center justify-center p-1">
                           {currentName ? (
                             <button
+                              title={currentName.name}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onNameClick(currentName);
                               }}
-                              className="cursor-pointer rounded border-0 bg-transparent p-1 hover:bg-stone-100"
-                              title={currentName.name}
+                              className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-1 hover:bg-stone-100"
                             >
                               <TagIcon tag={currentName.tag} size={20} />
                             </button>
