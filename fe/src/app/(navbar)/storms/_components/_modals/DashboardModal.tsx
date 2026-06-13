@@ -43,6 +43,10 @@ const MODE_OPTIONS = [
 ];
 
 const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]> = {
+  storms: [
+    { label: icon(MapPin, "Position"), value: "position" },
+    { label: icon(Tag, "Name"), value: "name" },
+  ],
   highlights: [
     { label: icon(Zap, "Strongest"), value: "strongest" },
     { label: icon(Medal, "First"), value: "first" },
@@ -61,10 +65,10 @@ const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]
 };
 
 const DEFAULT_FILTER: Record<string, string> = {
+  storms: "position",
   highlights: "strongest",
   average: "position",
   distance: "position",
-  storms: "",
 };
 
 interface SectionProps {
@@ -79,42 +83,56 @@ const Section = ({ label, children }: SectionProps) => (
   </div>
 );
 
+const isTableModeDisabled = (view: string, filter: string): boolean => {
+  if (view === "average" && filter === "country") return true;
+  if (view === "distance" && filter === "name") return true;
+  return false;
+};
+
+const isListModeDisabled = (view: string, filter: string): boolean => {
+  if (view === "storms" && filter === "position") return true;
+  return false;
+};
+
 const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardModalProps) => {
   const [view, setView] = useState(currentParams.view || "storms");
-  const [filter, setFilter] = useState(currentParams.filter || "");
+  const [filter, setFilter] = useState(currentParams.filter || "position");
   const [mode, setMode] = useState(currentParams.mode || "table");
 
   const filterOptions = FILTER_OPTIONS[view] ?? [];
-  const isGroupByDisabled = view === "storms";
-
-  const isModeTableDisabled =
-    (view === "average" && filter !== "position") || (view === "distance" && filter === "name");
 
   const handleViewChange = (newView: string) => {
+    const defaultFilter = DEFAULT_FILTER[newView] ?? "";
     setView(newView);
-    setFilter(DEFAULT_FILTER[newView] ?? "");
-    if (newView === "distance") setMode("table");
-    else if (
-      newView === "average" &&
-      (filter === "name" || filter === "country" || filter === "year")
-    )
+    setFilter(defaultFilter);
+    // Reset to table unless the new view+filter forces list
+    if (newView === "storms" && defaultFilter === "position") {
+      setMode("table");
+    } else if (newView === "distance") {
+      setMode("table");
+    } else if (newView === "average" && defaultFilter === "country") {
       setMode("list");
+    } else {
+      setMode("table");
+    }
   };
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
-    if (
-      view === "average" &&
-      (newFilter === "name" || newFilter === "country" || newFilter === "year")
-    )
+    if (view === "storms" && newFilter === "position") {
+      setMode("table");
+    } else if (view === "average" && newFilter === "country") {
       setMode("list");
-    if (view === "distance" && newFilter === "name") setMode("list");
-    if (view === "distance" && newFilter === "position") setMode("table");
+    } else if (view === "distance" && newFilter === "name") {
+      setMode("list");
+    } else if (view === "distance" && newFilter === "position") {
+      setMode("table");
+    }
   };
 
   const handleReset = () => {
     setView("storms");
-    setFilter("");
+    setFilter("position");
     setMode("table");
   };
 
@@ -149,28 +167,22 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
         </Section>
 
         <Section label="Group by">
-          {isGroupByDisabled ? (
-            <Segmented
-              options={[{ label: icon(X, "Not available"), value: "__none__" }]}
-              value="__none__"
-              disabled
-              block
-            />
-          ) : (
-            <Segmented
-              options={filterOptions}
-              value={filter || filterOptions[0]?.value}
-              onChange={(v) => handleFilterChange(String(v))}
-              block
-            />
-          )}
+          <Segmented
+            options={filterOptions}
+            value={filter || filterOptions[0]?.value}
+            onChange={(v) => handleFilterChange(String(v))}
+            block
+          />
         </Section>
 
         <Section label="Display as">
           <Segmented
-            options={MODE_OPTIONS.map((opt) =>
-              opt.value === "table" && isModeTableDisabled ? { ...opt, disabled: true } : opt,
-            )}
+            options={MODE_OPTIONS.map((opt) => ({
+              ...opt,
+              disabled:
+                (opt.value === "table" && isTableModeDisabled(view, filter)) ||
+                (opt.value === "list" && isListModeDisabled(view, filter)),
+            }))}
             value={mode}
             onChange={(v) => setMode(String(v))}
             block

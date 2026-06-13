@@ -6,6 +6,8 @@ import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
+import StormNameGrid from "../_components/StormNameGrid";
+import AverageYearGridView from "./AverageYearGridView";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
@@ -180,6 +182,33 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return getGroupedStorms(filtered, params.filter);
   }, [stormsData, params.filter]);
 
+  // Average by name keyed as Record<string, number> for StormNameGrid
+  const nameAverageValues = useMemo<Record<string, number> | null>(() => {
+    if (params.filter !== "name") return null;
+    const result: Record<string, number> = {};
+    Object.entries(groupedStorms).forEach(([name, storms]) => {
+      result[name] = calculateAverage(storms);
+    });
+    return result;
+  }, [groupedStorms, params.filter]);
+
+  // Average / name / table → StormNameGrid with color
+  if (params.filter === "name" && params.mode === "table") {
+    return (
+      <StormNameGrid
+        stormsData={stormsData}
+        onCellClick={onCellClick}
+        averageValues={nameAverageValues ?? undefined}
+      />
+    );
+  }
+
+  // Average / year / table → year list + highlights grid
+  if (params.filter === "year" && params.mode === "table") {
+    return <AverageYearGridView stormsData={stormsData} onCellClick={onCellClick} />;
+  }
+
+  // Average / position / table → classic StormGrid
   if (params.mode === "table") {
     return (
       <div>
@@ -195,6 +224,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     );
   }
 
+  // List modes (position / name / country / year)
   const data = transformData(groupedStorms, params.filter);
 
   const widthClass: Record<string, string> = {
@@ -221,7 +251,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
             case "position":
               return String(row.position);
             default:
-              return String(Math.random()); //fallback, should not happen
+              return String(Math.random());
           }
         }}
         onRow={(row) => ({

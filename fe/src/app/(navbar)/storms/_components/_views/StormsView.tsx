@@ -5,6 +5,7 @@ import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
+import StormNameGrid from "../_components/StormNameGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
@@ -24,7 +25,7 @@ interface NameData {
   year: number;
 }
 
-const makeColumns = (): ColumnsType<NameData> => [
+const makeNameColumns = (): ColumnsType<NameData> => [
   {
     title: "#",
     key: "order",
@@ -77,7 +78,10 @@ const makeColumns = (): ColumnsType<NameData> => [
 ];
 
 const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsViewProps) => {
-  if (params.mode === "table") {
+  const filter = params.filter || "position";
+
+  // ── Position → original StormGrid (table only) ─────────────────────────────
+  if (filter === "position") {
     return (
       <div>
         <SpecialButtons
@@ -96,6 +100,21 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
     );
   }
 
+  // ── Name / table → StormNameGrid ───────────────────────────────────────────
+  if (params.mode === "table") {
+    return (
+      <div>
+        <SpecialButtons
+          onCellClick={onCellClick}
+          isAverageView={false}
+          averageValues={averageValues}
+        />
+        <StormNameGrid stormsData={stormsData} onCellClick={onCellClick} />
+      </div>
+    );
+  }
+
+  // ── Name / list → Ant Design table ─────────────────────────────────────────
   const nameGroups = getGroupedStorms(stormsData, "name");
   const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => ({
     name,
@@ -110,7 +129,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
     <div className="mx-auto max-w-xl">
       <Table<NameData>
         dataSource={nameData}
-        columns={makeColumns()}
+        columns={makeNameColumns()}
         rowKey="name"
         onRow={(row) => ({ onClick: () => onCellClick(row.name, "name") })}
         rowClassName={(_record, index) =>
