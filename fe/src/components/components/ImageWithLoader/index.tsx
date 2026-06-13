@@ -15,7 +15,7 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
     <div className="relative h-full w-full">
       {isLoading && !hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-          <Spin size="small" />
+          <Spin size="medium" />
         </div>
       )}
 

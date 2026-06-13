@@ -25,7 +25,7 @@ const LetterNavigation = ({ onLetterChange, getLetterConfig }: LetterNavigationP
               type="text"
               disabled={!isAvailable}
               onClick={() => isAvailable && onLetterChange(letter)}
-              className={`!min-w-0 !px-1 !text-lg !font-semibold ${isActive ? "!underline !decoration-2 !underline-offset-4" : ""}`}
+              className={`!min-w-0 !px-1 !text-base !font-semibold ${isActive ? "!underline !decoration-2 !underline-offset-4" : ""}`}
               style={{ color }}
             >
               {letter}
