@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Table } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
+import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -171,7 +172,15 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
   }
 };
 
+const SPECIAL_YEAR_POSITIONS = [
+  { id: 141, label: "CPHC" },
+  { id: 142, label: "NHC" },
+  { id: 143, label: "IMD" },
+];
+
 const AverageView = ({ params, stormsData, averageValues, onCellClick }: AverageViewProps) => {
+  const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+
   const groupedStorms = useMemo(() => {
     const filtered =
       params.filter === "year"
@@ -180,7 +189,6 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return getGroupedStorms(filtered, params.filter);
   }, [stormsData, params.filter]);
 
-  // Average by name keyed as Record<string, number> for "names" grid view
   const nameAverageValues = useMemo<Record<string, number> | null>(() => {
     if (params.filter !== "name") return null;
     const result: Record<string, number> = {};
@@ -190,21 +198,64 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return result;
   }, [groupedStorms, params.filter]);
 
-  // Average / name / table → names grid with intensity colors
+  // Average / name / table → names grid + special names list
   if (params.filter === "name" && params.mode === "table") {
     return (
-      <StormGrid
-        viewType="names"
-        stormsData={stormsData}
-        onCellClick={onCellClick}
-        nameAverageValues={nameAverageValues ?? undefined}
-      />
+      <div className="flex flex-col gap-6">
+        <StormGrid
+          viewType="names"
+          stormsData={stormsData}
+          onCellClick={onCellClick}
+          nameAverageValues={nameAverageValues ?? undefined}
+        />
+        <SpecialNamesListDiv
+          stormsData={stormsData}
+          nameAverageValues={nameAverageValues ?? undefined}
+          onNameClick={(name) => onCellClick(name, "name")}
+        />
+      </div>
     );
   }
 
-  // Average / year / table → year highlights grid
+  // Average / year / table → year highlights grid + read-only special regions
   if (params.filter === "year" && params.mode === "table") {
-    return <StormGrid viewType="yearHighlights" stormsData={stormsData} onCellClick={onCellClick} />;
+    const specialPositions = SPECIAL_YEAR_POSITIONS.map(({ id, label }) => {
+      const years = new Set(stormsData.filter((s) => s.position === id).map((s) => s.year));
+      return { id, label, years };
+    });
+
+    const hasAnySpecial = specialPositions.some((p) => p.years.size > 0);
+
+    return (
+      <div>
+        <div className="mb-6 flex flex-wrap justify-center gap-4">
+          <div className="mr-2 self-start pt-2 text-sm font-semibold text-gray-700">
+            Other Regions:
+          </div>
+          {specialPositions.map(({ id, label, years }) => {
+            const isHighlighted = hoveredYear !== null && years.has(hoveredYear);
+            return (
+              <div
+                key={id}
+                className={`cursor-default rounded border px-4 py-2 text-sm font-semibold transition-colors ${
+                  isHighlighted
+                    ? "border-stone-400 bg-stone-200 text-gray-700"
+                    : "border-stone-300 text-gray-500"
+                }`}
+              >
+                {label}
+              </div>
+            );
+          })}
+        </div>
+        <StormGrid
+          viewType="yearHighlights"
+          stormsData={stormsData}
+          onCellClick={onCellClick}
+          onYearHover={setHoveredYear}
+        />
+      </div>
+    );
   }
 
   // Average / position / table → classic StormGrid

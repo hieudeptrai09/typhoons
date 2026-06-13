@@ -4,6 +4,7 @@ import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
+import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -98,19 +99,20 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
     );
   }
 
+  // name + table → names grid with special names list above
   if (params.mode === "table") {
     return (
-      <div>
-        <SpecialButtons
-          onCellClick={onCellClick}
-          isAverageView={false}
-          averageValues={averageValues}
-        />
+      <div className="flex flex-col gap-6">
         <StormGrid viewType="names" stormsData={stormsData} onCellClick={onCellClick} />
+        <SpecialNamesListDiv
+          stormsData={stormsData}
+          onNameClick={(name) => onCellClick(name, "name")}
+        />
       </div>
     );
   }
 
+  // name + list
   const nameGroups = getGroupedStorms(stormsData, "name");
   const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => ({
     name,

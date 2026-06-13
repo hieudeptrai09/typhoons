@@ -19,6 +19,7 @@ interface StormGridProps {
   distanceValues?: Record<number, number> | null;
   nameAverageValues?: Record<string, number>;
   isClickable?: boolean;
+  onYearHover?: (year: number | null) => void;
 }
 
 const ROWS = 10;
@@ -34,8 +35,14 @@ const StormGrid = ({
   distanceValues = null,
   nameAverageValues,
   isClickable = true,
+  onYearHover,
 }: StormGridProps) => {
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+
+  const handleYearHover = (year: number | null) => {
+    setHoveredYear(year);
+    onYearHover?.(year);
+  };
 
   const stormsByPosition = useMemo<Record<number, Storm[]>>(() => {
     if (viewType !== "names") return {};
@@ -159,7 +166,8 @@ const StormGrid = ({
 
       case "highlights": {
         const positionStorms = highlightedStorms.filter((s) => s.position === position);
-        if (positionStorms.length === 0) return { content: "", className: "", cellClickable: false };
+        if (positionStorms.length === 0)
+          return { content: "", className: "", cellClickable: false };
         return {
           content: (
             <div className="flex flex-col items-center gap-1">
@@ -191,7 +199,7 @@ const StormGrid = ({
                       e.stopPropagation();
                       onCellClick(name, "name");
                     }}
-                    className="cursor-pointer text-center text-xs font-semibold leading-tight hover:underline"
+                    className="cursor-pointer text-center text-xs leading-tight font-semibold hover:underline"
                     style={{ color, background: "none", border: "none", padding: 0 }}
                   >
                     {name}
@@ -215,8 +223,8 @@ const StormGrid = ({
                 <div
                   key={`${storm.name}-${storm.year}`}
                   className="flex cursor-pointer flex-col items-center rounded px-1 transition-colors hover:bg-white/40"
-                  onMouseEnter={() => setHoveredYear(storm.year)}
-                  onMouseLeave={() => setHoveredYear(null)}
+                  onMouseEnter={() => handleYearHover(storm.year)}
+                  onMouseLeave={() => handleYearHover(null)}
                   onClick={(e) => {
                     e.stopPropagation();
                     onCellClick(storm.year, "year");
