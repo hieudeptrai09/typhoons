@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import { Flame, Skull } from "lucide-react";
-import FrownNotFound from "../../../../../components/components/FrownNotFound";
+import EmptyResults from "../../../../../components/components/EmptyResults";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
@@ -125,7 +125,7 @@ const FilteredNamesTable = ({
   }, [showImageAndDescription]);
 
   if (filteredNames.length === 0) {
-    return <FrownNotFound />;
+    return <EmptyResults />;
   }
 
   return (

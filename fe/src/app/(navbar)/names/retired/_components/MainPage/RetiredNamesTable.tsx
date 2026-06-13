@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import FrownNotFound from "../../../../../../components/components/FrownNotFound";
+import EmptyResults from "../../../../../../components/components/EmptyResults";
 import { getPositionTitle } from "../../../../../../containers/utils/fns";
 import type { RetiredName } from "../../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -78,7 +78,7 @@ const columns: ColumnsType<RetiredName> = [
 
 const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProps) => {
   if (!paginatedData || paginatedData.length === 0) {
-    return <FrownNotFound />;
+    return <EmptyResults />;
   }
 
   return (
