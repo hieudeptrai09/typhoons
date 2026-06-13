@@ -19,6 +19,15 @@ import type {
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
 
+const DELIMITER = "|";
+
+const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
+const removeFromDelimitedString = (val: string, item: string) =>
+  val
+    .split(DELIMITER)
+    .filter((v) => v !== item)
+    .join(DELIMITER);
+
 const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -131,7 +140,8 @@ const RetiredNamesContent = () => {
     const current = params[key] || "";
 
     const multiKeys: (keyof FilterParams)[] = ["country", "reason"];
-    const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
+    const newVal =
+      value && multiKeys.includes(key) ? removeFromDelimitedString(current, value) : "";
 
     const newParams = { ...params, [key]: newVal };
 

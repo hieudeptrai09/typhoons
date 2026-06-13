@@ -19,6 +19,15 @@ import type { FilterParams, TyphoonName } from "../../../../types";
 
 type ViewMode = "list" | "table";
 
+const DELIMITER = "|";
+
+const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
+const removeFromDelimitedString = (val: string, item: string) =>
+  val
+    .split(DELIMITER)
+    .filter((v) => v !== item)
+    .join(DELIMITER);
+
 const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
   const { data: names, loading, error } = useFetchData<TyphoonName[]>("/typhoon-names");
@@ -115,7 +124,8 @@ const FilterNamesContent = () => {
     const current = params[key] || "";
 
     const multiKeys: (keyof FilterParams)[] = ["country", "language", "tag"];
-    const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
+    const newVal =
+      value && multiKeys.includes(key) ? removeFromDelimitedString(current, value) : "";
 
     const newParams = { ...params, [key]: newVal };
 

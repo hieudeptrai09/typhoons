@@ -49,7 +49,7 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
                     <Button
                       type="text"
                       onClick={() => onNameClick(typhoon)}
-                      className="!h-16 !w-full !rounded-none"
+                      className="!h-16 !w-full !rounded-none !p-2"
                     >
                       <span className="text-sm font-semibold text-gray-700">{typhoon?.name}</span>
                     </Button>

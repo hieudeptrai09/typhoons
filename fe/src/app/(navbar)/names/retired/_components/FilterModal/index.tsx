@@ -18,12 +18,18 @@ interface FormValues {
   position: number | undefined;
 }
 
+const DELIMITER = "|";
+
 const REASON_OPTIONS = [
   { value: "0", label: "Destructive Storm" },
   { value: "1", label: "Language Problem" },
   { value: "2", label: "Misspelling" },
   { value: "3", label: "Special Storm" },
 ];
+
+const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
+const toStr = (val: string[] | undefined) => (val ?? []).join(DELIMITER);
+const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: v }));
 
 const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
