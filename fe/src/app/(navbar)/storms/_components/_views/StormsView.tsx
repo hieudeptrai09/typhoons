@@ -79,7 +79,6 @@ const makeNameColumns = (): ColumnsType<NameData> => [
 const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsViewProps) => {
   const filter = params.filter || "position";
 
-  // ── Position → original StormGrid (table only) ─────────────────────────────
   if (filter === "position") {
     return (
       <div>
@@ -99,7 +98,6 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
     );
   }
 
-  // ── Name / table → StormNameGrid ───────────────────────────────────────────
   if (params.mode === "table") {
     return (
       <div>
@@ -113,7 +111,6 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
     );
   }
 
-  // ── Name / list → Ant Design table ─────────────────────────────────────────
   const nameGroups = getGroupedStorms(stormsData, "name");
   const nameData: NameData[] = Object.entries(nameGroups).map(([name, storms]) => ({
     name,

@@ -105,11 +105,9 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
     const defaultFilter = DEFAULT_FILTER[newView] ?? "";
     setView(newView);
     setFilter(defaultFilter);
-    // Reset to table unless the new view+filter forces list
-    if (newView === "storms" && defaultFilter === "position") {
-      setMode("table");
-    } else if (newView === "distance") {
-      setMode("table");
+
+    if (newView === "distance" && defaultFilter === "name") {
+      setMode("list");
     } else if (newView === "average" && defaultFilter === "country") {
       setMode("list");
     } else {
