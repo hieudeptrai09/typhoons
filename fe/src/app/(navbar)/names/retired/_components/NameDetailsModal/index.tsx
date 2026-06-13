@@ -70,7 +70,7 @@ const NameDetailsModal = ({
     <Modal
       open={isOpen}
       onCancel={onClose}
-      width={672}
+      width={600}
       footer={null}
       centered
       destroyOnHidden

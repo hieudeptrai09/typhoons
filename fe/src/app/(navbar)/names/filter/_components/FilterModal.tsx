@@ -47,7 +47,7 @@ const FilterModal = ({
     <Modal
       open={isOpen}
       onCancel={onClose}
-      width={448}
+      width={480}
       centered
       destroyOnHidden
       afterOpenChange={(open) => {
@@ -83,7 +83,6 @@ const FilterModal = ({
             placeholder="All Countries"
             options={toOpts(countries)}
             allowClear
-            className="w-full"
           />
         </Form.Item>
 
@@ -93,18 +92,11 @@ const FilterModal = ({
             placeholder="All Languages"
             options={toOpts(languages)}
             allowClear
-            className="w-full"
           />
         </Form.Item>
 
         <Form.Item label="Tag" name="tag">
-          <Select
-            mode="multiple"
-            placeholder="All Tags"
-            options={toOpts(tags)}
-            allowClear
-            className="w-full"
-          />
+          <Select mode="multiple" placeholder="All Tags" options={toOpts(tags)} allowClear />
         </Form.Item>
 
         <Form.Item
@@ -115,12 +107,7 @@ const FilterModal = ({
           ]}
           className="mb-0"
         >
-          <InputNumber
-            placeholder="Enter position (1–140)..."
-            min={1}
-            max={140}
-            className="w-full"
-          />
+          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
         </Form.Item>
       </Form>
     </Modal>

@@ -29,6 +29,10 @@ body {
   background: #d1d5db !important;
 }
 
+.ant-input-number {
+  width: 100%;
+}
+
 .typhoon-table .ant-table-thead th {
   background-color: #0284c7 !important; /* sky-600 */
   color: #ffffff !important;

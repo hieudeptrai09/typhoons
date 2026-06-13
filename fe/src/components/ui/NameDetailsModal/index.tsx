@@ -21,7 +21,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
     <Modal
       open={isOpen}
       onCancel={onClose}
-      width={hasImage ? 640 : 560}
+      width={560}
       footer={null}
       centered
       destroyOnHidden
