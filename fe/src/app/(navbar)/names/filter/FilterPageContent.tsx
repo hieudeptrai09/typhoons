@@ -18,12 +18,14 @@ import type { FilterParams, TyphoonName } from "../../../../types";
 
 type ViewMode = "list" | "table";
 
-const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
-const removeFromCommaString = (val: string, item: string) =>
+const DELIMITER = "|";
+
+const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
+const removeFromDelimitedString = (val: string, item: string) =>
   val
-    .split(",")
+    .split(DELIMITER)
     .filter((v) => v !== item)
-    .join(",");
+    .join(DELIMITER);
 
 const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
@@ -121,7 +123,8 @@ const FilterNamesContent = () => {
     const current = params[key] || "";
 
     const multiKeys: (keyof FilterParams)[] = ["country", "language", "tag"];
-    const newVal = value && multiKeys.includes(key) ? removeFromCommaString(current, value) : "";
+    const newVal =
+      value && multiKeys.includes(key) ? removeFromDelimitedString(current, value) : "";
 
     const newParams = { ...params, [key]: newVal };
 
