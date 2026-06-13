@@ -50,7 +50,7 @@ export default function DashboardPageContent() {
     const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
     // Storms view — name list mode: clicking a name row
-    if (view === "storms" && mode === "list" && key === "name") {
+    if (view === "storms" && key === "name") {
       const avgIntensity =
         storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
       setSelectedData({ name: data as string, storms, avgIntensity });
@@ -59,7 +59,7 @@ export default function DashboardPageContent() {
     }
 
     // Storms view — any table mode (position or name grid): clicking a cell
-    if (view === "storms" && mode === "table") {
+    if (view === "storms" && key === "position") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
       setSelectedData({ title, storms });
       setIsDetailModalOpen(true);
