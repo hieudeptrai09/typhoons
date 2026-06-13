@@ -1,4 +1,4 @@
-import { normalizeParam, toArr, fmt } from "../../../../../containers/utils/fns";
+import { normalizeParam, fmt } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 
 export const getPageTitle = (

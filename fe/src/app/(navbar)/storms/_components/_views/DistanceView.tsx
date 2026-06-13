@@ -1,8 +1,13 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { calculateDistances, getGroupedStorms, getDistanceColor, formatDistance } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
+import {
+  calculateDistances,
+  getGroupedStorms,
+  getDistanceColor,
+  formatDistance,
+} from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";

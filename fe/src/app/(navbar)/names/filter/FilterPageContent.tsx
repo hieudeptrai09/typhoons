@@ -9,12 +9,12 @@ import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
+import { toArr, removeFromDelimitedString } from "../../../../containers/utils/fns";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
 import FilterNamesGrid from "./_components/FilterNamesGrid";
 import { categorizeLettersByStatus } from "./_utils/fns";
-import { toArr, removeFromDelimitedString } from "../../../../containers/utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
 
 type ViewMode = "list" | "table";
@@ -108,26 +108,6 @@ const FilterNamesContent = () => {
     const hasFilters =
       filters.name || filters.country || filters.language || filters.position || filters.tag;
     if (!hasFilters) newParams.letter = currentLetter;
-    updateParams(newParams, true);
-  };
-
-  const handleRemoveTag = (key: keyof FilterParams, value?: string) => {
-    const current = params[key] || "";
-
-    const multiKeys: (keyof FilterParams)[] = ["country", "language", "tag"];
-    const newVal =
-      value && multiKeys.includes(key) ? removeFromDelimitedString(current, value) : "";
-
-    const newParams = { ...params, [key]: newVal };
-
-    const hasFilters =
-      newParams.name ||
-      newParams.country ||
-      newParams.language ||
-      newParams.position ||
-      newParams.tag;
-    if (!hasFilters) newParams.letter = currentLetter;
-
     updateParams(newParams, true);
   };
 

@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Table } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
-import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
+import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import type { Storm, DashboardParams } from "../../../../../types";
@@ -210,7 +210,20 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
         key={params.filter}
         dataSource={data}
         columns={makeColumns(params.filter)}
-        rowKey={(r) => String(Math.random())}
+        rowKey={(row) => {
+          switch (params.filter) {
+            case "year":
+              return String(row.year);
+            case "country":
+              return row.country ?? "";
+            case "name":
+              return `${row.name}-${row.country}`;
+            case "position":
+              return String(row.position);
+            default:
+              return String(Math.random()); //fallback, should not happen
+          }
+        }}
         onRow={(row) => ({
           onClick: () => {
             const value = row[params.filter as keyof AverageData];
