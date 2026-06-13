@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { getHighlights } from "../../_utils/fns";
 import type { Storm } from "../../../../../types";
-import GridCell from "../_components/GridCell";
+import GridCell from "./GridCell";
 
 interface AverageYearGridViewProps {
   stormsData: Storm[];

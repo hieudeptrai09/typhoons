@@ -7,7 +7,7 @@ import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../.
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
 import StormNameGrid from "../_components/StormNameGrid";
-import AverageYearGridView from "./AverageYearGridView";
+import AverageYearGridView from "../_components/AverageYearGridView";
 import type { Storm, DashboardParams } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
-import { getIntensityFromNumber } from "../../_utils/fns";
+import { getIntensityFromNumber, getDistanceColor } from "../../_utils/fns";
 import GridCell from "./GridCell";
 import type { Storm } from "../../../../../types";
 
@@ -14,12 +14,6 @@ interface StormGridProps {
   distanceValues?: Record<number, number> | null;
   isClickable?: boolean;
 }
-
-const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a";
-  if (years === 6.0) return "#2563eb";
-  return "#dc2626";
-};
 
 const StormGrid = ({
   viewType,
