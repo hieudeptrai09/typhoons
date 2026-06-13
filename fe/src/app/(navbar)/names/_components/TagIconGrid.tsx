@@ -60,6 +60,67 @@ const TagIcon = ({ tag, size = 20 }: { tag: string; size?: number }) => {
 
 const sortByOldest = (names: TyphoonName[]) => [...names].sort((a, b) => a.id - b.id);
 
+const NameButton = ({
+  name,
+  size,
+  onNameClick,
+}: {
+  name: TyphoonName;
+  size: number;
+  onNameClick: (n: TyphoonName) => void;
+}) => (
+  <button
+    title={name.name}
+    onClick={(e) => {
+      e.stopPropagation();
+      onNameClick(name);
+    }}
+    className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
+  >
+    <TagIcon tag={name.tag} size={size} />
+  </button>
+);
+
+const CellContent = ({
+  currentName,
+  historyNames,
+  isExpanded,
+  showHistory,
+  onNameClick,
+}: {
+  currentName: TyphoonName | undefined;
+  historyNames: TyphoonName[];
+  isExpanded: boolean;
+  showHistory: boolean;
+  onNameClick: (n: TyphoonName) => void;
+}) => {
+  const showList = showHistory ? !isExpanded : isExpanded;
+
+  if (showList) {
+    return (
+      <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
+        {historyNames.length === 0 ? (
+          <span className="text-xs text-gray-300">—</span>
+        ) : (
+          sortByOldest(historyNames).map((n) => (
+            <NameButton key={n.id} name={n} size={14} onNameClick={onNameClick} />
+          ))
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-16 items-center justify-center p-1">
+      {currentName ? (
+        <NameButton name={currentName} size={20} onNameClick={onNameClick} />
+      ) : (
+        <span className="text-xs text-gray-300">—</span>
+      )}
+    </div>
+  );
+};
+
 interface TagIconGridProps {
   names: TyphoonName[];
   currentNames: TyphoonName[];
@@ -92,24 +153,6 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
   const handleCellClick = (position: number) => {
     setExpandedPosition((prev) => (prev === position ? null : position));
   };
-
-  const renderExpanded = (historyNames: TyphoonName[], position: number) => (
-    <div className="flex min-h-16 flex-col items-center justify-center gap-1 py-1">
-      {sortByOldest(historyNames).map((n) => (
-        <button
-          key={n.id}
-          title={n.name}
-          onClick={(e) => {
-            e.stopPropagation();
-            onNameClick(n);
-          }}
-          className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
-        >
-          <TagIcon tag={n.tag} size={13} />
-        </button>
-      ))}
-    </div>
-  );
 
   return (
     <div>
@@ -155,57 +198,6 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
                   const historyNames = historyByPosition[position] ?? [];
                   const isExpanded = expandedPosition === position;
 
-                  if (showHistory) {
-                    return (
-                      <td
-                        key={col}
-                        className={`cursor-pointer border border-stone-300 p-0 transition-colors ${
-                          isExpanded ? "bg-sky-50" : "hover:bg-stone-100"
-                        }`}
-                        onClick={() => handleCellClick(position)}
-                      >
-                        {isExpanded ? (
-                          <div className="flex min-h-16 items-center justify-center p-1">
-                            {currentName ? (
-                              <button
-                                title={currentName.name}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onNameClick(currentName);
-                                }}
-                                className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-1 hover:bg-stone-100"
-                              >
-                                <TagIcon tag={currentName.tag} size={20} />
-                              </button>
-                            ) : (
-                              <span className="text-xs text-gray-300">—</span>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
-                            {historyNames.length === 0 ? (
-                              <span className="text-xs text-gray-300">—</span>
-                            ) : (
-                              sortByOldest(historyNames).map((n) => (
-                                <button
-                                  key={n.id}
-                                  title={n.name}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onNameClick(n);
-                                  }}
-                                  className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
-                                >
-                                  <TagIcon tag={n.tag} size={15} />
-                                </button>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </td>
-                    );
-                  }
-
                   return (
                     <td
                       key={col}
@@ -214,26 +206,13 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
                       }`}
                       onClick={() => handleCellClick(position)}
                     >
-                      {isExpanded ? (
-                        renderExpanded(historyNames, position)
-                      ) : (
-                        <div className="flex min-h-16 items-center justify-center p-1">
-                          {currentName ? (
-                            <button
-                              title={currentName.name}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onNameClick(currentName);
-                              }}
-                              className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-1 hover:bg-stone-100"
-                            >
-                              <TagIcon tag={currentName.tag} size={20} />
-                            </button>
-                          ) : (
-                            <span className="text-xs text-gray-300">—</span>
-                          )}
-                        </div>
-                      )}
+                      <CellContent
+                        currentName={currentName}
+                        historyNames={historyNames}
+                        isExpanded={isExpanded}
+                        showHistory={showHistory}
+                        onNameClick={onNameClick}
+                      />
                     </td>
                   );
                 })}
