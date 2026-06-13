@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
-import Modal from "../../../../../../components/components/Modal";
-import FilterInput from "../../../../../../components/ui/FilterModal/FilterInput";
-import FilterSelect from "../../../../../../components/ui/FilterModal/FilterSelect";
-import ModalActions from "../../../../../../components/ui/FilterModal/ModalActions";
-import RetirementReasonCheckbox from "./RetirementReasonCheckbox";
+import { Modal, Button, Form, Input, Select, InputNumber, DatePicker } from "antd";
+import dayjs from "dayjs";
+import { toArr, toStr, toOpts } from "../../../../../../containers/utils/fns";
 import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
+import type { Dayjs } from "dayjs";
 
 interface FilterModalProps extends BaseModalProps {
   onApply: (filters: RetiredFilterParams) => void;
@@ -12,89 +10,102 @@ interface FilterModalProps extends BaseModalProps {
   initialFilters: RetiredFilterParams;
 }
 
+interface FormValues {
+  name: string;
+  year: Dayjs | undefined;
+  country: string[];
+  reason: string[];
+  position: number | undefined;
+}
+
+const REASON_OPTIONS = [
+  { value: "0", label: "Destructive Storm" },
+  { value: "1", label: "Language Problem" },
+  { value: "2", label: "Misspelling" },
+  { value: "3", label: "Special Storm" },
+];
+
 const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
-  const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
-  const [tempSelectedYear, setTempSelectedYear] = useState(initialFilters.year);
-  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
-  const [tempRetirementReason, setTempRetirementReason] = useState(initialFilters.reason);
-  const [tempPosition, setTempPosition] = useState(initialFilters.position);
+  const [form] = Form.useForm<FormValues>();
 
-  useEffect(() => {
-    setTempSearchName(initialFilters.name);
-    setTempSelectedYear(initialFilters.year);
-    setTempSelectedCountry(initialFilters.country);
-    setTempRetirementReason(initialFilters.reason);
-    setTempPosition(initialFilters.position);
-  }, [initialFilters]);
-
-  const handleApply = () => {
+  const handleApply = (values: FormValues) => {
     onApply({
-      name: tempSearchName,
-      year: tempSelectedYear,
-      country: tempSelectedCountry,
-      reason: tempRetirementReason,
-      position: tempPosition,
+      name: values.name ?? "",
+      year: values.year ? String(values.year.year()) : "",
+      country: toStr(values.country),
+      reason: toStr(values.reason),
+      position: values.position != null ? String(values.position) : "",
       letter: "",
     });
   };
 
-  const handleClearAll = () => {
-    setTempSearchName("");
-    setTempSelectedYear("");
-    setTempSelectedCountry("");
-    setTempRetirementReason("");
-    setTempPosition("");
-  };
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={672}>
-      {() => (
-        <>
-          <div className="space-y-4">
-            <FilterInput
-              label="Filter by Name"
-              value={tempSearchName}
-              onChange={setTempSearchName}
-              placeholder="Enter typhoon name..."
-            />
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={480}
+      centered
+      destroyOnHidden
+      afterOpenChange={(open) => {
+        if (open) {
+          form.setFieldsValue({
+            name: initialFilters.name,
+            year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
+            country: toArr(initialFilters.country),
+            reason: toArr(initialFilters.reason),
+            position: initialFilters.position ? Number(initialFilters.position) : undefined,
+          });
+        }
+      }}
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      footer={[
+        <Button key="clear" onClick={() => form.resetFields()}>
+          Clear All
+        </Button>,
+        <Button key="apply" type="primary" onClick={() => form.submit()}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
+        <Form.Item label="Name" name="name">
+          <Input placeholder="Enter typhoon name..." allowClear />
+        </Form.Item>
 
-            <FilterInput
-              label="Filter by Year"
-              value={tempSelectedYear}
-              onChange={setTempSelectedYear}
-              placeholder="Enter year..."
-              type="number"
-              min="2000"
-              max="2100"
-            />
+        <Form.Item label="Year" name="year">
+          <DatePicker
+            picker="year"
+            placeholder="Select year..."
+            className="w-full"
+            minDate={dayjs().year(2000)}
+            maxDate={dayjs()}
+          />
+        </Form.Item>
 
-            <FilterSelect
-              label="Filter by Country"
-              value={tempSelectedCountry}
-              onChange={setTempSelectedCountry}
-              options={countries}
-              placeholder="All Countries"
-            />
+        <Form.Item label="Country" name="country">
+          <Select
+            mode="multiple"
+            placeholder="All Countries"
+            options={toOpts(countries)}
+            allowClear
+          />
+        </Form.Item>
 
-            <FilterInput
-              label="Filter by Position"
-              value={tempPosition}
-              onChange={setTempPosition}
-              placeholder="Enter position (1–140)..."
-              type="number"
-              min="1"
-              max="140"
-            />
+        <Form.Item
+          label="Position"
+          name="position"
+          rules={[
+            { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
+          ]}
+        >
+          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
+        </Form.Item>
 
-            <RetirementReasonCheckbox
-              value={tempRetirementReason}
-              onChange={setTempRetirementReason}
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </>
-      )}
+        <Form.Item label="Retirement Reason" name="reason" className="mb-0">
+          <Select mode="multiple" placeholder="All Reasons" options={REASON_OPTIONS} allowClear />
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

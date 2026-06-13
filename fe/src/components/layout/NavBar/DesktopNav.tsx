@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "antd";
 import { CloudLightning, BookText, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import NavLink from "./NavLink";
@@ -28,18 +29,18 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
         onMouseEnter={() => setIsNamesOpen(true)}
         onMouseLeave={() => setIsNamesOpen(false)}
       >
-        <button
-          className={`flex items-center space-x-2 rounded-lg px-4 py-1 text-white transition hover:bg-white/30 ${
-            isNamesActive && "font-semibold"
-          }`}
+        <Button
+          type="text"
+          icon={<BookText size={20} />}
+          iconPosition="start"
+          className={`!text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
         >
-          <BookText size={20} />
           <span>Names</span>
           <ChevronDown
             size={16}
-            className={`transition-transform ${isNamesOpen && "rotate-180"}`}
+            className={`transition-transform ${isNamesOpen ? "rotate-180" : ""}`}
           />
-        </button>
+        </Button>
 
         {isNamesOpen && (
           <div className="absolute top-full right-0 z-50 pt-2">

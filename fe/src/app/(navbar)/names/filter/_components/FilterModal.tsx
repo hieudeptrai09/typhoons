@@ -1,8 +1,5 @@
-import { useState } from "react";
-import Modal from "../../../../../components/components/Modal";
-import FilterInput from "../../../../../components/ui/FilterModal/FilterInput";
-import FilterSelect from "../../../../../components/ui/FilterModal/FilterSelect";
-import ModalActions from "../../../../../components/ui/FilterModal/ModalActions";
+import { Modal, Button, Form, Input, Select, InputNumber } from "antd";
+import { toArr, toStr, toOpts } from "../../../../../containers/utils/fns";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
@@ -11,6 +8,14 @@ export interface FilterModalProps extends BaseModalProps {
   languages: string[];
   tags: string[];
   initialFilters: FilterParams;
+}
+
+interface FormValues {
+  name: string;
+  country: string[];
+  language: string[];
+  tag: string[];
+  position: number | undefined;
 }
 
 const FilterModal = ({
@@ -22,81 +27,86 @@ const FilterModal = ({
   tags,
   initialFilters,
 }: FilterModalProps) => {
-  const [tempSearchName, setTempSearchName] = useState(initialFilters.name);
-  const [tempSelectedCountry, setTempSelectedCountry] = useState(initialFilters.country);
-  const [tempSelectedLanguage, setTempSelectedLanguage] = useState(initialFilters.language);
-  const [tempPosition, setTempPosition] = useState(initialFilters.position);
-  const [tempSelectedTag, setTempSelectedTag] = useState(initialFilters.tag ?? "");
+  const [form] = Form.useForm<FormValues>();
 
-  const handleApply = () => {
+  const handleApply = (values: FormValues) => {
     onApply({
-      name: tempSearchName,
-      country: tempSelectedCountry,
-      language: tempSelectedLanguage,
-      position: tempPosition,
-      tag: tempSelectedTag,
+      name: values.name ?? "",
+      country: toStr(values.country),
+      language: toStr(values.language),
+      tag: toStr(values.tag),
+      position: values.position != null ? String(values.position) : "",
       letter: "",
     });
   };
 
-  const handleClearAll = () => {
-    setTempSearchName("");
-    setTempSelectedCountry("");
-    setTempSelectedLanguage("");
-    setTempPosition("");
-    setTempSelectedTag("");
-  };
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Filter Options" maxWidth={448}>
-      {() => (
-        <>
-          <div className="space-y-4">
-            <FilterInput
-              label="Filter by Name"
-              value={tempSearchName}
-              onChange={setTempSearchName}
-              placeholder="Enter typhoon name..."
-            />
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={480}
+      centered
+      destroyOnHidden
+      afterOpenChange={(open) => {
+        if (open) {
+          form.setFieldsValue({
+            name: initialFilters.name,
+            country: toArr(initialFilters.country),
+            language: toArr(initialFilters.language),
+            tag: toArr(initialFilters.tag),
+            position: initialFilters.position ? Number(initialFilters.position) : undefined,
+          });
+        }
+      }}
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      footer={[
+        <Button key="clear" onClick={() => form.resetFields()}>
+          Clear All
+        </Button>,
+        <Button key="apply" type="primary" onClick={() => form.submit()}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
+        <Form.Item label="Name" name="name">
+          <Input placeholder="Enter typhoon name..." allowClear />
+        </Form.Item>
 
-            <FilterSelect
-              label="Filter by Country"
-              value={tempSelectedCountry}
-              onChange={setTempSelectedCountry}
-              options={countries}
-              placeholder="All Countries"
-            />
+        <Form.Item label="Country" name="country">
+          <Select
+            mode="multiple"
+            placeholder="All Countries"
+            options={toOpts(countries)}
+            allowClear
+          />
+        </Form.Item>
 
-            <FilterSelect
-              label="Filter by Language"
-              value={tempSelectedLanguage}
-              onChange={setTempSelectedLanguage}
-              options={languages}
-              placeholder="All Languages"
-            />
+        <Form.Item label="Language" name="language">
+          <Select
+            mode="multiple"
+            placeholder="All Languages"
+            options={toOpts(languages)}
+            allowClear
+          />
+        </Form.Item>
 
-            <FilterSelect
-              label="Filter by Tag"
-              value={tempSelectedTag}
-              onChange={setTempSelectedTag}
-              options={tags}
-              placeholder="All Tags"
-            />
+        <Form.Item label="Tag" name="tag">
+          <Select mode="multiple" placeholder="All Tags" options={toOpts(tags)} allowClear />
+        </Form.Item>
 
-            <FilterInput
-              label="Filter by Position"
-              value={tempPosition}
-              onChange={setTempPosition}
-              placeholder="Enter position (1–140)..."
-              type="number"
-              min="1"
-              max="140"
-            />
-          </div>
-
-          <ModalActions onClearAll={handleClearAll} onApply={handleApply} />
-        </>
-      )}
+        <Form.Item
+          label="Position"
+          name="position"
+          rules={[
+            { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
+          ]}
+          className="mb-0"
+        >
+          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

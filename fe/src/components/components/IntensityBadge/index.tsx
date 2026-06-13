@@ -1,3 +1,4 @@
+import { Tag } from "antd";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../../constants";
 import type { IntensityType } from "../../../types";
 
@@ -7,15 +8,16 @@ interface IntensityBadgeProps {
 
 const IntensityBadge = ({ intensity }: IntensityBadgeProps) => {
   return (
-    <span
-      className="flex h-10 w-10 items-center justify-center font-semibold"
+    <Tag
       style={{
         backgroundColor: BACKGROUND_BADGE[intensity],
         color: TEXT_COLOR_BADGE[intensity],
+        borderColor: BACKGROUND_BADGE[intensity],
       }}
+      className="!m-0 !h-10 !w-10 !rounded-none !border !p-0 !text-center !text-base !leading-10 !font-semibold"
     >
       {intensity}
-    </span>
+    </Tag>
   );
 };
 

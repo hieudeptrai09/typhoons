@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import type { RefObject } from "react";
-import Modal from "../../../../components/components/Modal";
+import { Modal } from "antd";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_RANK,
   BACKGROUND_HOVER_BADGE,
-} from "../../../../constants";
-import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../_utils/fns";
-import StormNamePopup from "./StormNamePopup";
-import type { BaseModalProps, Storm } from "../../../../types";
+} from "../../../../../constants";
+import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import StormNamePopup from "../_popups/StormNamePopup";
+import type { BaseModalProps, Storm } from "../../../../../types";
 
 interface AverageModalProps extends BaseModalProps {
   title: string;
@@ -38,7 +38,6 @@ const AverageModalInner = ({ average, nameData, modalContainerRef }: InnerProps)
   const nameRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const popupRef = useRef<HTMLDivElement | null>(null);
 
-  // Read ref.current inside an effect — runs after render, never during render.
   useEffect(() => {
     setModalContainer(modalContainerRef.current);
   }, [modalContainerRef]);
@@ -58,9 +57,7 @@ const AverageModalInner = ({ average, nameData, modalContainerRef }: InnerProps)
         <span className="text-blue-700">Overall Average Intensity: </span>
         <span
           className="text-lg font-bold"
-          style={{
-            color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)],
-          }}
+          style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)] }}
         >
           {average.toFixed(2)}
         </span>
@@ -124,6 +121,9 @@ const AverageModalInner = ({ average, nameData, modalContainerRef }: InnerProps)
 };
 
 const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalProps) => {
+  // StormNamePopup portals into this div, which sits inside antd's modal body.
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+
   const nameAverages = getGroupedStorms(storms, "name");
   const nameData: NameAverageData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
     const avg = calculateAverage(nameStorms);
@@ -131,14 +131,23 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth={448}>
-      {(modalContainerRef) => (
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={448}
+      footer={null}
+      centered
+      destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
+    >
+      <div ref={modalContainerRef} className="relative overflow-y-auto pt-4">
         <AverageModalInner
           average={average}
           nameData={nameData}
           modalContainerRef={modalContainerRef}
         />
-      )}
+      </div>
     </Modal>
   );
 };

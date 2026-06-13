@@ -1,6 +1,9 @@
+import { Button } from "antd";
+
 interface LetterConfig {
   isAvailable: boolean;
-  colorClass: string;
+  color: string;
+  isActive?: boolean;
 }
 
 interface LetterNavigationProps {
@@ -13,19 +16,20 @@ const LetterNavigation = ({ onLetterChange, getLetterConfig }: LetterNavigationP
 
   return (
     <div className="mx-auto mb-6 max-w-4xl">
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-0">
         {allLetters.map((letter) => {
-          const { isAvailable, colorClass } = getLetterConfig(letter);
-
+          const { isAvailable, color, isActive } = getLetterConfig(letter);
           return (
-            <button
+            <Button
               key={letter}
-              onClick={() => isAvailable && onLetterChange(letter)}
+              type="text"
               disabled={!isAvailable}
-              className={`text-lg font-semibold underline-offset-4 transition-all ${colorClass}`}
+              onClick={() => isAvailable && onLetterChange(letter)}
+              className={`!min-w-0 !px-1 !text-base !font-semibold ${isActive ? "!underline !decoration-2 !underline-offset-4" : ""}`}
+              style={{ color }}
             >
               {letter}
-            </button>
+            </Button>
           );
         })}
       </div>

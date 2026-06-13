@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import type { RefObject } from "react";
 import { createPortal } from "react-dom";
-import IntensityBadge from "../../../../components/components/IntensityBadge";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
-import type { Storm } from "../../../../types";
+import IntensityBadge from "../../../../../components/components/IntensityBadge";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import type { Storm } from "../../../../../types";
 
 interface NameAverageData {
   name: string;

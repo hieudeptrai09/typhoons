@@ -1,5 +1,5 @@
 import { INTENSITY_RANK } from "../../../../constants";
-import { normalizeParam } from "../../../../containers/utils/fns";
+import { normalizeParam, capitalize } from "../../../../containers/utils/fns";
 import type { Storm, IntensityType } from "../../../../types";
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
@@ -63,13 +63,19 @@ export const calculateDistances = (
   return result;
 };
 
+export const getDistanceColor = (years: number): string => {
+  if (years < 6.0) return "#16a34a";
+  if (years === 6.0) return "#2563eb";
+  return "#dc2626";
+};
+
+export const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
+
 export const getDashboardTitle = (
   view: string | string[] | undefined,
   mode: string | string[] | undefined,
   filter: string | string[] | undefined,
 ): string => {
-  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-
   const viewStr = normalizeParam(view) || "storms";
   const modeStr = normalizeParam(mode) || "table";
   const filterStr = normalizeParam(filter);

@@ -22,5 +22,56 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: inherit;
+}
+
+.ant-segmented {
+  background: #d1d5db !important;
+}
+
+.ant-input-number {
+  width: 100%;
+}
+
+.typhoon-table .ant-table-thead th {
+  background-color: #0284c7 !important; /* sky-600 */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.typhoon-table .ant-table-thead .ant-table-column-sorter {
+  color: #bae6fd !important; /* sky-200 — keeps arrows visible on dark header */
+}
+
+/* Active-sort header darkens to sky-700 */
+.typhoon-table .ant-table-thead th.ant-table-column-sort {
+  background-color: #0369a1 !important; /* sky-700 */
+  text-decoration: underline !important;
+}
+
+/* Remove the grey tint Ant Design puts on body cells in the sorted column */
+.typhoon-table .ant-table-tbody td.ant-table-column-sort {
+  background-color: transparent !important;
+}
+
+/* Sorted column: white rows → sky-50, sky-100 rows → sky-200 */
+.typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
+  background-color: #f0f9ff !important; /* sky-50 — subtle on white rows */
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
+  background-color: #bae6fd !important; /* sky-200 */
+}
+
+/* Hover: zinc-200 for all cells on the hovered row */
+.typhoon-table .ant-table-tbody tr:hover td,
+.typhoon-table .ant-table-tbody tr:hover td.ant-table-column-sort {
+  background-color: #e4e4e7 !important; /* zinc-200 */
+}
+
+/* No internal scroll container — use the global page scrollbar */
+.typhoon-table .ant-table-wrapper,
+.typhoon-table .ant-table-body,
+.typhoon-table .ant-table-content {
+  overflow: visible !important;
 }

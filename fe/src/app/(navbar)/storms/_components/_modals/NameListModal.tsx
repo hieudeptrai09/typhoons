@@ -1,19 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import type { CSSProperties, RefObject } from "react";
-import ImageWithLoader from "../../../../components/components/ImageWithLoader";
-import Modal from "../../../../components/components/Modal";
-import Toggle from "../../../../components/components/Toggle";
+import { Modal, Switch } from "antd";
+import CountryFlag from "../../../../../components/components/CountryFlag";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   INTENSITY_LABEL,
-  COUNTRY_FLAG_COMPONENTS,
-} from "../../../../constants";
-import { getIntensityFromNumber } from "../_utils/fns";
-import StormMapPopup from "./StormMapPopup";
-import type { BaseModalProps, Storm } from "../../../../types";
+} from "../../../../../constants";
+import { getIntensityFromNumber } from "../../_utils/fns";
+import StormMapPopup from "../_popups/StormMapPopup";
+import type { BaseModalProps, Storm } from "../../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
   name: string;
@@ -48,21 +47,13 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
     ? BACKGROUND_BADGE[selectedStormData.intensity]
     : "";
 
-  const FlagComponent = COUNTRY_FLAG_COMPONENTS[storms[0].country];
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-700">Country:</span>
-            {FlagComponent ? (
-              <div className="h-5 w-8 overflow-hidden rounded border border-gray-300 shadow-sm">
-                <FlagComponent className="h-full w-full object-cover" />
-              </div>
-            ) : (
-              <span className="text-gray-700">{storms[0].country}</span>
-            )}
+            <CountryFlag country={storms[0].country} className="h-5 w-8" />
           </div>
           <div>
             <span className="font-semibold text-gray-700">Position:</span>
@@ -75,8 +66,9 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end md:flex-row">
-          <Toggle value={showMap} onChange={setShowMap} label="Show Map" />
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">Show Map</span>
+          <Switch checked={showMap} onChange={setShowMap} />
         </div>
       </div>
 
@@ -147,6 +139,8 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
 };
 
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+
   const titleStyle: CSSProperties = {
     color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgIntensity)],
   };
@@ -154,10 +148,23 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
   if (!storms || storms.length === 0) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={name} maxWidth={512} titleStyle={titleStyle}>
-      {(modalContainerRef) => (
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      width={512}
+      footer={null}
+      centered
+      destroyOnHidden
+      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      title={
+        <span className="text-2xl font-bold" style={titleStyle}>
+          {name}
+        </span>
+      }
+    >
+      <div ref={modalContainerRef} className="relative overflow-y-auto pt-4">
         <NameListModalInner name={name} storms={storms} modalContainerRef={modalContainerRef} />
-      )}
+      </div>
     </Modal>
   );
 };

@@ -1,18 +1,25 @@
 import type { ReactNode } from "react";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../constants";
-import { getIntensityFromNumber } from "../_utils/fns";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import { getIntensityFromNumber } from "../../_utils/fns";
 import GridCell from "./GridCell";
-import type { Storm } from "../../../../types";
+import type { Storm } from "../../../../../types";
 
 interface StormGridProps {
-  viewType: "storms" | "average" | "highlights";
+  viewType: "storms" | "average" | "highlights" | "distance";
   onCellClick: (position: number, key: string) => void;
   stormsData: Storm[];
   highlightedStorms?: Storm[];
   highlightType?: string;
   averageValues?: Record<number, number> | null;
+  distanceValues?: Record<number, number> | null;
   isClickable?: boolean;
 }
+
+const getDistanceColor = (years: number): string => {
+  if (years < 6.0) return "#16a34a";
+  if (years === 6.0) return "#2563eb";
+  return "#dc2626";
+};
 
 const StormGrid = ({
   viewType,
@@ -21,20 +28,18 @@ const StormGrid = ({
   highlightedStorms = [],
   highlightType = "",
   averageValues = null,
+  distanceValues = null,
   isClickable = true,
 }: StormGridProps) => {
   const rows = 10;
   const cols = 14;
 
-  // Helper function to get storm names for a position
   const getStormNamesForPosition = (position: number): string[] => {
     if (!stormsData || stormsData.length === 0) return [];
     const storms = stormsData.filter((storm) => storm.position === position);
-    const uniqueNames = [...new Set(storms.map((storm) => storm.name))];
-    return uniqueNames;
+    return [...new Set(storms.map((storm) => storm.name))];
   };
 
-  // Helper function to get background color class based on highlight type
   const getHighlightColorClass = (): string => {
     if (!highlightType) return "";
     switch (highlightType) {
@@ -49,11 +54,9 @@ const StormGrid = ({
     }
   };
 
-  // Main function to render cell content based on position and viewType
   const renderCellContent = (position: number): { content: ReactNode; className: string } => {
     switch (viewType) {
       case "storms": {
-        // Render simple position number with default color
         const content = (
           <div className="text-center text-base font-semibold text-gray-700">{position}</div>
         );
@@ -61,13 +64,11 @@ const StormGrid = ({
       }
 
       case "average": {
-        // Render position number with intensity-based color
         const avgNumber = averageValues?.[position];
         const textColor =
           avgNumber !== undefined
             ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgNumber)]
             : "#374151";
-
         const content = (
           <div className="text-center text-base font-semibold" style={{ color: textColor }}>
             {position}
@@ -76,16 +77,21 @@ const StormGrid = ({
         return { content, className: "" };
       }
 
+      case "distance": {
+        const dist = distanceValues?.[position];
+        const color = dist !== undefined ? getDistanceColor(dist) : "#9ca3af";
+        const label = dist === undefined ? "—" : dist === 0 ? "N/A" : `${dist.toFixed(2)}y`;
+        const content = (
+          <div className="text-center text-sm font-bold" style={{ color }}>
+            {label}
+          </div>
+        );
+        return { content, className: "" };
+      }
+
       case "highlights": {
-        // Find storms at this position
         const positionStorms = highlightedStorms.filter((s) => s.position === position);
-
-        if (positionStorms.length === 0) {
-          // No storms at this position - render empty
-          return { content: "", className: "" };
-        }
-
-        // Render storm names and years
+        if (positionStorms.length === 0) return { content: "", className: "" };
         const content = (
           <div className="flex flex-col items-center gap-1">
             {positionStorms.map((storm, idx) => (
@@ -96,7 +102,6 @@ const StormGrid = ({
             ))}
           </div>
         );
-
         return { content, className: getHighlightColorClass() };
       }
 
@@ -105,7 +110,6 @@ const StormGrid = ({
     }
   };
 
-  // Calculate equal width for each column (100% / 14 columns)
   const columnWidth = `${100 / cols}%`;
 
   return (
@@ -132,7 +136,7 @@ const StormGrid = ({
                     className={className}
                     isClickable={isClickable}
                     stormNames={stormNames}
-                    viewType={viewType}
+                    viewType={viewType === "distance" ? "storms" : viewType}
                   />
                 );
               })}

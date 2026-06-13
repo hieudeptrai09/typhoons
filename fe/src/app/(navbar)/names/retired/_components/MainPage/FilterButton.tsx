@@ -1,35 +1,32 @@
+import { Badge, Button } from "antd";
 import { Filter } from "lucide-react";
-import { getRetiredNamesTitle } from "../../_utils/fns";
 import type { RetiredFilterParams } from "../../../../../../types";
 
 interface FilterButtonProps {
-  activeFilterCount: number;
   onClick: () => void;
   params: RetiredFilterParams;
 }
 
-const FilterButton = ({ activeFilterCount, onClick, params }: FilterButtonProps) => {
-  const hasFilters = activeFilterCount > 0;
-  const filterText = hasFilters
-    ? getRetiredNamesTitle(
-        params.name,
-        params.year,
-        params.country,
-        params.reason,
-        undefined,
-        params.position,
-      ).join(" / ")
-    : "Filters";
+const FilterButton = ({ onClick, params }: FilterButtonProps) => {
+  const count = [params.name, params.year, params.country, params.reason, params.position].filter(
+    Boolean,
+  ).length;
 
   return (
-    <div className="mx-auto mb-6 max-w-4xl">
-      <button
-        onClick={onClick}
-        className="mx-auto flex items-center gap-2 rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-orange-600"
-      >
-        <Filter size={20} />
-        {filterText}
-      </button>
+    <div className="mx-auto mb-4 max-w-4xl">
+      <div className="flex justify-center">
+        <Badge count={count} color="#f97316">
+          <Button
+            type="primary"
+            icon={<Filter size={16} />}
+            onClick={onClick}
+            style={{ backgroundColor: "#f97316", borderColor: "#f97316" }}
+            className="!px-6 !py-5 !font-semibold hover:!border-orange-600 hover:!bg-orange-600"
+          >
+            Filters
+          </Button>
+        </Badge>
+      </div>
     </div>
   );
 };

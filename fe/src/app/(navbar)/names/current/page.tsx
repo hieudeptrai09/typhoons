@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Spin } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
-import Loader from "../../../../components/components/Loader";
 import PageHeader from "../../../../components/components/PageHeader";
 import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
@@ -24,7 +24,7 @@ const CurrentNamesPage = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Loader size="lg" />
+        <Spin size="large" />
       </div>
     );
   }

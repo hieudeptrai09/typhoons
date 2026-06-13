@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Spin, Switch } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
-import Loader from "../../../../components/components/Loader";
 import PageHeader from "../../../../components/components/PageHeader";
-import Toggle from "../../../../components/components/Toggle";
 import NameDetailsModal from "../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
+import { toArr, removeFromDelimitedString } from "../../../../containers/utils/fns";
 import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
@@ -30,69 +30,63 @@ const FilterNamesContent = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   const searchName = params.name || "";
+  const searchPosition = params.position || "";
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
-  const searchPosition = params.position || "";
   const selectedTag = params.tag || "";
   const currentLetter = params.letter || "A";
 
-  const countries = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.country))].sort();
-  }, [names]);
+  const countryArr = toArr(selectedCountry);
+  const languageArr = toArr(selectedLanguage);
+  const tagArr = toArr(selectedTag);
 
-  const languages = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.language).filter(Boolean))].sort();
-  }, [names]);
-
-  const tags = useMemo(() => {
-    return [...new Set((names || []).map((name) => name.tag).filter(Boolean) as string[])].sort();
-  }, [names]);
+  const countries = useMemo(
+    () => [...new Set((names || []).map((n) => n.country))].sort(),
+    [names],
+  );
+  const languages = useMemo(
+    () => [...new Set((names || []).map((n) => n.language).filter(Boolean))].sort(),
+    [names],
+  );
+  const tags = useMemo(
+    () => [...new Set((names || []).map((n) => n.tag).filter(Boolean) as string[])].sort(),
+    [names],
+  );
 
   const displayedNames = useMemo(() => {
     let filtered = [...(names || [])];
 
     if (searchName) {
-      filtered = filtered.filter((name) =>
-        name.name.toLowerCase().includes(searchName.toLowerCase()),
-      );
+      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
     }
-
-    if (selectedCountry) {
-      filtered = filtered.filter((name) => name.country === selectedCountry);
+    if (countryArr.length > 0) {
+      filtered = filtered.filter((n) => countryArr.includes(n.country));
     }
-
-    if (selectedLanguage) {
-      filtered = filtered.filter((name) => name.language === selectedLanguage);
+    if (languageArr.length > 0) {
+      filtered = filtered.filter((n) => languageArr.includes(n.language));
     }
-
+    if (tagArr.length > 0) {
+      filtered = filtered.filter((n) => tagArr.includes(n.tag));
+    }
     if (searchPosition) {
-      filtered = filtered.filter((name) => name.position === Number(searchPosition));
-    }
-
-    if (selectedTag) {
-      filtered = filtered.filter((name) => name.tag === selectedTag);
+      filtered = filtered.filter((n) => n.position === Number(searchPosition));
     }
 
     const hasActiveFilters =
-      searchName || selectedCountry || selectedLanguage || searchPosition || selectedTag;
+      searchName ||
+      countryArr.length > 0 ||
+      languageArr.length > 0 ||
+      tagArr.length > 0 ||
+      searchPosition;
+
     if (!hasActiveFilters) {
-      filtered = filtered.filter((name) => name.name.charAt(0).toUpperCase() === currentLetter);
+      filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
-  }, [
-    names,
-    searchName,
-    selectedCountry,
-    selectedLanguage,
-    searchPosition,
-    selectedTag,
-    currentLetter,
-  ]);
+  }, [names, searchName, countryArr, languageArr, tagArr, searchPosition, currentLetter]);
 
-  const letterStatusMap = useMemo(() => {
-    return categorizeLettersByStatus(names || []);
-  }, [names]);
+  const letterStatusMap = useMemo(() => categorizeLettersByStatus(names || []), [names]);
 
   const activeFilterCount = [
     searchName,
@@ -104,7 +98,6 @@ const FilterNamesContent = () => {
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-
     const newParams: FilterParams & { letter?: string } = {
       name: filters.name,
       country: filters.country,
@@ -112,17 +105,9 @@ const FilterNamesContent = () => {
       position: filters.position,
       tag: filters.tag,
     };
-
-    if (
-      !filters.name &&
-      !filters.country &&
-      !filters.language &&
-      !filters.position &&
-      !filters.tag
-    ) {
-      newParams.letter = currentLetter;
-    }
-
+    const hasFilters =
+      filters.name || filters.country || filters.language || filters.position || filters.tag;
+    if (!hasFilters) newParams.letter = currentLetter;
     updateParams(newParams, true);
   };
 
@@ -139,42 +124,29 @@ const FilterNamesContent = () => {
     const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;
 
-    if (!status || !status[0]) {
-      return { isAvailable: false, colorClass: "text-gray-300 cursor-not-allowed" };
-    }
+    if (!status?.[0]) return { isAvailable: false, color: "#d1d5db" };
 
     const hasRetired = status[1];
     const hasAlive = status[2];
-    let colorClass = "";
 
     if (hasRetired && hasAlive) {
-      colorClass = isActive
-        ? "text-blue-800 underline decoration-2"
-        : "text-blue-500 hover:text-blue-600 hover:underline";
+      return { isAvailable: true, color: isActive ? "#1e3a8a" : "#3b82f6", isActive };
     } else if (hasRetired && !hasAlive) {
-      colorClass = isActive
-        ? "text-red-800 underline decoration-2"
-        : "text-red-500 hover:text-red-600 hover:underline";
-    } else if (!hasRetired && hasAlive) {
-      colorClass = isActive
-        ? "text-green-800 underline decoration-2"
-        : "text-green-500 hover:text-green-600 hover:underline";
+      return { isAvailable: true, color: isActive ? "#991b1b" : "#ef4444", isActive };
+    } else {
+      return { isAvailable: true, color: isActive ? "#166534" : "#22c55e", isActive };
     }
-
-    return { isAvailable: true, colorClass };
   };
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Loader size="lg" />
+        <Spin size="large" />
       </div>
     );
   }
 
-  if (error) {
-    return <FrownNotFound />;
-  }
+  if (error) return <FrownNotFound />;
 
   return (
     <PageHeader title="Filter Names">
@@ -214,12 +186,11 @@ const FilterNamesContent = () => {
       {viewMode === "list" ? (
         <>
           {displayedNames.length > 0 && (
-            <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end">
-              <Toggle
-                value={showImageAndDescription}
-                onChange={setShowImageAndDescription}
-                label="Show Images & Descriptions"
-              />
+            <div className="mx-auto mb-6 flex max-w-4xl items-center justify-end gap-3">
+              <span className="text-sm font-semibold text-gray-700">
+                Show Images & Descriptions
+              </span>
+              <Switch checked={showImageAndDescription} onChange={setShowImageAndDescription} />
             </div>
           )}
           <FilteredNamesTable

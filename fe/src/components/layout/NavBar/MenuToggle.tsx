@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { Menu, X } from "lucide-react";
 
 interface MenuToggleProps {
@@ -7,13 +8,13 @@ interface MenuToggleProps {
 
 const MenuToggle = ({ isOpen, onToggle }: MenuToggleProps) => {
   return (
-    <button
+    <Button
+      type="text"
       onClick={onToggle}
-      className="z-50 flex items-center justify-center rounded-lg p-2 transition hover:bg-white/20 md:hidden"
       aria-label="Toggle menu"
-    >
-      {isOpen ? <X size={24} /> : <Menu size={24} />}
-    </button>
+      icon={isOpen ? <X size={24} /> : <Menu size={24} />}
+      className="!z-50 !text-white hover:!bg-white/20 md:!hidden"
+    />
   );
 };
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "antd";
 import { CloudLightning, BookText, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import NavLink from "./NavLink";
@@ -32,21 +33,19 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
         />
 
         <div>
-          <button
+          <Button
+            type="text"
             onClick={() => setIsNamesExpanded(!isNamesExpanded)}
-            className={`flex w-full items-center justify-between rounded-lg px-4 py-1 text-white transition hover:bg-white/30 ${
-              isNamesActive && "font-semibold"
-            }`}
+            icon={<BookText size={20} />}
+            iconPosition="start"
+            className={`!w-full !justify-between !text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
           >
-            <div className="flex items-center space-x-2">
-              <BookText size={20} />
-              <span>Names</span>
-            </div>
+            <span className="flex-1 text-left">Names</span>
             <ChevronDown
               size={20}
-              className={`transition-transform ${isNamesExpanded && "rotate-180"}`}
+              className={`transition-transform ${isNamesExpanded ? "rotate-180" : ""}`}
             />
-          </button>
+          </Button>
 
           {isNamesExpanded && (
             <div className="mt-2 ml-4 space-y-2">
