@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import { getNameColor, getCellBg } from "../_utils/fns";
 import type { TyphoonName } from "../../../../../types";
 
 interface FilterNamesGridProps {
@@ -23,18 +24,6 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
     acc[name.position].push(name);
     return acc;
   }, {});
-
-  const getNameColor = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "#d97706";
-    if (Boolean(name.isRetired)) return "#b91c1c";
-    return "#166534";
-  };
-
-  const getCellBg = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "bg-amber-100";
-    if (Boolean(name.isRetired)) return "bg-red-100";
-    return "bg-emerald-100";
-  };
 
   const getColorPriority = (name: TyphoonName): number => {
     if (!Boolean(name.isRetired)) return 0;
