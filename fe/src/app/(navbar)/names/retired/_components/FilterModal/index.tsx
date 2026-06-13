@@ -1,5 +1,6 @@
 import { Modal, Button, Form, Input, Select, InputNumber, DatePicker } from "antd";
 import dayjs from "dayjs";
+import { toArr, toStr, toOpts } from "../../../../../../containers/utils/fns";
 import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 import type { Dayjs } from "dayjs";
 
@@ -23,10 +24,6 @@ const REASON_OPTIONS = [
   { value: "2", label: "Misspelling" },
   { value: "3", label: "Special Storm" },
 ];
-
-const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
-const toStr = (val: string[] | undefined) => (val ?? []).join(",");
-const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: v }));
 
 const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
   const [form] = Form.useForm<FormValues>();

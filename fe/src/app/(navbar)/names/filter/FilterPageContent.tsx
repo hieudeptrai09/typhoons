@@ -14,16 +14,10 @@ import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
 import FilterNamesGrid from "./_components/FilterNamesGrid";
 import { categorizeLettersByStatus } from "./_utils/fns";
+import { toArr, removeFromCommaString } from "../../../../containers/utils/fns";
 import type { FilterParams, TyphoonName } from "../../../../types";
 
 type ViewMode = "list" | "table";
-
-const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
-const removeFromCommaString = (val: string, item: string) =>
-  val
-    .split(",")
-    .filter((v) => v !== item)
-    .join(",");
 
 const FilterNamesContent = () => {
   const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();

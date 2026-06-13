@@ -12,18 +12,12 @@ import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
+import { toArr, removeFromCommaString } from "../../../../containers/utils/fns";
 import type {
   RetiredName,
   Suggestion,
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
-
-const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
-const removeFromCommaString = (val: string, item: string) =>
-  val
-    .split(",")
-    .filter((v) => v !== item)
-    .join(",");
 
 const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);

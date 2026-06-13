@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { calculateDistances, getGroupedStorms } from "../../_utils/fns";
+import { calculateDistances, getGroupedStorms, getDistanceColor, formatDistance } from "../../_utils/fns";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
@@ -30,14 +30,6 @@ interface NameRow {
   distanceNumber: number;
   distance: string;
 }
-
-const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a";
-  if (years === 6.0) return "#2563eb";
-  return "#dc2626";
-};
-
-const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
 
 const DistanceCell = ({
   distanceNumber,

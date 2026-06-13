@@ -1,4 +1,5 @@
 import { Modal, Button, Form, Input, Select, InputNumber } from "antd";
+import { toArr, toStr, toOpts } from "../../../../../containers/utils/fns";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
 export interface FilterModalProps extends BaseModalProps {
@@ -8,10 +9,6 @@ export interface FilterModalProps extends BaseModalProps {
   tags: string[];
   initialFilters: FilterParams;
 }
-
-const toArr = (val: string) => (val ? val.split(",").filter(Boolean) : []);
-const toStr = (val: string[] | undefined) => (val ?? []).join(",");
-const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: v }));
 
 interface FormValues {
   name: string;

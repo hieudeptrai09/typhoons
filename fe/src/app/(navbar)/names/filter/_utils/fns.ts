@@ -1,8 +1,5 @@
-import { normalizeParam } from "../../../../../containers/utils/fns";
+import { normalizeParam, toArr, fmt } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
-
-const toArr = (val: string) => val.split(",").filter(Boolean);
-const fmt = (val: string) => toArr(val).join(", ");
 
 export const getPageTitle = (
   name: string | string[] | undefined,
@@ -62,6 +59,18 @@ export const getPageDescription = (
   }
 
   return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, position, or browse alphabetically. View complete details including meanings, images, and descriptions.";
+};
+
+export const getNameColor = (name: TyphoonName): string => {
+  if (name.isLanguageProblem === 2) return "#d97706";
+  if (Boolean(name.isRetired)) return "#b91c1c";
+  return "#166534";
+};
+
+export const getCellBg = (name: TyphoonName): string => {
+  if (name.isLanguageProblem === 2) return "bg-amber-100";
+  if (Boolean(name.isRetired)) return "bg-red-100";
+  return "bg-emerald-100";
 };
 
 export const categorizeLettersByStatus = (
