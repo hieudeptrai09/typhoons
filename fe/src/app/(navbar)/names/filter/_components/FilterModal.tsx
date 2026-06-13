@@ -10,12 +10,6 @@ export interface FilterModalProps extends BaseModalProps {
   initialFilters: FilterParams;
 }
 
-const DELIMITER = "|";
-
-const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
-const toStr = (val: string[] | undefined) => (val ?? []).join(DELIMITER);
-const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: v }));
-
 interface FormValues {
   name: string;
   country: string[];

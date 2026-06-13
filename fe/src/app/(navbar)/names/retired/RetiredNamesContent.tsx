@@ -12,21 +12,12 @@ import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
-import { toArr, removeFromCommaString } from "../../../../containers/utils/fns";
+import { toArr, removeFromDelimitedString } from "../../../../containers/utils/fns";
 import type {
   RetiredName,
   Suggestion,
   RetiredFilterParams as FilterParams,
 } from "../../../../types";
-
-const DELIMITER = "|";
-
-const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
-const removeFromDelimitedString = (val: string, item: string) =>
-  val
-    .split(DELIMITER)
-    .filter((v) => v !== item)
-    .join(DELIMITER);
 
 const RetiredNamesContent = () => {
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
