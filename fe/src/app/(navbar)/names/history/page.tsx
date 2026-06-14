@@ -5,7 +5,7 @@ import { Spin } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import PageHeader from "../../../../components/components/PageHeader";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
-import HistoryModal from "./_components/HistoryModal";
+import HistoryModal from "../../../../components/ui/HistoryModal";
 import HistoryNamesTable from "./_components/HistoryNamesTable";
 import type { TyphoonName } from "../../../../types";
 
