@@ -28,7 +28,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
-      <div className="pt-4">
+      <div className="max-h-[90%] overflow-y-auto pt-4">
         <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
           <div className="flex-1 space-y-4">
             <div>

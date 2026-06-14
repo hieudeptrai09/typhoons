@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button, Modal, Spin } from "antd";
-import ImageWithLoader from "../components/ImageWithLoader";
-import { useFetchData } from "../../containers/hooks/useFetchData";
-import { getPositionTitle } from "../../containers/utils/fns";
-import type { BaseModalProps, TyphoonName, Storm } from "../../types";
+import ImageWithLoader from "../../components/ImageWithLoader";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
+import { getPositionTitle } from "../../../containers/utils/fns";
+import type { BaseModalProps, TyphoonName, Storm } from "../../../types";
 
 interface HistoryModalProps extends BaseModalProps {
   position: number;
@@ -75,7 +75,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className="text-2xl font-bold text-gray-700">{positionTitle}</span>}
     >
-      <div className="pt-4">
+      <div className="max-h-[90%] overflow-y-auto pt-4">
         {loading || !isStormsReady ? (
           <div className="flex justify-center py-8">
             <Spin size="medium" />
@@ -108,7 +108,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                         {count > 0 ? `x${count}` : "x0"}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div>
+                        <div className="whitespace-pre-line">
                           <span className="font-semibold" style={{ color: getNameColor(name) }}>
                             {name.name}
                           </span>
@@ -117,12 +117,12 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           )}
                         </div>
                         {name.meaning && (
-                          <p className="mt-0.5 text-xs leading-relaxed text-teal-700 italic">
+                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-teal-700 italic">
                             {name.meaning}
                           </p>
                         )}
                         {name.description && (
-                          <p className="mt-0.5 text-xs leading-relaxed text-gray-600">
+                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-gray-600">
                             {name.description}
                           </p>
                         )}

@@ -89,7 +89,7 @@ const NameDetailsModal = ({
         },
       }}
     >
-      <div className="flex flex-1 flex-col pt-4">
+      <div className="flex max-h-[90%] flex-1 flex-col overflow-y-auto pt-4">
         {/* Tabs */}
         <div className="mb-6 flex border-b border-gray-200">
           <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>

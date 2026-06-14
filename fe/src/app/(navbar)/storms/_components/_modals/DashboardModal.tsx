@@ -154,7 +154,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
         </Button>,
       ]}
     >
-      <div className="space-y-5 py-4">
+      <div className="max-h-[90%] space-y-5 overflow-y-auto py-4">
         <Section label="View">
           <Segmented
             options={VIEW_OPTIONS}

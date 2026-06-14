@@ -68,7 +68,12 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
         </Button>,
       ]}
     >
-      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleApply}
+        className="max-h-[90%] overflow-y-auto py-4"
+      >
         <Form.Item label="Name" name="name">
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>

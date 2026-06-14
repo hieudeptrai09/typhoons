@@ -162,7 +162,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
         </span>
       }
     >
-      <div ref={modalContainerRef} className="relative overflow-y-auto pt-4">
+      <div ref={modalContainerRef} className="relative max-h-[90%] overflow-y-auto pt-4">
         <NameListModalInner name={name} storms={storms} modalContainerRef={modalContainerRef} />
       </div>
     </Modal>

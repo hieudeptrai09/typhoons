@@ -141,7 +141,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
       styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
       title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
     >
-      <div ref={modalContainerRef} className="relative overflow-y-auto pt-4">
+      <div ref={modalContainerRef} className="relative max-h-[90%] overflow-y-auto pt-4">
         <AverageModalInner
           average={average}
           nameData={nameData}
