@@ -84,19 +84,15 @@ const NameButton = ({
 const CellContent = ({
   currentName,
   historyNames,
-  isExpanded,
   showHistory,
   onNameClick,
 }: {
   currentName: TyphoonName | undefined;
   historyNames: TyphoonName[];
-  isExpanded: boolean;
   showHistory: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => {
-  const showList = showHistory ? !isExpanded : isExpanded;
-
-  if (showList) {
+  if (showHistory) {
     return (
       <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
         {historyNames.length === 0 ? (
@@ -125,11 +121,11 @@ interface TagIconGridProps {
   names: TyphoonName[];
   currentNames: TyphoonName[];
   onNameClick: (name: TyphoonName) => void;
+  onCellClick: (position: number, currentName: TyphoonName | undefined, historyNames: TyphoonName[], showHistory: boolean) => void;
 }
 
-const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => {
+const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconGridProps) => {
   const [showHistory, setShowHistory] = useState(false);
-  const [expandedPosition, setExpandedPosition] = useState<number | null>(null);
 
   const rows = 10;
   const cols = 14;
@@ -150,20 +146,13 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
     return acc;
   }, {});
 
-  const handleCellClick = (position: number) => {
-    setExpandedPosition((prev) => (prev === position ? null : position));
-  };
-
   return (
     <div>
       <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-3">
         <span className="text-sm font-semibold text-gray-700">Show History</span>
         <Switch
           checked={showHistory}
-          onChange={(v) => {
-            setShowHistory(v);
-            setExpandedPosition(null);
-          }}
+          onChange={(v) => setShowHistory(v)}
         />
       </div>
 
@@ -196,20 +185,16 @@ const TagIconGrid = ({ names, currentNames, onNameClick }: TagIconGridProps) => 
                   const position = row * cols + col + 1;
                   const currentName = currentByPosition[position];
                   const historyNames = historyByPosition[position] ?? [];
-                  const isExpanded = expandedPosition === position;
 
                   return (
                     <td
                       key={col}
-                      className={`cursor-pointer border border-stone-300 p-0 transition-colors ${
-                        isExpanded ? "bg-sky-50" : "hover:bg-stone-100"
-                      }`}
-                      onClick={() => handleCellClick(position)}
+                      className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
+                      onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
                     >
                       <CellContent
                         currentName={currentName}
                         historyNames={historyNames}
-                        isExpanded={isExpanded}
                         showHistory={showHistory}
                         onNameClick={onNameClick}
                       />
