@@ -5,16 +5,16 @@ import { Switch } from "antd";
 import {
   PawPrint,
   Moon,
-  Lightbulb,
-  Sparkles,
+  LibraryBig,
   Tag,
-  Apple,
   Gem,
-  CloudLightning,
+  Wind,
   User,
   MapPin,
   Leaf,
-  Box,
+  Swords,
+  Ham,
+  Hammer,
 } from "lucide-react";
 import CountryFlag from "../../../../components/components/CountryFlag";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../constants";
@@ -24,38 +24,38 @@ import type { LucideIcon } from "lucide-react";
 const TAG_ICONS: Record<string, LucideIcon> = {
   Animal: PawPrint,
   "Celestial body": Moon,
-  Concept: Lightbulb,
-  Deity: Sparkles,
+  Concept: LibraryBig,
+  Deity: Swords,
   Descriptive: Tag,
-  "Food and beverage": Apple,
+  "Food and beverage": Ham,
   Mineral: Gem,
-  Nature: CloudLightning,
+  Nature: Wind,
   "People's name": User,
   Place: MapPin,
   Plant: Leaf,
-  Thing: Box,
+  Thing: Hammer,
 };
 
 const TAG_COLORS: Record<string, string> = {
-  Animal: "#0F6E56",
-  "Celestial body": "#185FA5",
-  Concept: "#534AB7",
-  Deity: "#854F0B",
-  Descriptive: "#993C1D",
-  "Food and beverage": "#3B6D11",
-  Mineral: "#5F5E5A",
-  Nature: "#854F0B",
-  "People's name": "#993556",
-  Place: "#185FA5",
-  Plant: "#3B6D11",
-  Thing: "#5F5E5A",
+  Animal: "text-emerald-700",
+  "Celestial body": "text-indigo-800",
+  Concept: "text-violet-700",
+  Deity: "text-amber-700",
+  Descriptive: "text-rose-700",
+  "Food and beverage": "text-red-500",
+  Mineral: "text-slate-500",
+  Nature: "text-cyan-600",
+  "People's name": "text-pink-600",
+  Place: "text-blue-600",
+  Plant: "text-green-600",
+  Thing: "text-amber-800",
 };
 
 const TagIcon = ({ tag, size = 20 }: { tag: string; size?: number }) => {
   const Icon = TAG_ICONS[tag];
-  const color = TAG_COLORS[tag] ?? "#888";
+  const colorClass = TAG_COLORS[tag] ?? "text-gray-400";
   if (!Icon) return null;
-  return <Icon size={size} color={color} />;
+  return <Icon size={size} className={colorClass} />;
 };
 
 const sortByOldest = (names: TyphoonName[]) => [...names].sort((a, b) => a.id - b.id);
@@ -121,7 +121,12 @@ interface TagIconGridProps {
   names: TyphoonName[];
   currentNames: TyphoonName[];
   onNameClick: (name: TyphoonName) => void;
-  onCellClick: (position: number, currentName: TyphoonName | undefined, historyNames: TyphoonName[], showHistory: boolean) => void;
+  onCellClick: (
+    position: number,
+    currentName: TyphoonName | undefined,
+    historyNames: TyphoonName[],
+    showHistory: boolean,
+  ) => void;
 }
 
 const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconGridProps) => {
@@ -150,10 +155,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
     <div>
       <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-3">
         <span className="text-sm font-semibold text-gray-700">Show History</span>
-        <Switch
-          checked={showHistory}
-          onChange={(v) => setShowHistory(v)}
-        />
+        <Switch checked={showHistory} onChange={(v) => setShowHistory(v)} />
       </div>
 
       <div className="overflow-x-auto">
