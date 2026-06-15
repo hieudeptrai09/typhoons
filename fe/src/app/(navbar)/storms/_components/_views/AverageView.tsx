@@ -285,7 +285,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   };
 
   return (
-    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"}`}>
+    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"} overflow-x-auto pb-px`}>
       <Table<AverageData>
         key={params.filter}
         dataSource={data}

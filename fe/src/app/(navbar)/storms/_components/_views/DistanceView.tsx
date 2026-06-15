@@ -188,7 +188,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
 
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
         <Table<PositionRow>
           key="position"
           dataSource={data}
@@ -220,7 +220,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   });
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
       <Table<NameRow>
         key="name"
         dataSource={data}

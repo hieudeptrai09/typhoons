@@ -82,7 +82,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl overflow-x-auto pb-px">
       <Table<RetiredName>
         dataSource={paginatedData}
         columns={columns}

@@ -82,7 +82,7 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="mx-auto max-w-xl overflow-x-auto pb-px">
       <Table<HighlightRow>
         key={params.filter}
         dataSource={highlightData}

@@ -129,7 +129,9 @@ const FilteredNamesTable = ({
   }
 
   return (
-    <div className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}`}>
+    <div
+      className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"} overflow-x-auto pb-px`}
+    >
       <Table<TyphoonName>
         dataSource={filteredNames}
         columns={tableColumns}
