@@ -60,6 +60,11 @@ const TagIcon = ({ tag, size = 20 }: { tag: string; size?: number }) => {
 
 const sortByOldest = (names: TyphoonName[]) => [...names].sort((a, b) => a.id - b.id);
 
+const CELL_SIZE = {
+  current: { name: 14, icon: 20 },
+  history: { name: 12, icon: 15 },
+} as const;
+
 const NameButton = ({
   name,
   size,
@@ -67,7 +72,7 @@ const NameButton = ({
   onNameClick,
 }: {
   name: TyphoonName;
-  size: number;
+  size: { name: number; icon: number };
   showName: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => (
@@ -81,13 +86,13 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`font-medium leading-tight ${name.isRetired ? "text-red-500" : "text-green-600"}`}
-        style={{ fontSize: size - 4 }}
+        className={`leading-tight font-medium ${name.isRetired ? "text-red-500" : "text-green-600"}`}
+        style={{ fontSize: size.name }}
       >
         {name.name}
       </span>
     ) : (
-      <TagIcon tag={name.tag} size={size} />
+      <TagIcon tag={name.tag} size={size.icon} />
     )}
   </button>
 );
@@ -109,10 +114,16 @@ const CellContent = ({
     return (
       <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
         {historyNames.length === 0 ? (
-          <span className="text-xs text-gray-300">—</span>
+          <span className="text-xs text-gray-400">—</span>
         ) : (
           sortByOldest(historyNames).map((n) => (
-            <NameButton key={n.id} name={n} size={15} showName={showName} onNameClick={onNameClick} />
+            <NameButton
+              key={n.id}
+              name={n}
+              size={CELL_SIZE.history}
+              showName={showName}
+              onNameClick={onNameClick}
+            />
           ))
         )}
       </div>
@@ -122,9 +133,14 @@ const CellContent = ({
   return (
     <div className="flex min-h-16 items-center justify-center p-1">
       {currentName ? (
-        <NameButton name={currentName} size={20} showName={showName} onNameClick={onNameClick} />
+        <NameButton
+          name={currentName}
+          size={CELL_SIZE.current}
+          showName={showName}
+          onNameClick={onNameClick}
+        />
       ) : (
-        <span className="text-xs text-gray-300">—</span>
+        <span className="text-xs text-gray-400">—</span>
       )}
     </div>
   );
@@ -231,7 +247,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
       </div>
 
       {!showName && (
-        <div className="mx-auto mt-6 max-w-8xl">
+        <div className="max-w-8xl mx-auto mt-6">
           <div className="flex flex-wrap justify-center gap-3">
             {Object.entries(TAG_ICONS).map(([tag]) => (
               <div key={tag} className="flex items-center gap-1.5">
