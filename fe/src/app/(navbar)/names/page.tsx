@@ -64,7 +64,7 @@ const NamesPage = () => {
   }
 
   return (
-    <PageHeader title="Names by Tag">
+    <PageHeader title="Typhoon Name Page">
       <TagIconGrid
         names={allNames ?? []}
         currentNames={currentNames ?? []}
