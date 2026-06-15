@@ -231,7 +231,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
       </div>
 
       {!showName && (
-        <div className="mx-auto mt-6 max-w-4xl">
+        <div className="mx-auto mt-6 max-w-8xl">
           <div className="flex flex-wrap justify-center gap-3">
             {Object.entries(TAG_ICONS).map(([tag]) => (
               <div key={tag} className="flex items-center gap-1.5">
