@@ -63,10 +63,12 @@ const sortByOldest = (names: TyphoonName[]) => [...names].sort((a, b) => a.id - 
 const NameButton = ({
   name,
   size,
+  showName,
   onNameClick,
 }: {
   name: TyphoonName;
   size: number;
+  showName: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => (
   <button
@@ -77,7 +79,16 @@ const NameButton = ({
     }}
     className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
   >
-    <TagIcon tag={name.tag} size={size} />
+    {showName ? (
+      <span
+        className={`font-medium leading-tight ${name.isRetired ? "text-red-500" : "text-green-600"}`}
+        style={{ fontSize: size - 4 }}
+      >
+        {name.name}
+      </span>
+    ) : (
+      <TagIcon tag={name.tag} size={size} />
+    )}
   </button>
 );
 
@@ -85,11 +96,13 @@ const CellContent = ({
   currentName,
   historyNames,
   showHistory,
+  showName,
   onNameClick,
 }: {
   currentName: TyphoonName | undefined;
   historyNames: TyphoonName[];
   showHistory: boolean;
+  showName: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => {
   if (showHistory) {
@@ -99,7 +112,7 @@ const CellContent = ({
           <span className="text-xs text-gray-300">—</span>
         ) : (
           sortByOldest(historyNames).map((n) => (
-            <NameButton key={n.id} name={n} size={15} onNameClick={onNameClick} />
+            <NameButton key={n.id} name={n} size={15} showName={showName} onNameClick={onNameClick} />
           ))
         )}
       </div>
@@ -109,7 +122,7 @@ const CellContent = ({
   return (
     <div className="flex min-h-16 items-center justify-center p-1">
       {currentName ? (
-        <NameButton name={currentName} size={20} onNameClick={onNameClick} />
+        <NameButton name={currentName} size={20} showName={showName} onNameClick={onNameClick} />
       ) : (
         <span className="text-xs text-gray-300">—</span>
       )}
@@ -131,6 +144,7 @@ interface TagIconGridProps {
 
 const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconGridProps) => {
   const [showHistory, setShowHistory] = useState(false);
+  const [showName, setShowName] = useState(false);
 
   const rows = 10;
   const cols = 14;
@@ -153,9 +167,15 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
 
   return (
     <div>
-      <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-3">
-        <span className="text-sm font-semibold text-gray-700">Show History</span>
-        <Switch checked={showHistory} onChange={(v) => setShowHistory(v)} />
+      <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-6">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">Show Name</span>
+          <Switch checked={showName} onChange={(v) => setShowName(v)} />
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">Show History</span>
+          <Switch checked={showHistory} onChange={(v) => setShowHistory(v)} />
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -198,6 +218,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
                         currentName={currentName}
                         historyNames={historyNames}
                         showHistory={showHistory}
+                        showName={showName}
                         onNameClick={onNameClick}
                       />
                     </td>
@@ -209,16 +230,18 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
         </table>
       </div>
 
-      <div className="mx-auto mt-6 max-w-4xl">
-        <div className="flex flex-wrap justify-center gap-3">
-          {Object.entries(TAG_ICONS).map(([tag]) => (
-            <div key={tag} className="flex items-center gap-1.5">
-              <TagIcon tag={tag} size={14} />
-              <span className="text-xs text-gray-600">{tag}</span>
-            </div>
-          ))}
+      {!showName && (
+        <div className="mx-auto mt-6 max-w-4xl">
+          <div className="flex flex-wrap justify-center gap-3">
+            {Object.entries(TAG_ICONS).map(([tag]) => (
+              <div key={tag} className="flex items-center gap-1.5">
+                <TagIcon tag={tag} size={14} />
+                <span className="text-xs text-gray-600">{tag}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
