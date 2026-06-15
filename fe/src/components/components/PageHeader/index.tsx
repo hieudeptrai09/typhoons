@@ -7,7 +7,7 @@ interface PageHeaderProps {
 
 const PageHeader = ({ title, children }: PageHeaderProps) => {
   return (
-    <div className="p-8 overflow-x-auto">
+    <div className="p-8">
       <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">{title}</h1>
       {children}
     </div>
