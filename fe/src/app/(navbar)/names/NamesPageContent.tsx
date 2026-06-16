@@ -33,9 +33,9 @@ const NamesPageContent = () => {
   const { params, updateParams } = useURLParams<NamesFilterParams>();
 
   const [showHistory, setShowHistory] = useState(false);
-  const [showName, setShowName] = useState(false);
+  const [showName, setShowName] = useState(true);
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
-  const [showLetterNav, setShowLetterNav] = useState(true);
+  const [showLetterNav, setShowLetterNav] = useState(false);
 
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
@@ -127,7 +127,7 @@ const NamesPageContent = () => {
       searchPosition ||
       (showRetiredFields && (selectedYear || reasonArr.length > 0));
 
-    if (!hasActiveFilters) {
+    if (!hasActiveFilters && showLetterNav) {
       filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
@@ -143,6 +143,7 @@ const NamesPageContent = () => {
     selectedYear,
     reasonArr,
     currentLetter,
+    showLetterNav,
   ]);
 
   const letterStatusMap = useMemo(() => categorizeLettersByStatus(pool), [pool]);
