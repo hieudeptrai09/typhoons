@@ -1,53 +1,49 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import { Flame, Skull } from "lucide-react";
-import EmptyResults from "../../../../../components/components/EmptyResults";
-import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
-import type { TyphoonName } from "../../../../../types";
+import EmptyResults from "../../../../components/components/EmptyResults";
+import ImageWithLoader from "../../../../components/components/ImageWithLoader";
+import { getPositionTitle } from "../../../../containers/utils/fns";
+import type { RetiredName } from "../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
-interface FilteredNamesTableProps {
-  filteredNames: TyphoonName[];
+interface NamesListTableProps {
+  names: RetiredName[];
+  showRetiredColumns: boolean;
   showImageAndDescription: boolean;
-  onNameClick: (name: TyphoonName) => void;
+  onNameClick: (name: RetiredName) => void;
 }
 
-const FilteredNamesTable = ({
-  filteredNames,
+const getNameColor = (row: RetiredName): string => {
+  if (row.isLanguageProblem === 2) return "text-amber-500";
+  if (Boolean(row.isRetired)) return "text-red-600";
+  return "text-green-700";
+};
+
+const NamesListTable = ({
+  names,
+  showRetiredColumns,
   showImageAndDescription,
   onNameClick,
-}: FilteredNamesTableProps) => {
-  const tableColumns = useMemo<ColumnsType<TyphoonName>>(() => {
-    const getNameColor = (row: TyphoonName): string => {
-      if (row.isLanguageProblem === 2) return "text-amber-500";
-      if (Boolean(row.isRetired)) return "text-red-600";
-      return "text-green-700";
-    };
-
-    const getRetiredColor = (row: TyphoonName): string => {
-      if (!row.isRetired) return "text-green-700";
-      if (row.isLanguageProblem === 2) return "text-amber-500";
-      return "text-red-600";
-    };
-
-    const cols: ColumnsType<TyphoonName> = [
+}: NamesListTableProps) => {
+  const columns = useMemo<ColumnsType<RetiredName>>(() => {
+    const cols: ColumnsType<RetiredName> = [
       {
         title: "#",
         key: "order",
         width: 52,
-        render: (_: unknown, __: TyphoonName, index: number) => (
+        render: (_: unknown, __: RetiredName, index: number) => (
           <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
         ),
       },
       {
-        title: "Retired",
+        title: "Status",
         dataIndex: "isRetired",
         key: "isRetired",
         sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
-        render: (_: unknown, record: TyphoonName) =>
+        render: (_: unknown, record: RetiredName) =>
           record.isRetired ? (
-            <Skull className={getRetiredColor(record)} size={20} />
+            <Skull className={getNameColor(record)} size={20} />
           ) : (
             <Flame className="text-green-700" size={20} />
           ),
@@ -57,7 +53,7 @@ const FilteredNamesTable = ({
         dataIndex: "name",
         key: "name",
         sorter: (a, b) => a.name.localeCompare(b.name),
-        render: (_: unknown, record: TyphoonName) => (
+        render: (_: unknown, record: RetiredName) => (
           <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
         ),
       },
@@ -78,7 +74,7 @@ const FilteredNamesTable = ({
         dataIndex: "position",
         key: "position",
         sorter: (a, b) => a.position - b.position,
-        render: (_: unknown, record: TyphoonName) => (
+        render: (_: unknown, record: RetiredName) => (
           <span>{getPositionTitle(record.position)}</span>
         ),
       },
@@ -89,13 +85,33 @@ const FilteredNamesTable = ({
       },
     ];
 
+    if (showRetiredColumns) {
+      cols.push(
+        {
+          title: "Note",
+          dataIndex: "note",
+          key: "note",
+          render: (_: unknown, record: RetiredName) => (
+            <span className="text-gray-700">{record.note || "-"}</span>
+          ),
+        },
+        {
+          title: "Year of Last Storm",
+          dataIndex: "lastYear",
+          key: "lastYear",
+          sorter: (a, b) => a.lastYear - b.lastYear,
+          render: (_: unknown, record: RetiredName) => <span>{record.lastYear || "-"}</span>,
+        },
+      );
+    }
+
     if (showImageAndDescription) {
       cols.push(
         {
           title: "Image",
           dataIndex: "image",
           key: "image",
-          render: (_: unknown, record: TyphoonName) =>
+          render: (_: unknown, record: RetiredName) =>
             record.image ? (
               <div className="relative h-28 rounded-lg" style={{ aspectRatio: "4/3" }}>
                 <ImageWithLoader
@@ -114,7 +130,7 @@ const FilteredNamesTable = ({
           title: "Description",
           dataIndex: "description",
           key: "description",
-          render: (_: unknown, record: TyphoonName) => (
+          render: (_: unknown, record: RetiredName) => (
             <span className="text-gray-700">{record.description || "-"}</span>
           ),
         },
@@ -122,19 +138,19 @@ const FilteredNamesTable = ({
     }
 
     return cols;
-  }, [showImageAndDescription]);
+  }, [showRetiredColumns, showImageAndDescription]);
 
-  if (filteredNames.length === 0) {
+  if (names.length === 0) {
     return <EmptyResults />;
   }
 
+  const wide = showImageAndDescription || showRetiredColumns;
+
   return (
-    <div
-      className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"} overflow-x-auto pb-px`}
-    >
-      <Table<TyphoonName>
-        dataSource={filteredNames}
-        columns={tableColumns}
+    <div className={`mx-auto ${wide ? "max-w-8xl" : "max-w-4xl"} overflow-x-auto pb-px`}>
+      <Table<RetiredName>
+        dataSource={names}
+        columns={columns}
         rowKey="id"
         onRow={(record) => ({ onClick: () => onNameClick(record) })}
         rowClassName={(_record, index) =>
@@ -143,10 +159,9 @@ const FilteredNamesTable = ({
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
       />
     </div>
   );
 };
 
-export default FilteredNamesTable;
+export default NamesListTable;

@@ -1,13 +1,17 @@
-import { Modal, Button, Form, Input, Select, InputNumber } from "antd";
-import { toArr, toStr, toOpts } from "../../../../../containers/utils/fns";
-import type { BaseModalProps, FilterParams } from "../../../../../types";
+import { Modal, Button, Form, Input, Select, InputNumber, DatePicker } from "antd";
+import dayjs from "dayjs";
+import { toArr, toStr, toOpts } from "../../../../containers/utils/fns";
+import { REASON_OPTIONS } from "../_utils/fns";
+import type { BaseModalProps, NamesFilterParams } from "../../../../types";
+import type { Dayjs } from "dayjs";
 
 export interface FilterModalProps extends BaseModalProps {
-  onApply: (filters: FilterParams) => void;
+  onApply: (filters: NamesFilterParams) => void;
   countries: string[];
   languages: string[];
   tags: string[];
-  initialFilters: FilterParams;
+  showRetiredFields: boolean;
+  initialFilters: NamesFilterParams;
 }
 
 interface FormValues {
@@ -16,6 +20,8 @@ interface FormValues {
   language: string[];
   tag: string[];
   position: number | undefined;
+  year: Dayjs | undefined;
+  reason: string[];
 }
 
 const FilterModal = ({
@@ -25,6 +31,7 @@ const FilterModal = ({
   countries,
   languages,
   tags,
+  showRetiredFields,
   initialFilters,
 }: FilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
@@ -36,6 +43,10 @@ const FilterModal = ({
       language: toStr(values.language),
       tag: toStr(values.tag),
       position: values.position != null ? String(values.position) : "",
+      year: values.year ? String(values.year.year()) : "",
+      reason: toStr(values.reason),
+      status: initialFilters.status,
+      view: initialFilters.view,
       letter: "",
     });
   };
@@ -55,6 +66,8 @@ const FilterModal = ({
             language: toArr(initialFilters.language),
             tag: toArr(initialFilters.tag),
             position: initialFilters.position ? Number(initialFilters.position) : undefined,
+            year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
+            reason: toArr(initialFilters.reason),
           });
         }
       }}
@@ -107,10 +120,27 @@ const FilterModal = ({
           rules={[
             { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
           ]}
-          className="mb-0"
         >
-          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
+          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} className="w-full" />
         </Form.Item>
+
+        {showRetiredFields && (
+          <>
+            <Form.Item label="Year of Last Storm" name="year">
+              <DatePicker
+                picker="year"
+                placeholder="Select year..."
+                className="w-full"
+                minDate={dayjs().year(2000)}
+                maxDate={dayjs()}
+              />
+            </Form.Item>
+
+            <Form.Item label="Retirement Reason" name="reason" className="mb-0">
+              <Select mode="multiple" placeholder="All Reasons" options={REASON_OPTIONS} allowClear />
+            </Form.Item>
+          </>
+        )}
       </Form>
     </Modal>
   );

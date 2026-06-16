@@ -39,21 +39,16 @@ export interface Storm {
   isLast?: boolean;
 }
 
-export interface FilterParams {
+export interface NamesFilterParams {
   name: string;
   country: string;
   language: string;
-  position: string;
   tag: string;
-  letter?: string;
-}
-
-export interface RetiredFilterParams {
-  name: string;
-  year: string;
-  country: string;
-  reason: string;
   position: string;
+  year: string;
+  reason: string;
+  status: string;
+  view: string;
   letter?: string;
 }
 

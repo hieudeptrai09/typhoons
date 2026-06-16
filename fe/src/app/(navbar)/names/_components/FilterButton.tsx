@@ -1,17 +1,12 @@
 import { Badge, Button } from "antd";
 import { Filter } from "lucide-react";
-import type { FilterParams } from "../../../../../types";
 
 interface FilterButtonProps {
   onClick: () => void;
-  params: FilterParams;
+  count: number;
 }
 
-const FilterButton = ({ onClick, params }: FilterButtonProps) => {
-  const count = [params.name, params.country, params.language, params.position, params.tag].filter(
-    Boolean,
-  ).length;
-
+const FilterButton = ({ onClick, count }: FilterButtonProps) => {
   return (
     <div className="mx-auto mb-4 max-w-4xl">
       <div className="flex justify-center">
