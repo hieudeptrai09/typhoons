@@ -35,6 +35,7 @@ const NamesPageContent = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showImageAndDescription, setShowImageAndDescription] = useState(false);
+  const [showLetterNav, setShowLetterNav] = useState(true);
 
   const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
   const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
@@ -258,7 +259,14 @@ const NamesPageContent = () => {
 
       <FilterButton onClick={() => setIsFilterModalOpen(true)} count={activeFilterCount} />
 
-      {activeFilterCount === 0 && (
+      <div className="mx-auto mb-4 flex max-w-4xl flex-wrap items-center justify-end gap-6">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">Show Letter Navigation</span>
+          <Switch checked={showLetterNav} onChange={setShowLetterNav} />
+        </div>
+      </div>
+
+      {showLetterNav && activeFilterCount === 0 && (
         <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
