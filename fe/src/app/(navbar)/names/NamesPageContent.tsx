@@ -15,11 +15,9 @@ import FilterButton from "./_components/FilterButton";
 import FilterModal from "./_components/FilterModal";
 import NamesGrid from "./_components/NamesGrid";
 import NamesListTable from "./_components/NamesListTable";
-import { categorizeLettersByStatus } from "./_utils/fns";
 import type { NamesFilterParams, RetiredName, Suggestion } from "../../../types";
 
 const STATUS_OPTIONS = [
-  { label: "All", value: "all" },
   { label: "Current", value: "current" },
   { label: "Retired", value: "retired" },
 ];
@@ -57,7 +55,7 @@ const NamesPageContent = () => {
     error: currentError,
   } = useFetchData<RetiredName[]>("/typhoon-names?isRetired=0");
 
-  const status = params.status || "all";
+  const status = params.status || "current";
   const view = params.view || "grid";
   const showRetiredFields = status === "retired";
 
@@ -78,13 +76,10 @@ const NamesPageContent = () => {
   const allNames = useMemo(() => allNamesRaw ?? [], [allNamesRaw]);
 
   const pool = useMemo(() => {
-    if (status === "current") {
-      return (currentNamesRaw ?? []).filter((n) => n.isLanguageProblem !== 2);
-    }
     if (status === "retired") {
       return allNames.filter((n) => Boolean(n.isRetired));
     }
-    return allNames.filter((n) => n.isLanguageProblem !== 2);
+    return (currentNamesRaw ?? []).filter((n) => n.isLanguageProblem !== 2);
   }, [status, allNames, currentNamesRaw]);
 
   const countries = useMemo(() => [...new Set(pool.map((n) => n.country))].sort(), [pool]);
@@ -146,7 +141,10 @@ const NamesPageContent = () => {
     showLetterNav,
   ]);
 
-  const letterStatusMap = useMemo(() => categorizeLettersByStatus(pool), [pool]);
+  const availableLetters = useMemo(
+    () => new Set(pool.map((n) => n.name.charAt(0).toUpperCase())),
+    [pool],
+  );
 
   const activeFilterCount = [
     searchName,
@@ -224,21 +222,19 @@ const NamesPageContent = () => {
   };
 
   const getLetterConfig = (letter: string) => {
-    const letterStatus = letterStatusMap[letter];
     const isActive = currentLetter === letter;
 
-    if (!letterStatus?.[0]) return { isAvailable: false, color: "#d1d5db" };
+    if (!availableLetters.has(letter)) return { isAvailable: false, color: "#d1d5db" };
 
-    const hasRetired = letterStatus[1];
-    const hasAlive = letterStatus[2];
+    const color = showRetiredFields
+      ? isActive
+        ? "#991b1b"
+        : "#ef4444"
+      : isActive
+        ? "#166534"
+        : "#22c55e";
 
-    if (hasRetired && hasAlive) {
-      return { isAvailable: true, color: isActive ? "#1e3a8a" : "#3b82f6", isActive };
-    }
-    if (hasRetired && !hasAlive) {
-      return { isAvailable: true, color: isActive ? "#991b1b" : "#ef4444", isActive };
-    }
-    return { isAvailable: true, color: isActive ? "#166534" : "#22c55e", isActive };
+    return { isAvailable: true, color, isActive };
   };
 
   if (allLoading || currentLoading) {
