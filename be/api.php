@@ -48,7 +48,8 @@ try {
             $controller = new StormController($db);
             if ($method === 'GET') {
                 $position = isset($_GET['position']) ? intval($_GET['position']) : null;
-                $result = $controller->getStorms($position);
+                $name = isset($_GET['name']) ? $_GET['name'] : null;
+                $result = $controller->getStorms($position, $name);
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
