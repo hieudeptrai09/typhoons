@@ -60,7 +60,8 @@ try {
             $controller = new TyphoonNameController($db);
             if ($method === 'GET') {
                 $isRetired = isset($_GET['isRetired']) ? intval($_GET['isRetired']) : null;
-                $result = $controller->getTyphoonNames($isRetired);
+                $name = isset($_GET['name']) ? $_GET['name'] : null;
+                $result = $controller->getTyphoonNames($isRetired, $name);
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);

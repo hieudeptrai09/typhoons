@@ -13,7 +13,7 @@ type AllName = TyphoonName | RetiredName;
 const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedName, setSelectedName] = useState<AllName | null>(null);
+  const [selectedSearchName, setSelectedSearchName] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +54,7 @@ const SearchBar = () => {
   }, []);
 
   const handleSelect = (name: AllName) => {
-    setSelectedName(name);
+    setSelectedSearchName(name.name);
     setIsModalOpen(true);
     setIsDropdownOpen(false);
     setQuery("");
@@ -155,14 +155,14 @@ const SearchBar = () => {
         )}
       </div>
 
-      {selectedName && (
+      {selectedSearchName && (
         <SearchResultModal
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
-            setSelectedName(null);
+            setSelectedSearchName(null);
           }}
-          name={selectedName}
+          searchName={selectedSearchName}
         />
       )}
     </>

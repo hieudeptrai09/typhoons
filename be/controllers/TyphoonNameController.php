@@ -8,9 +8,9 @@ class TyphoonNameController
         $this->conn = $db;
     }
 
-    public function getTyphoonNames($isRetired = null)
+    public function getTyphoonNames($isRetired = null, $name = null)
     {
-        $query = "SELECT 
+        $query = "SELECT
                     tn.id,
                     tn.name,
                     tn.meaning,
@@ -29,18 +29,28 @@ class TyphoonNameController
                   FROM typhoonnames tn
                   INNER JOIN positions p ON tn.position = p.id";
 
+        $conditions = [];
         if ($isRetired !== null) {
             if ($isRetired == 1) {
-                $query .= " WHERE tn.isRetired = :isRetired";
+                $conditions[] = "tn.isRetired = :isRetired";
             } else {
-                $query .= " WHERE tn.isRetired = :isRetired OR tn.isReplaced = 0";
+                $conditions[] = "(tn.isRetired = :isRetired OR tn.isReplaced = 0)";
             }
+        }
+        if ($name !== null) {
+            $conditions[] = "tn.name = :name";
+        }
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
         }
 
         $stmt = $this->conn->prepare($query);
 
         if ($isRetired !== null) {
             $stmt->bindParam(':isRetired', $isRetired, PDO::PARAM_INT);
+        }
+        if ($name !== null) {
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         }
 
         $stmt->execute();
