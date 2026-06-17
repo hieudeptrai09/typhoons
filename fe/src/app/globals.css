@@ -75,3 +75,21 @@ body {
 .typhoon-table .ant-table-content {
   overflow: visible !important;
 }
+
+/* Search bar in navbar */
+.search-bar-input .ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.search-bar-input .ant-input-clear-icon {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.search-bar-input .ant-input-clear-icon:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.search-bar-input.ant-input-affix-wrapper:hover,
+.search-bar-input.ant-input-affix-wrapper:focus-within {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}

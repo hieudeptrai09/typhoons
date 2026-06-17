@@ -10,7 +10,7 @@ class StormController
 
     public function getStorms($position = null)
     {
-        $query = "SELECT 
+        $query = "SELECT
                     s.id,
                     s.position,
                     p.country,

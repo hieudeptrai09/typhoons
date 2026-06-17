@@ -78,3 +78,19 @@ export interface TableColumn<T> {
 export type SortDirection = "asc" | "desc" | null;
 
 export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
+
+export interface SearchResult {
+  id: number;
+  name: string;
+  position: number;
+  country: string;
+  isRetired: number;
+  isLanguageProblem: number;
+  stormCount: number;
+}
+
+export interface SearchDetail {
+  name: TyphoonName | RetiredName;
+  storms: Storm[];
+  suggestions: Suggestion[];
+}

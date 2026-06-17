@@ -8,6 +8,7 @@ require_once 'config.php';
 require_once 'controllers/StormController.php';
 require_once 'controllers/TyphoonNameController.php';
 require_once 'controllers/SuggestedNameController.php';
+require_once 'controllers/SearchController.php';
 
 // Parse the request
 $method = $_SERVER['REQUEST_METHOD'];
@@ -35,7 +36,9 @@ if (empty($request)) {
             'GET /typhoon-names' => 'Get all typhoon names',
             'GET /typhoon-names?isRetired={0|1}' => 'Get typhoon names by retirement status',
             'GET /suggested-names' => 'Get all suggested names',
-            'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId'
+            'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
+            'GET /search?q={query}' => 'Search typhoon names with storm counts',
+            'GET /search?nameId={id}' => 'Get full details for a typhoon name (storms, name info, suggestions)'
         ]
     ]);
 }
@@ -72,6 +75,24 @@ try {
                 $nameId = isset($_GET['nameId']) ? intval($_GET['nameId']) : null;
                 $result = $controller->getSuggestedNames($nameId);
                 sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'search':
+            $controller = new SearchController($db);
+            if ($method === 'GET') {
+                if (isset($_GET['nameId'])) {
+                    $nameId = intval($_GET['nameId']);
+                    $result = $controller->getByNameId($nameId);
+                    sendResponse(200, $result);
+                } elseif (isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
+                    $result = $controller->search(trim($_GET['q']));
+                    sendResponse(200, $result);
+                } else {
+                    sendResponse(400, ['error' => 'Missing required parameter: q or nameId']);
+                }
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
             }

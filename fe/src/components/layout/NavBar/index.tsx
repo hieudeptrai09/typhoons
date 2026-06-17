@@ -7,6 +7,7 @@ import DesktopNav from "./DesktopNav";
 import MenuToggle from "./MenuToggle";
 import MobileNav from "./MobileNav";
 import NavLink from "./NavLink";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const pathName = usePathname();
@@ -25,8 +26,16 @@ const Navbar = () => {
       <div className="mx-auto max-w-7xl px-2 py-2">
         <div className="flex items-center justify-between">
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />
-          <DesktopNav currentPath={pathName} />
-          <MenuToggle isOpen={isMenuOpen} onToggle={toggleMenu} />
+          <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <SearchBar />
+            </div>
+            <DesktopNav currentPath={pathName} />
+          </div>
+          <div className="flex items-center gap-2 md:hidden">
+            <SearchBar />
+            <MenuToggle isOpen={isMenuOpen} onToggle={toggleMenu} />
+          </div>
         </div>
       </div>
       <MobileNav currentPath={pathName} isOpen={isMenuOpen} onClose={closeMenu} />

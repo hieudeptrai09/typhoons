@@ -10,7 +10,7 @@ class TyphoonNameController
 
     public function getTyphoonNames($isRetired = null)
     {
-        $query = "SELECT 
+        $query = "SELECT
                     tn.id,
                     tn.name,
                     tn.meaning,
