@@ -8,7 +8,7 @@ class StormController
         $this->conn = $db;
     }
 
-    public function getStorms($position = null, $name = null)
+    public function getStorms($position = null)
     {
         $query = "SELECT
                     s.id,
@@ -25,15 +25,8 @@ class StormController
                   FROM storms s
                   INNER JOIN positions p ON s.position = p.id";
 
-        $conditions = [];
         if ($position !== null) {
-            $conditions[] = "s.position = :position";
-        }
-        if ($name !== null) {
-            $conditions[] = "s.name = :name";
-        }
-        if (!empty($conditions)) {
-            $query .= " WHERE " . implode(" AND ", $conditions);
+            $query .= " WHERE s.position = :position";
         }
 
         $query .= " ORDER BY s.year ASC, s.position";
@@ -42,9 +35,6 @@ class StormController
 
         if ($position !== null) {
             $stmt->bindParam(':position', $position, PDO::PARAM_INT);
-        }
-        if ($name !== null) {
-            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         }
 
         $stmt->execute();

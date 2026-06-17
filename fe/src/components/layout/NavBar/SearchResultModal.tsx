@@ -13,55 +13,37 @@ import {
   BACKGROUND_HOVER_BADGE,
   INTENSITY_LABEL,
 } from "../../../constants";
-import type { TyphoonName, RetiredName, Suggestion, Storm, BaseModalProps } from "../../../types";
+import type { SearchDetail, Storm, Suggestion, TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
 interface SearchResultModalProps extends BaseModalProps {
-  searchName: string;
+  nameId: number;
 }
 
 type TabType = "storms" | "details" | "suggestions";
 
-const SearchResultModal = ({ isOpen, onClose, searchName }: SearchResultModalProps) => {
+const SearchResultModal = ({ isOpen, onClose, nameId }: SearchResultModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("storms");
 
-  const encodedName = encodeURIComponent(searchName);
-
   const {
-    data: storms,
-    loading: stormsLoading,
-    error: stormsError,
-  } = useFetchData<Storm[]>(isOpen ? `/storms?name=${encodedName}` : "");
+    data: detail,
+    loading,
+    error,
+  } = useFetchData<SearchDetail>(isOpen ? `/search?nameId=${nameId}` : "");
 
-  const {
-    data: nameData,
-    loading: nameLoading,
-    error: nameError,
-  } = useFetchData<(TyphoonName | RetiredName)[]>(
-    isOpen ? `/typhoon-names?name=${encodedName}` : "",
-  );
+  const nameData = detail?.name ?? null;
+  const storms = detail?.storms ?? [];
+  const suggestions = detail?.suggestions ?? [];
 
-  const activeName = (nameData ?? []).find((n) => !n.isRetired);
-  const retiredName = (nameData ?? []).find((n) => Boolean(n.isRetired));
-  const primaryName = activeName ?? retiredName ?? null;
+  const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
+  const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
-  const isInPosition = primaryName ? primaryName.position >= 1 && primaryName.position <= 140 : false;
-  const isRetired = primaryName ? Boolean(primaryName.isRetired) : false;
-
-  const {
-    data: suggestions,
-    loading: suggestionsLoading,
-    error: suggestionsError,
-  } = useFetchData<Suggestion[]>(
-    isOpen && retiredName && isInPosition ? `/suggested-names?nameId=${retiredName.id}` : "",
-  );
-
-  const titleColorClass = primaryName
+  const titleColorClass = nameData
     ? isRetired
-      ? primaryName.isLanguageProblem === 2
+      ? nameData.isLanguageProblem === 2
         ? "text-amber-500"
-        : primaryName.isLanguageProblem === 1
+        : nameData.isLanguageProblem === 1
           ? "text-green-600"
-          : primaryName.isLanguageProblem === 3
+          : nameData.isLanguageProblem === 3
             ? "text-purple-600"
             : "text-red-600"
       : "text-blue-600"
@@ -81,6 +63,38 @@ const SearchResultModal = ({ isOpen, onClose, searchName }: SearchResultModalPro
       isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
     }`;
   };
+
+  if (loading) {
+    return (
+      <Modal
+        open={isOpen}
+        onCancel={onClose}
+        width={600}
+        footer={null}
+        centered
+        destroyOnHidden
+      >
+        <div className="flex justify-center py-12">
+          <Spin size="large" />
+        </div>
+      </Modal>
+    );
+  }
+
+  if (error || !nameData) {
+    return (
+      <Modal
+        open={isOpen}
+        onCancel={onClose}
+        width={600}
+        footer={null}
+        centered
+        destroyOnHidden
+      >
+        <div className="py-8 text-center text-gray-500">Failed to load data.</div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal
@@ -102,7 +116,7 @@ const SearchResultModal = ({ isOpen, onClose, searchName }: SearchResultModalPro
           flexDirection: "column",
         },
       }}
-      title={<span className={`text-2xl font-bold ${titleColorClass}`}>{searchName}</span>}
+      title={<span className={`text-2xl font-bold ${titleColorClass}`}>{nameData.name}</span>}
     >
       <div className="flex max-h-[90%] flex-1 flex-col overflow-y-auto pt-4">
         {visibleTabs.length > 1 && (
@@ -120,41 +134,16 @@ const SearchResultModal = ({ isOpen, onClose, searchName }: SearchResultModalPro
         )}
 
         <div className="flex-1">
-          {activeTab === "storms" && (
-            <StormsTab
-              name={searchName}
-              storms={storms ?? []}
-              loading={stormsLoading}
-              error={stormsError}
-            />
-          )}
-          {activeTab === "details" && (
-            <DetailsTab name={primaryName} loading={nameLoading} error={nameError} />
-          )}
-          {activeTab === "suggestions" && (
-            <SuggestionsTab
-              suggestions={suggestions ?? []}
-              loading={suggestionsLoading}
-              error={suggestionsError}
-            />
-          )}
+          {activeTab === "storms" && <StormsTab name={nameData.name} storms={storms} />}
+          {activeTab === "details" && <DetailsTab name={nameData} />}
+          {activeTab === "suggestions" && <SuggestionsTab suggestions={suggestions} />}
         </div>
       </div>
     </Modal>
   );
 };
 
-const StormsTab = ({
-  name,
-  storms,
-  loading,
-  error,
-}: {
-  name: string;
-  storms: Storm[];
-  loading: boolean;
-  error: Error | null;
-}) => {
+const StormsTab = ({ name, storms }: { name: string; storms: Storm[] }) => {
   const [showMap, setShowMap] = useState(false);
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
   const [selectedStorm, setSelectedStorm] = useState<number | null>(null);
@@ -170,18 +159,6 @@ const StormsTab = ({
   const handleBadgeClick = (index: number) => {
     setSelectedStorm((prev) => (prev === index ? null : index));
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spin size="medium" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="py-4 text-center text-gray-500">Failed to load storm data.</div>;
-  }
 
   if (storms.length === 0) {
     return <div className="py-4 text-center text-gray-500">No storms found for this name.</div>;
@@ -283,27 +260,7 @@ const StormsTab = ({
   );
 };
 
-const DetailsTab = ({
-  name,
-  loading,
-  error,
-}: {
-  name: (TyphoonName | RetiredName) | null;
-  loading: boolean;
-  error: Error | null;
-}) => {
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spin size="medium" />
-      </div>
-    );
-  }
-
-  if (error || !name) {
-    return <div className="py-4 text-center text-gray-500">Failed to load name details.</div>;
-  }
-
+const DetailsTab = ({ name }: { name: TyphoonName | RetiredName }) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 
@@ -367,27 +324,7 @@ const DetailsTab = ({
   );
 };
 
-const SuggestionsTab = ({
-  suggestions,
-  loading,
-  error,
-}: {
-  suggestions: Suggestion[];
-  loading: boolean;
-  error: Error | null;
-}) => {
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spin size="medium" />
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="py-4 text-center text-gray-500">Failed to load suggested replacements.</div>
-    );
-  }
+const SuggestionsTab = ({ suggestions }: { suggestions: Suggestion[] }) => {
   return <SuggestionsList suggestions={suggestions} />;
 };
 
