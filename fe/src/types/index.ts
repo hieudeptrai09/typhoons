@@ -80,13 +80,15 @@ export type SortDirection = "asc" | "desc" | null;
 export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
 
 export interface SearchResult {
-  id: number;
+  id: number | null;
   name: string;
   position: number;
   country: string;
   isRetired: number;
   isLanguageProblem: number;
   stormCount: number;
+  note: string | null;
+  replacementName: string | null;
 }
 
 export interface SearchDetail {

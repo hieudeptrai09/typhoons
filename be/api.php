@@ -87,6 +87,9 @@ try {
                     $nameId = intval($_GET['nameId']);
                     $result = $controller->getByNameId($nameId);
                     sendResponse(200, $result);
+                } elseif (isset($_GET['name']) && strlen(trim($_GET['name'])) > 0) {
+                    $result = $controller->getByName(trim($_GET['name']));
+                    sendResponse(200, $result);
                 } elseif (isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
                     $result = $controller->search(trim($_GET['q']));
                     sendResponse(200, $result);

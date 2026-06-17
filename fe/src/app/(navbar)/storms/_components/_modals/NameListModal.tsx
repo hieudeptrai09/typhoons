@@ -169,4 +169,5 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
   );
 };
 
+export { NameListModalInner };
 export default NameListModal;

@@ -24,16 +24,15 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-10 bg-blue-600">
       <div className="mx-auto max-w-7xl px-2 py-2">
-        <div className="flex items-center justify-between">
+        <div className="relative flex items-center justify-between">
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />
-          <div className="flex items-center gap-4">
-            <div className="hidden md:block">
-              <SearchBar />
-            </div>
-            <DesktopNav currentPath={pathName} />
-          </div>
-          <div className="flex items-center gap-2 md:hidden">
+
+          <div className="mx-2 min-w-0 flex-1 md:mx-4 md:max-w-md">
             <SearchBar />
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-4">
+            <DesktopNav currentPath={pathName} />
             <MenuToggle isOpen={isMenuOpen} onToggle={toggleMenu} />
           </div>
         </div>
