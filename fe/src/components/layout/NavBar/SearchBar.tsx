@@ -3,13 +3,28 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Input, Spin } from "antd";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import CountryFlag from "../../components/CountryFlag";
-import SearchResultModal from "./SearchResultModal";
+import SearchResultModal from "../../ui/SearchResultModal";
 import type { SearchResult } from "../../../types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
+const HighlightedName = ({ name, query }: { name: string; query: string }) => {
+  if (!query.trim()) return <>{name}</>;
+  const idx = name.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{name}</>;
+  return (
+    <>
+      {name.slice(0, idx)}
+      <span className="bg-yellow-200 text-gray-900">{name.slice(idx, idx + query.length)}</span>
+      {name.slice(idx + query.length)}
+    </>
+  );
+};
+
 const SearchBar = () => {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -67,6 +82,19 @@ const SearchBar = () => {
     setQuery("");
   };
 
+  const handleViewAll = () => {
+    const q = query.trim();
+    setIsDropdownOpen(false);
+    setQuery("");
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
+
+  const handleKeyDown = (e: { key: string }) => {
+    if (e.key === "Enter" && query.trim()) {
+      handleViewAll();
+    }
+  };
+
   const getStatusBadge = (result: SearchResult) => {
     if (!result.isRetired) {
       return (
@@ -105,6 +133,7 @@ const SearchBar = () => {
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
           onFocus={() => query.trim() && setIsDropdownOpen(true)}
+          onKeyDown={handleKeyDown}
           allowClear
           className="search-bar-input"
           style={{ width: 200 }}
@@ -130,33 +159,43 @@ const SearchBar = () => {
             ) : results.length === 0 ? (
               <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
             ) : (
-              results.map((result) => (
+              <>
+                {results.slice(0, 8).map((result) => (
+                  <button
+                    key={result.id}
+                    onClick={() => handleSelect(result)}
+                    className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors hover:bg-blue-50"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-900">
+                          <HighlightedName name={result.name} query={query.trim()} />
+                        </span>
+                        {getStatusBadge(result)}
+                        {result.stormCount > 0 && (
+                          <span className="text-xs text-gray-400">x{result.stormCount}</span>
+                        )}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                        <CountryFlag country={result.country} className="h-3.5 w-5" />
+                        <span>{result.country}</span>
+                        {result.position >= 1 && result.position <= 140 && (
+                          <>
+                            <span className="text-gray-300">|</span>
+                            <span>#{result.position}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
                 <button
-                  key={result.id}
-                  onClick={() => handleSelect(result)}
-                  className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-blue-50"
+                  onClick={handleViewAll}
+                  className="w-full cursor-pointer px-4 py-2.5 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
                 >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">{result.name}</span>
-                      {getStatusBadge(result)}
-                      {result.stormCount > 0 && (
-                        <span className="text-xs text-gray-400">x{result.stormCount}</span>
-                      )}
-                    </div>
-                    <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
-                      <CountryFlag country={result.country} className="h-3.5 w-5" />
-                      <span>{result.country}</span>
-                      {result.position >= 1 && result.position <= 140 && (
-                        <>
-                          <span className="text-gray-300">|</span>
-                          <span>#{result.position}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  View all results{results.length > 8 ? ` (${results.length})` : ""}
                 </button>
-              ))
+              </>
             )}
           </div>
         )}

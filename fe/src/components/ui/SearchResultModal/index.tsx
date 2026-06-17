@@ -66,14 +66,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId }: SearchResultModalProps) 
 
   if (loading) {
     return (
-      <Modal
-        open={isOpen}
-        onCancel={onClose}
-        width={600}
-        footer={null}
-        centered
-        destroyOnHidden
-      >
+      <Modal open={isOpen} onCancel={onClose} width={600} footer={null} centered destroyOnHidden>
         <div className="flex justify-center py-12">
           <Spin size="large" />
         </div>
@@ -83,14 +76,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId }: SearchResultModalProps) 
 
   if (error || !nameData) {
     return (
-      <Modal
-        open={isOpen}
-        onCancel={onClose}
-        width={600}
-        footer={null}
-        centered
-        destroyOnHidden
-      >
+      <Modal open={isOpen} onCancel={onClose} width={600} footer={null} centered destroyOnHidden>
         <div className="py-8 text-center text-gray-500">Failed to load data.</div>
       </Modal>
     );
