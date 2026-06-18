@@ -108,7 +108,7 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
                     </div>
                   }
                   trigger={["hover", "click"]}
-                  placement="right"
+                  placement="top"
                 >
                   {row}
                 </Popover>
