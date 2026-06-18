@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Modal, Spin } from "antd";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
@@ -17,7 +17,6 @@ type TabType = "storms" | "details" | "suggestions";
 
 const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("storms");
-  const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const endpoint = nameId
     ? `/search?nameId=${nameId}`
@@ -99,10 +98,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
       }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{displayName}</span>}
     >
-      <div
-        ref={modalContainerRef}
-        className="flex max-h-[90%] flex-1 flex-col overflow-y-auto pt-4"
-      >
+      <div className="flex max-h-[90%] flex-1 flex-col overflow-y-auto pt-4">
         {visibleTabs.length > 1 && (
           <div className="mb-6 flex border-b border-gray-200">
             {visibleTabs.map((tab) => (
@@ -120,11 +116,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
         <div className="flex-1">
           {activeTab === "storms" &&
             (storms.length > 0 ? (
-              <NameListModalInner
-                name={displayName}
-                storms={storms}
-                modalContainerRef={modalContainerRef}
-              />
+              <NameListModalInner name={displayName} storms={storms} />
             ) : (
               <div className="py-4 text-center text-gray-500">No storms found for this name.</div>
             ))}

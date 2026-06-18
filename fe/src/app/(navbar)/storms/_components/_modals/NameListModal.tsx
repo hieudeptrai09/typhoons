@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import type { CSSProperties, RefObject } from "react";
-import { Modal, Switch } from "antd";
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import { Modal, Switch, Popover } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import {
@@ -11,7 +11,6 @@ import {
   INTENSITY_LABEL,
 } from "../../../../../constants";
 import { getIntensityFromNumber } from "../../_utils/fns";
-import StormMapPopup from "../_popups/StormMapPopup";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
@@ -20,32 +19,9 @@ export interface NameListModalProps extends BaseModalProps {
   avgIntensity?: number;
 }
 
-interface InnerProps {
-  name: string;
-  storms: Storm[];
-  modalContainerRef: RefObject<HTMLDivElement | null>;
-}
-
-const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => {
+const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] }) => {
   const [showMap, setShowMap] = useState(false);
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
-  const [selectedStorm, setSelectedStorm] = useState<number | null>(null);
-  const [modalContainer, setModalContainer] = useState<HTMLDivElement | null>(null);
-  const stormRefs = useRef<Record<number, HTMLDivElement | null>>({});
-  const popupRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setModalContainer(modalContainerRef.current);
-  }, [modalContainerRef]);
-
-  const handleBadgeClick = (index: number) => {
-    setSelectedStorm((prev) => (prev === index ? null : index));
-  };
-
-  const selectedStormData = selectedStorm !== null ? storms[selectedStorm] : null;
-  const selectedBorderColor = selectedStormData
-    ? BACKGROUND_BADGE[selectedStormData.intensity]
-    : "";
 
   return (
     <div className="space-y-4">
@@ -76,7 +52,7 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
         <h3 className="mb-3 font-semibold text-gray-700">
           All {name} Storms ({storms.length})
         </h3>
-        <div className="relative space-y-2">
+        <div className="space-y-2">
           {storms.map((storm, idx) => {
             const bgColor = BACKGROUND_BADGE[storm.intensity];
             const textColor = TEXT_COLOR_BADGE[storm.intensity];
@@ -84,22 +60,16 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
             const isHovered = hoveredYear === storm.year;
             const label = INTENSITY_LABEL[storm.intensity];
             const stormTitle = `${label} ${storm.name} ${storm.year}`;
+            const hasMap = storm.map && storm.map.trim() !== "";
 
-            return (
+            const row = (
               <div
-                key={idx}
-                ref={(el) => {
-                  stormRefs.current[idx] = el;
-                }}
                 className="cursor-pointer rounded-lg bg-white px-2 transition-colors hover:bg-gray-100"
                 onMouseEnter={() => setHoveredYear(storm.year)}
                 onMouseLeave={() => setHoveredYear(null)}
-                onClick={() => handleBadgeClick(idx)}
               >
                 <div
-                  className={`flex items-center gap-4 rounded-md p-2 transition-colors ${
-                    selectedStorm === idx ? "rounded-t-md" : "rounded-md"
-                  }`}
+                  className="flex items-center gap-4 rounded-md p-2 transition-colors"
                   style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
                 >
                   <div className="flex-1">
@@ -107,7 +77,7 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
                       {stormTitle}
                     </div>
                   </div>
-                  {showMap && (
+                  {showMap && hasMap && (
                     <div className="relative h-32 w-48 shrink-0">
                       <ImageWithLoader
                         src={storm.map}
@@ -121,26 +91,39 @@ const NameListModalInner = ({ name, storms, modalContainerRef }: InnerProps) => 
                 </div>
               </div>
             );
+
+            if (hasMap) {
+              return (
+                <Popover
+                  key={idx}
+                  content={
+                    <div className="relative h-[200px] w-[300px]">
+                      <ImageWithLoader
+                        src={storm.map}
+                        alt={`${storm.name} ${storm.year} track`}
+                        fill
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
+                  }
+                  trigger={["hover", "click"]}
+                  placement="right"
+                >
+                  {row}
+                </Popover>
+              );
+            }
+
+            return <div key={idx}>{row}</div>;
           })}
         </div>
       </div>
-
-      <StormMapPopup
-        popupRef={popupRef}
-        selectedStorm={selectedStormData}
-        stormRefs={stormRefs}
-        selectedStormIndex={selectedStorm}
-        modalContainer={modalContainer}
-        borderColor={selectedBorderColor}
-        onClose={() => setSelectedStorm(null)}
-      />
     </div>
   );
 };
 
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
-  const modalContainerRef = useRef<HTMLDivElement>(null);
-
   const titleStyle: CSSProperties = {
     color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgIntensity)],
   };
@@ -162,8 +145,8 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
         </span>
       }
     >
-      <div ref={modalContainerRef} className="relative max-h-[90%] overflow-y-auto pt-4">
-        <NameListModalInner name={name} storms={storms} modalContainerRef={modalContainerRef} />
+      <div className="max-h-[90%] overflow-y-auto pt-4">
+        <NameListModalInner name={name} storms={storms} />
       </div>
     </Modal>
   );
