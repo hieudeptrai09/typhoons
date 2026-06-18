@@ -1,9 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import { Input } from "antd";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Menu from "./_components/Menu";
 
 const HomePage = () => {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  const handleSearch = () => {
+    const q = query.trim();
+    if (q) {
+      router.push(`/search?q=${encodeURIComponent(q)}`);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-sky-100">
       <div
@@ -18,14 +32,26 @@ const HomePage = () => {
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
-        <p className="mb-12 max-w-md text-center text-lg font-semibold text-gray-800">
+        <p className="mb-8 max-w-md text-center text-lg font-semibold text-gray-800">
           Track typhoons and explore their names
         </p>
+
+        <div className="mb-10 w-full max-w-sm">
+          <Input
+            size="large"
+            placeholder="Search typhoon names..."
+            prefix={<Search size={18} className="text-gray-400" />}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onPressEnter={handleSearch}
+            allowClear
+            className="home-search-input"
+          />
+        </div>
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu href="storms" label="Browse Storms" bgColor="#2563eb" hoverBgColor="#1d4ed8" />
           <Menu href="names" label="Explore Names" bgColor="#0d9488" hoverBgColor="#0f766e" />
-          <Menu href="search" label="Search Names" bgColor="#d97706" hoverBgColor="#b45309" />
         </div>
       </div>
 
