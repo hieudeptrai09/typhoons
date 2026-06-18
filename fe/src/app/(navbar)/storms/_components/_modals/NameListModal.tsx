@@ -138,14 +138,17 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
       footer={null}
       centered
       destroyOnHidden
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={
         <span className="text-2xl font-bold" style={titleStyle}>
           {name}
         </span>
       }
     >
-      <div className="max-h-[90%] overflow-y-auto pt-4">
+      <div className="pt-4">
         <NameListModalInner name={name} storms={storms} />
       </div>
     </Modal>

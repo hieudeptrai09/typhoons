@@ -34,7 +34,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
             <Button
               type="text"
               icon={<BookText size={20} />}
-              iconPosition="start"
+              iconPlacement="start"
               className={`!w-full !justify-start !text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
             >
               Names

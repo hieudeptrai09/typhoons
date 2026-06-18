@@ -121,10 +121,13 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
       footer={null}
       centered
       destroyOnHidden
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
     >
-      <div className="max-h-[90%] overflow-y-auto pt-4">
+      <div className="pt-4">
         <AverageModalInner average={average} nameData={nameData} />
       </div>
     </Modal>

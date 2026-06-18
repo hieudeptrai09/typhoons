@@ -86,10 +86,13 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       footer={null}
       centered
       destroyOnHidden
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
-      <div className="max-h-[90%] overflow-y-auto pt-4">
+      <div className="overflow-y-auto pt-4">
         <NameDetailsContent name={name} />
       </div>
     </Modal>

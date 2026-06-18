@@ -57,7 +57,10 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
           });
         }
       }}
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
       footer={[
         <Button key="clear" onClick={() => form.resetFields()}>
@@ -68,12 +71,7 @@ const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: Fi
         </Button>,
       ]}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleApply}
-        className="max-h-[90%] overflow-y-auto py-4"
-      >
+      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
         <Form.Item label="Name" name="name">
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>

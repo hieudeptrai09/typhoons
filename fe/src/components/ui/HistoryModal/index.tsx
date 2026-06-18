@@ -72,10 +72,13 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       footer={null}
       centered
       destroyOnHidden
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={<span className="text-2xl font-bold text-gray-700">{positionTitle}</span>}
     >
-      <div className="max-h-[90%] overflow-y-auto pt-4">
+      <div className="overflow-y-auto pt-4">
         {loading || !isStormsReady ? (
           <div className="flex justify-center py-8">
             <Spin size="medium" />

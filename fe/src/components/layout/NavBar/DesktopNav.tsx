@@ -55,7 +55,7 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
         placement="bottomRight"
         mouseLeaveDelay={0.1}
         arrow={false}
-        overlayInnerStyle={{ padding: 0 }}
+        styles={{ container: { padding: 0 } }}
       >
         <Link href="/names">
           <button

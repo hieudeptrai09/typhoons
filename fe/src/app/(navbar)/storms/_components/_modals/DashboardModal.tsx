@@ -143,7 +143,10 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
       width={480}
       centered
       destroyOnHidden
-      styles={{ header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" } }}
+      styles={{
+        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
+        body: { maxHeight: "70vh", overflowY: "auto" },
+      }}
       title={<span className="text-xl font-bold text-gray-700">Dashboard View</span>}
       footer={[
         <Button key="reset" onClick={handleReset}>
@@ -154,7 +157,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
         </Button>,
       ]}
     >
-      <div className="max-h-[90%] space-y-5 overflow-y-auto py-4">
+      <div className="space-y-5 py-4">
         <Section label="View">
           <Segmented
             options={VIEW_OPTIONS}

@@ -89,16 +89,11 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
       destroyOnHidden
       styles={{
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: {
-          height: typeof window !== "undefined" ? window.innerHeight * 0.8 - 120 : 480,
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-        },
+        body: { height: "70vh", overflowY: "auto" },
       }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{displayName}</span>}
     >
-      <div className="flex max-h-[90%] flex-1 flex-col overflow-y-auto pt-4">
+      <div className="flex flex-col pt-4">
         {visibleTabs.length > 1 && (
           <div className="mb-6 flex border-b border-gray-200">
             {visibleTabs.map((tab) => (
