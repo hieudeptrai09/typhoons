@@ -92,7 +92,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       }}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
-      <div className="overflow-y-auto pt-4">
+      <div className="pt-4">
         <NameDetailsContent name={name} />
       </div>
     </Modal>

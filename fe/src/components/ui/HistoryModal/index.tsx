@@ -78,7 +78,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       }}
       title={<span className="text-2xl font-bold text-gray-700">{positionTitle}</span>}
     >
-      <div className="overflow-y-auto pt-4">
+      <div className="pt-4">
         {loading || !isStormsReady ? (
           <div className="flex justify-center py-8">
             <Spin size="medium" />
