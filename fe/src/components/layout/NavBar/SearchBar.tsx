@@ -97,7 +97,7 @@ const SearchBar = () => {
         />
 
         {isDropdownOpen && query.trim() && (
-          <div className="absolute top-full right-0 left-0 z-50 mt-1 min-w-72 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+          <div className="absolute top-full right-0 left-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
             {loading ? (
               <div className="flex justify-center py-4">
                 <Spin size="small" />
