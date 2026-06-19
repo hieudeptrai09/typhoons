@@ -5,9 +5,9 @@ import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
-  INTENSITY_RANK,
   BACKGROUND_HOVER_BADGE,
-} from "../../../../../constants";
+} from "../../../../../components/colors";
+import { INTENSITY_RANK } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";
 

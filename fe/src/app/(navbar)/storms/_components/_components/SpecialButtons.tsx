@@ -1,6 +1,6 @@
 import { Button } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
-import { getIntensityFromNumber, getDistanceColor } from "../../_utils/fns";
+import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
+import { getIntensityFromNumber } from "../../_utils/fns";
 
 interface SpecialButtonsProps {
   onCellClick: (data: number, key: string) => void;

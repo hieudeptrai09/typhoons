@@ -63,12 +63,6 @@ export const calculateDistances = (
   return result;
 };
 
-export const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a";
-  if (years === 6.0) return "#2563eb";
-  return "#dc2626";
-};
-
 export const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
 
 export const getDashboardTitle = (

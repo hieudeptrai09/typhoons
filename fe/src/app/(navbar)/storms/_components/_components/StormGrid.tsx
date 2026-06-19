@@ -1,8 +1,7 @@
 import { useState, useMemo, type ReactNode } from "react";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
 import {
   getIntensityFromNumber,
-  getDistanceColor,
   calculateAverage,
   getHighlights,
 } from "../../_utils/fns";

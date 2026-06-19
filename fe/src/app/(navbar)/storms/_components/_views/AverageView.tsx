@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Table } from "antd";
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
