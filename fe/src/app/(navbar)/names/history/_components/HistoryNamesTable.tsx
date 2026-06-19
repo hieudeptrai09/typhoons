@@ -1,5 +1,5 @@
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
+import { COUNTRY_FLAG_COMPONENTS } from "../../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../../types";
 
 interface HistoryNamesTableProps {

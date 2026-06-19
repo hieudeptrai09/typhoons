@@ -1,4 +1,37 @@
-import { COUNTRY_FLAG_COMPONENTS } from "../../../constants";
+import CN from "country-flag-icons/react/3x2/CN";
+import FM from "country-flag-icons/react/3x2/FM";
+import HK from "country-flag-icons/react/3x2/HK";
+import JP from "country-flag-icons/react/3x2/JP";
+import KH from "country-flag-icons/react/3x2/KH";
+import KP from "country-flag-icons/react/3x2/KP";
+import KR from "country-flag-icons/react/3x2/KR";
+import LA from "country-flag-icons/react/3x2/LA";
+import MO from "country-flag-icons/react/3x2/MO";
+import MY from "country-flag-icons/react/3x2/MY";
+import PH from "country-flag-icons/react/3x2/PH";
+import TH from "country-flag-icons/react/3x2/TH";
+import US from "country-flag-icons/react/3x2/US";
+import VN from "country-flag-icons/react/3x2/VN";
+
+export const COUNTRY_FLAG_COMPONENTS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  Cambodia: KH,
+  China: CN,
+  "DPR Korea": KP,
+  "HK, China": HK,
+  Japan: JP,
+  "Laos PDR": LA,
+  "Macao, China": MO,
+  Malaysia: MY,
+  Micronesia: FM,
+  Philippines: PH,
+  "RO Korea": KR,
+  Thailand: TH,
+  "U.S.A.": US,
+  Vietnam: VN,
+};
 
 interface CountryFlagProps {
   country: string;
