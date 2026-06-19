@@ -2,6 +2,17 @@ import type { IntensityType, RetiredName, TyphoonName } from "../types";
 
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
+export const SORTING_RANK: Record<IntensityType, number> = {
+  5: 5,
+  4: 4,
+  3: 3,
+  2: 2,
+  1: 1,
+  STS: 0,
+  TS: -1,
+  TD: -2,
+};
+
 export const INTENSITY_RANK: Record<IntensityType, number> = {
   5: 5,
   4: 4,

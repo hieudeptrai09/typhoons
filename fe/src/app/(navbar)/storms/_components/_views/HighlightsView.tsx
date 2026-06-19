@@ -1,6 +1,6 @@
 import { Table } from "antd";
 import IntensityBadge from "../../../../../components/components/IntensityBadge";
-import { INTENSITY_RANK } from "../../../../../constants";
+import { SORTING_RANK } from "../../../../../constants";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getHighlights } from "../../_utils/fns";
 import StormGrid from "../_components/StormGrid";
@@ -49,7 +49,7 @@ const columns: ColumnsType<HighlightRow> = [
     title: "Intensity",
     dataIndex: "intensity",
     key: "intensity",
-    sorter: (a, b) => INTENSITY_RANK[a.intensity] - INTENSITY_RANK[b.intensity],
+    sorter: (a, b) => SORTING_RANK[a.intensity] - SORTING_RANK[b.intensity],
     render: (_: unknown, record: HighlightRow) => <IntensityBadge intensity={record.intensity} />,
   },
   {
