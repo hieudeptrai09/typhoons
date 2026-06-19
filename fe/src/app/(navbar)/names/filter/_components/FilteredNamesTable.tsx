@@ -42,11 +42,20 @@ const FilteredNamesTable = ({
         ),
       },
       {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        width: 100,
+        fixed: "left" as const,
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        render: (_: unknown, record: TyphoonName) => (
+          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
+        ),
+      },
+      {
         title: "Retired",
         dataIndex: "isRetired",
         key: "isRetired",
-        width: 80,
-        fixed: "left" as const,
         sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
         render: (_: unknown, record: TyphoonName) =>
           record.isRetired ? (
@@ -54,15 +63,6 @@ const FilteredNamesTable = ({
           ) : (
             <Flame className="text-green-700" size={20} />
           ),
-      },
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        sorter: (a, b) => a.name.localeCompare(b.name),
-        render: (_: unknown, record: TyphoonName) => (
-          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
-        ),
       },
       {
         title: "Country",
