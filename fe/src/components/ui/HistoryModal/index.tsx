@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button, Modal, Spin } from "antd";
-import ImageWithLoader from "../../components/ImageWithLoader";
-import { getNameStatusColor } from "../../colors";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../containers/utils/fns";
+import { getNameStatusColor } from "../../colors";
+import ImageWithLoader from "../../components/ImageWithLoader";
 import type { BaseModalProps, TyphoonName, Storm } from "../../../types";
 
 interface HistoryModalProps extends BaseModalProps {
@@ -107,7 +107,10 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="whitespace-pre-line">
-                          <span className="font-semibold" style={{ color: getNameStatusColor(name) }}>
+                          <span
+                            className="font-semibold"
+                            style={{ color: getNameStatusColor(name) }}
+                          >
                             {name.name}
                           </span>
                           {count > 0 && (

@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import { Flame, Skull } from "lucide-react";
+import { getNameStatusColorClass } from "../../../../../components/colors";
 import EmptyResults from "../../../../../components/components/EmptyResults";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import { getNameStatusColorClass } from "../../../../../components/colors";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";

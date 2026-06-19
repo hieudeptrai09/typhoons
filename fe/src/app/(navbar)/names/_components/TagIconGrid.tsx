@@ -16,8 +16,8 @@ import {
   Ham,
   Hammer,
 } from "lucide-react";
-import CountryFlag from "../../../../components/components/CountryFlag";
 import { getNameStatusColorClass } from "../../../../components/colors";
+import CountryFlag from "../../../../components/components/CountryFlag";
 import { COUNTRY_NAMES } from "../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../types";
 import type { LucideIcon } from "lucide-react";

@@ -14,7 +14,6 @@ import {
   Tag,
   Globe,
   Calendar,
-  X,
 } from "lucide-react";
 import type { BaseModalProps, DashboardParams } from "../../../../../types";
 

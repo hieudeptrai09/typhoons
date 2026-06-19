@@ -35,7 +35,6 @@ const getStatusBadge = (result: SearchResult) => {
   );
 };
 
-
 const getColumns = (query: string): ColumnsType<SearchResult> => [
   {
     title: "#",
@@ -146,7 +145,9 @@ export default function SearchPageContent() {
               <Table<SearchResult>
                 dataSource={results}
                 columns={columns}
-                rowKey={(record) => record.id !== null ? String(record.id) : `storm-${record.name}`}
+                rowKey={(record) =>
+                  record.id !== null ? String(record.id) : `storm-${record.name}`
+                }
                 onRow={(record) => ({ onClick: () => handleNameClick(record) })}
                 rowClassName={(_record, index) =>
                   `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`

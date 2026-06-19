@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Modal, Spin } from "antd";
+import { getRetiredReasonColorClass } from "../../../../../../components/colors";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
-import { getRetiredReasonColorClass } from "../../../../../../components/colors";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
 export interface NameDetailsModalProps extends BaseModalProps {
@@ -61,7 +61,9 @@ const NameDetailsModal = ({
       centered
       destroyOnHidden
       title={
-        <span className={`text-3xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}>
+        <span
+          className={`text-3xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
+        >
           {selectedName.name}
         </span>
       }

@@ -1,6 +1,6 @@
 import { Button } from "antd";
-import CountryFlag from "../../../../../components/components/CountryFlag";
 import { getNameStatusColor, getNameStatusBgClass } from "../../../../../components/colors";
+import CountryFlag from "../../../../../components/components/CountryFlag";
 import { COUNTRY_NAMES } from "../../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../../types";
 
@@ -63,7 +63,9 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
                 const matchedNames = positionNames.filter((n) => filteredIds.has(n.id));
                 const hasMatch = matchedNames.length > 0;
 
-                const cellBg = hasMatch ? getNameStatusBgClass(getHighestPriorityName(matchedNames)) : "";
+                const cellBg = hasMatch
+                  ? getNameStatusBgClass(getHighestPriorityName(matchedNames))
+                  : "";
 
                 return (
                   <td key={col} className={`border border-stone-300 p-0 ${cellBg}`}>

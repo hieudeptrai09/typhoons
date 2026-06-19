@@ -1,14 +1,14 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { Modal, Switch, Popover } from "antd";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
   BACKGROUND_HOVER_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "../../../../../components/colors";
+import CountryFlag from "../../../../../components/components/CountryFlag";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "../../../../../constants";
 import { getIntensityFromNumber } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";

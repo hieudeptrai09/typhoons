@@ -1,6 +1,6 @@
 import { Table } from "antd";
-import EmptyResults from "../../../../../../components/components/EmptyResults";
 import { getRetiredReasonColorClass } from "../../../../../../components/colors";
+import EmptyResults from "../../../../../../components/components/EmptyResults";
 import { getPositionTitle } from "../../../../../../containers/utils/fns";
 import type { RetiredName } from "../../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -28,7 +28,9 @@ const columns: ColumnsType<RetiredName> = [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: RetiredName) => (
-      <span className={`font-semibold ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>{record.name}</span>
+      <span className={`font-semibold ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>
+        {record.name}
+      </span>
     ),
   },
   {

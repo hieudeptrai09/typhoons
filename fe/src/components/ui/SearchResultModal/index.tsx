@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Modal, Spin } from "antd";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
-import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
-import { NameDetailsContent } from "../NameDetailsModal";
-import { getNameStatusColorClass } from "../../colors";
 import SuggestionsList from "../../../app/(navbar)/names/retired/_components/NameDetailsModal/SuggestionsList";
+import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
+import { getNameStatusColorClass } from "../../colors";
+import { NameDetailsContent } from "../NameDetailsModal";
 import type { SearchDetail, BaseModalProps } from "../../../types";
 
 interface SearchResultModalProps extends BaseModalProps {

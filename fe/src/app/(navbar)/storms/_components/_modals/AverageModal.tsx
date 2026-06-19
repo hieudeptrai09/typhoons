@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Modal, Popover } from "antd";
-import IntensityBadge from "../../../../../components/components/IntensityBadge";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
   TEXT_COLOR_WHITE_BACKGROUND,
   BACKGROUND_HOVER_BADGE,
 } from "../../../../../components/colors";
+import IntensityBadge from "../../../../../components/components/IntensityBadge";
 import { INTENSITY_RANK } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";

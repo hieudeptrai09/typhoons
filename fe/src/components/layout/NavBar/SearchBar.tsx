@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { Input, Spin } from "antd";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
 import HighlightedName from "../../components/HighlightedName";
 import SearchResultModal from "../../ui/SearchResultModal";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
 import type { SearchResult } from "../../../types";
 
 const SearchBar = () => {

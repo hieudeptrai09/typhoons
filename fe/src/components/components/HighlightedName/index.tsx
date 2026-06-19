@@ -1,4 +1,12 @@
-const HighlightedName = ({ name, query, className }: { name: string; query: string; className?: string }) => {
+const HighlightedName = ({
+  name,
+  query,
+  className,
+}: {
+  name: string;
+  query: string;
+  className?: string;
+}) => {
   const idx = query.trim() ? name.toLowerCase().indexOf(query.toLowerCase()) : -1;
   if (idx === -1) return <span className={className}>{name}</span>;
   return (

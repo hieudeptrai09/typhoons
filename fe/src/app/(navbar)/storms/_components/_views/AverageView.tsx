@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Table } from "antd";
-import CountryFlag from "../../../../../components/components/CountryFlag";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
+import CountryFlag from "../../../../../components/components/CountryFlag";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
@@ -232,8 +232,6 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
       const years = new Set(stormsData.filter((s) => s.position === id).map((s) => s.year));
       return { id, label, years };
     });
-
-    const hasAnySpecial = specialPositions.some((p) => p.years.size > 0);
 
     return (
       <div>
