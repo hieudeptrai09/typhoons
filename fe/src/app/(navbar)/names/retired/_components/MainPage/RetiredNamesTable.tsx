@@ -37,6 +37,11 @@ const columns: ColumnsType<RetiredName> = [
     title: "Meaning",
     dataIndex: "meaning",
     key: "meaning",
+    render: (_: unknown, record: RetiredName) => (
+      <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
+        {record.meaning || "-"}
+      </span>
+    ),
   },
   {
     title: "Country",
@@ -56,7 +61,9 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "note",
     key: "note",
     render: (_: unknown, record: RetiredName) => (
-      <span className="text-gray-700">{record.note || "-"}</span>
+      <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+        {record.note || "-"}
+      </span>
     ),
   },
   {
@@ -73,7 +80,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-4xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-5xl overflow-x-auto pb-px">
       <Table<RetiredName>
         dataSource={paginatedData}
         columns={columns}

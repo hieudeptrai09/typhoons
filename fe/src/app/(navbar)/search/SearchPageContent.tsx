@@ -93,7 +93,12 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     title: "Note",
     dataIndex: "note",
     key: "note",
-    render: (note: string | null) => (note ? <span>{note}</span> : null),
+    render: (note: string | null) =>
+      note ? (
+        <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+          {note}
+        </span>
+      ) : null,
   },
 ];
 

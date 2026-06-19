@@ -234,7 +234,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );

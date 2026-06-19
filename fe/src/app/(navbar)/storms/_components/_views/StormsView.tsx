@@ -127,7 +127,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
       <Table<NameData>
         dataSource={nameData}
         columns={makeNameColumns()}

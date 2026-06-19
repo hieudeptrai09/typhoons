@@ -78,6 +78,11 @@ const FilteredNamesTable = ({
         title: "Meaning",
         dataIndex: "meaning",
         key: "meaning",
+        render: (_: unknown, record: TyphoonName) => (
+          <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
+            {record.meaning || "-"}
+          </span>
+        ),
       },
     ];
 
@@ -107,7 +112,9 @@ const FilteredNamesTable = ({
           dataIndex: "description",
           key: "description",
           render: (_: unknown, record: TyphoonName) => (
-            <span className="text-gray-700">{record.description || "-"}</span>
+            <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+              {record.description || "-"}
+            </span>
           ),
         },
       );
