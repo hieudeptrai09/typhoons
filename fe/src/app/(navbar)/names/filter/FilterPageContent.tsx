@@ -34,6 +34,7 @@ const FilterNamesContent = () => {
   const selectedCountry = params.country || "";
   const selectedLanguage = params.language || "";
   const selectedTag = params.tag || "";
+  const selectedStatus = params.status || "";
   const currentLetter = params.letter || "A";
 
   const countryArr = toArr(selectedCountry);
@@ -71,20 +72,37 @@ const FilterNamesContent = () => {
     if (searchPosition) {
       filtered = filtered.filter((n) => n.position === Number(searchPosition));
     }
+    if (selectedStatus === "active") {
+      filtered = filtered.filter((n) => !n.isRetired);
+    } else if (selectedStatus === "retired") {
+      filtered = filtered.filter((n) => n.isRetired);
+    } else if (selectedStatus === "current") {
+      filtered = filtered.filter((n) => !n.isRetired || !n.isReplaced);
+    }
 
     const hasActiveFilters =
       searchName ||
       countryArr.length > 0 ||
       languageArr.length > 0 ||
       tagArr.length > 0 ||
-      searchPosition;
+      searchPosition ||
+      selectedStatus;
 
     if (!hasActiveFilters) {
       filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
-  }, [names, searchName, countryArr, languageArr, tagArr, searchPosition, currentLetter]);
+  }, [
+    names,
+    searchName,
+    countryArr,
+    languageArr,
+    tagArr,
+    searchPosition,
+    selectedStatus,
+    currentLetter,
+  ]);
 
   const letterStatusMap = useMemo(() => categorizeLettersByStatus(names || []), [names]);
 
@@ -94,6 +112,7 @@ const FilterNamesContent = () => {
     selectedLanguage,
     searchPosition,
     selectedTag,
+    selectedStatus,
   ].filter(Boolean).length;
 
   const handleApplyFilters = (filters: FilterParams) => {
@@ -104,15 +123,24 @@ const FilterNamesContent = () => {
       language: filters.language,
       position: filters.position,
       tag: filters.tag,
+      status: filters.status,
     };
     const hasFilters =
-      filters.name || filters.country || filters.language || filters.position || filters.tag;
+      filters.name ||
+      filters.country ||
+      filters.language ||
+      filters.position ||
+      filters.tag ||
+      filters.status;
     if (!hasFilters) newParams.letter = currentLetter;
     updateParams(newParams, true);
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams({ name: "", country: "", language: "", position: "", tag: "", letter }, true);
+    updateParams(
+      { name: "", country: "", language: "", position: "", tag: "", status: "", letter },
+      true,
+    );
   };
 
   const handleNameClick = (name: TyphoonName) => {
@@ -159,6 +187,7 @@ const FilterNamesContent = () => {
             language: selectedLanguage,
             position: searchPosition,
             tag: selectedTag,
+            status: selectedStatus,
           }}
         />
       </div>
@@ -221,6 +250,7 @@ const FilterNamesContent = () => {
           language: selectedLanguage,
           position: searchPosition,
           tag: selectedTag,
+          status: selectedStatus,
           letter: "",
         }}
       />

@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Input, Select, InputNumber } from "antd";
+import { Modal, Button, Form, Input, Select, InputNumber, Radio } from "antd";
 import { toArr, toStr, toOpts } from "../../../../../containers/utils/fns";
 import type { BaseModalProps, FilterParams } from "../../../../../types";
 
@@ -16,6 +16,7 @@ interface FormValues {
   language: string[];
   tag: string[];
   position: number | undefined;
+  status: string | undefined;
 }
 
 const FilterModal = ({
@@ -36,6 +37,7 @@ const FilterModal = ({
       language: toStr(values.language),
       tag: toStr(values.tag),
       position: values.position != null ? String(values.position) : "",
+      status: values.status ?? "",
       letter: "",
     });
   };
@@ -55,6 +57,7 @@ const FilterModal = ({
             language: toArr(initialFilters.language),
             tag: toArr(initialFilters.tag),
             position: initialFilters.position ? Number(initialFilters.position) : undefined,
+            status: initialFilters.status || "",
           });
         }
       }}
@@ -105,9 +108,17 @@ const FilterModal = ({
           rules={[
             { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
           ]}
-          className="mb-0"
         >
           <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
+        </Form.Item>
+
+        <Form.Item label="Status" name="status" className="mb-0">
+          <Radio.Group>
+            <Radio value="">All</Radio>
+            <Radio value="active">Active</Radio>
+            <Radio value="retired">Retired</Radio>
+            <Radio value="current">Current</Radio>
+          </Radio.Group>
         </Form.Item>
       </Form>
     </Modal>
