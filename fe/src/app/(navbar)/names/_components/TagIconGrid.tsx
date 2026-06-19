@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import CountryFlag from "../../../../components/components/CountryFlag";
 import { getNameStatusColorClass } from "../../../../components/colors";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../components/components/CountryFlag";
+import { COUNTRY_NAMES } from "../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../types";
 import type { LucideIcon } from "lucide-react";
 
@@ -166,7 +166,6 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
   const rows = 10;
   const cols = 14;
 
-  const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
   const columnWidth = `${100 / cols}%`;
 
   const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
@@ -204,7 +203,7 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
           </colgroup>
           <thead>
             <tr>
-              {countryEntries.map(([countryName], index) => (
+              {COUNTRY_NAMES.map((countryName, index) => (
                 <th
                   key={index}
                   className="border border-sky-300 bg-sky-600 p-2"

@@ -1,5 +1,5 @@
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../../components/components/CountryFlag";
+import { COUNTRY_NAMES } from "../../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../../types";
 
 interface HistoryNamesTableProps {
@@ -26,7 +26,6 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
   const rows = 10;
   const cols = 14;
 
-  const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
   const columnWidth = `${100 / cols}%`;
 
   const namesByPosition: Record<number, TyphoonName[]> = {};
@@ -48,7 +47,7 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
         </colgroup>
         <thead>
           <tr>
-            {countryEntries.map(([countryName], index) => (
+            {COUNTRY_NAMES.map((countryName, index) => (
               <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
                 <div className="flex items-center justify-center">
                   <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />

@@ -33,6 +33,8 @@ export const COUNTRY_FLAG_COMPONENTS: Record<
   Vietnam: VN,
 };
 
+export const COUNTRY_NAMES = Object.keys(COUNTRY_FLAG_COMPONENTS);
+
 interface CountryFlagProps {
   country: string;
   className?: string;

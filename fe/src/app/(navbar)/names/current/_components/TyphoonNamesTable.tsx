@@ -1,6 +1,5 @@
 import { Button } from "antd";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../../components/components/CountryFlag";
+import CountryFlag, { COUNTRY_NAMES } from "../../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../../types";
 
 interface TyphoonNamesTableProps {
@@ -11,8 +10,6 @@ interface TyphoonNamesTableProps {
 const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
   const rows = 10;
   const cols = 14;
-
-  const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
 
   const sortedNames = names.sort((a, b) => a.position - b.position);
 
@@ -28,7 +25,7 @@ const TyphoonNamesTable = ({ names, onNameClick }: TyphoonNamesTableProps) => {
         </colgroup>
         <thead>
           <tr>
-            {countryEntries.map(([countryName], index) => (
+            {COUNTRY_NAMES.map((countryName, index) => (
               <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
                 <div className="flex items-center justify-center">
                   <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />
