@@ -49,17 +49,12 @@ body {
   text-decoration: underline !important;
 }
 
-/* Remove the grey tint Ant Design puts on body cells in the sorted column */
-.typhoon-table .ant-table-tbody td.ant-table-column-sort {
-  background-color: transparent !important;
-}
-
 /* Sorted column: white rows → sky-50, sky-100 rows → sky-200 */
-.typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
+.typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
   background-color: #f0f9ff !important; /* sky-50 — subtle on white rows */
 }
 
-.typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
+.typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
   background-color: #bae6fd !important; /* sky-200 */
 }
 
@@ -69,35 +64,21 @@ body {
   background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
-/* Allow horizontal scrolling for pinned columns */
-.typhoon-table .ant-table-content {
-  overflow-x: auto !important;
-}
-
 /* Keep fixed columns below the navbar (z-50) when scrolling */
 .typhoon-table .ant-table-cell-fix-left,
 .typhoon-table .ant-table-cell-fix-right {
   z-index: 2 !important;
 }
 
-/* Sticky column backgrounds — must be opaque so scrolling content doesn't show through */
-.typhoon-table .ant-table-thead .ant-table-cell-fix-left {
-  background-color: #0284c7 !important; /* sky-600 */
-}
-
-.typhoon-table .ant-table-thead .ant-table-cell-fix-left.ant-table-column-sort {
-  background-color: #0369a1 !important; /* sky-700 */
-}
-
-.typhoon-table .ant-table-tbody tr:nth-child(odd) .ant-table-cell-fix-left {
-  background-color: #ffffff !important;
-}
-
-.typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix-left {
+.typhoon-table .ant-table-tbody tr:nth-child(odd) .ant-table-cell-fix {
   background-color: #e0f2fe !important; /* sky-100 */
 }
 
-.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix-left {
+.typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix {
+  background-color: #ffffff !important; 
+}
+
+.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fi {
   background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
