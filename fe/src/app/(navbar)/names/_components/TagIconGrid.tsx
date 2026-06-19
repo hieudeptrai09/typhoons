@@ -17,6 +17,7 @@ import {
   Hammer,
 } from "lucide-react";
 import CountryFlag from "../../../../components/components/CountryFlag";
+import { getNameStatusColorClass } from "../../../../components/colors";
 import { COUNTRY_FLAG_COMPONENTS } from "../../../../constants";
 import type { TyphoonName } from "../../../../types";
 import type { LucideIcon } from "lucide-react";
@@ -86,7 +87,7 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`leading-tight font-medium ${name.isRetired ? "text-red-600" : "text-green-600"}`}
+        className={`leading-tight font-medium ${getNameStatusColorClass(name)}`}
         style={{ fontSize: size.name }}
       >
         {name.name}
