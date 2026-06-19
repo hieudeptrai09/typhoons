@@ -50,7 +50,7 @@ const FilteredNamesTable = ({
           record.isRetired ? (
             <Skull className={getNameStatusColorClass(record)} size={20} />
           ) : (
-            <Flame className="text-green-600" size={20} />
+            <Flame className={getNameStatusColorClass(record)} size={20} />
           ),
       },
       {
