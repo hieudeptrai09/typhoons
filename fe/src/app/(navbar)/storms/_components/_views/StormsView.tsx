@@ -39,7 +39,7 @@ const makeNameColumns = (): ColumnsType<NameData> => [
     title: "Name",
     dataIndex: "name",
     key: "name",
-    width: 140,
+    width: 100,
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, row: NameData) => {
