@@ -86,7 +86,7 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`leading-tight font-medium ${name.isRetired ? "text-red-500" : "text-green-600"}`}
+        className={`leading-tight font-medium ${name.isRetired ? "text-red-600" : "text-green-600"}`}
         style={{ fontSize: size.name }}
       >
         {name.name}

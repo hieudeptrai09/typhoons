@@ -22,11 +22,11 @@ const FilteredNamesTable = ({
     const getNameColor = (row: TyphoonName): string => {
       if (row.isLanguageProblem === 2) return "text-amber-500";
       if (Boolean(row.isRetired)) return "text-red-600";
-      return "text-green-700";
+      return "text-green-600";
     };
 
     const getRetiredColor = (row: TyphoonName): string => {
-      if (!row.isRetired) return "text-green-700";
+      if (!row.isRetired) return "text-green-600";
       if (row.isLanguageProblem === 2) return "text-amber-500";
       return "text-red-600";
     };
@@ -61,7 +61,7 @@ const FilteredNamesTable = ({
           record.isRetired ? (
             <Skull className={getRetiredColor(record)} size={20} />
           ) : (
-            <Flame className="text-green-700" size={20} />
+            <Flame className="text-green-600" size={20} />
           ),
       },
       {

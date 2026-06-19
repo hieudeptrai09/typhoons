@@ -62,9 +62,9 @@ export const getPageDescription = (
 };
 
 export const getNameColor = (name: TyphoonName): string => {
-  if (name.isLanguageProblem === 2) return "#d97706";
-  if (Boolean(name.isRetired)) return "#b91c1c";
-  return "#166534";
+  if (name.isLanguageProblem === 2) return "#f59e0b";
+  if (Boolean(name.isRetired)) return "#dc2626";
+  return "#16a34a";
 };
 
 export const getCellBg = (name: TyphoonName): string => {

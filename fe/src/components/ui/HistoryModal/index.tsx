@@ -50,9 +50,9 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
   });
 
   const getNameColor = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "#f59e0b"; // amber-500
-    if (name.isRetired) return "#ef4444"; // red-500
-    return "#15803d"; // green-700
+    if (name.isLanguageProblem === 2) return "#f59e0b";
+    if (name.isRetired) return "#dc2626";
+    return "#16a34a";
   };
 
   const handleNameClick = (nameId: number) => {
