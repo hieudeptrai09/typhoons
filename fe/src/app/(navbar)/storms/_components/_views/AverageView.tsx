@@ -68,6 +68,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
     title: "#",
     key: "order",
     width: 52,
+    fixed: "left" as const,
     render: (_: unknown, __: AverageData, index: number) => (
       <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
     ),
@@ -106,6 +107,8 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
           title: "Year",
           dataIndex: "year",
           key: "year",
+          width: 80,
+          fixed: "left" as const,
           sorter: (a, b) => (a.year ?? 0) - (b.year ?? 0),
         },
         countCol,
@@ -119,6 +122,8 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
           title: "Country",
           dataIndex: "country",
           key: "country",
+          width: 120,
+          fixed: "left" as const,
           sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
           render: (_: unknown, row: AverageData) => <CountryFlag country={row.country ?? ""} />,
         },
@@ -133,6 +138,8 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
           title: "Name",
           dataIndex: "name",
           key: "name",
+          width: 100,
+          fixed: "left" as const,
           sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
           render: (_: unknown, row: AverageData) => (
             <span className="font-semibold">{row.name}</span>
@@ -160,6 +167,8 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
           title: "Position",
           dataIndex: "position",
           key: "position",
+          width: 100,
+          fixed: "left" as const,
           sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
           render: (_: unknown, row: AverageData) => (
             <span>{row.position !== undefined ? getPositionTitle(row.position) : ""}</span>
@@ -316,7 +325,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );

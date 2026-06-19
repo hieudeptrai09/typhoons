@@ -29,6 +29,7 @@ const columns: ColumnsType<RetiredName> = [
     title: "#",
     key: "order",
     width: 52,
+    fixed: "left" as const,
     render: (_: unknown, __: RetiredName, index: number) => (
       <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
     ),
@@ -37,6 +38,8 @@ const columns: ColumnsType<RetiredName> = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 100,
+    fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: RetiredName) => (
       <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
@@ -94,7 +97,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );

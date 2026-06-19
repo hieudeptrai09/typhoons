@@ -36,8 +36,20 @@ const FilteredNamesTable = ({
         title: "#",
         key: "order",
         width: 52,
+        fixed: "left" as const,
         render: (_: unknown, __: TyphoonName, index: number) => (
           <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+        ),
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        width: 100,
+        fixed: "left" as const,
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        render: (_: unknown, record: TyphoonName) => (
+          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
         ),
       },
       {
@@ -51,15 +63,6 @@ const FilteredNamesTable = ({
           ) : (
             <Flame className="text-green-700" size={20} />
           ),
-      },
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        sorter: (a, b) => a.name.localeCompare(b.name),
-        render: (_: unknown, record: TyphoonName) => (
-          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
-        ),
       },
       {
         title: "Country",
@@ -143,7 +146,7 @@ const FilteredNamesTable = ({
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );

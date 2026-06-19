@@ -38,9 +38,20 @@ const getStatusBadge = (result: SearchResult) => {
 
 const getColumns = (query: string): ColumnsType<SearchResult> => [
   {
+    title: "#",
+    key: "order",
+    width: 52,
+    fixed: "left" as const,
+    render: (_: unknown, __: SearchResult, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
+    ),
+  },
+  {
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 100,
+    fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: SearchResult) => {
       const color = !record.isRetired
@@ -143,7 +154,7 @@ export default function SearchPageContent() {
                 pagination={false}
                 size="large"
                 className="typhoon-table"
-                scroll={undefined}
+                scroll={{ x: "max-content" }}
               />
             </div>
           </>

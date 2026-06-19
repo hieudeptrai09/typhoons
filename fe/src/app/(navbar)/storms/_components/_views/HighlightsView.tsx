@@ -25,6 +25,7 @@ const columns: ColumnsType<HighlightRow> = [
     title: "#",
     key: "order",
     width: 52,
+    fixed: "left" as const,
     render: (_: unknown, __: HighlightRow, index: number) => (
       <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
     ),
@@ -33,6 +34,8 @@ const columns: ColumnsType<HighlightRow> = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 100,
+    fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, row: HighlightRow) => <span className="font-semibold">{row.name}</span>,
   },
@@ -92,7 +95,7 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );
