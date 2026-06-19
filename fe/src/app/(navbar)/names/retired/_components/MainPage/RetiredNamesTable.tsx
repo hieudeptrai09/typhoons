@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import { getRetiredReasonColorClass } from "../../../../../../components/colors";
 import EmptyResults from "../../../../../../components/components/EmptyResults";
 import { getPositionTitle } from "../../../../../../containers/utils/fns";
 import type { RetiredName } from "../../../../../../types";
@@ -8,21 +9,6 @@ interface RetiredNamesTableProps {
   paginatedData: RetiredName[];
   onNameClick: (name: RetiredName) => void;
 }
-
-const getNameColor = (row: RetiredName): string => {
-  switch (row.isLanguageProblem) {
-    case 0:
-      return "text-red-600";
-    case 1:
-      return "text-green-600";
-    case 2:
-      return "text-amber-500";
-    case 3:
-      return "text-purple-600";
-    default:
-      return "text-red-600";
-  }
-};
 
 const columns: ColumnsType<RetiredName> = [
   {
@@ -42,7 +28,9 @@ const columns: ColumnsType<RetiredName> = [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: RetiredName) => (
-      <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
+      <span className={`font-semibold ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>
+        {record.name}
+      </span>
     ),
   },
   {

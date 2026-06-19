@@ -1,13 +1,6 @@
 import { Button } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
+import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
 import { getIntensityFromNumber } from "../../_utils/fns";
-
-// ≤ 5.xx → green, = 6.0 → blue, > 6.0 → red
-const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a";
-  if (years === 6.0) return "#2563eb";
-  return "#dc2626";
-};
 
 interface SpecialButtonsProps {
   onCellClick: (data: number, key: string) => void;

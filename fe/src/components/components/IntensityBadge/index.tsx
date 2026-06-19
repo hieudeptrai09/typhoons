@@ -1,5 +1,5 @@
 import { Tag } from "antd";
-import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../../constants";
+import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../colors";
 import type { IntensityType } from "../../../types";
 
 interface IntensityBadgeProps {

@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { Modal, Spin } from "antd";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
-import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
-import { NameDetailsContent } from "../NameDetailsModal";
 import SuggestionsList from "../../../app/(navbar)/names/retired/_components/NameDetailsModal/SuggestionsList";
+import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
+import { getNameStatusColorClass } from "../../colors";
+import { NameDetailsContent } from "../NameDetailsModal";
 import type { SearchDetail, BaseModalProps } from "../../../types";
 
 interface SearchResultModalProps extends BaseModalProps {
@@ -33,13 +34,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
   const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
-  const titleColorClass = nameData
-    ? isRetired
-      ? nameData.isLanguageProblem === 2
-        ? "text-amber-500"
-        : "text-red-600"
-      : "text-blue-600"
-    : "text-gray-700";
+  const titleColorClass = nameData ? getNameStatusColorClass(nameData) : "text-gray-700";
 
   const displayName = nameData?.name ?? stormName ?? storms[0]?.name ?? "Unknown";
 

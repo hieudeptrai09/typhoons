@@ -1,6 +1,6 @@
 import { Modal } from "antd";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import IntensityBadge from "../../../../../components/components/IntensityBadge";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
 export interface StormDetailModalProps extends BaseModalProps {

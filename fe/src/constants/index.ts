@@ -1,65 +1,6 @@
-// Import flag components from country-flag-icons
-import CN from "country-flag-icons/react/3x2/CN"; // China
-import FM from "country-flag-icons/react/3x2/FM"; // Micronesia
-import HK from "country-flag-icons/react/3x2/HK"; // Hong Kong
-import JP from "country-flag-icons/react/3x2/JP"; // Japan
-import KH from "country-flag-icons/react/3x2/KH"; // Cambodia
-import KP from "country-flag-icons/react/3x2/KP"; // North Korea
-import KR from "country-flag-icons/react/3x2/KR"; // South Korea
-import LA from "country-flag-icons/react/3x2/LA"; // Laos
-import MO from "country-flag-icons/react/3x2/MO"; // Macao
-import MY from "country-flag-icons/react/3x2/MY"; // Malaysia
-import PH from "country-flag-icons/react/3x2/PH"; // Philippines
-import TH from "country-flag-icons/react/3x2/TH"; // Thailand
-import US from "country-flag-icons/react/3x2/US"; // USA
-import VN from "country-flag-icons/react/3x2/VN"; // Vietnam
 import type { IntensityType, RetiredName, Storm, Suggestion, TyphoonName } from "../types";
 
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
-
-export const BACKGROUND_BADGE: Record<IntensityType, string> = {
-  TD: "#00CCFF",
-  TS: "#00FF00",
-  STS: "#C0FFC0",
-  1: "#FFFF00",
-  2: "#FFCC00",
-  3: "#FF6600",
-  4: "#FF0000",
-  5: "#CC00CC",
-};
-
-export const BACKGROUND_HOVER_BADGE: Record<IntensityType, string> = {
-  TD: "#00B3E6",
-  TS: "#00E600",
-  STS: "#ADEBAD",
-  1: "#EBEB00",
-  2: "#EBB800",
-  3: "#EB5C00",
-  4: "#EB0000",
-  5: "#B800B8",
-};
-
-export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
-  TD: "#FFFFFF",
-  TS: "#005500",
-  STS: "#004D26",
-  1: "#666600",
-  2: "#663300",
-  3: "#FFFFFF",
-  4: "#FFFFFF",
-  5: "#FFFFFF",
-};
-
-export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
-  TD: "#0099CC",
-  TS: "#00BB00",
-  STS: "#008844",
-  1: "#CC9900",
-  2: "#FF9900",
-  3: "#FF5500",
-  4: "#DD0000",
-  5: "#AA00AA",
-};
 
 export const SORTING_RANK: Record<IntensityType, number> = {
   5: 5,
@@ -126,25 +67,4 @@ export const defaultStorm: Storm = {
   position: 0,
   country: "",
   map: "",
-};
-
-// Country flag component mapping
-export const COUNTRY_FLAG_COMPONENTS: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  Cambodia: KH,
-  China: CN,
-  "DPR Korea": KP,
-  "HK, China": HK,
-  Japan: JP,
-  "Laos PDR": LA,
-  "Macao, China": MO,
-  Malaysia: MY,
-  Micronesia: FM,
-  Philippines: PH,
-  "RO Korea": KR,
-  Thailand: TH,
-  "U.S.A.": US,
-  Vietnam: VN,
 };

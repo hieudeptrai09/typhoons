@@ -8,7 +8,7 @@ import PageHeader from "../../../../components/components/PageHeader";
 import { defaultRetiredName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
-import { toArr, removeFromDelimitedString } from "../../../../containers/utils/fns";
+import { toArr } from "../../../../containers/utils/fns";
 import FilterModal from "./_components/FilterModal";
 import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";

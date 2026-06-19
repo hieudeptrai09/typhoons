@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Spin } from "antd";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import PageHeader from "../../../../components/components/PageHeader";
-import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import HistoryModal from "../../../../components/ui/HistoryModal";
+import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import HistoryNamesTable from "./_components/HistoryNamesTable";
 import type { TyphoonName } from "../../../../types";
 

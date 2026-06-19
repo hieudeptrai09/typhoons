@@ -1,6 +1,5 @@
 import { Button } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import { getIntensityFromNumber, calculateAverage } from "../../_utils/fns";
 import type { Storm } from "../../../../../types";
 

@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import { Input } from "antd";
 import { Search } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Menu from "./_components/Menu";
 
 const HomePage = () => {

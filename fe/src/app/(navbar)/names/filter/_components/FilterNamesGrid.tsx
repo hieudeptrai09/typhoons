@@ -1,7 +1,7 @@
 import { Button } from "antd";
+import { getNameStatusColor, getNameStatusBgClass } from "../../../../../components/colors";
 import CountryFlag from "../../../../../components/components/CountryFlag";
-import { COUNTRY_FLAG_COMPONENTS } from "../../../../../constants";
-import { getNameColor, getCellBg } from "../_utils/fns";
+import { COUNTRY_NAMES } from "../../../../../components/components/CountryFlag";
 import type { TyphoonName } from "../../../../../types";
 
 interface FilterNamesGridProps {
@@ -14,7 +14,6 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
   const rows = 10;
   const cols = 14;
 
-  const countryEntries = Object.entries(COUNTRY_FLAG_COMPONENTS);
   const columnWidth = `${100 / cols}%`;
 
   const filteredIds = new Set(filteredNames.map((n) => n.id));
@@ -46,7 +45,7 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
         </colgroup>
         <thead>
           <tr>
-            {countryEntries.map(([countryName], index) => (
+            {COUNTRY_NAMES.map((countryName, index) => (
               <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
                 <div className="flex items-center justify-center">
                   <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />
@@ -64,7 +63,9 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
                 const matchedNames = positionNames.filter((n) => filteredIds.has(n.id));
                 const hasMatch = matchedNames.length > 0;
 
-                const cellBg = hasMatch ? getCellBg(getHighestPriorityName(matchedNames)) : "";
+                const cellBg = hasMatch
+                  ? getNameStatusBgClass(getHighestPriorityName(matchedNames))
+                  : "";
 
                 return (
                   <td key={col} className={`border border-stone-300 p-0 ${cellBg}`}>
@@ -75,7 +76,7 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
                           type="text"
                           onClick={() => onNameClick(name)}
                           className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
-                          style={{ color: getNameColor(name) }}
+                          style={{ color: getNameStatusColor(name) }}
                         >
                           {name.name}
                         </Button>

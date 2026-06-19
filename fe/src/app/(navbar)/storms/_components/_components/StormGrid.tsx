@@ -1,11 +1,6 @@
 import { useState, useMemo, type ReactNode } from "react";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../constants";
-import {
-  getIntensityFromNumber,
-  getDistanceColor,
-  calculateAverage,
-  getHighlights,
-} from "../../_utils/fns";
+import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
+import { getIntensityFromNumber, calculateAverage, getHighlights } from "../../_utils/fns";
 import GridCell from "./GridCell";
 import type { Storm } from "../../../../../types";
 
