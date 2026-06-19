@@ -76,7 +76,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
     ? name.isLanguageProblem === 2
       ? "text-amber-500"
       : "text-red-600"
-    : "text-blue-600";
+    : "text-green-600";
 
   return (
     <Modal

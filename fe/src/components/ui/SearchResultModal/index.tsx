@@ -38,7 +38,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
       ? nameData.isLanguageProblem === 2
         ? "text-amber-500"
         : "text-red-600"
-      : "text-blue-600"
+      : "text-green-600"
     : "text-gray-700";
 
   const displayName = nameData?.name ?? stormName ?? storms[0]?.name ?? "Unknown";
