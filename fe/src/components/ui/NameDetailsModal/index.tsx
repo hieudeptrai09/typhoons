@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import CountryFlag from "../../../components/components/CountryFlag";
 import ImageWithLoader from "../../components/ImageWithLoader";
+import { getNameStatusColorClass } from "../../colors";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
 interface NameDetailsModalProps extends BaseModalProps {
@@ -72,11 +73,7 @@ const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
 };
 
 const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
-  const titleColorClass = Boolean(name.isRetired)
-    ? name.isLanguageProblem === 2
-      ? "text-amber-500"
-      : "text-red-600"
-    : "text-green-600";
+  const titleColorClass = getNameStatusColorClass(name);
 
   return (
     <Modal

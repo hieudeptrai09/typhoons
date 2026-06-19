@@ -61,18 +61,6 @@ export const getPageDescription = (
   return "Advanced filtering for all typhoon names (current and retired). Search by name, country, language, position, or browse alphabetically. View complete details including meanings, images, and descriptions.";
 };
 
-export const getNameColor = (name: TyphoonName): string => {
-  if (name.isLanguageProblem === 2) return "#f59e0b";
-  if (Boolean(name.isRetired)) return "#dc2626";
-  return "#16a34a";
-};
-
-export const getCellBg = (name: TyphoonName): string => {
-  if (name.isLanguageProblem === 2) return "bg-amber-100";
-  if (Boolean(name.isRetired)) return "bg-red-100";
-  return "bg-emerald-100";
-};
-
 export const categorizeLettersByStatus = (
   namesList: TyphoonName[],
 ): Record<string, [boolean, boolean, boolean]> => {

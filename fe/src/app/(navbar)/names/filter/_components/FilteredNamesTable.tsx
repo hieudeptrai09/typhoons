@@ -3,6 +3,7 @@ import { Table } from "antd";
 import { Flame, Skull } from "lucide-react";
 import EmptyResults from "../../../../../components/components/EmptyResults";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import { getNameStatusColorClass } from "../../../../../components/colors";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -19,18 +20,6 @@ const FilteredNamesTable = ({
   onNameClick,
 }: FilteredNamesTableProps) => {
   const tableColumns = useMemo<ColumnsType<TyphoonName>>(() => {
-    const getNameColor = (row: TyphoonName): string => {
-      if (row.isLanguageProblem === 2) return "text-amber-500";
-      if (Boolean(row.isRetired)) return "text-red-600";
-      return "text-green-600";
-    };
-
-    const getRetiredColor = (row: TyphoonName): string => {
-      if (!row.isRetired) return "text-green-600";
-      if (row.isLanguageProblem === 2) return "text-amber-500";
-      return "text-red-600";
-    };
-
     const cols: ColumnsType<TyphoonName> = [
       {
         title: "#",
@@ -49,7 +38,7 @@ const FilteredNamesTable = ({
         fixed: "left" as const,
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (_: unknown, record: TyphoonName) => (
-          <span className={`font-semibold ${getNameColor(record)}`}>{record.name}</span>
+          <span className={`font-semibold ${getNameStatusColorClass(record)}`}>{record.name}</span>
         ),
       },
       {
@@ -59,7 +48,7 @@ const FilteredNamesTable = ({
         sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
         render: (_: unknown, record: TyphoonName) =>
           record.isRetired ? (
-            <Skull className={getRetiredColor(record)} size={20} />
+            <Skull className={getNameStatusColorClass(record)} size={20} />
           ) : (
             <Flame className="text-green-600" size={20} />
           ),

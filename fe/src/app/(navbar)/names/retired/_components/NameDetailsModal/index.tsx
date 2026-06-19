@@ -3,6 +3,7 @@ import { Modal, Spin } from "antd";
 import NameImage from "./NameImage";
 import NameInfo from "./NameInfo";
 import SuggestionsList from "./SuggestionsList";
+import { getRetiredReasonColorClass } from "../../../../../../components/colors";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
 export interface NameDetailsModalProps extends BaseModalProps {
@@ -25,21 +26,6 @@ const NameDetailsModal = ({
   const [activeTab, setActiveTab] = useState<TabType>("info");
 
   if (!selectedName) return null;
-
-  const getNameColorClass = (name: RetiredName): string => {
-    switch (name.isLanguageProblem) {
-      case 0:
-        return "text-red-600";
-      case 1:
-        return "text-green-600";
-      case 2:
-        return "text-amber-500";
-      case 3:
-        return "text-purple-600";
-      default:
-        return "text-red-600";
-    }
-  };
 
   const getTabClasses = (tab: TabType) => {
     const isActive = activeTab === tab;
@@ -75,7 +61,7 @@ const NameDetailsModal = ({
       centered
       destroyOnHidden
       title={
-        <span className={`text-3xl font-bold ${getNameColorClass(selectedName)}`}>
+        <span className={`text-3xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}>
           {selectedName.name}
         </span>
       }

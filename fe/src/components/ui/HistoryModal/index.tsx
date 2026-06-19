@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Modal, Spin } from "antd";
 import ImageWithLoader from "../../components/ImageWithLoader";
+import { getNameStatusColor } from "../../colors";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import type { BaseModalProps, TyphoonName, Storm } from "../../../types";
@@ -48,12 +49,6 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     const bFirst = bStorms.length > 0 ? Math.min(...bStorms.map((s) => s.year)) : Infinity;
     return aFirst - bFirst;
   });
-
-  const getNameColor = (name: TyphoonName): string => {
-    if (name.isLanguageProblem === 2) return "#f59e0b";
-    if (name.isRetired) return "#dc2626";
-    return "#16a34a";
-  };
 
   const handleNameClick = (nameId: number) => {
     setExpandedState((prev) =>
@@ -112,7 +107,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="whitespace-pre-line">
-                          <span className="font-semibold" style={{ color: getNameColor(name) }}>
+                          <span className="font-semibold" style={{ color: getNameStatusColor(name) }}>
                             {name.name}
                           </span>
                           {count > 0 && (
