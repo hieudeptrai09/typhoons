@@ -55,6 +55,7 @@ const orderCol = <T,>(): ColumnsType<T>[number] => ({
   title: "#",
   key: "order",
   width: 52,
+  fixed: "left" as const,
   render: (_: unknown, __: T, index: number) => (
     <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
   ),
@@ -66,6 +67,8 @@ const positionColumns: ColumnsType<PositionRow> = [
     title: "Position",
     dataIndex: "position",
     key: "position",
+    width: 140,
+    fixed: "left" as const,
     sorter: (a, b) => a.position - b.position,
     render: (_: unknown, row: PositionRow) => <span>{getPositionTitle(row.position)}</span>,
   },
@@ -99,6 +102,8 @@ const nameColumns: ColumnsType<NameRow> = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 140,
+    fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, row: NameRow) => <span className="font-semibold">{row.name}</span>,
   },
@@ -201,7 +206,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           pagination={false}
           size="large"
           className="typhoon-table"
-          scroll={undefined}
+          scroll={{ x: "max-content" }}
         />
       </div>
     );

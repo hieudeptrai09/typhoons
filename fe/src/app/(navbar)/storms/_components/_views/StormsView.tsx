@@ -30,6 +30,7 @@ const makeNameColumns = (): ColumnsType<NameData> => [
     title: "#",
     key: "order",
     width: 52,
+    fixed: "left" as const,
     render: (_: unknown, __: NameData, index: number) => (
       <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
     ),
@@ -38,6 +39,8 @@ const makeNameColumns = (): ColumnsType<NameData> => [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 140,
+    fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, row: NameData) => {
       const intensityLabel = getIntensityFromNumber(row.avgIntensity);
@@ -136,7 +139,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
         pagination={false}
         size="large"
         className="typhoon-table"
-        scroll={undefined}
+        scroll={{ x: "max-content" }}
       />
     </div>
   );

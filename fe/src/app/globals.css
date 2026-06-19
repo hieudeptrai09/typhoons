@@ -69,11 +69,30 @@ body {
   background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
-/* No internal scroll container — use the global page scrollbar */
-.typhoon-table .ant-table-wrapper,
-.typhoon-table .ant-table-body,
+/* Allow horizontal scrolling for pinned columns */
 .typhoon-table .ant-table-content {
-  overflow: visible !important;
+  overflow-x: auto !important;
+}
+
+/* Sticky column backgrounds — must be opaque so scrolling content doesn't show through */
+.typhoon-table .ant-table-thead .ant-table-cell-fix-left {
+  background-color: #0284c7 !important; /* sky-600 */
+}
+
+.typhoon-table .ant-table-thead .ant-table-cell-fix-left.ant-table-column-sort {
+  background-color: #0369a1 !important; /* sky-700 */
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(odd) .ant-table-cell-fix-left {
+  background-color: #ffffff !important;
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix-left {
+  background-color: #e0f2fe !important; /* sky-100 */
+}
+
+.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix-left {
+  background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
 /* Search bar in navbar */
