@@ -78,7 +78,7 @@ body {
   background-color: #ffffff !important; 
 }
 
-.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fi {
+.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix {
   background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
