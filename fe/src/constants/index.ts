@@ -43,6 +43,7 @@ export const defaultTyphoonName: TyphoonName = {
   country: "",
   language: "",
   isRetired: false,
+  isReplaced: false,
   isLanguageProblem: 0,
   tag: "",
 };
