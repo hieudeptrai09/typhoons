@@ -74,6 +74,12 @@ body {
   overflow-x: auto !important;
 }
 
+/* Keep fixed columns below the navbar (z-50) when scrolling */
+.typhoon-table .ant-table-cell-fix-left,
+.typhoon-table .ant-table-cell-fix-right {
+  z-index: 2 !important;
+}
+
 /* Sticky column backgrounds — must be opaque so scrolling content doesn't show through */
 .typhoon-table .ant-table-thead .ant-table-cell-fix-left {
   background-color: #0284c7 !important; /* sky-600 */
