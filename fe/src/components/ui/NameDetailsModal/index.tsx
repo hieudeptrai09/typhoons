@@ -16,23 +16,34 @@ const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
     <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
       <div className="flex-1 space-y-4">
         <div>
-          <div className="text-sm font-medium text-slate-500">Meaning</div>
-          <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
+          <div id="name-meaning-label" className="text-sm font-medium text-slate-500">
+            Meaning
+          </div>
+          <p
+            className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic"
+            aria-describedby="name-meaning-label"
+          >
             {name.meaning}
           </p>
         </div>
 
         <div className="border-t border-slate-200 pt-3">
-          <div className="mb-2 text-sm font-medium text-slate-500">Origin</div>
-          <div className="flex items-center gap-3">
+          <div id="name-origin-label" className="mb-2 text-sm font-medium text-slate-500">
+            Origin
+          </div>
+          <div className="flex items-center gap-3" aria-describedby="name-origin-label">
             <CountryFlag country={name.country} className="h-8 w-12" />
             <div className="text-base font-semibold text-slate-800">{name.country}</div>
           </div>
         </div>
 
         <div className="border-t border-slate-200 pt-3">
-          <div className="text-sm font-medium text-slate-500">Language</div>
-          <div className="mt-1 text-base text-slate-700">{name.language}</div>
+          <div id="name-language-label" className="text-sm font-medium text-slate-500">
+            Language
+          </div>
+          <div className="mt-1 text-base text-slate-700" aria-describedby="name-language-label">
+            {name.language}
+          </div>
         </div>
 
         {"replacementName" in name && name.replacementName && (
@@ -90,6 +101,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       footer={null}
       centered
       destroyOnHidden
+      aria-label={`Details for ${name.name}`}
       styles={{
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },

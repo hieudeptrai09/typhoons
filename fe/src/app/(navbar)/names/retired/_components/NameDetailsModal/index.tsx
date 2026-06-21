@@ -70,19 +70,39 @@ const NameDetailsModal = ({
       }}
     >
       <div className="flex flex-col pt-4">
-        <div className="mb-6 flex border-b border-gray-200">
-          <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
+        <div
+          className="mb-6 flex border-b border-gray-200"
+          role="tablist"
+          aria-label="Name details tabs"
+        >
+          <button
+            onClick={() => setActiveTab("info")}
+            role="tab"
+            aria-selected={activeTab === "info"}
+            aria-controls="tabpanel-info"
+            aria-label="Name Information"
+            className={getTabClasses("info")}
+          >
             Name Information
           </button>
           <button
             onClick={() => setActiveTab("suggestions")}
+            role="tab"
+            aria-selected={activeTab === "suggestions"}
+            aria-controls="tabpanel-suggestions"
+            aria-label="Suggested Replacements"
             className={getTabClasses("suggestions")}
           >
             Suggested Replacements
           </button>
         </div>
 
-        <div className="flex-1">
+        <div
+          className="flex-1"
+          id={`tabpanel-${activeTab}`}
+          role="tabpanel"
+          aria-describedby={`tabpanel-${activeTab}`}
+        >
           {activeTab === "info" && <NameDetailsContent name={selectedName} />}
           {activeTab === "suggestions" && renderSuggestionsContent()}
         </div>

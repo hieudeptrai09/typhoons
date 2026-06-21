@@ -10,10 +10,11 @@ interface MenuProps {
 
 const Menu = ({ href, label, bgColor, hoverBgColor }: MenuProps) => {
   return (
-    <Link href={href} className="block">
+    <Link href={href} className="block" aria-label={label}>
       <Button
         block
         size="large"
+        aria-label={label}
         style={{ backgroundColor: bgColor, borderColor: bgColor }}
         className="!h-12 !rounded-full !text-xl !font-bold !text-white"
         onMouseEnter={(e) => {

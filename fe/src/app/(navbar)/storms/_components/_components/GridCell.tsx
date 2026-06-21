@@ -29,6 +29,9 @@ const GridCell = ({
         isClickable ? "cursor-pointer hover:bg-stone-200" : "cursor-default"
       } ${className}`}
       onClick={handleClick}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      aria-label={stormNames.length > 0 ? `View storms: ${stormNames.join(", ")}` : undefined}
       title={viewType !== "highlights" && stormNames.length > 0 ? stormNames.join(", ") : ""}
     >
       {viewType !== "highlights" && stormNames.length > 0 && (

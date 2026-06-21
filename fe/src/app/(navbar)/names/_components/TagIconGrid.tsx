@@ -78,6 +78,7 @@ const NameButton = ({
 }) => (
   <button
     title={name.name}
+    aria-label={`View details for ${name.name}`}
     onClick={(e) => {
       e.stopPropagation();
       onNameClick(name);
@@ -179,12 +180,20 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
     <div>
       <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-6">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show Name</span>
-          <Switch checked={showName} onChange={(v) => setShowName(v)} />
+          <span className="text-sm font-semibold text-gray-700" id="show-name-label">
+            Show Name
+          </span>
+          <Switch checked={showName} onChange={(v) => setShowName(v)} aria-label="Show Name" />
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show History</span>
-          <Switch checked={showHistory} onChange={(v) => setShowHistory(v)} />
+          <span className="text-sm font-semibold text-gray-700" id="show-history-label">
+            Show History
+          </span>
+          <Switch
+            checked={showHistory}
+            onChange={(v) => setShowHistory(v)}
+            aria-label="Show History"
+          />
         </div>
       </div>
 
@@ -197,6 +206,9 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
             <td
               key={col}
               className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
+              role="button"
+              tabIndex={0}
+              aria-label={`Position ${position}${currentName ? `, ${currentName.name}` : ""}`}
               onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
             >
               <CellContent

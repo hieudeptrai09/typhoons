@@ -17,6 +17,7 @@ const FilterButton = ({ onClick, count, color, hoverClassName }: FilterButtonPro
             type="primary"
             icon={<Filter size={16} />}
             onClick={onClick}
+            aria-label={`Open filters${count > 0 ? `, ${count} active` : ""}`}
             style={{ backgroundColor: color, borderColor: color }}
             className={`!px-6 !py-5 !font-semibold ${hoverClassName}`}
           >

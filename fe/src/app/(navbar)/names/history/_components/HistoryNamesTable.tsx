@@ -42,6 +42,9 @@ const HistoryNamesTable = ({ names, onCellClick }: HistoryNamesTableProps) => {
           <td
             key={col}
             className="cursor-pointer border border-stone-300 p-0 hover:bg-stone-200"
+            role="button"
+            tabIndex={0}
+            aria-label={`Position ${position}, ${count} name${count !== 1 ? "s" : ""}`}
             onClick={() =>
               onCellClick(
                 position,

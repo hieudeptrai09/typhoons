@@ -76,6 +76,8 @@ const SearchBar = () => {
         <Input
           prefix={<Search size={16} className="text-white/70" />}
           placeholder="Search names..."
+          aria-label="Search typhoon names"
+          aria-describedby={isDropdownOpen && query.trim() ? "search-status" : undefined}
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
           onFocus={() => query.trim() && setIsDropdownOpen(true)}
@@ -97,13 +99,19 @@ const SearchBar = () => {
         />
 
         {isDropdownOpen && query.trim() && (
-          <div className="absolute top-full right-0 left-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+          <div
+            className="absolute top-full right-0 left-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg"
+            role="listbox"
+            aria-label="Search results"
+          >
             {loading ? (
-              <div className="flex justify-center py-4">
+              <div id="search-status" className="flex justify-center py-4">
                 <Spin size="small" />
               </div>
             ) : !results || results.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+              <div id="search-status" className="px-4 py-3 text-sm text-gray-500">
+                No results found
+              </div>
             ) : (
               <>
                 <div className="max-h-80 overflow-y-auto">
@@ -111,6 +119,9 @@ const SearchBar = () => {
                     <button
                       key={result.id}
                       onClick={() => handleSelect(result)}
+                      aria-label={`View details for ${result.name}`}
+                      role="option"
+                      aria-selected={false}
                       className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors hover:bg-blue-50"
                     >
                       <span className="text-sm text-gray-900">
@@ -121,6 +132,7 @@ const SearchBar = () => {
                 </div>
                 <button
                   onClick={handleViewAll}
+                  aria-label="View all search results"
                   className="w-full cursor-pointer px-4 py-2.5 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
                 >
                   View all results{results.length > 5 ? ` (${results.length})` : ""}

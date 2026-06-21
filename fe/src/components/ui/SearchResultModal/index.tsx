@@ -86,11 +86,19 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
     >
       <div className="flex flex-col pt-4">
         {visibleTabs.length > 1 && (
-          <div className="mb-6 flex border-b border-gray-200">
+          <div
+            className="mb-6 flex border-b border-gray-200"
+            role="tablist"
+            aria-label="Search result tabs"
+          >
             {visibleTabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
+                role="tab"
+                aria-selected={activeTab === tab.key}
+                aria-controls={`search-tabpanel-${tab.key}`}
+                aria-label={tab.label}
                 className={getTabClasses(tab.key)}
               >
                 {tab.label}
@@ -99,7 +107,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
           </div>
         )}
 
-        <div className="flex-1">
+        <div className="flex-1" id={`search-tabpanel-${activeTab}`} role="tabpanel">
           {activeTab === "storms" &&
             (storms.length > 0 ? (
               <NameListModalInner name={displayName} storms={storms} />

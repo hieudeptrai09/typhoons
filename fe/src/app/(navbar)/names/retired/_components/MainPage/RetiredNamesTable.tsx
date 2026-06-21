@@ -85,7 +85,12 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
         dataSource={paginatedData}
         columns={columns}
         rowKey="id"
-        onRow={(record) => ({ onClick: () => onNameClick(record) })}
+        onRow={(record) => ({
+          onClick: () => onNameClick(record),
+          "aria-label": `View details for ${record.name}`,
+          role: "button",
+          tabIndex: 0,
+        })}
         rowClassName={(_record, index) =>
           `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
         }

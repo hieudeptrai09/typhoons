@@ -75,12 +75,20 @@ interface SectionProps {
   children: React.ReactNode;
 }
 
-const Section = ({ label, children }: SectionProps) => (
-  <div className="flex flex-col gap-2">
-    <span className="text-xs font-semibold tracking-widest text-gray-600 uppercase">{label}</span>
-    {children}
-  </div>
-);
+const Section = ({ label, children }: SectionProps) => {
+  const sectionId = `dashboard-section-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  return (
+    <div className="flex flex-col gap-2">
+      <span
+        id={sectionId}
+        className="text-xs font-semibold tracking-widest text-gray-600 uppercase"
+      >
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+};
 
 const isTableModeDisabled = (view: string, filter: string): boolean => {
   if (view === "average" && filter === "country") return true;
@@ -148,10 +156,15 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
       }}
       title={<span className="text-xl font-bold text-gray-700">Dashboard View</span>}
       footer={[
-        <Button key="reset" onClick={handleReset}>
+        <Button key="reset" onClick={handleReset} aria-label="Reset dashboard view settings">
           Reset
         </Button>,
-        <Button key="apply" type="primary" onClick={() => onApply({ view, mode, filter })}>
+        <Button
+          key="apply"
+          type="primary"
+          onClick={() => onApply({ view, mode, filter })}
+          aria-label="Apply dashboard view settings"
+        >
           Apply
         </Button>,
       ]}
@@ -163,6 +176,8 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
             value={view}
             onChange={(v) => handleViewChange(String(v))}
             block
+            aria-label="Select view type"
+            aria-describedby="dashboard-section-view"
           />
         </Section>
 
@@ -172,6 +187,8 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
             value={filter || filterOptions[0]?.value}
             onChange={(v) => handleFilterChange(String(v))}
             block
+            aria-label="Select grouping option"
+            aria-describedby="dashboard-section-group-by"
           />
         </Section>
 
@@ -186,6 +203,8 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
             value={mode}
             onChange={(v) => setMode(String(v))}
             block
+            aria-label="Select display mode"
+            aria-describedby="dashboard-section-display-as"
           />
         </Section>
       </div>

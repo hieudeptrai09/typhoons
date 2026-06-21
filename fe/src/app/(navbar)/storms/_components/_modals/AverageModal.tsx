@@ -7,7 +7,6 @@ import {
   BACKGROUND_HOVER_BADGE,
 } from "../../../../../components/colors";
 import IntensityBadge from "../../../../../components/components/IntensityBadge";
-import { INTENSITY_RANK } from "../../../../../constants";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
@@ -35,10 +34,13 @@ const AverageModalInner = ({
 
   return (
     <div className="space-y-3">
-      <div title={JSON.stringify(INTENSITY_RANK)}>
-        <span className="text-blue-700">Overall Average Intensity: </span>
+      <div>
+        <span id="avg-intensity-label" className="text-blue-700">
+          Overall Average Intensity:{" "}
+        </span>
         <span
           className="text-lg font-bold"
+          aria-describedby="avg-intensity-label"
           style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)] }}
         >
           {average.toFixed(2)}
@@ -84,10 +86,14 @@ const AverageModalInner = ({
                     className="flex items-center justify-between rounded-md px-3 py-2 transition-colors"
                     style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
                   >
-                    <span className="font-semibold" style={{ color: textColor }}>
+                    <span
+                      className="font-semibold"
+                      aria-describedby={`avg-stats-${idx}`}
+                      style={{ color: textColor }}
+                    >
                       {data.name}
                     </span>
-                    <div className="flex gap-3 text-sm">
+                    <div id={`avg-stats-${idx}`} className="flex gap-3 text-sm">
                       <span style={{ color: textColor }}>
                         Count: <span className="font-semibold">{data.count}</span>
                       </span>

@@ -81,6 +81,7 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
         <Button
           type="primary"
           onClick={onClick}
+          aria-label="Change dashboard view settings"
           style={{ backgroundColor: "#a855f7", borderColor: "#a855f7" }}
           className="!px-6 !py-5 !font-semibold hover:!border-purple-600 hover:!bg-purple-600"
         >

@@ -97,6 +97,8 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                     type="text"
                     disabled={!hasExpandable}
                     onClick={() => hasExpandable && handleNameClick(name.id)}
+                    aria-describedby={name.meaning ? `history-meaning-${name.id}` : undefined}
+                    aria-expanded={hasExpandable ? isExpanded : undefined}
                     className={`!h-auto !w-full !rounded-lg !px-3 !py-2 !text-left ${
                       isExpanded ? "!rounded-b-none !bg-sky-50" : ""
                     } ${!hasExpandable ? "!cursor-default" : ""}`}
@@ -118,7 +120,10 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           )}
                         </div>
                         {name.meaning && (
-                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-teal-700 italic">
+                          <p
+                            id={`history-meaning-${name.id}`}
+                            className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-teal-700 italic"
+                          >
                             {name.meaning}
                           </p>
                         )}

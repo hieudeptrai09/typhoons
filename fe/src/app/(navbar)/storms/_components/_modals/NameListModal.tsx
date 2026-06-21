@@ -28,12 +28,18 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-700">Country:</span>
+            <span id="namelist-country-label" className="font-semibold text-gray-700">
+              Country:
+            </span>
             <CountryFlag country={storms[0].country} className="h-5 w-8" />
           </div>
           <div>
-            <span className="font-semibold text-gray-700">Position:</span>
-            <span className="ml-2 text-gray-700">{storms[0].position}</span>
+            <span id="namelist-position-label" className="font-semibold text-gray-700">
+              Position:
+            </span>
+            <span className="ml-2 text-gray-700" aria-describedby="namelist-position-label">
+              {storms[0].position}
+            </span>
           </div>
           {storms[0].correctSpelling && (
             <div>
@@ -44,15 +50,15 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm font-semibold text-gray-700">Show Map</span>
-          <Switch checked={showMap} onChange={setShowMap} />
+          <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 font-semibold text-gray-700">
+        <h3 id="storm-list-heading" className="mb-3 font-semibold text-gray-700">
           All {name} Storms ({storms.length})
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-2" aria-describedby="storm-list-heading">
           {storms.map((storm, idx) => {
             const bgColor = BACKGROUND_BADGE[storm.intensity];
             const textColor = TEXT_COLOR_BADGE[storm.intensity];

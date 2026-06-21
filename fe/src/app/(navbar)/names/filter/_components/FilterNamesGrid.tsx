@@ -46,6 +46,7 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
                   key={name.id}
                   type="text"
                   onClick={() => onNameClick(name)}
+                  aria-label={`View details for ${name.name}`}
                   className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
                   style={{ color: getNameStatusColor(name) }}
                 >

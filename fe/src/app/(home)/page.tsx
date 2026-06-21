@@ -27,12 +27,17 @@ const HomePage = () => {
         <a
           href="https://www.facebook.com/profile.php?id=61586585781960"
           target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit our Facebook page"
           className="mb-4"
         >
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
-        <p className="mb-8 max-w-md text-center text-lg font-semibold text-gray-800">
+        <p
+          id="home-search-description"
+          className="mb-8 max-w-md text-center text-lg font-semibold text-gray-800"
+        >
           Track typhoons and explore their names
         </p>
 
@@ -40,6 +45,8 @@ const HomePage = () => {
           <Input
             size="large"
             placeholder="Search typhoon names..."
+            aria-label="Search typhoon names"
+            aria-describedby="home-search-description"
             prefix={<Search size={18} className="text-gray-400" />}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -55,7 +62,10 @@ const HomePage = () => {
         </div>
       </div>
 
-      <footer className="flex h-16 items-center justify-center gap-2 bg-slate-900">
+      <footer
+        className="flex h-16 items-center justify-center gap-2 bg-slate-900"
+        aria-label="Site footer"
+      >
         <p className="text-center text-xs text-slate-400">
           Informational use only •{" "}
           <span className="text-slate-300">

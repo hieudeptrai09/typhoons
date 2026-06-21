@@ -143,17 +143,22 @@ export default function SearchPageContent() {
           <EmptyResults />
         ) : (
           <>
-            <div className="mb-4 text-sm text-gray-500">
+            <div id="search-result-count" className="mb-4 text-sm text-gray-500">
               {results.length} result{results.length !== 1 ? "s" : ""} found
             </div>
-            <div className="overflow-x-auto pb-px">
+            <div className="overflow-x-auto pb-px" aria-describedby="search-result-count">
               <Table<SearchResult>
                 dataSource={results}
                 columns={columns}
                 rowKey={(record) =>
                   record.id !== null ? String(record.id) : `storm-${record.name}`
                 }
-                onRow={(record) => ({ onClick: () => handleNameClick(record) })}
+                onRow={(record) => ({
+                  onClick: () => handleNameClick(record),
+                  "aria-label": `View details for ${record.name}`,
+                  role: "button",
+                  tabIndex: 0,
+                })}
                 rowClassName={(_record, index) =>
                   `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
                 }

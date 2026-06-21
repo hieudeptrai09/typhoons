@@ -67,10 +67,10 @@ const FilterModal = ({
       }}
       title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
       footer={[
-        <Button key="clear" onClick={() => form.resetFields()}>
+        <Button key="clear" onClick={() => form.resetFields()} aria-label="Clear all filters">
           Clear All
         </Button>,
-        <Button key="apply" type="primary" onClick={() => form.submit()}>
+        <Button key="apply" type="primary" onClick={() => form.submit()} aria-label="Apply filters">
           Apply
         </Button>,
       ]}
@@ -105,11 +105,17 @@ const FilterModal = ({
         <Form.Item
           label="Position"
           name="position"
+          extra={<span id="filter-position-help">Enter a value between 1 and 140</span>}
           rules={[
             { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
           ]}
         >
-          <InputNumber placeholder="Enter position (1–140)..." min={1} max={140} />
+          <InputNumber
+            placeholder="Enter position (1–140)..."
+            min={1}
+            max={140}
+            aria-describedby="filter-position-help"
+          />
         </Form.Item>
 
         <Form.Item label="Status" name="status" className="mb-0">

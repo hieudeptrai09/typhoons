@@ -24,6 +24,7 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
           <Link
             key={item.href}
             href={item.href}
+            aria-label={item.label}
             onMouseEnter={() => setHoveredHref(item.href)}
             onMouseLeave={() => setHoveredHref(null)}
             style={{
@@ -41,7 +42,7 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
   );
 
   return (
-    <div className="hidden space-x-4 md:flex">
+    <div className="hidden space-x-4 md:flex" role="navigation" aria-label="Desktop navigation">
       <NavLink
         href="/storms/"
         icon={CloudLightning}
@@ -59,6 +60,8 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
       >
         <Link href="/names">
           <button
+            aria-label="Names menu"
+            aria-expanded={undefined}
             className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/30 ${isNamesActive ? "font-bold" : ""}`}
           >
             <BookText size={20} />

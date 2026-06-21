@@ -15,7 +15,7 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse">
+      <table className="min-w-full border-collapse" aria-label="Typhoon name positions by country">
         <colgroup>
           {[...Array(COLS)].map((_, idx) => (
             <col key={idx} style={{ width: columnWidth }} />
