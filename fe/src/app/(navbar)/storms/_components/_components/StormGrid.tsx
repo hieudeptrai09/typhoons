@@ -1,5 +1,6 @@
 import { useState, useMemo, type ReactNode } from "react";
 import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
+import PositionGrid from "../../../../../components/components/PositionGrid";
 import { getIntensityFromNumber, calculateAverage, getHighlights } from "../../_utils/fns";
 import GridCell from "./GridCell";
 import type { Storm } from "../../../../../types";
@@ -16,9 +17,6 @@ interface StormGridProps {
   isClickable?: boolean;
   onYearHover?: (year: number | null) => void;
 }
-
-const ROWS = 10;
-const COLS = 14;
 
 const StormGrid = ({
   viewType,
@@ -249,41 +247,26 @@ const StormGrid = ({
     return "highlights";
   };
 
-  const columnWidth = `${100 / COLS}%`;
-
   return (
-    <div className="overflow-x-auto">
-      <table className="mx-auto min-w-full border-collapse">
-        <colgroup>
-          {[...Array(COLS)].map((_, idx) => (
-            <col key={idx} style={{ width: columnWidth }} />
-          ))}
-        </colgroup>
-        <tbody>
-          {[...Array(ROWS)].map((_, row) => (
-            <tr key={row}>
-              {[...Array(COLS)].map((_, col) => {
-                const position = row * COLS + col + 1;
-                const { content, className, cellClickable } = renderCellContent(position);
-                const stormNames = getStormNamesForPosition(position);
+    <PositionGrid
+      showHeader={false}
+      renderCell={(position, _row, col) => {
+        const { content, className, cellClickable } = renderCellContent(position);
+        const stormNames = getStormNamesForPosition(position);
 
-                return (
-                  <GridCell
-                    key={col}
-                    onClick={() => onCellClick(position, "position")}
-                    content={content}
-                    className={className}
-                    isClickable={cellClickable}
-                    stormNames={stormNames}
-                    viewType={getGridCellViewType()}
-                  />
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        return (
+          <GridCell
+            key={col}
+            onClick={() => onCellClick(position, "position")}
+            content={content}
+            className={className}
+            isClickable={cellClickable}
+            stormNames={stormNames}
+            viewType={getGridCellViewType()}
+          />
+        );
+      }}
+    />
   );
 };
 

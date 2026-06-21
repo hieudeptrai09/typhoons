@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Modal, Spin } from "antd";
-import SuggestionsList from "../../../app/(navbar)/names/retired/_components/NameDetailsModal/SuggestionsList";
 import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getNameStatusColorClass } from "../../colors";
@@ -14,7 +13,7 @@ interface SearchResultModalProps extends BaseModalProps {
   stormName?: string | null;
 }
 
-type TabType = "storms" | "details" | "suggestions";
+type TabType = "storms" | "details";
 
 const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("storms");
@@ -29,10 +28,8 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
 
   const nameData = detail?.name ?? null;
   const storms = detail?.storms ?? [];
-  const suggestions = detail?.suggestions ?? [];
 
   const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
-  const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   const titleColorClass = nameData ? getNameStatusColorClass(nameData) : "text-gray-700";
 
@@ -41,7 +38,6 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
   const tabs: { key: TabType; label: string; visible: boolean }[] = [
     { key: "storms", label: "Storms", visible: true },
     { key: "details", label: "Name Details", visible: isInPosition },
-    { key: "suggestions", label: "Suggestions", visible: isInPosition && isRetired },
   ];
 
   const visibleTabs = tabs.filter((t) => t.visible);
@@ -111,7 +107,6 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
               <div className="py-4 text-center text-gray-500">No storms found for this name.</div>
             ))}
           {activeTab === "details" && nameData && <NameDetailsContent name={nameData} />}
-          {activeTab === "suggestions" && <SuggestionsList suggestions={suggestions} />}
         </div>
       </div>
     </Modal>

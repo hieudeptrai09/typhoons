@@ -35,6 +35,13 @@ const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
           <div className="mt-1 text-base text-slate-700">{name.language}</div>
         </div>
 
+        {"replacementName" in name && name.replacementName && (
+          <div className="border-t border-slate-200 pt-3">
+            <div className="text-sm font-medium text-slate-500">Replaced by</div>
+            <div className="mt-1 text-base font-semibold text-teal-600">{name.replacementName}</div>
+          </div>
+        )}
+
         {!hasImage && hasDescription && (
           <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
             <div className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">

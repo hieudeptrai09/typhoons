@@ -107,7 +107,6 @@ class SearchController
             'data' => [
                 'name' => null,
                 'storms' => $storms,
-                'suggestions' => []
             ]
         ];
     }
@@ -184,38 +183,10 @@ class SearchController
             return $row;
         }, $storms);
 
-        // Fetch suggestions if retired and position 1-140
-        $suggestions = [];
-        if ((int)$nameRow['isRetired'] === 1 && (int)$nameRow['position'] >= 1 && (int)$nameRow['position'] <= 140) {
-            $sugStmt = $this->conn->prepare(
-                "SELECT
-                    sn.id,
-                    sn.nameId,
-                    sn.replacementName,
-                    sn.meaning as replacementMeaning,
-                    sn.isChosen,
-                    sn.image
-                FROM suggestednames sn
-                WHERE sn.nameId = :nameId
-                ORDER BY sn.isChosen DESC, sn.id ASC"
-            );
-            $sugStmt->bindParam(':nameId', $nameId, PDO::PARAM_INT);
-            $sugStmt->execute();
-            $suggestions = $sugStmt->fetchAll();
-
-            $suggestions = array_map(function ($row) {
-                $row['id'] = (int)$row['id'];
-                $row['nameId'] = (int)$row['nameId'];
-                $row['isChosen'] = (int)$row['isChosen'];
-                return $row;
-            }, $suggestions);
-        }
-
         return [
             'data' => [
                 'name' => $nameRow,
                 'storms' => $storms,
-                'suggestions' => $suggestions
             ]
         ];
     }

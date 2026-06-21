@@ -1,7 +1,6 @@
 import { Button } from "antd";
 import { getNameStatusColor, getNameStatusBgClass } from "../../../../../components/colors";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import { COUNTRY_NAMES } from "../../../../../components/components/CountryFlag";
+import PositionGrid from "../../../../../components/components/PositionGrid";
 import type { TyphoonName } from "../../../../../types";
 
 interface FilterNamesGridProps {
@@ -11,11 +10,6 @@ interface FilterNamesGridProps {
 }
 
 const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGridProps) => {
-  const rows = 10;
-  const cols = 14;
-
-  const columnWidth = `${100 / cols}%`;
-
   const filteredIds = new Set(filteredNames.map((n) => n.id));
 
   const namesByPosition = allNames.reduce<Record<number, TyphoonName[]>>((acc, name) => {
@@ -36,60 +30,33 @@ const FilterNamesGrid = ({ allNames, filteredNames, onNameClick }: FilterNamesGr
     );
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse">
-        <colgroup>
-          {[...Array(cols)].map((_, idx) => (
-            <col key={idx} style={{ width: columnWidth }} />
-          ))}
-        </colgroup>
-        <thead>
-          <tr>
-            {COUNTRY_NAMES.map((countryName, index) => (
-              <th key={index} className="border border-sky-300 bg-sky-600 p-2" title={countryName}>
-                <div className="flex items-center justify-center">
-                  <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />
-                </div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {[...Array(rows)].map((_, row) => (
-            <tr key={row}>
-              {[...Array(cols)].map((_, col) => {
-                const position = row * cols + col + 1;
-                const positionNames = namesByPosition[position] || [];
-                const matchedNames = positionNames.filter((n) => filteredIds.has(n.id));
-                const hasMatch = matchedNames.length > 0;
+    <PositionGrid
+      renderCell={(position, _row, col) => {
+        const positionNames = namesByPosition[position] || [];
+        const matchedNames = positionNames.filter((n) => filteredIds.has(n.id));
+        const hasMatch = matchedNames.length > 0;
 
-                const cellBg = hasMatch
-                  ? getNameStatusBgClass(getHighestPriorityName(matchedNames))
-                  : "";
+        const cellBg = hasMatch ? getNameStatusBgClass(getHighestPriorityName(matchedNames)) : "";
 
-                return (
-                  <td key={col} className={`border border-stone-300 p-0 ${cellBg}`}>
-                    <div className="flex min-h-16 w-full flex-col items-center justify-center gap-0.5 px-1 py-1">
-                      {matchedNames.map((name) => (
-                        <Button
-                          key={name.id}
-                          type="text"
-                          onClick={() => onNameClick(name)}
-                          className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
-                          style={{ color: getNameStatusColor(name) }}
-                        >
-                          {name.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        return (
+          <td key={col} className={`border border-stone-300 p-0 ${cellBg}`}>
+            <div className="flex min-h-16 w-full flex-col items-center justify-center gap-0.5 px-1 py-1">
+              {matchedNames.map((name) => (
+                <Button
+                  key={name.id}
+                  type="text"
+                  onClick={() => onNameClick(name)}
+                  className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
+                  style={{ color: getNameStatusColor(name) }}
+                >
+                  {name.name}
+                </Button>
+              ))}
+            </div>
+          </td>
+        );
+      }}
+    />
   );
 };
 

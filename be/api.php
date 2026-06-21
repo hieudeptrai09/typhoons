@@ -38,7 +38,7 @@ if (empty($request)) {
             'GET /suggested-names' => 'Get all suggested names',
             'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
             'GET /search?q={query}' => 'Search typhoon names with storm counts',
-            'GET /search?nameId={id}' => 'Get full details for a typhoon name (storms, name info, suggestions)'
+            'GET /search?nameId={id}' => 'Get full details for a typhoon name (storms, name info)'
         ]
     ]);
 }

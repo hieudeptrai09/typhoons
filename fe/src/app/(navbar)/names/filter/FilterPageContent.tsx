@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Spin, Switch } from "antd";
+import FilterButton from "../../../../components/components/FilterButton";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
 import PageHeader from "../../../../components/components/PageHeader";
@@ -10,7 +11,6 @@ import { defaultTyphoonName } from "../../../../constants";
 import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import { toArr } from "../../../../containers/utils/fns";
-import FilterButton from "./_components/FilterButton";
 import FilteredNamesTable from "./_components/FilteredNamesTable";
 import FilterModal from "./_components/FilterModal";
 import FilterNamesGrid from "./_components/FilterNamesGrid";
@@ -178,19 +178,12 @@ const FilterNamesContent = () => {
 
   return (
     <PageHeader title="Filter Names">
-      <div className="mx-auto mb-3 max-w-4xl">
-        <FilterButton
-          onClick={() => setIsFilterModalOpen(true)}
-          params={{
-            name: searchName,
-            country: selectedCountry,
-            language: selectedLanguage,
-            position: searchPosition,
-            tag: selectedTag,
-            status: selectedStatus,
-          }}
-        />
-      </div>
+      <FilterButton
+        onClick={() => setIsFilterModalOpen(true)}
+        count={activeFilterCount}
+        color="#10b981"
+        hoverClassName="hover:!border-emerald-600 hover:!bg-emerald-600"
+      />
 
       <div className="mx-auto mb-6 flex max-w-4xl justify-center gap-6">
         {(["list", "table"] as ViewMode[]).map((mode) => (

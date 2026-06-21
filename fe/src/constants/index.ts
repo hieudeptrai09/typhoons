@@ -53,4 +53,3 @@ export const defaultRetiredName: RetiredName = {
   lastYear: 0,
   replacementName: "",
 };
-

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Spin } from "antd";
+import FilterButton from "../../../../components/components/FilterButton";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import LetterNavigation from "../../../../components/components/LetterNavigation";
 import PageHeader from "../../../../components/components/PageHeader";
@@ -10,7 +11,6 @@ import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../../containers/hooks/useURLParams";
 import { toArr } from "../../../../containers/utils/fns";
 import FilterModal from "./_components/FilterModal";
-import FilterButton from "./_components/MainPage/FilterButton";
 import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
 import NameDetailsModal from "./_components/NameDetailsModal";
 import type {
@@ -155,13 +155,9 @@ const RetiredNamesContent = () => {
     <PageHeader title="Retired Typhoon Names">
       <FilterButton
         onClick={() => setIsFilterModalOpen(true)}
-        params={{
-          name: searchName,
-          year: selectedYear,
-          country: selectedCountry,
-          reason: retirementReason,
-          position: searchPosition,
-        }}
+        count={activeFilterCount}
+        color="#f97316"
+        hoverClassName="hover:!border-orange-600 hover:!bg-orange-600"
       />
 
       {activeFilterCount === 0 && (

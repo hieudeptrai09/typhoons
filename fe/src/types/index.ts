@@ -96,5 +96,4 @@ export interface SearchResult {
 export interface SearchDetail {
   name: TyphoonName | RetiredName;
   storms: Storm[];
-  suggestions: Suggestion[];
 }

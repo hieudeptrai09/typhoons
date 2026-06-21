@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Modal, Spin } from "antd";
 import { getRetiredReasonColorClass } from "../../../../../../components/colors";
-import NameImage from "./NameImage";
-import NameInfo from "./NameInfo";
+import { NameDetailsContent } from "../../../../../../components/ui/NameDetailsModal";
 import SuggestionsList from "./SuggestionsList";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
@@ -33,8 +32,6 @@ const NameDetailsModal = ({
       isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
     }`;
   };
-
-  const hasImageOrDescription = !!selectedName.image;
 
   const renderSuggestionsContent = () => {
     if (suggestionsLoading) {
@@ -73,7 +70,6 @@ const NameDetailsModal = ({
       }}
     >
       <div className="flex flex-col pt-4">
-        {/* Tabs */}
         <div className="mb-6 flex border-b border-gray-200">
           <button onClick={() => setActiveTab("info")} className={getTabClasses("info")}>
             Name Information
@@ -87,32 +83,7 @@ const NameDetailsModal = ({
         </div>
 
         <div className="flex-1">
-          {activeTab === "info" && (
-            <div className="flex h-full items-start justify-center">
-              <div
-                className={`flex w-full gap-6 ${
-                  !hasImageOrDescription ? "max-w-2xl rounded-lg bg-white p-8 shadow-sm" : ""
-                }`}
-              >
-                <NameInfo
-                  name={selectedName.name}
-                  meaning={selectedName.meaning}
-                  country={selectedName.country}
-                  position={selectedName.position}
-                  language={selectedName.language}
-                  replacementName={selectedName.replacementName}
-                  description={selectedName.description || ""}
-                  image={selectedName.image || ""}
-                />
-                <NameImage
-                  src={selectedName.image}
-                  alt={selectedName.name}
-                  description={selectedName.description}
-                />
-              </div>
-            </div>
-          )}
-
+          {activeTab === "info" && <NameDetailsContent name={selectedName} />}
           {activeTab === "suggestions" && renderSuggestionsContent()}
         </div>
       </div>

@@ -17,8 +17,7 @@ import {
   Hammer,
 } from "lucide-react";
 import { getNameStatusColorClass } from "../../../../components/colors";
-import CountryFlag from "../../../../components/components/CountryFlag";
-import { COUNTRY_NAMES } from "../../../../components/components/CountryFlag";
+import PositionGrid from "../../../../components/components/PositionGrid";
 import type { TyphoonName } from "../../../../types";
 import type { LucideIcon } from "lucide-react";
 
@@ -163,11 +162,6 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
   const [showHistory, setShowHistory] = useState(false);
   const [showName, setShowName] = useState(false);
 
-  const rows = 10;
-  const cols = 14;
-
-  const columnWidth = `${100 / cols}%`;
-
   const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
     if (n.isLanguageProblem === 2) return acc;
     acc[n.position] = n;
@@ -194,57 +188,28 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse">
-          <colgroup>
-            {[...Array(cols)].map((_, idx) => (
-              <col key={idx} style={{ width: columnWidth }} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {COUNTRY_NAMES.map((countryName, index) => (
-                <th
-                  key={index}
-                  className="border border-sky-300 bg-sky-600 p-2"
-                  title={countryName}
-                >
-                  <div className="flex items-center justify-center">
-                    <CountryFlag country={countryName} className="h-7 w-10 border-white/30" />
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {[...Array(rows)].map((_, row) => (
-              <tr key={row}>
-                {[...Array(cols)].map((_, col) => {
-                  const position = row * cols + col + 1;
-                  const currentName = currentByPosition[position];
-                  const historyNames = historyByPosition[position] ?? [];
+      <PositionGrid
+        renderCell={(position, _row, col) => {
+          const currentName = currentByPosition[position];
+          const historyNames = historyByPosition[position] ?? [];
 
-                  return (
-                    <td
-                      key={col}
-                      className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
-                      onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
-                    >
-                      <CellContent
-                        currentName={currentName}
-                        historyNames={historyNames}
-                        showHistory={showHistory}
-                        showName={showName}
-                        onNameClick={onNameClick}
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          return (
+            <td
+              key={col}
+              className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
+              onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
+            >
+              <CellContent
+                currentName={currentName}
+                historyNames={historyNames}
+                showHistory={showHistory}
+                showName={showName}
+                onNameClick={onNameClick}
+              />
+            </td>
+          );
+        }}
+      />
 
       {!showName && (
         <div className="max-w-8xl mx-auto mt-6">
