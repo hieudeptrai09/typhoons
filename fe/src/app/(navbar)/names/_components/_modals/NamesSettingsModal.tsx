@@ -63,10 +63,10 @@ const NamesSettingsModal = ({
       }}
       footer={[
         <Button key="cancel" onClick={onClose}>
-          Huỷ bỏ
+          Cancel
         </Button>,
         <Button key="apply" type="primary" onClick={handleApply}>
-          Đồng ý
+          Apply
         </Button>,
       ]}
     >
