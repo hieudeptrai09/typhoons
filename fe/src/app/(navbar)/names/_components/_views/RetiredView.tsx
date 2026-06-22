@@ -1,42 +1,43 @@
-"use client";
-
 import { useState, useMemo } from "react";
-import { Spin } from "antd";
-import FilterButton from "../../../../components/components/FilterButton";
-import FrownNotFound from "../../../../components/components/FrownNotFound";
-import LetterNavigation from "../../../../components/components/LetterNavigation";
-import PageHeader from "../../../../components/components/PageHeader";
-import { defaultRetiredName } from "../../../../constants";
-import { useFetchData } from "../../../../containers/hooks/useFetchData";
-import { useURLParams } from "../../../../containers/hooks/useURLParams";
-import { toArr } from "../../../../containers/utils/fns";
-import FilterModal from "./_components/FilterModal";
-import RetiredNamesTable from "./_components/MainPage/RetiredNamesTable";
-import NameDetailsModal from "./_components/NameDetailsModal";
-import type {
-  RetiredName,
-  Suggestion,
-  RetiredFilterParams as FilterParams,
-} from "../../../../types";
+import FilterButton from "../../../../../components/components/FilterButton";
+import LetterNavigation from "../../../../../components/components/LetterNavigation";
+import { defaultRetiredName } from "../../../../../constants";
+import { useFetchData } from "../../../../../containers/hooks/useFetchData";
+import { useURLParams } from "../../../../../containers/hooks/useURLParams";
+import { toArr } from "../../../../../containers/utils/fns";
+import RetiredNamesTable from "../_components/RetiredNamesTable";
+import RetiredFilterModal from "../_modals/RetiredFilterModal";
+import RetiredNameDetailsModal from "../_modals/RetiredNameDetailsModal";
+import type { RetiredName, Suggestion, RetiredFilterParams } from "../../../../../types";
 
-const RetiredNamesContent = () => {
-  const [selectedName, setSelectedName] = useState<RetiredName>(defaultRetiredName);
+interface URLState {
+  view?: string;
+  letter?: string;
+  name?: string;
+  year?: string;
+  country?: string;
+  reason?: string;
+  position?: string;
+}
+
+interface RetiredViewProps {
+  retiredNames: RetiredName[];
+}
+
+const RetiredView = ({ retiredNames }: RetiredViewProps) => {
+  const { params, updateParams } = useURLParams<URLState>();
+  const currentLetter = params.letter || "A";
+
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isNameDetailsModalOpen, setIsNameDetailsModalOpen] = useState(false);
-
-  const { params, updateParams } = useURLParams<FilterParams & { letter?: string }>();
-  const {
-    data: retiredNames,
-    loading,
-    error,
-  } = useFetchData<RetiredName[]>("/typhoon-names?isRetired=1");
+  const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
+  const [isRetiredNameModalOpen, setIsRetiredNameModalOpen] = useState(false);
 
   const {
     data: suggestionsRaw = [],
     loading: suggestionsLoading,
     error: suggestionsError,
   } = useFetchData<Suggestion[]>(
-    selectedName.id ? `/suggested-names?nameId=${selectedName.id}` : "",
+    selectedRetiredName.id ? `/suggested-names?nameId=${selectedRetiredName.id}` : "",
   );
 
   const isSuggestionsReady = !suggestionsLoading;
@@ -44,21 +45,25 @@ const RetiredNamesContent = () => {
 
   const searchName = params.name || "";
   const selectedYear = params.year || "";
-  const searchPosition = params.position || "";
   const selectedCountry = params.country || "";
-  const retirementReason = params.reason || "";
-  const currentLetter = params.letter || "A";
+  const selectedReason = params.reason || "";
+  const searchPosition = params.position || "";
 
   const countryArr = toArr(selectedCountry);
-  const reasonArr = toArr(retirementReason).map(Number);
+  const reasonArr = toArr(selectedReason).map(Number);
 
-  const countries = [...new Set((retiredNames || []).map((n) => n.country))].sort();
+  const countries = useMemo(
+    () => [...new Set(retiredNames.map((n) => n.country))].sort(),
+    [retiredNames],
+  );
 
   const displayedNames = useMemo(() => {
-    let filtered = [...(retiredNames || [])];
+    let filtered = [...retiredNames];
 
     if (searchName) {
-      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
+      filtered = filtered.filter((n) =>
+        n.name.toLowerCase().includes(searchName.toLowerCase()),
+      );
     }
     if (selectedYear) {
       filtered = filtered.filter((n) => n.lastYear === Number(selectedYear));
@@ -74,7 +79,11 @@ const RetiredNamesContent = () => {
     }
 
     const hasActiveFilters =
-      searchName || selectedYear || countryArr.length > 0 || reasonArr.length > 0 || searchPosition;
+      searchName ||
+      selectedYear ||
+      countryArr.length > 0 ||
+      reasonArr.length > 0 ||
+      searchPosition;
 
     if (!hasActiveFilters) {
       filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
@@ -93,7 +102,7 @@ const RetiredNamesContent = () => {
 
   const availableLettersMap = useMemo(() => {
     const map: Record<string, boolean> = {};
-    (retiredNames || []).forEach((n) => {
+    retiredNames.forEach((n) => {
       map[n.name.charAt(0).toUpperCase()] = true;
     });
     return map;
@@ -103,18 +112,19 @@ const RetiredNamesContent = () => {
     searchName,
     selectedYear,
     selectedCountry,
-    retirementReason,
+    selectedReason,
     searchPosition,
   ].filter(Boolean).length;
 
   const handleNameClick = (name: RetiredName) => {
-    setSelectedName(name);
-    setIsNameDetailsModalOpen(true);
+    setSelectedRetiredName(name);
+    setIsRetiredNameModalOpen(true);
   };
 
-  const handleApplyFilters = (filters: FilterParams) => {
+  const handleApplyFilters = (filters: RetiredFilterParams) => {
     setIsFilterModalOpen(false);
-    const newParams: FilterParams & { letter?: string } = {
+    const newParams: URLState = {
+      view: "retired",
       name: filters.name,
       year: filters.year,
       country: filters.country,
@@ -128,7 +138,10 @@ const RetiredNamesContent = () => {
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams({ name: "", year: "", country: "", reason: "", position: "", letter }, true);
+    updateParams(
+      { view: "retired", name: "", year: "", country: "", reason: "", position: "", letter },
+      true,
+    );
   };
 
   const getLetterConfig = (letter: string) => {
@@ -141,18 +154,8 @@ const RetiredNamesContent = () => {
     };
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Spin size="large" />
-      </div>
-    );
-  }
-
-  if (error) return <FrownNotFound />;
-
   return (
-    <PageHeader title="Retired Typhoon Names">
+    <>
       <FilterButton
         onClick={() => setIsFilterModalOpen(true)}
         count={activeFilterCount}
@@ -161,14 +164,20 @@ const RetiredNamesContent = () => {
       />
 
       {activeFilterCount === 0 && (
-        <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
+        <LetterNavigation
+          onLetterChange={handleLetterChange}
+          getLetterConfig={getLetterConfig}
+        />
       )}
 
       <div className="mx-auto max-w-5xl">
-        <RetiredNamesTable paginatedData={displayedNames} onNameClick={handleNameClick} />
+        <RetiredNamesTable
+          paginatedData={displayedNames}
+          onNameClick={handleNameClick}
+        />
       </div>
 
-      <FilterModal
+      <RetiredFilterModal
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilters}
@@ -177,21 +186,21 @@ const RetiredNamesContent = () => {
           name: searchName,
           year: selectedYear,
           country: selectedCountry,
-          reason: retirementReason,
+          reason: selectedReason,
           position: searchPosition,
         }}
       />
 
-      <NameDetailsModal
-        isOpen={isNameDetailsModalOpen}
-        selectedName={selectedName}
+      <RetiredNameDetailsModal
+        isOpen={isRetiredNameModalOpen}
+        selectedName={selectedRetiredName}
         suggestions={suggestions}
         suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
         suggestionsError={suggestionsError}
-        onClose={() => setIsNameDetailsModalOpen(false)}
+        onClose={() => setIsRetiredNameModalOpen(false)}
       />
-    </PageHeader>
+    </>
   );
 };
 
-export default RetiredNamesContent;
+export default RetiredView;

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Switch } from "antd";
 import {
   PawPrint,
   Moon,
@@ -16,9 +14,9 @@ import {
   Ham,
   Hammer,
 } from "lucide-react";
-import { getNameStatusColorClass } from "../../../../components/colors";
-import PositionGrid from "../../../../components/components/PositionGrid";
-import type { TyphoonName } from "../../../../types";
+import { getNameStatusColorClass } from "../../../../../components/colors";
+import PositionGrid from "../../../../../components/components/PositionGrid";
+import type { TyphoonName } from "../../../../../types";
 import type { LucideIcon } from "lucide-react";
 
 const TAG_ICONS: Record<string, LucideIcon> = {
@@ -51,9 +49,13 @@ const TAG_COLORS: Record<string, string> = {
   Thing: "text-amber-800",
 };
 
-const TagIcon = ({ tag, size = 20 }: { tag: string; size?: number }) => {
+const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
+const getHistoryCountColor = (count: number) =>
+  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-gray-600";
+
+const TagIcon = ({ tag, size = 20, colorOverride }: { tag: string; size?: number; colorOverride?: string }) => {
   const Icon = TAG_ICONS[tag];
-  const colorClass = TAG_COLORS[tag] ?? "text-gray-400";
+  const colorClass = colorOverride || TAG_COLORS[tag] || "text-gray-400";
   if (!Icon) return null;
   return <Icon size={size} className={colorClass} />;
 };
@@ -70,11 +72,13 @@ const NameButton = ({
   size,
   showName,
   onNameClick,
+  colorOverride,
 }: {
   name: TyphoonName;
   size: { name: number; icon: number };
   showName: boolean;
   onNameClick: (n: TyphoonName) => void;
+  colorOverride?: string;
 }) => (
   <button
     title={name.name}
@@ -87,13 +91,13 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`leading-tight font-medium ${getNameStatusColorClass(name)}`}
+        className={`leading-tight font-medium ${colorOverride || getNameStatusColorClass(name)} hover:underline`}
         style={{ fontSize: size.name }}
       >
         {name.name}
       </span>
     ) : (
-      <TagIcon tag={name.tag} size={size.icon} />
+      <TagIcon tag={name.tag} size={size.icon} colorOverride={colorOverride} />
     )}
   </button>
 );
@@ -101,17 +105,20 @@ const NameButton = ({
 const CellContent = ({
   currentName,
   historyNames,
-  showHistory,
+  showMultipleNames,
   showName,
+  colorfulHistory,
   onNameClick,
 }: {
   currentName: TyphoonName | undefined;
   historyNames: TyphoonName[];
-  showHistory: boolean;
+  showMultipleNames: boolean;
   showName: boolean;
+  colorfulHistory: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => {
-  if (showHistory) {
+  if (showMultipleNames) {
+    const colorOverride = colorfulHistory ? getHistoryCountColor(historyNames.length) : undefined;
     return (
       <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
         {historyNames.length === 0 ? (
@@ -124,6 +131,7 @@ const CellContent = ({
               size={CELL_SIZE.history}
               showName={showName}
               onNameClick={onNameClick}
+              colorOverride={colorOverride}
             />
           ))
         )}
@@ -147,9 +155,14 @@ const CellContent = ({
   );
 };
 
-interface TagIconGridProps {
+interface PositionNameGridProps {
   names: TyphoonName[];
   currentNames: TyphoonName[];
+  hasActiveFilters?: boolean;
+  showAll: boolean;
+  showName: boolean;
+  showHistory: boolean;
+  colorfulHistory?: boolean;
   onNameClick: (name: TyphoonName) => void;
   onCellClick: (
     position: number,
@@ -159,9 +172,18 @@ interface TagIconGridProps {
   ) => void;
 }
 
-const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconGridProps) => {
-  const [showHistory, setShowHistory] = useState(false);
-  const [showName, setShowName] = useState(false);
+const PositionNameGrid = ({
+  names,
+  currentNames,
+  hasActiveFilters = false,
+  showAll,
+  showName,
+  showHistory,
+  colorfulHistory = false,
+  onNameClick,
+  onCellClick,
+}: PositionNameGridProps) => {
+  const effectiveShowHistory = hasActiveFilters || !showAll ? false : showHistory;
 
   const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
     if (n.isLanguageProblem === 2) return acc;
@@ -178,25 +200,6 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
 
   return (
     <div>
-      <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-6">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700" id="show-name-label">
-            Show Name
-          </span>
-          <Switch checked={showName} onChange={(v) => setShowName(v)} aria-label="Show Name" />
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700" id="show-history-label">
-            Show History
-          </span>
-          <Switch
-            checked={showHistory}
-            onChange={(v) => setShowHistory(v)}
-            aria-label="Show History"
-          />
-        </div>
-      </div>
-
       <PositionGrid
         renderCell={(position, _row, col) => {
           const currentName = currentByPosition[position];
@@ -209,13 +212,14 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
               role="button"
               tabIndex={0}
               aria-label={`Position ${position}${currentName ? `, ${currentName.name}` : ""}`}
-              onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
+              onClick={() => onCellClick(position, currentName, historyNames, effectiveShowHistory)}
             >
               <CellContent
                 currentName={currentName}
                 historyNames={historyNames}
-                showHistory={showHistory}
+                showMultipleNames={effectiveShowHistory || hasActiveFilters}
                 showName={showName}
+                colorfulHistory={effectiveShowHistory && colorfulHistory}
                 onNameClick={onNameClick}
               />
             </td>
@@ -239,4 +243,4 @@ const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconG
   );
 };
 
-export default TagIconGrid;
+export default PositionNameGrid;

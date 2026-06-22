@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Modal, Spin } from "antd";
-import { getRetiredReasonColorClass } from "../../../../../../components/colors";
-import { NameDetailsContent } from "../../../../../../components/ui/NameDetailsModal";
-import Tabs, { type Tab } from "../../../../../../components/components/Tabs";
-import SuggestionsList from "./SuggestionsList";
-import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
+import { getRetiredReasonColorClass } from "../../../../../components/colors";
+import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
+import Tabs, { type Tab } from "../../../../../components/components/Tabs";
+import SuggestionCard from "../_components/SuggestionCard";
+import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../types";
 
-export interface NameDetailsModalProps extends BaseModalProps {
+export interface RetiredNameDetailsModalProps extends BaseModalProps {
   selectedName: RetiredName;
   suggestions: Suggestion[];
   suggestionsLoading?: boolean;
@@ -15,14 +15,30 @@ export interface NameDetailsModalProps extends BaseModalProps {
 
 type TabType = "info" | "suggestions";
 
-const NameDetailsModal = ({
+const SuggestionsList = ({ suggestions }: { suggestions: Suggestion[] }) => {
+  if (suggestions.length === 0) {
+    return (
+      <div className="py-4 text-center text-gray-500">No suggested replacements available</div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center space-y-3">
+      {suggestions.map((suggestion, sidx) => (
+        <SuggestionCard key={sidx} suggestion={suggestion} />
+      ))}
+    </div>
+  );
+};
+
+const RetiredNameDetailsModal = ({
   isOpen,
   onClose,
   selectedName,
   suggestions,
   suggestionsLoading = false,
   suggestionsError = null,
-}: NameDetailsModalProps) => {
+}: RetiredNameDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("info");
 
   if (!selectedName) return null;
@@ -81,4 +97,4 @@ const NameDetailsModal = ({
   );
 };
 
-export default NameDetailsModal;
+export default RetiredNameDetailsModal;
