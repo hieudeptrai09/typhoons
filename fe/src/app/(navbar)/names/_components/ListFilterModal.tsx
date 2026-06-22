@@ -1,8 +1,8 @@
 import { Modal, Button, Form, Input, Select, InputNumber, Radio } from "antd";
-import { toArr, toStr, toOpts } from "../../../../../containers/utils/fns";
-import type { BaseModalProps, FilterParams } from "../../../../../types";
+import { toArr, toStr, toOpts } from "../../../../containers/utils/fns";
+import type { BaseModalProps, FilterParams } from "../../../../types";
 
-export interface FilterModalProps extends BaseModalProps {
+export interface ListFilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;
   countries: string[];
   languages: string[];
@@ -19,7 +19,7 @@ interface FormValues {
   status: string | undefined;
 }
 
-const FilterModal = ({
+const ListFilterModal = ({
   isOpen,
   onClose,
   onApply,
@@ -27,7 +27,7 @@ const FilterModal = ({
   languages,
   tags,
   initialFilters,
-}: FilterModalProps) => {
+}: ListFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
   const handleApply = (values: FormValues) => {
@@ -131,4 +131,4 @@ const FilterModal = ({
   );
 };
 
-export default FilterModal;
+export default ListFilterModal;
