@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Modal, Spin } from "antd";
-import { NameListModalInner } from "../../../storms/_components/_modals/NameListModal";
-import { useFetchData } from "../../../../../containers/hooks/useFetchData";
-import { getNameStatusColorClass } from "../../../../../components/colors";
-import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
-import Tabs, { type Tab } from "../../../../../components/components/Tabs";
-import type { SearchDetail, BaseModalProps } from "../../../../../types";
+import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
+import { useFetchData } from "../../../containers/hooks/useFetchData";
+import { getNameStatusColorClass } from "../../colors";
+import { NameDetailsContent } from "../NameDetailsModal";
+import Tabs, { type Tab } from "../../components/Tabs";
+import type { SearchDetail, BaseModalProps } from "../../../types";
 
 interface SearchResultModalProps extends BaseModalProps {
   nameId?: number | null;

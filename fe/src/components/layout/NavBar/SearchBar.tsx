@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import HighlightedName from "../../components/HighlightedName";
-import SearchResultModal from "../../../app/(navbar)/search/_components/SearchResultModal";
+import SearchResultModal from "../../ui/SearchResultModal";
 import type { SearchResult } from "../../../types";
 
 const SearchBar = () => {
