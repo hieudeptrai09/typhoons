@@ -4,18 +4,17 @@ import { getNameStatusColorClass } from "../../colors";
 import ImageWithLoader from "../../components/ImageWithLoader";
 import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
-interface NameDetailsModalProps extends BaseModalProps {
+interface NameDetailsContentProps {
   name: TyphoonName | RetiredName;
   hideReplacedBy?: boolean;
 }
 
+interface NameDetailsModalProps extends BaseModalProps, NameDetailsContentProps {}
+
 const NameDetailsContent = ({
   name,
   hideReplacedBy = false,
-}: {
-  name: TyphoonName | RetiredName;
-  hideReplacedBy?: boolean;
-}) => {
+}: NameDetailsContentProps) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 
@@ -122,5 +121,5 @@ const NameDetailsModal = ({ isOpen, onClose, name, hideReplacedBy }: NameDetails
   );
 };
 
-export { NameDetailsContent };
+export { NameDetailsContent, type NameDetailsContentProps };
 export default NameDetailsModal;
