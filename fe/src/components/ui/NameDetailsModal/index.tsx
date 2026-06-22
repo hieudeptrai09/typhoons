@@ -6,9 +6,16 @@ import type { TyphoonName, RetiredName, BaseModalProps } from "../../../types";
 
 interface NameDetailsModalProps extends BaseModalProps {
   name: TyphoonName | RetiredName;
+  hideReplacedBy?: boolean;
 }
 
-const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
+const NameDetailsContent = ({
+  name,
+  hideReplacedBy = false,
+}: {
+  name: TyphoonName | RetiredName;
+  hideReplacedBy?: boolean;
+}) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 
@@ -46,7 +53,7 @@ const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
           </div>
         </div>
 
-        {"replacementName" in name && name.replacementName && (
+        {!hideReplacedBy && "replacementName" in name && name.replacementName && (
           <div className="border-t border-slate-200 pt-3">
             <div className="text-sm font-medium text-slate-500">Replaced by</div>
             <div className="mt-1 text-base font-semibold text-teal-600">{name.replacementName}</div>
@@ -90,7 +97,7 @@ const NameDetailsContent = ({ name }: { name: TyphoonName | RetiredName }) => {
   );
 };
 
-const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
+const NameDetailsModal = ({ isOpen, onClose, name, hideReplacedBy }: NameDetailsModalProps) => {
   const titleColorClass = getNameStatusColorClass(name);
 
   return (
@@ -109,7 +116,7 @@ const NameDetailsModal = ({ isOpen, onClose, name }: NameDetailsModalProps) => {
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
       <div className="pt-4">
-        <NameDetailsContent name={name} />
+        <NameDetailsContent name={name} hideReplacedBy={hideReplacedBy} />
       </div>
     </Modal>
   );
