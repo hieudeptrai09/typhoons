@@ -2,7 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { Spin, Table } from "antd";
+import { Flame, Skull } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { getNameStatusColorClass } from "../../../components/colors";
 import CountryFlag from "../../../components/components/CountryFlag";
 import EmptyResults from "../../../components/components/EmptyResults";
 import FrownNotFound from "../../../components/components/FrownNotFound";
@@ -12,28 +14,6 @@ import SearchResultModal from "../../../components/ui/SearchResultModal";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import type { SearchResult } from "../../../types";
 import type { ColumnsType } from "antd/es/table";
-
-const getStatusBadge = (result: SearchResult) => {
-  if (!result.isRetired) {
-    return (
-      <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-        Active
-      </span>
-    );
-  }
-  if (result.isLanguageProblem === 2) {
-    return (
-      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-        Misspelling
-      </span>
-    );
-  }
-  return (
-    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
-      Retired
-    </span>
-  );
-};
 
 const getColumns = (query: string): ColumnsType<SearchResult> => [
   {
@@ -74,7 +54,14 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     title: "Status",
     key: "status",
     sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
-    render: (_: unknown, record: SearchResult) => getStatusBadge(record),
+    render: (_: unknown, record: SearchResult) => {
+      const status = { ...record, isRetired: Boolean(record.isRetired) };
+      return record.isRetired ? (
+        <Skull className={getNameStatusColorClass(status)} size={20} />
+      ) : (
+        <Flame className={getNameStatusColorClass(status)} size={20} />
+      );
+    },
   },
   {
     title: "Storms",

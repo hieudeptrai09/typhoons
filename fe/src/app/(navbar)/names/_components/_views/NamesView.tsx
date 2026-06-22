@@ -291,7 +291,7 @@ const NamesView = ({ allNames, currentNames }: NamesViewProps) => {
       <NameDetailsModal
         isOpen={isNameModalOpen}
         name={selectedName}
-        hideReplacedBy={displayMode === "list"}
+        hideReplacedBy
         onClose={() => setIsNameModalOpen(false)}
       />
 
