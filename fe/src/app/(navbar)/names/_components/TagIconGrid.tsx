@@ -87,7 +87,7 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`leading-tight font-medium ${getNameStatusColorClass(name)} hover:underline`}
+        className={`leading-tight font-medium ${getNameStatusColorClass(name)}`}
         style={{ fontSize: size.name }}
       >
         {name.name}
@@ -147,12 +147,9 @@ const CellContent = ({
   );
 };
 
-interface PositionNameGridProps {
+interface TagIconGridProps {
   names: TyphoonName[];
   currentNames: TyphoonName[];
-  hasActiveFilters?: boolean;
-  showAll: boolean;
-  onShowAllChange: (val: boolean) => void;
   onNameClick: (name: TyphoonName) => void;
   onCellClick: (
     position: number,
@@ -162,19 +159,9 @@ interface PositionNameGridProps {
   ) => void;
 }
 
-const PositionNameGrid = ({
-  names,
-  currentNames,
-  hasActiveFilters = false,
-  showAll,
-  onShowAllChange,
-  onNameClick,
-  onCellClick,
-}: PositionNameGridProps) => {
+const TagIconGrid = ({ names, currentNames, onNameClick, onCellClick }: TagIconGridProps) => {
   const [showHistory, setShowHistory] = useState(false);
   const [showName, setShowName] = useState(false);
-
-  const effectiveShowHistory = hasActiveFilters || !showAll ? false : showHistory;
 
   const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
     if (n.isLanguageProblem === 2) return acc;
@@ -192,26 +179,22 @@ const PositionNameGrid = ({
   return (
     <div>
       <div className="mx-auto mb-4 flex max-w-4xl items-center justify-end gap-6">
-        {!hasActiveFilters && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-gray-700">Show All</span>
-            <Switch checked={showAll} onChange={onShowAllChange} aria-label="Show All" />
-          </div>
-        )}
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show Name</span>
+          <span className="text-sm font-semibold text-gray-700" id="show-name-label">
+            Show Name
+          </span>
           <Switch checked={showName} onChange={(v) => setShowName(v)} aria-label="Show Name" />
         </div>
-        {!hasActiveFilters && showAll && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-gray-700">Show History</span>
-            <Switch
-              checked={showHistory}
-              onChange={(v) => setShowHistory(v)}
-              aria-label="Show History"
-            />
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700" id="show-history-label">
+            Show History
+          </span>
+          <Switch
+            checked={showHistory}
+            onChange={(v) => setShowHistory(v)}
+            aria-label="Show History"
+          />
+        </div>
       </div>
 
       <PositionGrid
@@ -226,12 +209,12 @@ const PositionNameGrid = ({
               role="button"
               tabIndex={0}
               aria-label={`Position ${position}${currentName ? `, ${currentName.name}` : ""}`}
-              onClick={() => onCellClick(position, currentName, historyNames, effectiveShowHistory)}
+              onClick={() => onCellClick(position, currentName, historyNames, showHistory)}
             >
               <CellContent
                 currentName={currentName}
                 historyNames={historyNames}
-                showHistory={effectiveShowHistory}
+                showHistory={showHistory}
                 showName={showName}
                 onNameClick={onNameClick}
               />
@@ -256,4 +239,4 @@ const PositionNameGrid = ({
   );
 };
 
-export default PositionNameGrid;
+export default TagIconGrid;

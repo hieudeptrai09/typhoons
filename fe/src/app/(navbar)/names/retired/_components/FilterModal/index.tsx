@@ -1,10 +1,10 @@
 import { Modal, Button, Form, Input, Select, InputNumber, DatePicker } from "antd";
 import dayjs from "dayjs";
-import { toArr, toStr, toOpts } from "../../../../containers/utils/fns";
-import type { BaseModalProps, RetiredFilterParams } from "../../../../types";
+import { toArr, toStr, toOpts } from "../../../../../../containers/utils/fns";
+import type { BaseModalProps, RetiredFilterParams } from "../../../../../../types";
 import type { Dayjs } from "dayjs";
 
-interface RetiredFilterModalProps extends BaseModalProps {
+interface FilterModalProps extends BaseModalProps {
   onApply: (filters: RetiredFilterParams) => void;
   countries: string[];
   initialFilters: RetiredFilterParams;
@@ -25,13 +25,7 @@ const REASON_OPTIONS = [
   { value: "3", label: "Special Storm" },
 ];
 
-const RetiredFilterModal = ({
-  isOpen,
-  onClose,
-  onApply,
-  countries,
-  initialFilters,
-}: RetiredFilterModalProps) => {
+const FilterModal = ({ isOpen, onClose, onApply, countries, initialFilters }: FilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
   const handleApply = (values: FormValues) => {
@@ -125,4 +119,4 @@ const RetiredFilterModal = ({
   );
 };
 
-export default RetiredFilterModal;
+export default FilterModal;

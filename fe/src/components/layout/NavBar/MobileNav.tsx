@@ -1,5 +1,8 @@
+import { Button } from "antd";
 import { CloudLightning, BookText } from "lucide-react";
+import Link from "next/link";
 import NavLink from "./NavLink";
+import { getNamesSubmenu } from "./navNameSubmenuItem";
 
 interface MobileNavProps {
   currentPath: string;
@@ -8,6 +11,9 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
+  const namesSubmenu = getNamesSubmenu(currentPath);
+  const isNamesActive = currentPath.startsWith("/names");
+
   return (
     <div
       role="navigation"
@@ -24,13 +30,41 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
           isActive={currentPath === "/storms/"}
           onClick={onClose}
         />
-        <NavLink
-          href="/names"
-          icon={BookText}
-          label="Names"
-          isActive={currentPath.startsWith("/names")}
-          onClick={onClose}
-        />
+
+        <div>
+          <Link href="/names" onClick={onClose}>
+            <Button
+              type="text"
+              icon={<BookText size={20} />}
+              iconPlacement="start"
+              className={`!w-full !justify-start !text-white hover:!bg-white/30 hover:!text-white ${isNamesActive ? "!font-bold" : ""}`}
+            >
+              Names
+            </Button>
+          </Link>
+
+          <div className="mt-1 ml-4 space-y-1">
+            {namesSubmenu.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  aria-label={item.label}
+                  className={`flex items-center space-x-2 rounded-lg px-4 py-1 transition ${
+                    item.isActive
+                      ? "bg-white/40 font-semibold text-white"
+                      : "text-white/90 hover:bg-white/20"
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
