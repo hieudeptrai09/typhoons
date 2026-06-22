@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Spin } from "antd";
 import { getRetiredReasonColorClass } from "../../../../../../components/colors";
 import { NameDetailsContent } from "../../../../../../components/ui/NameDetailsModal";
+import Tabs, { type Tab } from "../../../../../../components/components/Tabs";
 import SuggestionsList from "./SuggestionsList";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../../types";
 
@@ -26,13 +27,6 @@ const NameDetailsModal = ({
 
   if (!selectedName) return null;
 
-  const getTabClasses = (tab: TabType) => {
-    const isActive = activeTab === tab;
-    return `flex-1 px-6 pb-3 font-semibold transition-colors ${
-      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
-    }`;
-  };
-
   const renderSuggestionsContent = () => {
     if (suggestionsLoading) {
       return (
@@ -48,6 +42,11 @@ const NameDetailsModal = ({
     }
     return <SuggestionsList suggestions={suggestions} />;
   };
+
+  const tabs: Tab<TabType>[] = [
+    { key: "info", label: "Name Information", content: <NameDetailsContent name={selectedName} /> },
+    { key: "suggestions", label: "Suggested Replacements", content: renderSuggestionsContent() },
+  ];
 
   return (
     <Modal
@@ -69,43 +68,14 @@ const NameDetailsModal = ({
         body: { height: "70vh", overflowY: "auto" },
       }}
     >
-      <div className="flex flex-col pt-4">
-        <div
-          className="mb-6 flex border-b border-gray-200"
-          role="tablist"
-          aria-label="Name details tabs"
-        >
-          <button
-            onClick={() => setActiveTab("info")}
-            role="tab"
-            aria-selected={activeTab === "info"}
-            aria-controls="tabpanel-info"
-            aria-label="Name Information"
-            className={getTabClasses("info")}
-          >
-            Name Information
-          </button>
-          <button
-            onClick={() => setActiveTab("suggestions")}
-            role="tab"
-            aria-selected={activeTab === "suggestions"}
-            aria-controls="tabpanel-suggestions"
-            aria-label="Suggested Replacements"
-            className={getTabClasses("suggestions")}
-          >
-            Suggested Replacements
-          </button>
-        </div>
-
-        <div
-          className="flex-1"
-          id={`tabpanel-${activeTab}`}
-          role="tabpanel"
-          aria-describedby={`tabpanel-${activeTab}`}
-        >
-          {activeTab === "info" && <NameDetailsContent name={selectedName} />}
-          {activeTab === "suggestions" && renderSuggestionsContent()}
-        </div>
+      <div className="pt-4">
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          ariaLabel="Name details tabs"
+          idPrefix="tabpanel"
+        />
       </div>
     </Modal>
   );
