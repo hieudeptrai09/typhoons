@@ -8,7 +8,7 @@ import EmptyResults from "../../../components/components/EmptyResults";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import HighlightedName from "../../../components/components/HighlightedName";
 import PageHeader from "../../../components/components/PageHeader";
-import SearchResultModal from "../../../components/ui/SearchResultModal";
+import SearchResultModal from "./_components/SearchResultModal";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import type { SearchResult } from "../../../types";
 import type { ColumnsType } from "antd/es/table";
