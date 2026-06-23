@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Badge } from "antd";
-import { Filter, Settings, Wind } from "lucide-react";
+import { Filter, Flame, Settings } from "lucide-react";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import HistoryModal from "../../../../../components/ui/HistoryModal";
 import NameDetailsModal from "../../../../../components/ui/NameDetailsModal";
@@ -222,7 +222,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
             className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
           >
-            <Wind size={30} />
+            <Flame size={30} />
           </button>
           <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
             <button
