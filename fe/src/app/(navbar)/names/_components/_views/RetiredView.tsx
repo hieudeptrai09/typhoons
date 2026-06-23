@@ -160,14 +160,14 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center" style={{ gap: "50px" }}>
           <button
             onClick={onToggleView}
             title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
             aria-label={activeTab === "retired" ? "Viewing retired names, click to switch to active" : "Viewing active names, click to switch to retired"}
             className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
-            <Skull size={28} />
+            <Skull size={35} />
           </button>
           <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
             <button
@@ -176,7 +176,7 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
               className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
             >
-              <Filter size={28} />
+              <Filter size={35} />
             </button>
           </Badge>
         </div>

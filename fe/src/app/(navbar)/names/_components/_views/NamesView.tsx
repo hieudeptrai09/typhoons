@@ -215,14 +215,14 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center" style={{ gap: "50px" }}>
           <button
             onClick={onToggleView}
             title={activeTab === "names" ? "Switch to retired names" : "Switch to active names"}
             aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
             className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
           >
-            <Wind size={28} />
+            <Wind size={35} />
           </button>
           <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
             <button
@@ -231,7 +231,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
               className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
             >
-              <Filter size={28} />
+              <Filter size={35} />
             </button>
           </Badge>
           <button
@@ -240,7 +240,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             aria-label="Display settings"
             className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
           >
-            <Settings size={28} />
+            <Settings size={35} />
           </button>
         </div>
       </div>
