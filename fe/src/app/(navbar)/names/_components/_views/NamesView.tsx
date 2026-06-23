@@ -215,7 +215,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center" style={{ gap: "50px" }}>
+        <div className="flex items-center justify-center gap-12">
           <button
             onClick={onToggleView}
             title={activeTab === "names" ? "Switch to retired names" : "Switch to active names"}
