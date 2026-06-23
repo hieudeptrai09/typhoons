@@ -222,7 +222,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
             className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
           >
-            <Wind size={35} />
+            <Wind size={30} />
           </button>
           <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
             <button
@@ -231,7 +231,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
               className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
             >
-              <Filter size={35} />
+              <Filter size={30} />
             </button>
           </Badge>
           <button
@@ -240,7 +240,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             aria-label="Display settings"
             className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
           >
-            <Settings size={35} />
+            <Settings size={30} />
           </button>
         </div>
       </div>
