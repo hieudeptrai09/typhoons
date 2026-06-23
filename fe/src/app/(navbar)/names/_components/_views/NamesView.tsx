@@ -220,7 +220,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             onClick={onToggleView}
             title={activeTab === "names" ? "Switch to retired names" : "Switch to active names"}
             aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
-            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-emerald-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
+            className="cursor-pointer border-0 bg-transparent p-0 text-emerald-600 transition-colors hover:text-emerald-800"
           >
             <Wind size={22} />
           </button>
@@ -229,7 +229,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+              className="cursor-pointer border-0 bg-transparent p-0 text-gray-500 transition-colors hover:text-gray-800"
             >
               <Filter size={22} />
             </button>
@@ -238,7 +238,7 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
             onClick={() => setIsSettingsOpen(true)}
             title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+            className="cursor-pointer border-0 bg-transparent p-0 text-gray-500 transition-colors hover:text-gray-800"
           >
             <Settings size={22} />
           </button>

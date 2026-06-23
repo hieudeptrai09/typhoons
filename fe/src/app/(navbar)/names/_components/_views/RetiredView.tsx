@@ -165,7 +165,7 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
             onClick={onToggleView}
             title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
             aria-label={activeTab === "retired" ? "Viewing retired names, click to switch to active" : "Viewing active names, click to switch to retired"}
-            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+            className="cursor-pointer border-0 bg-transparent p-0 text-red-500 transition-colors hover:text-red-700"
           >
             <Skull size={22} />
           </button>
@@ -174,7 +174,7 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+              className="cursor-pointer border-0 bg-transparent p-0 text-gray-500 transition-colors hover:text-gray-800"
             >
               <Filter size={22} />
             </button>
