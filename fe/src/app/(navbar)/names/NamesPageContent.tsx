@@ -11,11 +11,6 @@ import type { RetiredName } from "../../../types";
 
 type TabKey = "names" | "retired";
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: "names", label: "Names" },
-  { key: "retired", label: "Retired" },
-];
-
 const NamesPageContent = () => {
   const { params, updateParams } = useURLParams<{ view?: string; letter?: string }>();
   const viewMode = params.view || "grid";
@@ -57,29 +52,19 @@ const NamesPageContent = () => {
     return <FrownNotFound />;
   }
 
+  const toggleView = () => {
+    handleTabChange(activeTab === "names" ? "retired" : "names");
+  };
+
   return (
     <PageHeader title="Typhoon Names">
-      <div className="mx-auto mb-6 flex max-w-4xl justify-center gap-1">
-        {TABS.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => handleTabChange(tab.key)}
-            className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-              activeTab === tab.key
-                ? "bg-blue-600 text-white"
-                : "bg-stone-200 text-gray-700 hover:bg-stone-300"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <NamesContent
         viewMode={viewMode}
         allNames={allNames || []}
         currentNames={currentNames}
         retiredNames={retiredNames}
+        activeTab={activeTab}
+        onToggleView={toggleView}
       />
     </PageHeader>
   );

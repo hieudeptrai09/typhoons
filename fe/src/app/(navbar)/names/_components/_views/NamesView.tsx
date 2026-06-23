@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import { Badge, Button } from "antd";
-import { Filter, Settings } from "lucide-react";
+import { Badge } from "antd";
+import { Filter, Settings, Wind } from "lucide-react";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import HistoryModal from "../../../../../components/ui/HistoryModal";
 import NameDetailsModal from "../../../../../components/ui/NameDetailsModal";
@@ -29,9 +29,11 @@ interface URLState {
 interface NamesViewProps {
   allNames: TyphoonName[];
   currentNames: TyphoonName[];
+  activeTab: "names" | "retired";
+  onToggleView: () => void;
 }
 
-const NamesView = ({ allNames, currentNames }: NamesViewProps) => {
+const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesViewProps) => {
   const { params, updateParams } = useURLParams<URLState>();
   const displayMode = params.view === "list" ? ("list" as const) : ("grid" as const);
   const currentLetter = params.letter || "A";
@@ -213,25 +215,32 @@ const NamesView = ({ allNames, currentNames }: NamesViewProps) => {
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center gap-3">
-          <Badge count={activeFilterCount} color="#10b981">
-            <Button
-              type="primary"
-              icon={<Filter size={16} />}
+        <div className="flex items-center justify-center gap-1">
+          <button
+            onClick={onToggleView}
+            title={activeTab === "names" ? "Switch to retired names" : "Switch to active names"}
+            aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
+            className="cursor-pointer border-0 bg-transparent p-0 text-emerald-600 transition-colors hover:text-emerald-800"
+          >
+            <Wind size={22} />
+          </button>
+          <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
+            <button
               onClick={() => setIsFilterModalOpen(true)}
+              title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              style={{ backgroundColor: "#10b981", borderColor: "#10b981" }}
-              className="!px-6 !py-5 !font-semibold hover:!border-emerald-600 hover:!bg-emerald-600"
+              className="cursor-pointer border-0 bg-transparent p-0 text-gray-500 transition-colors hover:text-gray-800"
             >
-              Filters
-            </Button>
+              <Filter size={22} />
+            </button>
           </Badge>
           <button
             onClick={() => setIsSettingsOpen(true)}
+            title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+            className="cursor-pointer border-0 bg-transparent p-0 text-gray-500 transition-colors hover:text-gray-800"
           >
-            <Settings size={24} />
+            <Settings size={22} />
           </button>
         </div>
       </div>

@@ -7,6 +7,8 @@ interface NamesContentProps {
   allNames: TyphoonName[];
   currentNames: TyphoonName[];
   retiredNames: RetiredName[];
+  activeTab: "names" | "retired";
+  onToggleView: () => void;
 }
 
 const NamesContent = ({
@@ -14,11 +16,13 @@ const NamesContent = ({
   allNames,
   currentNames,
   retiredNames,
+  activeTab,
+  onToggleView,
 }: NamesContentProps) => {
   if (viewMode === "retired") {
-    return <RetiredView retiredNames={retiredNames} />;
+    return <RetiredView retiredNames={retiredNames} activeTab={activeTab} onToggleView={onToggleView} />;
   }
-  return <NamesView allNames={allNames} currentNames={currentNames} />;
+  return <NamesView allNames={allNames} currentNames={currentNames} activeTab={activeTab} onToggleView={onToggleView} />;
 };
 
 export default NamesContent;
