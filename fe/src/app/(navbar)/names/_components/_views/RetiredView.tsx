@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Badge } from "antd";
-import { Filter, Wind, Skull } from "lucide-react";
+import { Filter, Skull } from "lucide-react";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import { defaultRetiredName } from "../../../../../constants";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
@@ -165,9 +165,9 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
             onClick={onToggleView}
             title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
             aria-label={activeTab === "retired" ? "Viewing retired names, click to switch to active" : "Viewing active names, click to switch to retired"}
-            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-blue-600 transition-colors hover:bg-blue-50 hover:text-blue-800"
+            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
           >
-            {activeTab === "retired" ? <Skull size={22} /> : <Wind size={22} />}
+            <Skull size={22} />
           </button>
           <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
             <button
