@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import FilterButton from "../../../../../components/components/FilterButton";
+import { Badge } from "antd";
+import { Filter, Wind, Skull } from "lucide-react";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import { defaultRetiredName } from "../../../../../constants";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
@@ -22,9 +23,11 @@ interface URLState {
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];
+  activeTab: "names" | "retired";
+  onToggleView: () => void;
 }
 
-const RetiredView = ({ retiredNames }: RetiredViewProps) => {
+const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps) => {
   const { params, updateParams } = useURLParams<URLState>();
   const currentLetter = params.letter || "A";
 
@@ -156,12 +159,28 @@ const RetiredView = ({ retiredNames }: RetiredViewProps) => {
 
   return (
     <>
-      <FilterButton
-        onClick={() => setIsFilterModalOpen(true)}
-        count={activeFilterCount}
-        color="#f97316"
-        hoverClassName="hover:!border-orange-600 hover:!bg-orange-600"
-      />
+      <div className="mx-auto mb-4 max-w-4xl">
+        <div className="flex items-center justify-center gap-1">
+          <button
+            onClick={onToggleView}
+            title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
+            aria-label={activeTab === "retired" ? "Viewing retired names, click to switch to active" : "Viewing active names, click to switch to retired"}
+            className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-blue-600 transition-colors hover:bg-blue-50 hover:text-blue-800"
+          >
+            {activeTab === "retired" ? <Skull size={22} /> : <Wind size={22} />}
+          </button>
+          <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
+            <button
+              onClick={() => setIsFilterModalOpen(true)}
+              title="Filters"
+              aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
+              className="cursor-pointer rounded-full border-0 bg-transparent p-2.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+            >
+              <Filter size={22} />
+            </button>
+          </Badge>
+        </div>
+      </div>
 
       {activeFilterCount === 0 && (
         <LetterNavigation
