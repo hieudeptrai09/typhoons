@@ -7,12 +7,13 @@ import PageHeader from "../../../components/components/PageHeader";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { useURLParams } from "../../../containers/hooks/useURLParams";
 import NamesContent from "./_components/NamesContent";
+import { getNamesTitle } from "./_utils/fns";
 import type { RetiredName } from "../../../types";
 
 type TabKey = "names" | "retired";
 
 const NamesPageContent = () => {
-  const { params, updateParams } = useURLParams<{ view?: string; letter?: string }>();
+  const { params, updateParams } = useURLParams<{ view?: string; letter?: string; showName?: string; showHistory?: string }>();
   const viewMode = params.view || "grid";
   const activeTab: TabKey = viewMode === "retired" ? "retired" : "names";
 
@@ -57,7 +58,7 @@ const NamesPageContent = () => {
   };
 
   return (
-    <PageHeader title="Typhoon Names">
+    <PageHeader title={getNamesTitle(viewMode, params.showName, params.showHistory)}>
       <NamesContent
         viewMode={viewMode}
         allNames={allNames || []}

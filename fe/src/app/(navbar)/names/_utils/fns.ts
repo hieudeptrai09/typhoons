@@ -1,4 +1,50 @@
+import { normalizeParam } from "../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../types";
+
+export const getNamesTitle = (
+  view: string | string[] | undefined,
+  showName?: string | string[] | undefined,
+  showHistory?: string | string[] | undefined,
+): string => {
+  const viewStr = normalizeParam(view) || "grid";
+
+  if (viewStr === "retired") return "Retired Typhoon Names";
+  if (viewStr === "list") return "All Typhoon Names (List)";
+
+  const nameOn = normalizeParam(showName) === "true";
+  const historyOn = normalizeParam(showHistory) === "true";
+
+  const nameLabel = nameOn ? "Name" : "Icon";
+  const historyLabel = historyOn ? "History" : "Current";
+  return `All Typhoon Names (${nameLabel}, ${historyLabel})`;
+};
+
+export const getNamesDescription = (
+  view: string | string[] | undefined,
+  showName?: string | string[] | undefined,
+  showHistory?: string | string[] | undefined,
+): string => {
+  const viewStr = normalizeParam(view) || "grid";
+
+  if (viewStr === "retired") {
+    return "Browse retired typhoon names that have been permanently removed from the Western Pacific naming rotation due to the severity of their associated storms.";
+  }
+  if (viewStr === "list") {
+    return "View all all typhoon names in list format with detailed information including country of origin, language, and naming history.";
+  }
+
+  const nameOn = normalizeParam(showName) === "true";
+  const historyOn = normalizeParam(showHistory) === "true";
+
+  if (historyOn) {
+    return nameOn
+      ? "Explore all typhoon names organized by position with name labels and full naming history visible in the grid."
+      : "Explore all typhoon names organized by position with naming history visible in the grid.";
+  }
+  return nameOn
+    ? "Explore all typhoon names organized by position with name labels visible in the grid."
+    : "Explore all typhoon names organized by position in the Western Pacific naming sequence. View name origins, countries, and storm history.";
+};
 
 export const categorizeLettersByStatus = (
   namesList: TyphoonName[],

@@ -24,6 +24,8 @@ interface URLState {
   tag?: string;
   position?: string;
   status?: string;
+  showName?: string;
+  showHistory?: string;
 }
 
 interface NamesViewProps {
@@ -40,17 +42,20 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
 
   const [settings, setSettings] = useState<DisplaySettings>({
     showAll: true,
-    showName: false,
-    showHistory: false,
+    showName: params.showName === "true",
+    showHistory: params.showHistory === "true",
     colorfulHistory: false,
     showImageAndDescription: false,
   });
   const handleApplySettings = (mode: "grid" | "list", newSettings: DisplaySettings) => {
     setSettings(newSettings);
     setIsSettingsOpen(false);
-    if (mode !== displayMode) {
-      updateParams({ ...params, view: mode }, true);
-    }
+    updateParams({
+      ...params,
+      view: mode,
+      showName: mode === "grid" && newSettings.showName ? "true" : "",
+      showHistory: mode === "grid" && newSettings.showHistory ? "true" : "",
+    }, true);
   };
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -147,6 +152,8 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
         tag: "",
         status: "",
         letter,
+        showName: params.showName || "",
+        showHistory: params.showHistory || "",
       },
       true,
     );
@@ -162,6 +169,8 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
       position: filters.position,
       tag: filters.tag,
       status: filters.status,
+      showName: params.showName || "",
+      showHistory: params.showHistory || "",
     };
     const hasFilters =
       filters.name ||
