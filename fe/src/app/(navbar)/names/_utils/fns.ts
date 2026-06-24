@@ -1,4 +1,29 @@
+import { normalizeParam } from "../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../types";
+
+export const getNamesTitle = (
+  view: string | string[] | undefined,
+): string => {
+  const viewStr = normalizeParam(view) || "grid";
+
+  if (viewStr === "retired") return "Retired Typhoon Names";
+  if (viewStr === "list") return "Active Typhoon Names (List)";
+  return "Active Typhoon Names";
+};
+
+export const getNamesDescription = (
+  view: string | string[] | undefined,
+): string => {
+  const viewStr = normalizeParam(view) || "grid";
+
+  if (viewStr === "retired") {
+    return "Browse retired typhoon names that have been permanently removed from the Western Pacific naming rotation due to the severity of their associated storms.";
+  }
+  if (viewStr === "list") {
+    return "View all active typhoon names in list format with detailed information including country of origin, language, and naming history.";
+  }
+  return "Explore active typhoon names organized by position in the Western Pacific naming sequence. View name origins, countries, and storm history.";
+};
 
 export const categorizeLettersByStatus = (
   namesList: TyphoonName[],
