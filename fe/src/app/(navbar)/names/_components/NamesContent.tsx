@@ -4,6 +4,8 @@ import type { TyphoonName, RetiredName } from "../../../../types";
 
 interface NamesContentProps {
   viewMode: string;
+  showName: boolean;
+  showHistory: boolean;
   allNames: TyphoonName[];
   currentNames: TyphoonName[];
   retiredNames: RetiredName[];
@@ -13,6 +15,8 @@ interface NamesContentProps {
 
 const NamesContent = ({
   viewMode,
+  showName,
+  showHistory,
   allNames,
   currentNames,
   retiredNames,
@@ -20,9 +24,21 @@ const NamesContent = ({
   onToggleView,
 }: NamesContentProps) => {
   if (viewMode === "retired") {
-    return <RetiredView retiredNames={retiredNames} activeTab={activeTab} onToggleView={onToggleView} />;
+    return (
+      <RetiredView retiredNames={retiredNames} activeTab={activeTab} onToggleView={onToggleView} />
+    );
   }
-  return <NamesView allNames={allNames} currentNames={currentNames} activeTab={activeTab} onToggleView={onToggleView} />;
+  return (
+    <NamesView
+      allNames={allNames}
+      currentNames={currentNames}
+      viewMode={viewMode}
+      showName={showName}
+      showHistory={showHistory}
+      activeTab={activeTab}
+      onToggleView={onToggleView}
+    />
+  );
 };
 
 export default NamesContent;

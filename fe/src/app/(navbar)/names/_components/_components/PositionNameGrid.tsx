@@ -53,7 +53,15 @@ const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber
 const getHistoryCountColor = (count: number) =>
   count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-gray-600";
 
-const TagIcon = ({ tag, size = 20, colorOverride }: { tag: string; size?: number; colorOverride?: string }) => {
+const TagIcon = ({
+  tag,
+  size = 20,
+  colorOverride,
+}: {
+  tag: string;
+  size?: number;
+  colorOverride?: string;
+}) => {
   const Icon = TAG_ICONS[tag];
   const colorClass = colorOverride || TAG_COLORS[tag] || "text-gray-400";
   if (!Icon) return null;

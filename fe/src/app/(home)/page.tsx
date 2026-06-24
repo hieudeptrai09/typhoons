@@ -1,23 +1,8 @@
-"use client";
-
-import { useState } from "react";
-import { Input } from "antd";
-import { Search } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import Menu from "./_components/Menu";
+import SearchBar from "./_components/SearchBar";
 
 const HomePage = () => {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-
-  const handleSearch = () => {
-    const q = query.trim();
-    if (q) {
-      router.push(`/search?q=${encodeURIComponent(q)}`);
-    }
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-sky-100">
       <div
@@ -41,20 +26,7 @@ const HomePage = () => {
           Track typhoons and explore their names
         </p>
 
-        <div className="mb-10 w-full max-w-sm">
-          <Input
-            size="large"
-            placeholder="Search typhoon names..."
-            aria-label="Search typhoon names"
-            aria-describedby="home-search-description"
-            prefix={<Search size={18} className="text-gray-400" />}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onPressEnter={handleSearch}
-            allowClear
-            className="home-search-input"
-          />
-        </div>
+        <SearchBar />
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu href="storms" label="Browse Storms" bgColor="#2563eb" hoverBgColor="#1d4ed8" />

@@ -1,6 +1,41 @@
 import { INTENSITY_RANK } from "../../../../constants";
 import { normalizeParam, capitalize } from "../../../../containers/utils/fns";
-import type { Storm, IntensityType } from "../../../../types";
+import type { Storm, IntensityType, DashboardParams } from "../../../../types";
+
+export const slugToParams = (slug: string[] = []): DashboardParams => {
+  if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
+
+  const [first, second, third] = slug;
+
+  if (first === "list") return { view: "storms", mode: "list", filter: "name" };
+  if (first === "names") return { view: "storms", mode: "table", filter: "name" };
+  if (first === "positions") return { view: "storms", mode: "table", filter: "position" };
+
+  const view = first;
+  const filter = second || DEFAULT_FILTER[view] || "position";
+  const mode = third === "list" ? "list" : "table";
+
+  return { view, mode, filter };
+};
+
+const DEFAULT_FILTER: Record<string, string> = {
+  storms: "position",
+  highlights: "strongest",
+  average: "position",
+  distance: "position",
+};
+
+export const paramsToPath = (params: DashboardParams): string => {
+  const { view, mode, filter } = params;
+
+  if (view === "storms" && filter === "position") return "/storms/positions/";
+  if (view === "storms" && filter === "name" && mode === "table") return "/storms/";
+  if (view === "storms" && filter === "name" && mode === "list") return "/storms/list/";
+
+  const base = `/storms/${view}/${filter}/`;
+  if (mode === "list") return `${base}list/`;
+  return base;
+};
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
@@ -75,7 +110,12 @@ export const getDashboardTitle = (
   const filterStr = normalizeParam(filter);
 
   const viewTitles: Record<string, string> = {
-    storms: modeStr === "list" ? "All Typhoon Names" : "All Storms",
+    storms:
+      modeStr === "list"
+        ? "All Typhoon Names"
+        : filterStr === "name"
+          ? "All Typhoon Names (Grid)"
+          : "All Storms",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filterStr)}`,
     distance: `Average Gap Between Storms by ${capitalize(filterStr)}`,

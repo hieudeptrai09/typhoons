@@ -1,6 +1,43 @@
 import { normalizeParam } from "../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../types";
 
+export interface NamesSlugParams {
+  view: string;
+  showName: boolean;
+  showHistory: boolean;
+}
+
+export const slugToParams = (slug: string[] = []): NamesSlugParams => {
+  const [first, second] = slug;
+
+  if (first === "list") return { view: "list", showName: false, showHistory: false };
+  if (first === "retired") return { view: "retired", showName: false, showHistory: false };
+
+  if (first === "history") {
+    return { view: "grid", showName: second !== "tag", showHistory: true };
+  }
+  if (first === "current") {
+    return { view: "grid", showName: second !== "tag", showHistory: false };
+  }
+
+  return { view: "grid", showName: true, showHistory: false };
+};
+
+export const paramsToPath = (view: string, showHistory = false, showName = false): string => {
+  if (view === "list") return "/names/list/";
+  if (view === "retired") return "/names/retired/";
+
+  const base = showHistory ? "/names/history" : "/names/current";
+  if (!showName) return `${base}/tag/`;
+  return `${base}/`;
+};
+
+export const canonicalPath = (view: string, showHistory: boolean, showName: boolean): string => {
+  const path = paramsToPath(view, showHistory, showName);
+  if (path === "/names/current/") return "/names/";
+  return path;
+};
+
 export const getNamesTitle = (
   view: string | string[] | undefined,
   showName?: string | string[] | undefined,
@@ -81,9 +118,7 @@ export const applyNameFilters = (
   let filtered = [...names];
 
   if (filters.name) {
-    filtered = filtered.filter((n) =>
-      n.name.toLowerCase().includes(filters.name.toLowerCase()),
-    );
+    filtered = filtered.filter((n) => n.name.toLowerCase().includes(filters.name.toLowerCase()));
   }
   if (filters.country.length > 0) {
     filtered = filtered.filter((n) => filters.country.includes(n.country));

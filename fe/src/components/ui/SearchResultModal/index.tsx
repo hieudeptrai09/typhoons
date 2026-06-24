@@ -5,8 +5,8 @@ import { Modal, Spin } from "antd";
 import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getNameStatusColorClass } from "../../colors";
-import { NameDetailsContent } from "../NameDetailsModal";
 import Tabs, { type Tab } from "../../components/Tabs";
+import { NameDetailsContent } from "../NameDetailsModal";
 import type { SearchDetail, BaseModalProps } from "../../../types";
 
 interface SearchResultModalProps extends BaseModalProps {
