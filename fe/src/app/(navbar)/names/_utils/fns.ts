@@ -14,10 +14,9 @@ export const getNamesTitle = (
   const nameOn = normalizeParam(showName) === "true";
   const historyOn = normalizeParam(showHistory) === "true";
 
-  if (nameOn && historyOn) return "Active Typhoon Names (Names & History)";
-  if (nameOn) return "Active Typhoon Names (Names)";
-  if (historyOn) return "Active Typhoon Names (History)";
-  return "Active Typhoon Names";
+  const nameLabel = nameOn ? "Name" : "Icon";
+  const historyLabel = historyOn ? "History" : "Current";
+  return `Active Typhoon Names (${nameLabel}, ${historyLabel})`;
 };
 
 export const getNamesDescription = (
@@ -37,16 +36,14 @@ export const getNamesDescription = (
   const nameOn = normalizeParam(showName) === "true";
   const historyOn = normalizeParam(showHistory) === "true";
 
-  if (nameOn && historyOn) {
-    return "Explore active typhoon names organized by position with name labels and full naming history visible in the grid.";
-  }
   if (historyOn) {
-    return "Explore active typhoon names organized by position with naming history visible in the grid.";
+    return nameOn
+      ? "Explore active typhoon names organized by position with name labels and full naming history visible in the grid."
+      : "Explore active typhoon names organized by position with naming history visible in the grid.";
   }
-  if (nameOn) {
-    return "Explore active typhoon names organized by position with name labels visible in the grid.";
-  }
-  return "Explore active typhoon names organized by position in the Western Pacific naming sequence. View name origins, countries, and storm history.";
+  return nameOn
+    ? "Explore active typhoon names organized by position with name labels visible in the grid."
+    : "Explore active typhoon names organized by position in the Western Pacific naming sequence. View name origins, countries, and storm history.";
 };
 
 export const categorizeLettersByStatus = (
