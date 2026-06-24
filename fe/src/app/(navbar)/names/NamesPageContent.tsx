@@ -13,7 +13,7 @@ import type { RetiredName } from "../../../types";
 type TabKey = "names" | "retired";
 
 const NamesPageContent = () => {
-  const { params, updateParams } = useURLParams<{ view?: string; letter?: string }>();
+  const { params, updateParams } = useURLParams<{ view?: string; letter?: string; showName?: string; showHistory?: string }>();
   const viewMode = params.view || "grid";
   const activeTab: TabKey = viewMode === "retired" ? "retired" : "names";
 
@@ -58,7 +58,7 @@ const NamesPageContent = () => {
   };
 
   return (
-    <PageHeader title={getNamesTitle(viewMode)}>
+    <PageHeader title={getNamesTitle(viewMode, params.showName, params.showHistory)}>
       <NamesContent
         viewMode={viewMode}
         allNames={allNames || []}

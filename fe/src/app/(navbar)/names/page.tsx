@@ -9,11 +9,11 @@ type MetadataProps = {
 };
 
 export async function generateMetadata({ searchParams }: MetadataProps): Promise<Metadata> {
-  const { view } = await searchParams;
+  const { view, showName, showHistory } = await searchParams;
 
-  const titleParts = getNamesTitle(view);
+  const titleParts = getNamesTitle(view, showName, showHistory);
   const title = titleParts ? `${titleParts} | Names` : "Names";
-  const description = getNamesDescription(view);
+  const description = getNamesDescription(view, showName, showHistory);
 
   return {
     title: title,
