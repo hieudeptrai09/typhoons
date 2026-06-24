@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Spin } from "antd";
+import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
 import { INTENSITY_RANK } from "../../../constants";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
-import { useURLParams } from "../../../containers/hooks/useURLParams";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import DashboardViewButton from "./_components/_components/DashboardViewButton";
 import AverageModal from "./_components/_modals/AverageModal";
@@ -14,7 +14,7 @@ import DashboardModal from "./_components/_modals/DashboardModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import DashboardContent from "./_components/DashboardContent";
-import { getDashboardTitle } from "./_utils/fns";
+import { getDashboardTitle, slugToParams, paramsToPath } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
 
 interface SelectedData {
@@ -26,7 +26,8 @@ interface SelectedData {
 }
 
 export default function DashboardPageContent() {
-  const { params, updateParams } = useURLParams<DashboardParams>();
+  const router = useRouter();
+  const { slug } = useParams<{ slug?: string[] }>();
   const { data: stormsData, loading, error } = useFetchData<Storm[]>("/storms");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -35,15 +36,12 @@ export default function DashboardPageContent() {
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
-  const view = params.view || "storms";
-  const mode = params.mode || "table";
-  const filter = params.filter || (view === "storms" ? "position" : "");
-
-  const currentParams: DashboardParams = { view, mode, filter };
+  const currentParams: DashboardParams = slugToParams(slug);
+  const { view, mode, filter } = currentParams;
 
   const handleApplyFilter = (newParams: DashboardParams) => {
     setIsFilterModalOpen(false);
-    updateParams(newParams, true);
+    router.push(paramsToPath(newParams));
   };
 
   const handleCellClick = (data: number | string, key: string) => {

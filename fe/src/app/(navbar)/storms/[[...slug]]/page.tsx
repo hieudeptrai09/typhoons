@@ -1,14 +1,21 @@
 import { Suspense } from "react";
-import { getDashboardDescription, getDashboardTitle } from "./_utils/fns";
-import DashboardPageContent from "./DashboardPageContent";
+import {
+  slugToParams,
+  paramsToPath,
+  getDashboardDescription,
+  getDashboardTitle,
+} from "../_utils/fns";
+import DashboardPageContent from "../DashboardPageContent";
 import type { Metadata } from "next";
 
 type MetadataProps = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ slug?: string[] }>;
 };
 
-export async function generateMetadata({ searchParams }: MetadataProps): Promise<Metadata> {
-  const { view, mode, filter } = await searchParams;
+export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
+  const { slug } = await params;
+  const dashboardParams = slugToParams(slug);
+  const { view, mode, filter } = dashboardParams;
 
   const titleParts = getDashboardTitle(view, mode, filter);
   const title = titleParts ? `${titleParts} | Dashboard` : "Dashboard";
@@ -17,6 +24,9 @@ export async function generateMetadata({ searchParams }: MetadataProps): Promise
   return {
     title: title,
     description: description,
+    alternates: {
+      canonical: paramsToPath(dashboardParams),
+    },
   };
 }
 

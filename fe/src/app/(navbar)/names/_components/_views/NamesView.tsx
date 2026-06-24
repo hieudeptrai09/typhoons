@@ -1,61 +1,69 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Badge } from "antd";
 import { Filter, Flame, Settings } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import HistoryModal from "../../../../../components/ui/HistoryModal";
 import NameDetailsModal from "../../../../../components/ui/NameDetailsModal";
 import { defaultTyphoonName } from "../../../../../constants";
-import { useURLParams } from "../../../../../containers/hooks/useURLParams";
 import { toArr } from "../../../../../containers/utils/fns";
+import { applyNameFilters, categorizeLettersByStatus, paramsToPath } from "../../_utils/fns";
 import FilteredNamesTable from "../_components/FilteredNamesTable";
 import PositionNameGrid from "../_components/PositionNameGrid";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
-import { applyNameFilters, categorizeLettersByStatus } from "../../_utils/fns";
 import type { TyphoonName, FilterParams } from "../../../../../types";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
-
-interface URLState {
-  view?: string;
-  letter?: string;
-  name?: string;
-  country?: string;
-  language?: string;
-  tag?: string;
-  position?: string;
-  status?: string;
-  showName?: string;
-  showHistory?: string;
-}
 
 interface NamesViewProps {
   allNames: TyphoonName[];
   currentNames: TyphoonName[];
+  viewMode: string;
+  showName: boolean;
+  showHistory: boolean;
   activeTab: "names" | "retired";
   onToggleView: () => void;
 }
 
-const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesViewProps) => {
-  const { params, updateParams } = useURLParams<URLState>();
-  const displayMode = params.view === "list" ? ("list" as const) : ("grid" as const);
-  const currentLetter = params.letter || "A";
+const NamesView = ({
+  allNames,
+  currentNames,
+  viewMode,
+  showName,
+  showHistory,
+  activeTab,
+  onToggleView,
+}: NamesViewProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const displayMode = viewMode === "list" ? ("list" as const) : ("grid" as const);
+  const currentLetter = searchParams.get("letter") || "A";
+
+  const buildQuery = useCallback((params: Record<string, string>) => {
+    const urlParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) urlParams.set(key, value);
+    });
+    const qs = urlParams.toString();
+    return qs ? `?${qs}` : "";
+  }, []);
 
   const [settings, setSettings] = useState<DisplaySettings>({
     showAll: true,
-    showName: params.showName === "true",
-    showHistory: params.showHistory === "true",
+    showName,
+    showHistory,
     colorfulHistory: false,
     showImageAndDescription: false,
   });
   const handleApplySettings = (mode: "grid" | "list", newSettings: DisplaySettings) => {
     setSettings(newSettings);
     setIsSettingsOpen(false);
-    updateParams({
-      ...params,
-      view: mode,
-      showName: mode === "grid" && newSettings.showName ? "true" : "",
-      showHistory: mode === "grid" && newSettings.showHistory ? "true" : "",
-    }, true);
+    if (mode === "list") {
+      router.push(paramsToPath("list"));
+    } else {
+      router.push(paramsToPath("grid", newSettings.showHistory, newSettings.showName));
+    }
   };
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -68,12 +76,12 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
   const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
-  const searchName = params.name || "";
-  const selectedCountry = params.country || "";
-  const selectedLanguage = params.language || "";
-  const selectedTag = params.tag || "";
-  const searchPosition = params.position || "";
-  const selectedStatus = params.status || "";
+  const searchName = searchParams.get("name") || "";
+  const selectedCountry = searchParams.get("country") || "";
+  const selectedLanguage = searchParams.get("language") || "";
+  const selectedTag = searchParams.get("tag") || "";
+  const searchPosition = searchParams.get("position") || "";
+  const selectedStatus = searchParams.get("status") || "";
 
   const countryArr = toArr(selectedCountry);
   const languageArr = toArr(selectedLanguage);
@@ -119,7 +127,6 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
   }, [allNames, hasActiveFilters, filterValues, displayMode, settings.showAll, currentLetter]);
 
   const filteredCurrentNames = useMemo(() => {
-    if (displayMode !== "grid") return [];
     if (hasActiveFilters) {
       if (selectedStatus === "retired") return [];
       return applyNameFilters(currentNames, { ...filterValues, status: "" });
@@ -128,7 +135,6 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
     return currentNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
   }, [
     currentNames,
-    displayMode,
     hasActiveFilters,
     filterValues,
     selectedStatus,
@@ -141,37 +147,14 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
   const showLetterNav =
     displayMode === "grid" ? !settings.showAll && !hasActiveFilters : activeFilterCount === 0;
 
+  const currentPath = paramsToPath(displayMode, showHistory, showName);
+
   const handleLetterChange = (letter: string) => {
-    updateParams(
-      {
-        view: displayMode,
-        name: "",
-        country: "",
-        language: "",
-        position: "",
-        tag: "",
-        status: "",
-        letter,
-        showName: params.showName || "",
-        showHistory: params.showHistory || "",
-      },
-      true,
-    );
+    router.push(`${currentPath}${buildQuery({ letter })}`);
   };
 
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
-    const newParams: URLState = {
-      view: displayMode,
-      name: filters.name,
-      country: filters.country,
-      language: filters.language,
-      position: filters.position,
-      tag: filters.tag,
-      status: filters.status,
-      showName: params.showName || "",
-      showHistory: params.showHistory || "",
-    };
     const hasFilters =
       filters.name ||
       filters.country ||
@@ -179,8 +162,16 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
       filters.position ||
       filters.tag ||
       filters.status;
-    if (!hasFilters) newParams.letter = currentLetter;
-    updateParams(newParams, true);
+    const query = buildQuery({
+      name: filters.name,
+      country: filters.country,
+      language: filters.language,
+      position: filters.position,
+      tag: filters.tag,
+      status: filters.status,
+      ...(!hasFilters ? { letter: currentLetter } : {}),
+    });
+    router.push(`${currentPath}${query}`);
   };
 
   const handleNameClick = (name: TyphoonName) => {
@@ -228,7 +219,11 @@ const NamesView = ({ allNames, currentNames, activeTab, onToggleView }: NamesVie
           <button
             onClick={onToggleView}
             title={activeTab === "names" ? "Switch to retired names" : "Switch to active names"}
-            aria-label={activeTab === "names" ? "Viewing active names, click to switch to retired" : "Viewing retired names, click to switch to active"}
+            aria-label={
+              activeTab === "names"
+                ? "Viewing active names, click to switch to retired"
+                : "Viewing retired names, click to switch to active"
+            }
             className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
           >
             <Flame size={30} />

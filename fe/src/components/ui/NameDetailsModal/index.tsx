@@ -11,10 +11,7 @@ interface NameDetailsContentProps {
 
 interface NameDetailsModalProps extends BaseModalProps, NameDetailsContentProps {}
 
-const NameDetailsContent = ({
-  name,
-  hideReplacedBy = false,
-}: NameDetailsContentProps) => {
+const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContentProps) => {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 

@@ -1,25 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Badge } from "antd";
 import { Filter, Skull } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import LetterNavigation from "../../../../../components/components/LetterNavigation";
 import { defaultRetiredName } from "../../../../../constants";
 import { useFetchData } from "../../../../../containers/hooks/useFetchData";
-import { useURLParams } from "../../../../../containers/hooks/useURLParams";
 import { toArr } from "../../../../../containers/utils/fns";
+import { paramsToPath } from "../../_utils/fns";
 import RetiredNamesTable from "../_components/RetiredNamesTable";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
 import RetiredNameDetailsModal from "../_modals/RetiredNameDetailsModal";
 import type { RetiredName, Suggestion, RetiredFilterParams } from "../../../../../types";
-
-interface URLState {
-  view?: string;
-  letter?: string;
-  name?: string;
-  year?: string;
-  country?: string;
-  reason?: string;
-  position?: string;
-}
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];
@@ -28,8 +19,18 @@ interface RetiredViewProps {
 }
 
 const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps) => {
-  const { params, updateParams } = useURLParams<URLState>();
-  const currentLetter = params.letter || "A";
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentLetter = searchParams.get("letter") || "A";
+
+  const buildQuery = useCallback((params: Record<string, string>) => {
+    const urlParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) urlParams.set(key, value);
+    });
+    const qs = urlParams.toString();
+    return qs ? `?${qs}` : "";
+  }, []);
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
@@ -46,11 +47,11 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
   const isSuggestionsReady = !suggestionsLoading;
   const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
 
-  const searchName = params.name || "";
-  const selectedYear = params.year || "";
-  const selectedCountry = params.country || "";
-  const selectedReason = params.reason || "";
-  const searchPosition = params.position || "";
+  const searchName = searchParams.get("name") || "";
+  const selectedYear = searchParams.get("year") || "";
+  const selectedCountry = searchParams.get("country") || "";
+  const selectedReason = searchParams.get("reason") || "";
+  const searchPosition = searchParams.get("position") || "";
 
   const countryArr = toArr(selectedCountry);
   const reasonArr = toArr(selectedReason).map(Number);
@@ -64,9 +65,7 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
     let filtered = [...retiredNames];
 
     if (searchName) {
-      filtered = filtered.filter((n) =>
-        n.name.toLowerCase().includes(searchName.toLowerCase()),
-      );
+      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
     }
     if (selectedYear) {
       filtered = filtered.filter((n) => n.lastYear === Number(selectedYear));
@@ -82,11 +81,7 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
     }
 
     const hasActiveFilters =
-      searchName ||
-      selectedYear ||
-      countryArr.length > 0 ||
-      reasonArr.length > 0 ||
-      searchPosition;
+      searchName || selectedYear || countryArr.length > 0 || reasonArr.length > 0 || searchPosition;
 
     if (!hasActiveFilters) {
       filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
@@ -126,25 +121,21 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
 
   const handleApplyFilters = (filters: RetiredFilterParams) => {
     setIsFilterModalOpen(false);
-    const newParams: URLState = {
-      view: "retired",
+    const hasFilters =
+      filters.name || filters.year || filters.country || filters.reason || filters.position;
+    const query = buildQuery({
       name: filters.name,
       year: filters.year,
       country: filters.country,
       reason: filters.reason,
       position: filters.position,
-    };
-    const hasFilters =
-      filters.name || filters.year || filters.country || filters.reason || filters.position;
-    if (!hasFilters) newParams.letter = currentLetter;
-    updateParams(newParams, true);
+      ...(!hasFilters ? { letter: currentLetter } : {}),
+    });
+    router.push(`${paramsToPath("retired")}${query}`);
   };
 
   const handleLetterChange = (letter: string) => {
-    updateParams(
-      { view: "retired", name: "", year: "", country: "", reason: "", position: "", letter },
-      true,
-    );
+    router.push(`${paramsToPath("retired")}${buildQuery({ letter })}`);
   };
 
   const getLetterConfig = (letter: string) => {
@@ -164,7 +155,11 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
           <button
             onClick={onToggleView}
             title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
-            aria-label={activeTab === "retired" ? "Viewing retired names, click to switch to active" : "Viewing active names, click to switch to retired"}
+            aria-label={
+              activeTab === "retired"
+                ? "Viewing retired names, click to switch to active"
+                : "Viewing active names, click to switch to retired"
+            }
             className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
             <Skull size={30} />
@@ -183,17 +178,11 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
       </div>
 
       {activeFilterCount === 0 && (
-        <LetterNavigation
-          onLetterChange={handleLetterChange}
-          getLetterConfig={getLetterConfig}
-        />
+        <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
       <div className="mx-auto max-w-5xl">
-        <RetiredNamesTable
-          paginatedData={displayedNames}
-          onNameClick={handleNameClick}
-        />
+        <RetiredNamesTable paginatedData={displayedNames} onNameClick={handleNameClick} />
       </div>
 
       <RetiredFilterModal

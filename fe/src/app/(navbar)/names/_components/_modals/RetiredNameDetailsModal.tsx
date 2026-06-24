@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Modal, Spin } from "antd";
 import { getRetiredReasonColorClass } from "../../../../../components/colors";
-import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
 import Tabs, { type Tab } from "../../../../../components/components/Tabs";
+import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
 import SuggestionCard from "../_components/SuggestionCard";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../types";
 
