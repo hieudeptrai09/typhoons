@@ -1,0 +1,43 @@
+.not-found-icon {
+  animation: not-found-rotate 6s linear infinite;
+}
+
+.not-found-arm {
+  opacity: 0.75;
+  transform-origin: 50px 50px;
+}
+
+.not-found-arm-1 {
+  animation: not-found-pulse 3s ease-in-out infinite;
+}
+
+.not-found-arm-2 {
+  animation: not-found-pulse 3s ease-in-out 0.75s infinite;
+}
+
+.not-found-arm-3 {
+  animation: not-found-pulse 3s ease-in-out 1.5s infinite;
+}
+
+.not-found-arm-4 {
+  animation: not-found-pulse 3s ease-in-out 2.25s infinite;
+}
+
+@keyframes not-found-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes not-found-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
