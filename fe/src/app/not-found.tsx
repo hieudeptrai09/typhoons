@@ -1,47 +1,48 @@
 import Link from "next/link";
+import TyphoonSymbol from "../components/components/TyphoonSpinner/TyphoonSymbol";
 import "./not-found.css";
-
-const TyphoonIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={className}>
-    <path
-      className="not-found-arm not-found-arm-1"
-      d="M50 50 Q60 30, 50 10 Q40 30, 50 50"
-      fill="#2563eb"
-    />
-    <path
-      className="not-found-arm not-found-arm-2"
-      d="M50 50 Q70 60, 90 50 Q70 40, 50 50"
-      fill="#0d9488"
-    />
-    <path
-      className="not-found-arm not-found-arm-3"
-      d="M50 50 Q40 70, 50 90 Q60 70, 50 50"
-      fill="#2563eb"
-    />
-    <path
-      className="not-found-arm not-found-arm-4"
-      d="M50 50 Q30 40, 10 50 Q30 60, 50 50"
-      fill="#0d9488"
-    />
-    <circle cx="50" cy="50" r="6" fill="#1e3a5f" />
-  </svg>
-);
 
 const NotFound = () => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-sky-50 px-4">
-      <div className="mb-4 flex items-center gap-1">
-        <span className="text-8xl font-black text-blue-600/20">4</span>
-        <TyphoonIcon className="not-found-icon h-20 w-20" />
-        <span className="text-8xl font-black text-blue-600/20">4</span>
+    <div className="not-found-page">
+      {/* Sky */}
+      <div className="nf-sky" />
+
+      {/* Sea: ocean + waves bob together */}
+      <div className="nf-sea">
+        <div className="nf-ocean" />
+        <div className="nf-waves">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-1">
+          <path d="M0,60 C180,20 360,100 540,60 C720,20 900,100 1080,60 C1260,20 1440,80 1440,60 L1440,120 L0,120 Z" />
+        </svg>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-2">
+          <path d="M0,80 C200,40 400,100 600,70 C800,40 1000,110 1200,70 C1350,40 1440,80 1440,70 L1440,120 L0,120 Z" />
+        </svg>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-3">
+          <path d="M0,90 C160,60 320,110 480,80 C640,50 800,110 960,80 C1120,50 1280,100 1440,80 L1440,120 L0,120 Z" />
+        </svg>
+        </div>
       </div>
-      <p className="mb-8 text-lg text-slate-500">This page was swept away by a storm.</p>
-      <Link
-        href="/"
-        className="rounded-full bg-blue-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-blue-700"
-      >
-        Return to Safety
-      </Link>
+
+      {/* Content — blown by wind */}
+      <div className="nf-content">
+        <div className="nf-blow nf-blow-1 mb-4 flex items-center gap-2">
+          <span className="text-8xl font-black text-white/50 select-none sm:text-9xl">4</span>
+          <TyphoonSymbol className="not-found-icon h-20 w-20 text-white/80 sm:h-24 sm:w-24" />
+          <span className="text-8xl font-black text-white/50 select-none sm:text-9xl">4</span>
+        </div>
+
+        <p className="nf-blow nf-blow-2 mb-10 text-lg font-medium tracking-wide text-white/60">
+          This page was swept away by a storm.
+        </p>
+
+        <Link
+          href="/"
+          className="nf-btn inline-block rounded-full bg-white/15 px-8 py-3 font-semibold text-white backdrop-blur-sm"
+        >
+          Return to Safety
+        </Link>
+      </div>
     </div>
   );
 };
