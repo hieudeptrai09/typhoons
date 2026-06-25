@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Modal, Spin } from "antd";
+import { Modal } from "antd";
+import TyphoonSpinner from "../../components/TyphoonSpinner";
 import { NameListModalInner } from "../../../app/(navbar)/storms/_components/_modals/NameListModal";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getNameStatusColorClass } from "../../colors";
@@ -65,7 +66,7 @@ const SearchResultModal = ({ isOpen, onClose, nameId, stormName }: SearchResultM
     return (
       <Modal open={isOpen} onCancel={onClose} width={600} footer={null} centered destroyOnHidden>
         <div className="flex justify-center py-12">
-          <Spin size="large" />
+          <TyphoonSpinner size="large" />
         </div>
       </Modal>
     );

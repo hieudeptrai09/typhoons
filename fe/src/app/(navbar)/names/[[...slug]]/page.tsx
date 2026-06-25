@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Spin } from "antd";
+import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import { notFound } from "next/navigation";
 import {
   isValidNamesSlug,
@@ -48,7 +48,7 @@ const NamesPage = async ({ params }: PageProps) => {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-stone-100">
-          <Spin size="large" />
+          <TyphoonSpinner size="large" />
         </div>
       }
     >

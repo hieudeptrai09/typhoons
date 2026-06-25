@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Modal, Spin } from "antd";
+import { Modal } from "antd";
+import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
 import { getRetiredReasonColorClass } from "../../../../../components/colors";
 import Tabs, { type Tab } from "../../../../../components/components/Tabs";
 import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
@@ -47,7 +48,7 @@ const RetiredNameDetailsModal = ({
     if (suggestionsLoading) {
       return (
         <div className="flex justify-center py-8">
-          <Spin size="medium" />
+          <TyphoonSpinner size="medium" />
         </div>
       );
     }

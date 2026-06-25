@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Input, Spin } from "antd";
+import { Input } from "antd";
+import TyphoonSpinner from "../../components/TyphoonSpinner";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
@@ -106,7 +107,7 @@ const SearchBar = () => {
           >
             {loading ? (
               <div id="search-status" className="flex justify-center py-4">
-                <Spin size="small" />
+                <TyphoonSpinner size="small" />
               </div>
             ) : !results || results.length === 0 ? (
               <div id="search-status" className="px-4 py-3 text-sm text-gray-500">
