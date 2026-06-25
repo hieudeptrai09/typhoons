@@ -2,6 +2,43 @@ import { INTENSITY_RANK } from "../../../../constants";
 import { normalizeParam, capitalize } from "../../../../containers/utils/fns";
 import type { Storm, IntensityType, DashboardParams } from "../../../../types";
 
+const VALID_FILTERS: Record<string, string[]> = {
+  storms: ["position", "name"],
+  highlights: ["strongest", "first", "last"],
+  average: ["position", "name", "country", "year"],
+  distance: ["position", "name"],
+};
+
+const DEFAULT_FILTER: Record<string, string> = {
+  storms: "position",
+  highlights: "strongest",
+  average: "position",
+  distance: "position",
+};
+
+export const isValidStormsSlug = (slug: string[] = []): boolean => {
+  if (slug.length === 0) return true;
+
+  const [first, second, third] = slug;
+
+  if (slug.length === 1) {
+    return ["list", "names", "positions", "storms", "highlights", "average", "distance"].includes(
+      first,
+    );
+  }
+  if (slug.length === 2) {
+    const validFilters = VALID_FILTERS[first];
+    if (!validFilters) return false;
+    return validFilters.includes(second);
+  }
+  if (slug.length === 3) {
+    const validFilters = VALID_FILTERS[first];
+    if (!validFilters || !validFilters.includes(second)) return false;
+    return third === "list";
+  }
+  return false;
+};
+
 export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
 
@@ -16,13 +53,6 @@ export const slugToParams = (slug: string[] = []): DashboardParams => {
   const mode = third === "list" ? "list" : "table";
 
   return { view, mode, filter };
-};
-
-const DEFAULT_FILTER: Record<string, string> = {
-  storms: "position",
-  highlights: "strongest",
-  average: "position",
-  distance: "position",
 };
 
 export const paramsToPath = (params: DashboardParams): string => {

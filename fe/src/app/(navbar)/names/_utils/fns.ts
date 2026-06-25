@@ -7,6 +7,17 @@ export interface NamesSlugParams {
   showHistory: boolean;
 }
 
+export const isValidNamesSlug = (slug: string[] = []): boolean => {
+  if (slug.length === 0) return true;
+  if (slug.length === 1) {
+    return ["list", "retired", "history", "current"].includes(slug[0]);
+  }
+  if (slug.length === 2) {
+    return (slug[0] === "history" || slug[0] === "current") && slug[1] === "tag";
+  }
+  return false;
+};
+
 export const slugToParams = (slug: string[] = []): NamesSlugParams => {
   const [first, second] = slug;
 
