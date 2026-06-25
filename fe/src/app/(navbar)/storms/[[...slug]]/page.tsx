@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   isValidStormsSlug,
   slugToParams,
@@ -42,6 +42,13 @@ const Dashboard = async ({ params }: PageProps) => {
 
   if (!isValidStormsSlug(slug)) {
     notFound();
+  }
+
+  const dashboardParams = slugToParams(slug);
+  const canonicalPath = paramsToPath(dashboardParams);
+  const currentPath = `/storms/${(slug || []).join("/")}/`.replace(/\/+/g, "/");
+  if (currentPath !== canonicalPath) {
+    redirect(canonicalPath);
   }
 
   return (

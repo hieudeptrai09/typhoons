@@ -39,6 +39,9 @@ export const isValidStormsSlug = (slug: string[] = []): boolean => {
   return false;
 };
 
+const isListOnly = (view: string, filter: string): boolean =>
+  (view === "average" && filter === "country") || (view === "distance" && filter === "name");
+
 export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
 
@@ -50,7 +53,7 @@ export const slugToParams = (slug: string[] = []): DashboardParams => {
 
   const view = first;
   const filter = second || DEFAULT_FILTER[view] || "position";
-  const mode = third === "list" ? "list" : "table";
+  const mode = third === "list" || isListOnly(view, filter) ? "list" : "table";
 
   return { view, mode, filter };
 };
