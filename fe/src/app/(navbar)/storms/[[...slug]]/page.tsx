@@ -1,5 +1,7 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import {
+  isValidStormsSlug,
   slugToParams,
   paramsToPath,
   getDashboardDescription,
@@ -8,12 +10,17 @@ import {
 import DashboardPageContent from "../DashboardPageContent";
 import type { Metadata } from "next";
 
-type MetadataProps = {
+type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+
+  if (!isValidStormsSlug(slug)) {
+    return { title: "Not Found" };
+  }
+
   const dashboardParams = slugToParams(slug);
   const { view, mode, filter } = dashboardParams;
 
@@ -30,7 +37,13 @@ export async function generateMetadata({ params }: MetadataProps): Promise<Metad
   };
 }
 
-const Dashboard = () => {
+const Dashboard = async ({ params }: PageProps) => {
+  const { slug } = await params;
+
+  if (!isValidStormsSlug(slug)) {
+    notFound();
+  }
+
   return (
     <Suspense
       fallback={

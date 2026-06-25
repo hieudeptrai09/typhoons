@@ -1,15 +1,27 @@
 import { Suspense } from "react";
 import { Spin } from "antd";
-import { slugToParams, canonicalPath, getNamesDescription, getNamesTitle } from "../_utils/fns";
+import { notFound } from "next/navigation";
+import {
+  isValidNamesSlug,
+  slugToParams,
+  canonicalPath,
+  getNamesDescription,
+  getNamesTitle,
+} from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
 import type { Metadata } from "next";
 
-type MetadataProps = {
+type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export async function generateMetadata({ params }: MetadataProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+
+  if (!isValidNamesSlug(slug)) {
+    return { title: "Not Found" };
+  }
+
   const { view, showName, showHistory } = slugToParams(slug);
 
   const titleParts = getNamesTitle(view, showName ? "true" : "", showHistory ? "true" : "");
@@ -25,7 +37,13 @@ export async function generateMetadata({ params }: MetadataProps): Promise<Metad
   };
 }
 
-const NamesPage = () => {
+const NamesPage = async ({ params }: PageProps) => {
+  const { slug } = await params;
+
+  if (!isValidNamesSlug(slug)) {
+    notFound();
+  }
+
   return (
     <Suspense
       fallback={
