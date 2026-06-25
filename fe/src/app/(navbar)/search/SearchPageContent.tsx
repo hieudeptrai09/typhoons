@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Spin, Table } from "antd";
+import { Table } from "antd";
+import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { Flame, Skull } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { getNameStatusColorClass } from "../../../components/colors";
@@ -122,7 +123,7 @@ export default function SearchPageContent() {
       <div className="mx-auto max-w-4xl">
         {loading ? (
           <div className="flex justify-center py-12">
-            <Spin size="large" />
+            <TyphoonSpinner size="large" />
           </div>
         ) : !query.trim() ? (
           <div className="py-12 text-center text-gray-400">Type a name to search</div>

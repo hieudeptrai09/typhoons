@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button, Modal, Spin } from "antd";
+import { Button, Modal } from "antd";
+import TyphoonSpinner from "../../components/TyphoonSpinner";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import { getNameStatusColor } from "../../colors";
@@ -76,7 +77,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       <div className="pt-4">
         {loading || !isStormsReady ? (
           <div className="flex justify-center py-8">
-            <Spin size="medium" />
+            <TyphoonSpinner size="medium" />
           </div>
         ) : error ? (
           <div className="py-4 text-center text-gray-500">Failed to load storm data.</div>

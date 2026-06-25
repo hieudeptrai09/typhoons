@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Spin } from "antd";
+import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
@@ -38,7 +38,7 @@ const NamesPageContent = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <Spin size="large" />
+        <TyphoonSpinner size="large" />
       </div>
     );
   }

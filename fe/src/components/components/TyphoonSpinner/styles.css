@@ -1,0 +1,63 @@
+.typhoon-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typhoon-spinner svg {
+  animation: typhoon-rotate 1.2s linear infinite;
+}
+
+.typhoon-arm {
+  opacity: 0.85;
+  transform-origin: 50px 50px;
+}
+
+.typhoon-arm-1 {
+  animation: typhoon-pulse 1.2s ease-in-out infinite;
+}
+
+.typhoon-arm-2 {
+  animation: typhoon-pulse 1.2s ease-in-out 0.3s infinite;
+}
+
+.typhoon-arm-3 {
+  animation: typhoon-pulse 1.2s ease-in-out 0.6s infinite;
+}
+
+.typhoon-arm-4 {
+  animation: typhoon-pulse 1.2s ease-in-out 0.9s infinite;
+}
+
+.typhoon-eye {
+  animation: typhoon-eye-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes typhoon-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes typhoon-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes typhoon-eye-pulse {
+  0%,
+  100% {
+    r: 5;
+  }
+  50% {
+    r: 7;
+  }
+}
