@@ -12,15 +12,15 @@ const NotFound = () => {
       <div className="nf-sea">
         <div className="nf-ocean" />
         <div className="nf-waves">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-1">
-          <path d="M0,60 C180,20 360,100 540,60 C720,20 900,100 1080,60 C1260,20 1440,80 1440,60 L1440,120 L0,120 Z" />
-        </svg>
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-2">
-          <path d="M0,80 C200,40 400,100 600,70 C800,40 1000,110 1200,70 C1350,40 1440,80 1440,70 L1440,120 L0,120 Z" />
-        </svg>
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-3">
-          <path d="M0,90 C160,60 320,110 480,80 C640,50 800,110 960,80 C1120,50 1280,100 1440,80 L1440,120 L0,120 Z" />
-        </svg>
+          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-1">
+            <path d="M0,60 C180,20 360,100 540,60 C720,20 900,100 1080,60 C1260,20 1440,80 1440,60 L1440,120 L0,120 Z" />
+          </svg>
+          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-2">
+            <path d="M0,80 C200,40 400,100 600,70 C800,40 1000,110 1200,70 C1350,40 1440,80 1440,70 L1440,120 L0,120 Z" />
+          </svg>
+          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-3">
+            <path d="M0,90 C160,60 320,110 480,80 C640,50 800,110 960,80 C1120,50 1280,100 1440,80 L1440,120 L0,120 Z" />
+          </svg>
         </div>
       </div>
 
