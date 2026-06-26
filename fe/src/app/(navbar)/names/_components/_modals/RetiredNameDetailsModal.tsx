@@ -75,7 +75,7 @@ const RetiredNameDetailsModal = ({
       destroyOnHidden
       title={
         <span
-          className={`text-3xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
+          className={`text-2xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
         >
           {selectedName.name}
         </span>
