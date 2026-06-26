@@ -1,4 +1,4 @@
-import { CloudLightning, BookText } from "lucide-react";
+import { CloudLightning, BookText, BarChart3 } from "lucide-react";
 import NavLink from "./NavLink";
 
 interface MobileNavProps {
@@ -29,6 +29,13 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
           icon={BookText}
           label="Names"
           isActive={currentPath.startsWith("/names")}
+          onClick={onClose}
+        />
+        <NavLink
+          href="/charts"
+          icon={BarChart3}
+          label="Charts"
+          isActive={currentPath.startsWith("/charts")}
           onClick={onClose}
         />
       </div>
