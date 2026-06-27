@@ -129,7 +129,7 @@ function StormsSection({ name, storms }: { name: string; storms: Storm[] }) {
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-bold text-slate-800">
-          All {name} Storms ({storms.length})
+          All Storms ({storms.length})
         </h2>
         {storms.length > 0 && (
           <div className="flex items-center gap-2">
