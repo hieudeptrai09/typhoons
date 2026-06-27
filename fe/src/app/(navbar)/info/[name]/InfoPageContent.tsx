@@ -179,7 +179,7 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
 
   const nameData = detail.name ?? null;
   const storms = detail.storms ?? [];
-  const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 143 : false;
+  const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
   const displayName = nameData?.name ?? name;
 
   const isUnknownStatus = nameData ? nameData.position >= 141 && nameData.position <= 143 : false;
