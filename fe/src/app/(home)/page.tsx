@@ -29,8 +29,6 @@ const HomePage = () => {
 
         <SearchBar />
 
-        <FunFactsButton />
-
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu href="storms" label="Browse Storms" bgColor="#2563eb" hoverBgColor="#1d4ed8" />
           <Menu href="names" label="Explore Names" bgColor="#0d9488" hoverBgColor="#0f766e" />
