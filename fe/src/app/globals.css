@@ -25,6 +25,12 @@ body {
   font-family: inherit;
 }
 
+a:hover {
+  text-decoration: underline !important;
+  color: var(--ant-color-link) !important;
+  text-underline-offset: 4px !important;
+}
+
 .ant-segmented {
   background: #d1d5db !important;
 }

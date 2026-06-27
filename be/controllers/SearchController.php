@@ -71,6 +71,41 @@ class SearchController
 
     public function getByName($name)
     {
+        $nameStmt = $this->conn->prepare(
+            "SELECT
+                tn.id,
+                tn.name,
+                tn.meaning,
+                tn.position,
+                p.country,
+                tn.isRetired,
+                tn.isReplaced,
+                tn.isLanguageProblem,
+                tn.replacementName,
+                tn.note,
+                tn.language,
+                tn.lastYear,
+                tn.image,
+                tn.description,
+                tn.tag
+            FROM typhoonnames tn
+            INNER JOIN positions p ON tn.position = p.id
+            WHERE LOWER(tn.name) = LOWER(:name)
+            LIMIT 1"
+        );
+        $nameStmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $nameStmt->execute();
+        $nameRow = $nameStmt->fetch();
+
+        if ($nameRow) {
+            $nameRow['id'] = (int)$nameRow['id'];
+            $nameRow['position'] = (int)$nameRow['position'];
+            $nameRow['isRetired'] = (int)$nameRow['isRetired'];
+            $nameRow['isReplaced'] = (int)$nameRow['isReplaced'];
+            $nameRow['isLanguageProblem'] = (int)$nameRow['isLanguageProblem'];
+            $nameRow['lastYear'] = (int)$nameRow['lastYear'];
+        }
+
         $stormStmt = $this->conn->prepare(
             "SELECT
                 s.id,
@@ -86,7 +121,7 @@ class SearchController
                 s.isLast
             FROM storms s
             INNER JOIN positions p ON s.position = p.id
-            WHERE s.name = :name
+            WHERE LOWER(s.name) = LOWER(:name)
             ORDER BY s.year ASC, s.position"
         );
         $stormStmt->bindParam(':name', $name, PDO::PARAM_STR);
@@ -105,7 +140,7 @@ class SearchController
 
         return [
             'data' => [
-                'name' => null,
+                'name' => $nameRow ?: null,
                 'storms' => $storms,
             ]
         ];
@@ -166,10 +201,10 @@ class SearchController
                 s.isLast
             FROM storms s
             INNER JOIN positions p ON s.position = p.id
-            WHERE s.name = :name
+            WHERE LOWER(s.name) = LOWER(:name)
             ORDER BY s.year ASC, s.position"
         );
-        $stormStmt->bindParam(':name', $nameRow['name'], PDO::PARAM_STR);
+        $stormStmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stormStmt->execute();
         $storms = $stormStmt->fetchAll();
 
