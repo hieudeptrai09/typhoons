@@ -1,6 +1,6 @@
 "use client";
 
-import { Flame, Skull } from "lucide-react";
+import { CircleHelp, Flame, Skull } from "lucide-react";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -182,7 +182,12 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
   const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
   const displayName = nameData?.name ?? name;
 
-  const titleColorClass = nameData ? getNameStatusColorClass(nameData) : "text-slate-800";
+  const isUnknownStatus = nameData ? nameData.position >= 141 && nameData.position <= 143 : false;
+  const titleColorClass = isUnknownStatus
+    ? "text-slate-500"
+    : nameData
+      ? getNameStatusColorClass(nameData)
+      : "text-slate-800";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
@@ -192,12 +197,14 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
       <div className="mb-8 flex items-center gap-3">
-        {isRetired ? (
+        {isUnknownStatus ? (
+          <CircleHelp className={titleColorClass} size={28} />
+        ) : isRetired ? (
           <Skull className={titleColorClass} size={28} />
         ) : (
           <Flame className={titleColorClass} size={28} />
         )}
-        <h1 className={`text-3xl font-bold ${titleColorClass}`}>{displayName}</h1>
+        <h1 className={`text-3xl font-bold capitalize ${titleColorClass}`}>{displayName.toLowerCase()}</h1>
       </div>
 
       <div className="space-y-6">
