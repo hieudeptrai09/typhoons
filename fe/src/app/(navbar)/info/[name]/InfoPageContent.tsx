@@ -181,9 +181,8 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
   const storms = detail.storms ?? [];
   const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
   const displayName = nameData?.name ?? name;
-
-  const isUnknownStatus = nameData ? nameData.position >= 141 && nameData.position <= 143 : false;
-  const titleColorClass = isUnknownStatus
+  
+  const titleColorClass = !isInPosition
     ? "text-slate-500"
     : nameData
       ? getNameStatusColorClass(nameData)
@@ -197,7 +196,7 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
       <div className="mb-8 flex items-center gap-3">
-        {isUnknownStatus ? (
+        {!isInPosition ? (
           <CircleHelp className={titleColorClass} size={28} />
         ) : isRetired ? (
           <Skull className={titleColorClass} size={28} />
