@@ -1,4 +1,4 @@
-import { CloudLightning, BookText, BarChart3 } from "lucide-react";
+import { CloudLightning, BookText } from "lucide-react";
 import NavLink from "./NavLink";
 
 interface DesktopNavProps {
@@ -19,12 +19,6 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
         icon={BookText}
         label="Names"
         isActive={currentPath.startsWith("/names")}
-      />
-      <NavLink
-        href="/charts"
-        icon={BarChart3}
-        label="Charts"
-        isActive={currentPath.startsWith("/charts")}
       />
     </div>
   );
