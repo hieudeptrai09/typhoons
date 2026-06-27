@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Table } from "antd";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { Flame, Skull } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getNameStatusColorClass } from "../../../components/colors";
 import CountryFlag from "../../../components/components/CountryFlag";
 import EmptyResults from "../../../components/components/EmptyResults";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import HighlightedName from "../../../components/components/HighlightedName";
 import PageHeader from "../../../components/components/PageHeader";
-import SearchResultModal from "../../../components/ui/SearchResultModal";
+import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import type { SearchResult } from "../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -40,7 +40,13 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
           ? "text-amber-600"
           : "text-red-600";
       return (
-        <HighlightedName name={record.name} query={query} className={`font-semibold ${color}`} />
+        <Link
+          href={`/info/${encodeURIComponent(record.name.toLowerCase())}/`}
+          className={`font-semibold ${color}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <HighlightedName name={record.name} query={query} />
+        </Link>
       );
     },
   },
@@ -91,6 +97,7 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
 ];
 
 export default function SearchPageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") ?? "";
 
@@ -103,16 +110,6 @@ export default function SearchPageContent() {
   } = useFetchData<SearchResult[]>(
     query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : "",
   );
-
-  const [selectedNameId, setSelectedNameId] = useState<number | null>(null);
-  const [selectedStormName, setSelectedStormName] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleNameClick = (record: SearchResult) => {
-    setSelectedNameId(record.id);
-    setSelectedStormName(record.id === null ? record.name : null);
-    setIsModalOpen(true);
-  };
 
   if (error) {
     return <FrownNotFound />;
@@ -142,7 +139,8 @@ export default function SearchPageContent() {
                   record.id !== null ? String(record.id) : `storm-${record.name}`
                 }
                 onRow={(record) => ({
-                  onClick: () => handleNameClick(record),
+                  onClick: () =>
+                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`),
                   "aria-label": `View details for ${record.name}`,
                   role: "button",
                   tabIndex: 0,
@@ -159,19 +157,6 @@ export default function SearchPageContent() {
           </>
         )}
       </div>
-
-      {(selectedNameId !== null || selectedStormName !== null) && (
-        <SearchResultModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedNameId(null);
-            setSelectedStormName(null);
-          }}
-          nameId={selectedNameId}
-          stormName={selectedStormName}
-        />
-      )}
     </PageHeader>
   );
 }

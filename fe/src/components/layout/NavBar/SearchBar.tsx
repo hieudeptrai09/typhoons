@@ -2,12 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Input } from "antd";
-import TyphoonSpinner from "../../components/TyphoonSpinner";
 import { Search } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import HighlightedName from "../../components/HighlightedName";
-import SearchResultModal from "../../ui/SearchResultModal";
+import TyphoonSpinner from "../../components/TyphoonSpinner";
 import type { SearchResult } from "../../../types";
 
 const SearchBar = () => {
@@ -15,9 +15,6 @@ const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedNameId, setSelectedNameId] = useState<number | null>(null);
-  const [selectedStormName, setSelectedStormName] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -48,10 +45,7 @@ const SearchBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (result: SearchResult) => {
-    setSelectedNameId(result.id);
-    setSelectedStormName(result.id === null ? result.name : null);
-    setIsModalOpen(true);
+  const handleLinkClick = () => {
     setIsDropdownOpen(false);
     setQuery("");
     setDebouncedQuery("");
@@ -117,9 +111,10 @@ const SearchBar = () => {
               <>
                 <div className="max-h-80 overflow-y-auto">
                   {results.slice(0, 5).map((result) => (
-                    <button
-                      key={result.id}
-                      onClick={() => handleSelect(result)}
+                    <Link
+                      key={result.id ?? `storm-${result.name}`}
+                      href={`/info/${encodeURIComponent(result.name.toLowerCase())}/`}
+                      onClick={handleLinkClick}
                       aria-label={`View details for ${result.name}`}
                       role="option"
                       aria-selected={false}
@@ -128,7 +123,7 @@ const SearchBar = () => {
                       <span className="text-sm text-gray-900">
                         <HighlightedName name={result.name} query={query.trim()} />
                       </span>
-                    </button>
+                    </Link>
                   ))}
                 </div>
                 <button
@@ -143,19 +138,6 @@ const SearchBar = () => {
           </div>
         )}
       </div>
-
-      {(selectedNameId !== null || selectedStormName !== null) && (
-        <SearchResultModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedNameId(null);
-            setSelectedStormName(null);
-          }}
-          nameId={selectedNameId}
-          stormName={selectedStormName}
-        />
-      )}
     </>
   );
 };
