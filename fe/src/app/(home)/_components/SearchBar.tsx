@@ -17,7 +17,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="mb-10 w-full max-w-sm">
+    <div className="mb-4 w-full max-w-sm">
       <Input
         size="large"
         placeholder="Search typhoon names..."

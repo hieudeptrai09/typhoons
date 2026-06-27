@@ -1,5 +1,6 @@
 import { TITLE_COMMON } from "../constants";
 import type { Metadata } from "next";
+import AntdApp from "./AntdApp";
 import "./globals.css";
 
 const SITE_URL = "https://typhoons.vercel.app";
@@ -124,7 +125,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
+        <AntdApp>{children}</AntdApp>
         <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,

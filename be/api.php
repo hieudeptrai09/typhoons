@@ -9,6 +9,7 @@ require_once 'controllers/StormController.php';
 require_once 'controllers/TyphoonNameController.php';
 require_once 'controllers/SuggestedNameController.php';
 require_once 'controllers/SearchController.php';
+require_once 'controllers/FactController.php';
 
 // Parse the request
 $method = $_SERVER['REQUEST_METHOD'];
@@ -74,6 +75,17 @@ try {
             if ($method === 'GET') {
                 $nameId = isset($_GET['nameId']) ? intval($_GET['nameId']) : null;
                 $result = $controller->getSuggestedNames($nameId);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'facts':
+            $controller = new FactController($db);
+            if ($method === 'GET') {
+                $random = isset($_GET['random']) ? true : false;
+                $result = $random ? $controller->getRandomFact() : $controller->getFacts();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
