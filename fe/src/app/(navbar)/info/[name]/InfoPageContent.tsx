@@ -128,9 +128,7 @@ function StormsSection({ name, storms }: { name: string; storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-800">
-          All Storms ({storms.length})
-        </h2>
+        <h2 className="text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
         {storms.length > 0 && (
           <div className="flex items-center gap-2">
             <CountryFlag country={storms[0].country} className="h-5 w-8" />
@@ -181,7 +179,7 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
   const storms = detail.storms ?? [];
   const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
   const displayName = nameData?.name ?? name;
-  
+
   const titleColorClass = !isInPosition
     ? "text-slate-500"
     : nameData
@@ -203,7 +201,9 @@ export default function InfoPageContent({ name }: InfoPageContentProps) {
         ) : (
           <Flame className={titleColorClass} size={28} />
         )}
-        <h1 className={`text-3xl font-bold capitalize ${titleColorClass}`}>{displayName.toLowerCase()}</h1>
+        <h1 className={`text-3xl font-bold capitalize ${titleColorClass}`}>
+          {displayName.toLowerCase()}
+        </h1>
       </div>
 
       <div className="space-y-6">

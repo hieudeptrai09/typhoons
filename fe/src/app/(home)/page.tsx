@@ -1,5 +1,4 @@
 import Image from "next/image";
-import FunFactsButton from "./_components/FunFactsButton";
 import Menu from "./_components/Menu";
 import SearchBar from "./_components/SearchBar";
 
@@ -28,8 +27,6 @@ const HomePage = () => {
         </p>
 
         <SearchBar />
-
-        <FunFactsButton />
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu href="storms" label="Browse Storms" bgColor="#2563eb" hoverBgColor="#1d4ed8" />
