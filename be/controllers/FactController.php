@@ -70,8 +70,8 @@ class FactController
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0
              GROUP BY s.name
              HAVING useCount >= 5
-             ORDER BY useCount DESC
-             LIMIT 5"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -93,8 +93,8 @@ class FactController
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0
              GROUP BY s.name
              HAVING useCount >= 4 AND (MAX(s.year) - MIN(s.year)) >= 20
-             ORDER BY (MAX(s.year) - MIN(s.year)) DESC
-             LIMIT 3"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -137,7 +137,8 @@ class FactController
              FROM typhoonnames tn
              WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
              GROUP BY tn.language
-             HAVING retiredCount = 1"
+             HAVING retiredCount = 1
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -156,8 +157,8 @@ class FactController
             "SELECT s.name, s.year, s.intensity
              FROM storms s
              WHERE s.isStrongest = 1
-             ORDER BY s.year DESC
-             LIMIT 5"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -180,8 +181,8 @@ class FactController
              WHERE s.intensity != 'TD'
              GROUP BY s.name
              HAVING intensityCount >= 5
-             ORDER BY intensityCount DESC
-             LIMIT 3"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -204,8 +205,8 @@ class FactController
                AND tn.isLanguageProblem = 0
              GROUP BY tn.name, tn.lastYear
              HAVING useCount = 1
-             ORDER BY tn.lastYear DESC
-             LIMIT 5"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -226,7 +227,8 @@ class FactController
              WHERE s.intensity = '5'
              GROUP BY s.name
              HAVING cat5Count >= 2
-             ORDER BY cat5Count DESC"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -247,7 +249,8 @@ class FactController
              INNER JOIN storms last_s ON first_s.year = last_s.year
              WHERE first_s.isFirst = 1 AND last_s.isLast = 1
                AND first_s.name = last_s.name
-               AND first_s.id != last_s.id"
+               AND first_s.id != last_s.id
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -286,7 +289,7 @@ class FactController
             "SELECT tn.name, tn.lastYear, tn.isLanguageProblem
              FROM typhoonnames tn
              WHERE tn.isRetired = 1 AND tn.isLanguageProblem > 0
-             ORDER BY tn.lastYear DESC"
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -353,7 +356,7 @@ class FactController
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
              GROUP BY tn.tag
              HAVING cnt <= 2
-             ORDER BY cnt ASC"
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -385,7 +388,8 @@ class FactController
                  HAVING COUNT(*) >= 2
                     AND COUNT(*) = SUM(CASE WHEN s2.intensity = '5' THEN 1 ELSE 0 END)
              )
-             GROUP BY s.name"
+             GROUP BY s.name
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -407,7 +411,8 @@ class FactController
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
              GROUP BY s.name
              HAVING useCount >= 4
-                AND SUM(CASE WHEN s.intensity IN ('1','2','3','4','5') THEN 1 ELSE 0 END) = 0"
+                AND SUM(CASE WHEN s.intensity IN ('1','2','3','4','5') THEN 1 ELSE 0 END) = 0
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -454,7 +459,8 @@ class FactController
              FROM typhoonnames tn
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
              GROUP BY tn.language
-             HAVING COUNT(*) = 1"
+             HAVING COUNT(*) = 1
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -477,8 +483,8 @@ class FactController
              WHERE s.position IN (141, 142, 143)
              GROUP BY s.name, p.country
              HAVING cnt >= 2
-             ORDER BY cnt DESC
-             LIMIT 3"
+             ORDER BY RAND()
+             LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -511,7 +517,7 @@ class FactController
              WHERE s.isStrongest = 1
              GROUP BY s.name
              HAVING strongestCount >= 2
-             ORDER BY strongestCount DESC"
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -533,7 +539,8 @@ class FactController
              WHERE tn.position BETWEEN 1 AND 140
              GROUP BY s.name
              HAVING useCount >= 2
-                AND SUM(CASE WHEN s.intensity != 'TD' THEN 1 ELSE 0 END) = 0"
+                AND SUM(CASE WHEN s.intensity != 'TD' THEN 1 ELSE 0 END) = 0
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -554,7 +561,8 @@ class FactController
         $stmt = $this->conn->query(
             "SELECT tn.name, tn.note
              FROM typhoonnames tn
-             WHERE tn.isLanguageProblem = 3"
+             WHERE tn.isLanguageProblem = 3
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         foreach ($rows as $row) {
@@ -587,7 +595,8 @@ class FactController
              FROM typhoonnames tn
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
              GROUP BY tn.language, tn.tag
-             HAVING COUNT(*) = 1"
+             HAVING COUNT(*) = 1
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -608,7 +617,8 @@ class FactController
              INNER JOIN positions p ON tn.position = p.id
              WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
              GROUP BY p.country, tn.tag
-             HAVING COUNT(*) = 1"
+             HAVING COUNT(*) = 1
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -631,7 +641,8 @@ class FactController
              FROM typhoonnames tn
              WHERE tn.position BETWEEN 1 AND 140
              GROUP BY tn.tag
-             HAVING retiredCnt = 1 AND totalCnt >= 3"
+             HAVING retiredCnt = 1 AND totalCnt >= 3
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -653,7 +664,8 @@ class FactController
              INNER JOIN storms s ON s.name = tn.name
              WHERE s.intensity = '5' AND tn.position BETWEEN 1 AND 140
              GROUP BY p.country
-             HAVING COUNT(DISTINCT tn.name) = 1"
+             HAVING COUNT(DISTINCT tn.name) = 1
+             ORDER BY RAND() LIMIT 1"
         );
         $rows = $stmt->fetchAll();
         $facts = [];
@@ -807,7 +819,8 @@ class FactController
             ];
         }
 
-        return $facts;
+        if (empty($facts)) return [];
+        return [$facts[array_rand($facts)]];
     }
 
     private function getFirstLetterFacts()
@@ -920,7 +933,8 @@ class FactController
             ];
         }
 
-        return $facts;
+        if (empty($facts)) return [];
+        return [$facts[array_rand($facts)]];
     }
 
     private function getLeastFacts()
@@ -1168,7 +1182,8 @@ class FactController
             ];
         }
 
-        return $facts;
+        if (empty($facts)) return [];
+        return [$facts[array_rand($facts)]];
     }
 
     private function intensityLabel($intensity)
