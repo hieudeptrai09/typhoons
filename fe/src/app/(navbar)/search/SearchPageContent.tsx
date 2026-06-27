@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Table } from "antd";
-import { Flame, Skull } from "lucide-react";
+import { CircleHelp, Flame, Skull } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getNameStatusColorClass } from "../../../components/colors";
@@ -62,6 +62,10 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     key: "status",
     sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
     render: (_: unknown, record: SearchResult) => {
+      const isInPosition = record.position >= 1 && record.position <= 140;
+      if (!isInPosition) {
+        return <CircleHelp className="text-slate-500" size={20} />;
+      }
       const status = { ...record, isRetired: Boolean(record.isRetired) };
       return record.isRetired ? (
         <Skull className={getNameStatusColorClass(status)} size={20} />
