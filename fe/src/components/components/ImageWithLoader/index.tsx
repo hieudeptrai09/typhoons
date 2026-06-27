@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import type { ComponentProps } from "react";
-import TyphoonSpinner from "../TyphoonSpinner";
 import Image from "next/image";
+import TyphoonSpinner from "../TyphoonSpinner";
 
 type ImageWithLoaderProps = ComponentProps<typeof Image>;
 

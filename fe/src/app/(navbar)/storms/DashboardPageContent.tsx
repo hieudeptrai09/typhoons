@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
+import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { INTENSITY_RANK } from "../../../constants";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../containers/utils/fns";

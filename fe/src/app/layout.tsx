@@ -1,6 +1,6 @@
 import { TITLE_COMMON } from "../constants";
-import type { Metadata } from "next";
 import AntdApp from "./AntdApp";
+import type { Metadata } from "next";
 import "./globals.css";
 
 const SITE_URL = "https://typhoons.vercel.app";

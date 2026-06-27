@@ -38,7 +38,8 @@ class FactController
             $this->getOnlyRetiredInTag(),
             $this->getOnlyCat5FromCountry(),
             $this->getCrossBasinFacts(),
-            $this->getFirstLetterFacts()
+            $this->getFirstLetterFacts(),
+            $this->getLeastFacts()
         );
 
         shuffle($facts);
@@ -916,6 +917,254 @@ class FactController
             $facts[] = [
                 'category' => 'rarity',
                 'text' => 'No name starting with ' . (count($letters) === 1 ? 'the letter ' . $list . ' has' : 'the letters ' . $list . ' has') . ' ever been retired.'
+            ];
+        }
+
+        return $facts;
+    }
+
+    private function getLeastFacts()
+    {
+        $facts = [];
+
+        // Languages with fewest active names (2-3, not 1 since those are covered by getOnlyNameFromLanguage)
+        $stmt = $this->conn->query(
+            "SELECT tn.language, COUNT(*) as cnt,
+                    GROUP_CONCAT(tn.name ORDER BY tn.name SEPARATOR ', ') as names
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.language
+             HAVING cnt BETWEEN 2 AND 3
+             ORDER BY cnt ASC"
+        );
+        foreach ($stmt->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => $row['language'] . ' has only ' . $row['cnt'] . ' active names on the naming list: ' . $row['names'] . '.'
+            ];
+        }
+
+        // Country with fewest active names
+        $stmt2 = $this->conn->query(
+            "SELECT p.country, COUNT(*) as cnt
+             FROM typhoonnames tn
+             INNER JOIN positions p ON tn.position = p.id
+             WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
+             GROUP BY p.country
+             ORDER BY cnt ASC
+             LIMIT 1"
+        );
+        $row2 = $stmt2->fetch();
+        if ($row2) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => $row2['country'] . ' has the fewest active names on the current list with only ' . $row2['cnt'] . '.'
+            ];
+        }
+
+        // Country with fewest retirements (non-zero)
+        $stmt3 = $this->conn->query(
+            "SELECT p.country, COUNT(*) as cnt
+             FROM typhoonnames tn
+             INNER JOIN positions p ON tn.position = p.id
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY p.country
+             ORDER BY cnt ASC
+             LIMIT 1"
+        );
+        $row3 = $stmt3->fetch();
+        if ($row3) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => $row3['country'] . ' has had the fewest retirements of any country that lost a name, with only ' . $row3['cnt'] . '.'
+            ];
+        }
+
+        // Tags with fewest active names (2-3, not 1 since those are in getRareTags)
+        $stmt4 = $this->conn->query(
+            "SELECT tn.tag, COUNT(*) as cnt,
+                    GROUP_CONCAT(tn.name ORDER BY tn.name SEPARATOR ', ') as names
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 0 AND tn.isReplaced = 0 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.tag
+             HAVING cnt BETWEEN 2 AND 4
+             ORDER BY cnt ASC"
+        );
+        foreach ($stmt4->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => 'Only ' . $row['cnt'] . ' active names fall under the "' . $row['tag'] . '" category: ' . $row['names'] . '.'
+            ];
+        }
+
+        // Letters with fewest storms
+        $stmt5 = $this->conn->query(
+            "SELECT UPPER(LEFT(s.name, 1)) as letter, COUNT(*) as cnt
+             FROM storms s
+             GROUP BY letter
+             ORDER BY cnt ASC
+             LIMIT 3"
+        );
+        foreach ($stmt5->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => 'Names starting with ' . $row['letter'] . ' have only produced ' . $row['cnt'] . ' storms in the database — the ' . ($row['cnt'] <= 5 ? 'fewest' : 'least') . ' of any letter.'
+            ];
+        }
+
+        // Languages with fewest retired names (2-3)
+        $stmt7 = $this->conn->query(
+            "SELECT tn.language, COUNT(*) as cnt,
+                    GROUP_CONCAT(tn.name ORDER BY tn.name SEPARATOR ', ') as names
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.language
+             HAVING cnt BETWEEN 2 AND 3
+             ORDER BY cnt ASC"
+        );
+        foreach ($stmt7->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => $row['language'] . ' has had only ' . $row['cnt'] . ' names retired: ' . $row['names'] . '.'
+            ];
+        }
+
+        // Language with most retired names
+        $stmt8 = $this->conn->query(
+            "SELECT tn.language, COUNT(*) as cnt
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.language
+             ORDER BY cnt DESC
+             LIMIT 1"
+        );
+        $topRetiredLang = $stmt8->fetch();
+        if ($topRetiredLang) {
+            $facts[] = [
+                'category' => 'retirement',
+                'text' => $topRetiredLang['language'] . ' has had the most names retired of any language with ' . $topRetiredLang['cnt'] . '.'
+            ];
+        }
+
+        // Language with fewest total names (active + retired, minimum 2)
+        $stmt9 = $this->conn->query(
+            "SELECT tn.language, COUNT(*) as total
+             FROM typhoonnames tn
+             WHERE tn.position BETWEEN 1 AND 140
+             GROUP BY tn.language
+             HAVING total >= 2
+             ORDER BY total ASC
+             LIMIT 3"
+        );
+        foreach ($stmt9->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => $row['language'] . ' has contributed only ' . $row['total'] . ' names in total to the naming list — among the fewest of any language.'
+            ];
+        }
+
+        // Language with most total names
+        $stmt10 = $this->conn->query(
+            "SELECT tn.language, COUNT(*) as total
+             FROM typhoonnames tn
+             WHERE tn.position BETWEEN 1 AND 140
+             GROUP BY tn.language
+             ORDER BY total DESC
+             LIMIT 1"
+        );
+        $topTotalLang = $stmt10->fetch();
+        if ($topTotalLang) {
+            $facts[] = [
+                'category' => 'naming',
+                'text' => $topTotalLang['language'] . ' has contributed the most names in total with ' . $topTotalLang['total'] . ' (active and retired combined).'
+            ];
+        }
+
+        // Tags with fewest retired names (2-3)
+        $stmt11 = $this->conn->query(
+            "SELECT tn.tag, COUNT(*) as cnt,
+                    GROUP_CONCAT(tn.name ORDER BY tn.name SEPARATOR ', ') as names
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.tag
+             HAVING cnt BETWEEN 2 AND 3
+             ORDER BY cnt ASC"
+        );
+        foreach ($stmt11->fetchAll() as $row) {
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => 'Only ' . $row['cnt'] . ' names in the "' . $row['tag'] . '" category have ever been retired: ' . $row['names'] . '.'
+            ];
+        }
+
+        // Tag with most retirements
+        $stmt12 = $this->conn->query(
+            "SELECT tn.tag, COUNT(*) as cnt
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY tn.tag
+             ORDER BY cnt DESC
+             LIMIT 1"
+        );
+        $topRetiredTag = $stmt12->fetch();
+        if ($topRetiredTag) {
+            $facts[] = [
+                'category' => 'retirement',
+                'text' => 'The "' . $topRetiredTag['tag'] . '" category has had the most retirements with ' . $topRetiredTag['cnt'] . ' names retired.'
+            ];
+        }
+
+        // Tag with most total names
+        $stmt13 = $this->conn->query(
+            "SELECT tn.tag, COUNT(*) as total
+             FROM typhoonnames tn
+             WHERE tn.position BETWEEN 1 AND 140
+             GROUP BY tn.tag
+             ORDER BY total DESC
+             LIMIT 1"
+        );
+        $topTotalTag = $stmt13->fetch();
+        if ($topTotalTag) {
+            $facts[] = [
+                'category' => 'naming',
+                'text' => '"' . $topTotalTag['tag'] . '" is the most popular naming category with ' . $topTotalTag['total'] . ' names in total.'
+            ];
+        }
+
+        // Country with most total names
+        $stmt14 = $this->conn->query(
+            "SELECT p.country, COUNT(*) as total
+             FROM typhoonnames tn
+             INNER JOIN positions p ON tn.position = p.id
+             WHERE tn.position BETWEEN 1 AND 140
+             GROUP BY p.country
+             ORDER BY total DESC
+             LIMIT 1"
+        );
+        $topTotalCountry = $stmt14->fetch();
+        if ($topTotalCountry) {
+            $facts[] = [
+                'category' => 'naming',
+                'text' => $topTotalCountry['country'] . ' has contributed the most names in total with ' . $topTotalCountry['total'] . ' (active and retired combined).'
+            ];
+        }
+
+        // Least retired letter (non-zero, excluding 1 which is covered by getFirstLetterFacts)
+        $stmt6 = $this->conn->query(
+            "SELECT UPPER(LEFT(tn.name, 1)) as letter, COUNT(*) as cnt
+             FROM typhoonnames tn
+             WHERE tn.isRetired = 1 AND tn.position BETWEEN 1 AND 140
+             GROUP BY letter
+             HAVING cnt = 2
+             ORDER BY letter"
+        );
+        $leastRetiredRows = $stmt6->fetchAll();
+        if (count($leastRetiredRows) > 0 && count($leastRetiredRows) <= 4) {
+            $letters = array_column($leastRetiredRows, 'letter');
+            $list = implode(', ', $letters);
+            $facts[] = [
+                'category' => 'rarity',
+                'text' => 'The ' . (count($letters) === 1 ? 'letter ' . $list . ' has' : 'letters ' . $list . ' have') . ' each seen only 2 retirements — the fewest among letters that have lost more than one name.'
             ];
         }
 

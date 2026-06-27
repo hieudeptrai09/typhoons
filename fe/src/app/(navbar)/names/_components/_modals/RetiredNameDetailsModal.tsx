@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Modal } from "antd";
-import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
 import { getRetiredReasonColorClass } from "../../../../../components/colors";
 import Tabs, { type Tab } from "../../../../../components/components/Tabs";
+import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
 import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
 import SuggestionCard from "../_components/SuggestionCard";
 import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../types";

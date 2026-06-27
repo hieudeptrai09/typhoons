@@ -1,7 +1,7 @@
 import Image from "next/image";
+import FunFactsButton from "./_components/FunFactsButton";
 import Menu from "./_components/Menu";
 import SearchBar from "./_components/SearchBar";
-import FunFactsButton from "./_components/FunFactsButton";
 
 const HomePage = () => {
   return (

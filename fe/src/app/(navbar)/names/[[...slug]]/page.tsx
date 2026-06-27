@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import { notFound } from "next/navigation";
+import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import {
   isValidNamesSlug,
   slugToParams,

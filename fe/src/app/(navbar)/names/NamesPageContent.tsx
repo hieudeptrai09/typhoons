@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
+import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { useFetchData } from "../../../containers/hooks/useFetchData";
 import NamesContent from "./_components/NamesContent";
 import { getNamesTitle, slugToParams, paramsToPath } from "./_utils/fns";
