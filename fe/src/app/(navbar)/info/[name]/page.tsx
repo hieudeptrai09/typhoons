@@ -8,7 +8,8 @@ interface InfoPageProps {
 
 export async function generateMetadata({ params }: InfoPageProps): Promise<Metadata> {
   const { name } = await params;
-  const decodedName = decodeURIComponent(name);
+  const raw = decodeURIComponent(name);
+  const decodedName = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
   return {
     title: `${decodedName} — Typhoon Info`,
     description: `Details and storm history for typhoon name ${decodedName}.`,

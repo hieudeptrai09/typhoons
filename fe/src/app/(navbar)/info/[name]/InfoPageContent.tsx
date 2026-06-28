@@ -124,7 +124,7 @@ function StormCard({ storm }: { storm: Storm }) {
   );
 }
 
-function StormsSection({ name, storms }: { name: string; storms: Storm[] }) {
+function StormsSection({ storms }: { name: string; storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
