@@ -8,8 +8,8 @@ import {
   getNamesTitle,
 } from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
-import type { Metadata } from "next";
 import type { RetiredName } from "../../../../types";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;

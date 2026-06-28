@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
   isValidStormsSlug,
   slugToParams,
@@ -6,10 +7,9 @@ import {
   getDashboardDescription,
   getDashboardTitle,
 } from "../_utils/fns";
-import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import DashboardPageContent from "../DashboardPageContent";
-import type { Metadata } from "next";
 import type { Storm } from "../../../../types";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;

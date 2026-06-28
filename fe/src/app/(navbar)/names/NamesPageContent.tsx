@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
-import { getNamesTitle, slugToParams, paramsToPath } from "./_utils/fns";
 import NamesView from "./_components/_views/NamesView";
 import RetiredView from "./_components/_views/RetiredView";
+import { getNamesTitle, slugToParams, paramsToPath } from "./_utils/fns";
 import type { RetiredName } from "../../../types";
 
 interface NamesPageContentProps {

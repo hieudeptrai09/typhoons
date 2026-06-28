@@ -151,7 +151,14 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     if (hasActiveFilters) return applyNameFilters(allNames, filterValues);
     if (displayMode === "grid" && !settings.showLetterNav) return [...allNames];
     return allNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
-  }, [allNames, hasActiveFilters, filterValues, displayMode, settings.showLetterNav, currentLetter]);
+  }, [
+    allNames,
+    hasActiveFilters,
+    filterValues,
+    displayMode,
+    settings.showLetterNav,
+    currentLetter,
+  ]);
 
   const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
 

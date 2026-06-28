@@ -92,4 +92,3 @@ export const getNamesDescription = (
     ? "Explore all typhoon names organized by position with name labels visible in the grid."
     : "Explore all typhoon names organized by position in the Western Pacific naming sequence. View name origins, countries, and storm history.";
 };
-

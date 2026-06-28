@@ -5,9 +5,7 @@ export interface ApiResponse<T> {
   count: number;
 }
 
-export async function fetchServerData<T>(
-  endpoint: string,
-): Promise<ApiResponse<T> | null> {
+export async function fetchServerData<T>(endpoint: string): Promise<ApiResponse<T> | null> {
   try {
     const response = await fetch(`${API_BASE}${endpoint}`);
     return await response.json();
