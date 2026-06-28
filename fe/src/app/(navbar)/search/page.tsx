@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { fetchServerData } from "../../../containers/utils/fetchServerData";
 import SearchPageContent from "./SearchPageContent";
 import type { Metadata } from "next";
@@ -13,21 +11,6 @@ export const metadata: Metadata = {
   },
 };
 
-async function SearchData({ query }: { query: string }) {
-  const result = query.trim()
-    ? await fetchServerData<SearchResult[]>(
-        `/search?q=${encodeURIComponent(query.trim())}`,
-      )
-    : null;
-  return (
-    <SearchPageContent
-      results={result?.data ?? null}
-      count={result?.count ?? 0}
-      query={query}
-    />
-  );
-}
-
 const SearchPage = async ({
   searchParams,
 }: {
@@ -35,17 +18,18 @@ const SearchPage = async ({
 }) => {
   const { q = "" } = await searchParams;
 
+  const result = q.trim()
+    ? await fetchServerData<SearchResult[]>(
+        `/search?q=${encodeURIComponent(q.trim())}`,
+      )
+    : null;
+
   return (
-    <Suspense
-      key={q}
-      fallback={
-        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
-          <TyphoonSpinner size="large" />
-        </div>
-      }
-    >
-      <SearchData query={q} />
-    </Suspense>
+    <SearchPageContent
+      results={result?.data ?? null}
+      count={result?.count ?? 0}
+      query={q}
+    />
   );
 };
 

@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import InfoPageContent from "./InfoPageContent";
 import type { Metadata } from "next";
@@ -19,25 +17,12 @@ export async function generateMetadata({ params }: InfoPageProps): Promise<Metad
   };
 }
 
-async function InfoData({ name }: { name: string }) {
-  const result = await fetchServerData<SearchDetail>(
-    `/search?name=${encodeURIComponent(name)}`,
-  );
-  return <InfoPageContent detail={result?.data ?? null} name={name} />;
-}
-
 export default async function InfoPage({ params }: InfoPageProps) {
   const { name } = await params;
+  const decodedName = decodeURIComponent(name);
 
-  return (
-    <Suspense
-      fallback={
-        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
-          <TyphoonSpinner size="large" />
-        </div>
-      }
-    >
-      <InfoData name={decodeURIComponent(name)} />
-    </Suspense>
+  const result = await fetchServerData<SearchDetail>(
+    `/search?name=${encodeURIComponent(decodedName)}`,
   );
+  return <InfoPageContent detail={result?.data ?? null} name={decodedName} />;
 }

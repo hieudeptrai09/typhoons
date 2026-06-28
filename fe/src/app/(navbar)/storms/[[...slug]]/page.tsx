@@ -1,6 +1,4 @@
-import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
-import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import {
   isValidStormsSlug,
   slugToParams,
@@ -40,11 +38,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-async function DashboardData() {
-  const result = await fetchServerData<Storm[]>("/storms");
-  return <DashboardPageContent stormsData={result?.data ?? null} />;
-}
-
 const Dashboard = async ({ params }: PageProps) => {
   const { slug } = await params;
 
@@ -59,17 +52,8 @@ const Dashboard = async ({ params }: PageProps) => {
     redirect(canonicalPath);
   }
 
-  return (
-    <Suspense
-      fallback={
-        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
-          <TyphoonSpinner size="large" />
-        </div>
-      }
-    >
-      <DashboardData />
-    </Suspense>
-  );
+  const result = await fetchServerData<Storm[]>("/storms");
+  return <DashboardPageContent stormsData={result?.data ?? null} />;
 };
 
 export default Dashboard;

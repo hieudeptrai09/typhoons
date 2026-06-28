@@ -1,6 +1,4 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
   isValidNamesSlug,
@@ -39,11 +37,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-async function NamesData() {
-  const result = await fetchServerData<RetiredName[]>("/typhoon-names");
-  return <NamesPageContent allNames={result?.data ?? null} />;
-}
-
 const NamesPage = async ({ params }: PageProps) => {
   const { slug } = await params;
 
@@ -51,17 +44,8 @@ const NamesPage = async ({ params }: PageProps) => {
     notFound();
   }
 
-  return (
-    <Suspense
-      fallback={
-        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
-          <TyphoonSpinner size="large" />
-        </div>
-      }
-    >
-      <NamesData />
-    </Suspense>
-  );
+  const result = await fetchServerData<RetiredName[]>("/typhoon-names");
+  return <NamesPageContent allNames={result?.data ?? null} />;
 };
 
 export default NamesPage;
