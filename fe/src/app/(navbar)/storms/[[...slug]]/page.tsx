@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
+import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import {
   isValidStormsSlug,
   slugToParams,
@@ -7,8 +8,10 @@ import {
   getDashboardDescription,
   getDashboardTitle,
 } from "../_utils/fns";
+import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import DashboardPageContent from "../DashboardPageContent";
 import type { Metadata } from "next";
+import type { Storm } from "../../../../types";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -37,6 +40,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+async function DashboardData() {
+  const result = await fetchServerData<Storm[]>("/storms");
+  return <DashboardPageContent stormsData={result?.data ?? null} />;
+}
+
 const Dashboard = async ({ params }: PageProps) => {
   const { slug } = await params;
 
@@ -54,12 +62,12 @@ const Dashboard = async ({ params }: PageProps) => {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-stone-100">
-          <div className="text-xl text-gray-700">Loading Dashboard...</div>
+        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
+          <TyphoonSpinner size="large" />
         </div>
       }
     >
-      <DashboardPageContent />
+      <DashboardData />
     </Suspense>
   );
 };

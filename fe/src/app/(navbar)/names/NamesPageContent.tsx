@@ -4,21 +4,21 @@ import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
 import NamesContent from "./_components/NamesContent";
 import { getNamesTitle, slugToParams, paramsToPath } from "./_utils/fns";
 import type { RetiredName } from "../../../types";
 
 type TabKey = "names" | "retired";
 
-const NamesPageContent = () => {
+interface NamesPageContentProps {
+  allNames: RetiredName[] | null;
+}
+
+const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
   const { view: viewMode, showName, showHistory } = slugToParams(slug);
   const activeTab: TabKey = viewMode === "retired" ? "retired" : "names";
-
-  const { data: allNames, loading, error } = useFetchData<RetiredName[]>("/typhoon-names");
 
   const currentNames = useMemo(
     () => (allNames || []).filter((n) => !n.isRetired || n.isReplaced === 0),
@@ -35,15 +35,7 @@ const NamesPageContent = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <TyphoonSpinner size="large" />
-      </div>
-    );
-  }
-
-  if (error) {
+  if (!allNames) {
     return <FrownNotFound />;
   }
 
@@ -57,7 +49,7 @@ const NamesPageContent = () => {
         viewMode={viewMode}
         showName={showName}
         showHistory={showHistory}
-        allNames={allNames || []}
+        allNames={allNames}
         currentNames={currentNames}
         retiredNames={retiredNames}
         activeTab={activeTab}

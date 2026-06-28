@@ -1,5 +1,3 @@
-"use client";
-
 import { CircleHelp, Flame, Skull } from "lucide-react";
 import {
   BACKGROUND_BADGE,
@@ -9,12 +7,11 @@ import {
 import CountryFlag from "../../../../components/components/CountryFlag";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import ImageWithLoader from "../../../../components/components/ImageWithLoader";
-import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "../../../../constants";
-import { useFetchData } from "../../../../containers/hooks/useFetchData";
 import type { SearchDetail, Storm, TyphoonName, RetiredName } from "../../../../types";
 
 interface InfoPageContentProps {
+  detail: SearchDetail | null;
   name: string;
 }
 
@@ -156,22 +153,8 @@ function StormsSection({ storms }: { name: string; storms: Storm[] }) {
   );
 }
 
-export default function InfoPageContent({ name }: InfoPageContentProps) {
-  const {
-    data: detail,
-    loading,
-    error,
-  } = useFetchData<SearchDetail>(`/search?name=${encodeURIComponent(name)}`);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <TyphoonSpinner size="large" />
-      </div>
-    );
-  }
-
-  if (error || !detail) {
+export default function InfoPageContent({ detail, name }: InfoPageContentProps) {
+  if (!detail) {
     return <FrownNotFound />;
   }
 

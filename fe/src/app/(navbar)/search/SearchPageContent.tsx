@@ -4,15 +4,13 @@ import { useMemo } from "react";
 import { Table } from "antd";
 import { CircleHelp, Flame, Skull } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getNameStatusColorClass } from "../../../components/colors";
 import CountryFlag from "../../../components/components/CountryFlag";
 import EmptyResults from "../../../components/components/EmptyResults";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import HighlightedName from "../../../components/components/HighlightedName";
 import PageHeader from "../../../components/components/PageHeader";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
 import type { SearchResult } from "../../../types";
 import type { ColumnsType } from "antd/es/table";
 
@@ -100,44 +98,36 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
   },
 ];
 
-export default function SearchPageContent() {
+interface SearchPageContentProps {
+  results: SearchResult[] | null;
+  count: number;
+  query: string;
+}
+
+export default function SearchPageContent({ results, count, query }: SearchPageContentProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q") ?? "";
 
   const columns = useMemo(() => getColumns(query), [query]);
 
-  const {
-    data: results,
-    loading,
-    error,
-  } = useFetchData<SearchResult[]>(
-    query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : "",
-  );
-
-  if (error) {
+  if (query.trim() && results === null) {
     return <FrownNotFound />;
   }
 
   return (
     <PageHeader title="Search Typhoon Names">
       <div className="mx-auto max-w-4xl">
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <TyphoonSpinner size="large" />
-          </div>
-        ) : !query.trim() ? (
+        {!query.trim() ? (
           <div className="py-12 text-center text-gray-400">Type a name to search</div>
-        ) : !results || results.length === 0 ? (
+        ) : count === 0 ? (
           <EmptyResults />
         ) : (
           <>
             <div id="search-result-count" className="mb-4 text-sm text-gray-500">
-              {results.length} result{results.length !== 1 ? "s" : ""} found
+              {count} result{count !== 1 ? "s" : ""} found
             </div>
             <div className="overflow-x-auto pb-px" aria-describedby="search-result-count">
               <Table<SearchResult>
-                dataSource={results}
+                dataSource={results || []}
                 columns={columns}
                 rowKey={(record) =>
                   record.id !== null ? String(record.id) : `storm-${record.name}`

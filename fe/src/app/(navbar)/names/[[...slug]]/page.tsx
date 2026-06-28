@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import TyphoonSpinner from "../../../../components/components/TyphoonSpinner";
+import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
   isValidNamesSlug,
   slugToParams,
@@ -10,6 +11,7 @@ import {
 } from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
 import type { Metadata } from "next";
+import type { RetiredName } from "../../../../types";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -37,6 +39,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+async function NamesData() {
+  const result = await fetchServerData<RetiredName[]>("/typhoon-names");
+  return <NamesPageContent allNames={result?.data ?? null} />;
+}
+
 const NamesPage = async ({ params }: PageProps) => {
   const { slug } = await params;
 
@@ -47,12 +54,12 @@ const NamesPage = async ({ params }: PageProps) => {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <div className="fixed inset-0 flex items-center justify-center bg-stone-100">
           <TyphoonSpinner size="large" />
         </div>
       }
     >
-      <NamesPageContent />
+      <NamesData />
     </Suspense>
   );
 };

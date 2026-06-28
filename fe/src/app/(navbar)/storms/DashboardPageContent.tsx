@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { INTENSITY_RANK } from "../../../constants";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import DashboardViewButton from "./_components/_components/DashboardViewButton";
 import AverageModal from "./_components/_modals/AverageModal";
@@ -25,10 +23,13 @@ interface SelectedData {
   average?: number;
 }
 
-export default function DashboardPageContent() {
+interface DashboardPageContentProps {
+  stormsData: Storm[] | null;
+}
+
+export default function DashboardPageContent({ stormsData }: DashboardPageContentProps) {
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
-  const { data: stormsData, loading, error } = useFetchData<Storm[]>("/storms");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -91,15 +92,7 @@ export default function DashboardPageContent() {
     setIsAverageModalOpen(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-stone-100">
-        <TyphoonSpinner size="large" />
-      </div>
-    );
-  }
-
-  if (error) {
+  if (!stormsData) {
     return <FrownNotFound />;
   }
 
@@ -109,7 +102,7 @@ export default function DashboardPageContent() {
 
       <DashboardContent
         params={currentParams}
-        stormsData={stormsData || []}
+        stormsData={stormsData}
         onCellClick={handleCellClick}
       />
 
