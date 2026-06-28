@@ -111,28 +111,26 @@ const NameButton = ({
 );
 
 const CellContent = ({
-  currentName,
-  historyNames,
-  showMultipleNames,
+  names,
+  showHistory,
   showName,
   colorfulHistory,
   onNameClick,
 }: {
-  currentName: TyphoonName | undefined;
-  historyNames: TyphoonName[];
-  showMultipleNames: boolean;
+  names: TyphoonName[];
+  showHistory: boolean;
   showName: boolean;
   colorfulHistory: boolean;
   onNameClick: (n: TyphoonName) => void;
 }) => {
-  if (showMultipleNames) {
-    const colorOverride = colorfulHistory ? getHistoryCountColor(historyNames.length) : undefined;
+  if (showHistory) {
+    const colorOverride = colorfulHistory ? getHistoryCountColor(names.length) : undefined;
     return (
       <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
-        {historyNames.length === 0 ? (
+        {names.length === 0 ? (
           <span className="text-xs text-gray-400">—</span>
         ) : (
-          sortByOldest(historyNames).map((n) => (
+          sortByOldest(names).map((n) => (
             <NameButton
               key={n.id}
               name={n}
@@ -149,9 +147,9 @@ const CellContent = ({
 
   return (
     <div className="flex min-h-16 items-center justify-center p-1">
-      {currentName ? (
+      {names.length > 0 ? (
         <NameButton
-          name={currentName}
+          name={names[0]}
           size={CELL_SIZE.current}
           showName={showName}
           onNameClick={onNameClick}
@@ -165,41 +163,22 @@ const CellContent = ({
 
 interface PositionNameGridProps {
   names: TyphoonName[];
-  currentNames: TyphoonName[];
-  hasActiveFilters?: boolean;
-  showAll: boolean;
   showName: boolean;
   showHistory: boolean;
   colorfulHistory?: boolean;
   onNameClick: (name: TyphoonName) => void;
-  onCellClick: (
-    position: number,
-    currentName: TyphoonName | undefined,
-    historyNames: TyphoonName[],
-    showHistory: boolean,
-  ) => void;
+  onCellClick: (position: number, names: TyphoonName[]) => void;
 }
 
 const PositionNameGrid = ({
   names,
-  currentNames,
-  hasActiveFilters = false,
-  showAll,
   showName,
   showHistory,
   colorfulHistory = false,
   onNameClick,
   onCellClick,
 }: PositionNameGridProps) => {
-  const effectiveShowHistory = hasActiveFilters || !showAll ? false : showHistory;
-
-  const currentByPosition = currentNames.reduce<Record<number, TyphoonName>>((acc, n) => {
-    if (n.isLanguageProblem === 2) return acc;
-    acc[n.position] = n;
-    return acc;
-  }, {});
-
-  const historyByPosition = names.reduce<Record<number, TyphoonName[]>>((acc, n) => {
+  const namesByPosition = names.reduce<Record<number, TyphoonName[]>>((acc, n) => {
     if (n.isLanguageProblem === 2) return acc;
     if (!acc[n.position]) acc[n.position] = [];
     acc[n.position].push(n);
@@ -210,8 +189,7 @@ const PositionNameGrid = ({
     <div>
       <PositionGrid
         renderCell={(position, _row, col) => {
-          const currentName = currentByPosition[position];
-          const historyNames = historyByPosition[position] ?? [];
+          const positionNames = namesByPosition[position] ?? [];
 
           return (
             <td
@@ -219,15 +197,17 @@ const PositionNameGrid = ({
               className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
               role="button"
               tabIndex={0}
-              aria-label={`Position ${position}${currentName ? `, ${currentName.name}` : ""}`}
-              onClick={() => onCellClick(position, currentName, historyNames, effectiveShowHistory)}
+              aria-label={`Position ${position}`}
+              onClick={() => {
+                if (positionNames.length === 0) return;
+                onCellClick(position, positionNames);
+              }}
             >
               <CellContent
-                currentName={currentName}
-                historyNames={historyNames}
-                showMultipleNames={effectiveShowHistory || hasActiveFilters}
+                names={positionNames}
+                showHistory={showHistory}
                 showName={showName}
-                colorfulHistory={effectiveShowHistory && colorfulHistory}
+                colorfulHistory={showHistory && colorfulHistory}
                 onNameClick={onNameClick}
               />
             </td>

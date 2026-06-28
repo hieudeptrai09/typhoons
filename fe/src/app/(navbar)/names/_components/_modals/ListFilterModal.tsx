@@ -8,6 +8,7 @@ export interface ListFilterModalProps extends BaseModalProps {
   languages: string[];
   tags: string[];
   initialFilters: FilterParams;
+  showHistory: boolean;
 }
 
 interface FormValues {
@@ -27,6 +28,7 @@ const ListFilterModal = ({
   languages,
   tags,
   initialFilters,
+  showHistory,
 }: ListFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
@@ -57,7 +59,7 @@ const ListFilterModal = ({
             language: toArr(initialFilters.language),
             tag: toArr(initialFilters.tag),
             position: initialFilters.position ? Number(initialFilters.position) : undefined,
-            status: initialFilters.status || "",
+            status: showHistory ? initialFilters.status || "" : "current",
           });
         }
       }}
@@ -119,7 +121,7 @@ const ListFilterModal = ({
         </Form.Item>
 
         <Form.Item label="Status" name="status" className="mb-0">
-          <Radio.Group>
+          <Radio.Group disabled={!showHistory}>
             <Radio value="">All</Radio>
             <Radio value="active">Active</Radio>
             <Radio value="retired">Retired</Radio>

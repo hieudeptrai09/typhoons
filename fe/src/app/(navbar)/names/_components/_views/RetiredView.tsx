@@ -14,23 +14,22 @@ import type { RetiredName, Suggestion, RetiredFilterParams } from "../../../../.
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];
-  activeTab: "names" | "retired";
   onToggleView: () => void;
 }
 
-const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps) => {
+const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentLetter = searchParams.get("letter") || "A";
 
-  const buildQuery = useCallback((params: Record<string, string>) => {
-    const urlParams = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) urlParams.set(key, value);
-    });
-    const qs = urlParams.toString();
-    return qs ? `?${qs}` : "";
-  }, []);
+  const searchName = searchParams.get("name") || "";
+  const selectedYear = searchParams.get("year") || "";
+  const selectedCountry = searchParams.get("country") || "";
+  const selectedReason = searchParams.get("reason") || "";
+  const searchPosition = searchParams.get("position") || "";
+
+  const countryArr = toArr(selectedCountry);
+  const reasonArr = toArr(selectedReason).map(Number);
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
@@ -47,19 +46,18 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
   const isSuggestionsReady = !suggestionsLoading;
   const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
 
-  const searchName = searchParams.get("name") || "";
-  const selectedYear = searchParams.get("year") || "";
-  const selectedCountry = searchParams.get("country") || "";
-  const selectedReason = searchParams.get("reason") || "";
-  const searchPosition = searchParams.get("position") || "";
-
-  const countryArr = toArr(selectedCountry);
-  const reasonArr = toArr(selectedReason).map(Number);
-
   const countries = useMemo(
     () => [...new Set(retiredNames.map((n) => n.country))].sort(),
     [retiredNames],
   );
+
+  const activeFilterCount = [
+    searchName,
+    selectedYear,
+    selectedCountry,
+    selectedReason,
+    searchPosition,
+  ].filter(Boolean).length;
 
   const displayedNames = useMemo(() => {
     let filtered = [...retiredNames];
@@ -106,13 +104,14 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
     return map;
   }, [retiredNames]);
 
-  const activeFilterCount = [
-    searchName,
-    selectedYear,
-    selectedCountry,
-    selectedReason,
-    searchPosition,
-  ].filter(Boolean).length;
+  const buildQuery = useCallback((params: Record<string, string>) => {
+    const urlParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) urlParams.set(key, value);
+    });
+    const qs = urlParams.toString();
+    return qs ? `?${qs}` : "";
+  }, []);
 
   const handleNameClick = (name: RetiredName) => {
     setSelectedRetiredName(name);
@@ -154,12 +153,8 @@ const RetiredView = ({ retiredNames, activeTab, onToggleView }: RetiredViewProps
         <div className="flex items-center justify-center gap-9">
           <button
             onClick={onToggleView}
-            title={activeTab === "retired" ? "Switch to active names" : "Switch to retired names"}
-            aria-label={
-              activeTab === "retired"
-                ? "Viewing retired names, click to switch to active"
-                : "Viewing active names, click to switch to retired"
-            }
+            title="Switch to active names"
+            aria-label="Viewing retired names, click to switch to active"
             className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
             <Skull size={30} />

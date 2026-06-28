@@ -6,7 +6,7 @@ import type { BaseModalProps } from "../../../../../types";
 type DisplayMode = "grid" | "list";
 
 export interface DisplaySettings {
-  showAll: boolean;
+  showLetterNav: boolean;
   showName: boolean;
   showHistory: boolean;
   colorfulHistory: boolean;
@@ -16,7 +16,6 @@ export interface DisplaySettings {
 interface NamesSettingsModalProps extends BaseModalProps {
   displayMode: DisplayMode;
   settings: DisplaySettings;
-  hasActiveFilters: boolean;
   onApply: (mode: DisplayMode, settings: DisplaySettings) => void;
 }
 
@@ -25,7 +24,6 @@ const NamesSettingsModal = ({
   onClose,
   displayMode,
   settings,
-  hasActiveFilters,
   onApply,
 }: NamesSettingsModalProps) => {
   const [draftMode, setDraftMode] = useState<DisplayMode>(displayMode);
@@ -41,7 +39,7 @@ const NamesSettingsModal = ({
 
   const isGrid = draftMode === "grid";
   const isList = draftMode === "list";
-  const showHistoryDisabled = !isGrid || !draftSettings.showAll || hasActiveFilters;
+  const showHistoryDisabled = !isGrid;
   const colorfulDisabled = showHistoryDisabled || !draftSettings.showHistory;
 
   return (
@@ -81,13 +79,13 @@ const NamesSettingsModal = ({
 
         <div className="flex items-center justify-between">
           <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
-            Show All
+            Letter Navigation
           </span>
           <Switch
-            checked={isGrid && draftSettings.showAll}
-            onChange={(v) => updateDraft({ showAll: v })}
+            checked={isGrid && draftSettings.showLetterNav}
+            onChange={(v) => updateDraft({ showLetterNav: v })}
             disabled={!isGrid}
-            aria-label="Show All"
+            aria-label="Letter Navigation"
           />
         </div>
 
