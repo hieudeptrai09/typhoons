@@ -13,6 +13,9 @@ interface OnThisDayStorm {
   intensity: IntensityType;
   position: number;
   year: number;
+  monthStart: number;
+  monthEnd: number;
+  isFromPrevYear: number;
   country: string;
   meaning: string | null;
   reason: "started" | "ended" | "both";
@@ -66,7 +69,17 @@ const OnThisDay = () => {
 
       const today = new Date();
       const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${ordinal(today.getDate())}`;
-      const yearsAgo = today.getFullYear() - storm.year;
+
+      const spansYear = storm.monthEnd < storm.monthStart;
+      let eventYear: number;
+      if (storm.reason === "started") {
+        eventYear = storm.isFromPrevYear ? storm.year - 1 : storm.year;
+      } else if (storm.reason === "ended") {
+        eventYear = storm.isFromPrevYear ? storm.year : spansYear ? storm.year + 1 : storm.year;
+      } else {
+        eventYear = storm.year;
+      }
+      const yearsAgo = today.getFullYear() - eventYear;
       const label = INTENSITY_LABEL[storm.intensity];
       const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
       const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
@@ -89,7 +102,7 @@ const OnThisDay = () => {
         okText: "Got it",
         content: (
           <p className="leading-relaxed text-gray-600">
-            It was {yearsAgo} year{yearsAgo !== 1 ? "s" : ""} ago, on {dateStr}, {storm.year}, that{" "}
+            It was {yearsAgo} year{yearsAgo !== 1 ? "s" : ""} ago, on {dateStr}, {eventYear}, that{" "}
             <a
               href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
               className="font-bold"

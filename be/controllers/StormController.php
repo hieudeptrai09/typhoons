@@ -21,6 +21,7 @@ class StormController
                     s.monthStart,
                     s.dateEnd,
                     s.monthEnd,
+                    s.isFromPrevYear,
                     p.country,
                     t.meaning
                   FROM storms s
@@ -47,6 +48,7 @@ class StormController
             $result['monthStart'] = (int)$result['monthStart'];
             $result['dateEnd'] = (int)$result['dateEnd'];
             $result['monthEnd'] = (int)$result['monthEnd'];
+            $result['isFromPrevYear'] = (int)$result['isFromPrevYear'];
 
             $startedToday = ((int)$result['monthStart'] === $month && (int)$result['dateStart'] === $day);
             $endedToday = ((int)$result['monthEnd'] === $month && (int)$result['dateEnd'] === $day);
