@@ -5,9 +5,14 @@ export interface ApiResponse<T> {
   count: number;
 }
 
-export async function fetchServerData<T>(endpoint: string): Promise<ApiResponse<T> | null> {
+export async function fetchServerData<T>(
+  endpoint: string,
+  revalidate?: number,
+): Promise<ApiResponse<T> | null> {
   try {
-    const response = await fetch(`${API_BASE}${endpoint}`);
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      next: { revalidate: revalidate ?? 3600 },
+    });
     return await response.json();
   } catch {
     return null;

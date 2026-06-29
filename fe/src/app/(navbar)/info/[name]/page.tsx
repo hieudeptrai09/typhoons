@@ -1,10 +1,16 @@
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import InfoPageContent from "./InfoPageContent";
-import type { SearchDetail } from "../../../../types";
+import type { SearchDetail, SearchResult } from "../../../../types";
 import type { Metadata } from "next";
 
 interface InfoPageProps {
   params: Promise<{ name: string }>;
+}
+
+export async function generateStaticParams() {
+  const result = await fetchServerData<SearchResult[]>("/search");
+  if (!result?.data) return [];
+  return result.data.map((item) => ({ name: item.name.toLowerCase() }));
 }
 
 export async function generateMetadata({ params }: InfoPageProps): Promise<Metadata> {
@@ -14,6 +20,9 @@ export async function generateMetadata({ params }: InfoPageProps): Promise<Metad
   return {
     title: `${decodedName} — Typhoon Info`,
     description: `Details and storm history for typhoon name ${decodedName}.`,
+    alternates: {
+      canonical: `/info/${decodedName.toLowerCase()}/`,
+    },
   };
 }
 
