@@ -41,23 +41,44 @@ const MONTH_NAMES = [
   "December",
 ];
 
-const ordinal = (n: number) => {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+const getVerb = (storm: OnThisDayStorm) => {
+  const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
+  if (isExternal) {
+    return storm.reason === "both"
+      ? "entered and later exited the West Pacific basin or dissipated"
+      : storm.reason === "started"
+        ? "entered the West Pacific basin"
+        : "exited the West Pacific basin or dissipated";
+  }
+  return storm.reason === "both"
+    ? "formed and dissipated"
+    : storm.reason === "started"
+      ? "formed"
+      : "dissipated";
+};
+
+const getEventYear = (storm: OnThisDayStorm) => {
+  const spansYear = storm.monthEnd < storm.monthStart;
+  if (storm.reason === "started") {
+    return storm.isFromPrevYear ? storm.year - 1 : storm.year;
+  }
+  if (storm.reason === "ended") {
+    return storm.isFromPrevYear ? storm.year : spansYear ? storm.year + 1 : storm.year;
+  }
+  return storm.year;
 };
 
 const OnThisDay = () => {
   const [loading, setLoading] = useState(false);
 
-  const fetchStorm = async () => {
+  const fetchStorms = async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/on-this-day`);
       const json = await res.json();
-      const storm: OnThisDayStorm | null = json.data ?? null;
+      const storms: OnThisDayStorm[] = json.data ?? [];
 
-      if (!storm) {
+      if (storms.length === 0) {
         Modal.info({
           title: "On this day",
           icon: null,
@@ -69,33 +90,7 @@ const OnThisDay = () => {
       }
 
       const today = new Date();
-      const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${ordinal(today.getDate())}`;
-
-      const spansYear = storm.monthEnd < storm.monthStart;
-      let eventYear: number;
-      if (storm.reason === "started") {
-        eventYear = storm.isFromPrevYear ? storm.year - 1 : storm.year;
-      } else if (storm.reason === "ended") {
-        eventYear = storm.isFromPrevYear ? storm.year : spansYear ? storm.year + 1 : storm.year;
-      } else {
-        eventYear = storm.year;
-      }
-      const yearsAgo = today.getFullYear() - eventYear;
-      const label = INTENSITY_LABEL[storm.intensity];
-      const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
-      const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
-
-      const verb = isExternal
-        ? storm.reason === "both"
-          ? "entered and later exited the West Pacific basin or dissipated"
-          : storm.reason === "started"
-            ? "entered the West Pacific basin"
-            : "exited the West Pacific basin or dissipated"
-        : storm.reason === "both"
-          ? "formed and dissipated"
-          : storm.reason === "started"
-            ? "formed"
-            : "dissipated";
+      const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${today.getDate()}`;
 
       Modal.info({
         title: "On this day",
@@ -103,25 +98,32 @@ const OnThisDay = () => {
         centered: true,
         okText: "Got it",
         content: (
-          <p className="leading-relaxed text-gray-600">
-            It was {yearsAgo} year{yearsAgo !== 1 ? "s" : ""} ago, on {dateStr}, {eventYear}, that{" "}
-            <a
-              href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
-              className="font-bold"
-              style={{ color }}
-            >
-              {label} {storm.name}
-            </a>{" "}
-            {verb}. The name{" "}
-            {isExternal ? (
-              <>was named by {storm.country}.</>
-            ) : (
-              <>
-                was contributed by {storm.country}
-                {storm.meaning && <> and means &lsquo;{storm.meaning}&rsquo;</>}.
-              </>
-            )}
-          </p>
+          <div>
+            <p className="mb-3 text-sm font-semibold text-gray-800">{dateStr}</p>
+            <ul className="m-0 list-none space-y-1.5 p-0">
+              {storms.map((storm, i) => {
+                const eventYear = getEventYear(storm);
+                const label = INTENSITY_LABEL[storm.intensity];
+                const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
+                const verb = getVerb(storm);
+
+                return (
+                  <li key={i} className="text-sm leading-relaxed text-gray-600">
+                    <span className="mr-1 text-gray-400">&bull;</span>
+                    {eventYear}: {label}{" "}
+                    <a
+                      href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
+                      className="font-bold"
+                      style={{ color }}
+                    >
+                      {storm.name}
+                    </a>{" "}
+                    {verb}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ),
       });
     } catch {
@@ -141,7 +143,7 @@ const OnThisDay = () => {
     <Button
       type="text"
       icon={loading ? <TyphoonSpinner size="small" /> : <Calendar size={16} />}
-      onClick={fetchStorm}
+      onClick={fetchStorms}
       disabled={loading}
       className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
     >

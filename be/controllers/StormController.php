@@ -29,8 +29,7 @@ class StormController
                   LEFT JOIN typhoonnames t ON t.name = s.name AND t.position = s.position
                   WHERE (s.monthStart = :month1 AND s.dateStart = :day1)
                      OR (s.monthEnd = :month2 AND s.dateEnd = :day2)
-                  ORDER BY RAND()
-                  LIMIT 1";
+                  ORDER BY s.year ASC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':month1', $month, PDO::PARAM_INT);
@@ -38,25 +37,28 @@ class StormController
         $stmt->bindParam(':month2', $month, PDO::PARAM_INT);
         $stmt->bindParam(':day2', $day, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch();
+        $results = $stmt->fetchAll();
 
-        if ($result) {
-            $result['id'] = (int)$result['id'];
-            $result['position'] = (int)$result['position'];
-            $result['year'] = (int)$result['year'];
-            $result['dateStart'] = (int)$result['dateStart'];
-            $result['monthStart'] = (int)$result['monthStart'];
-            $result['dateEnd'] = (int)$result['dateEnd'];
-            $result['monthEnd'] = (int)$result['monthEnd'];
-            $result['isFromPrevYear'] = (int)$result['isFromPrevYear'];
+        $results = array_map(function ($row) use ($day, $month) {
+            $row['id'] = (int)$row['id'];
+            $row['position'] = (int)$row['position'];
+            $row['year'] = (int)$row['year'];
+            $row['dateStart'] = (int)$row['dateStart'];
+            $row['monthStart'] = (int)$row['monthStart'];
+            $row['dateEnd'] = (int)$row['dateEnd'];
+            $row['monthEnd'] = (int)$row['monthEnd'];
+            $row['isFromPrevYear'] = (int)$row['isFromPrevYear'];
 
-            $startedToday = ((int)$result['monthStart'] === $month && (int)$result['dateStart'] === $day);
-            $endedToday = ((int)$result['monthEnd'] === $month && (int)$result['dateEnd'] === $day);
-            $result['reason'] = $startedToday && $endedToday ? 'both' : ($startedToday ? 'started' : 'ended');
-        }
+            $startedToday = ($row['monthStart'] === $month && $row['dateStart'] === $day);
+            $endedToday = ($row['monthEnd'] === $month && $row['dateEnd'] === $day);
+            $row['reason'] = $startedToday && $endedToday ? 'both' : ($startedToday ? 'started' : 'ended');
+
+            return $row;
+        }, $results);
 
         return [
-            'data' => $result ?: null
+            'count' => count($results),
+            'data' => $results
         ];
     }
 
