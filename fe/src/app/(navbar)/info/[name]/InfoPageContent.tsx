@@ -5,6 +5,7 @@ import {
   getNameStatusColorClass,
 } from "../../../../components/colors";
 import CountryFlag from "../../../../components/components/CountryFlag";
+import EmptyResults from "../../../../components/components/EmptyResults";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import ImageWithLoader from "../../../../components/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "../../../../constants";
@@ -171,7 +172,7 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
-    return <FrownNotFound />;
+    return <EmptyResults description="No typhoon named this was found." />;
   }
 
   return (
