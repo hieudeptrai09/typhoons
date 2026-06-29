@@ -1,4 +1,5 @@
 import Image from "next/image";
+import FunFacts from "./_components/FunFacts";
 import Menu from "./_components/Menu";
 import OnThisDay from "./_components/OnThisDay";
 import SearchBar from "./_components/SearchBar";
@@ -29,7 +30,10 @@ const HomePage = () => {
 
         <SearchBar />
 
-        <OnThisDay />
+        <div className="mb-4 flex gap-4">
+          <OnThisDay />
+          <FunFacts />
+        </div>
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Menu href="storms" label="Browse Storms" bgColor="#2563eb" hoverBgColor="#1d4ed8" />
