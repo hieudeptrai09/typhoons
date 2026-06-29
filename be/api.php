@@ -9,6 +9,7 @@ require_once 'controllers/StormController.php';
 require_once 'controllers/TyphoonNameController.php';
 require_once 'controllers/SuggestedNameController.php';
 require_once 'controllers/SearchController.php';
+require_once 'controllers/FactController.php';
 
 // Parse the request
 $method = $_SERVER['REQUEST_METHOD'];
@@ -86,6 +87,16 @@ try {
                 $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
                 $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
                 $result = $controller->getOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'facts':
+            $controller = new FactController($db);
+            if ($method === 'GET') {
+                $result = $controller->getRandomFact();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
