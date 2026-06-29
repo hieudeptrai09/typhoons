@@ -18,6 +18,7 @@ const FunFacts = () => {
       const fact: string | null = json.data ?? null;
 
       Modal.info({
+        title: "Did you know?",
         icon: null,
         centered: true,
         okText: "Got it",
@@ -25,9 +26,10 @@ const FunFacts = () => {
       });
     } catch {
       Modal.info({
+        title: "Oops!",
         icon: null,
         centered: true,
-        okText: "Got it",
+        okText: "Close",
         content: <p className="text-gray-500">Could not load fact.</p>,
       });
     } finally {

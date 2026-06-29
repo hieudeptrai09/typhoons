@@ -59,6 +59,7 @@ const OnThisDay = () => {
 
       if (!storm) {
         Modal.info({
+          title: "On this day",
           icon: null,
           centered: true,
           okText: "Got it",
@@ -97,6 +98,7 @@ const OnThisDay = () => {
             : "dissipated";
 
       Modal.info({
+        title: "On this day",
         icon: null,
         centered: true,
         okText: "Got it",
@@ -124,9 +126,10 @@ const OnThisDay = () => {
       });
     } catch {
       Modal.info({
+        title: "Oops!",
         icon: null,
         centered: true,
-        okText: "Got it",
+        okText: "Close",
         content: <p className="text-gray-500">No storms formed or dissipated on this day.</p>,
       });
     } finally {
