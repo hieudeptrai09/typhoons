@@ -67,16 +67,21 @@ const OnThisDay = () => {
       const today = new Date();
       const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${ordinal(today.getDate())}`;
       const yearsAgo = today.getFullYear() - storm.year;
-      const verb =
-        storm.reason === "both"
+      const label = INTENSITY_LABEL[storm.intensity];
+      const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
+      const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
+
+      const verb = isExternal
+        ? storm.reason === "both"
+          ? "entered and later exited the West Pacific basin or dissipated"
+          : storm.reason === "started"
+            ? "entered the West Pacific basin"
+            : "exited the West Pacific basin or dissipated"
+        : storm.reason === "both"
           ? "formed and dissipated"
           : storm.reason === "started"
             ? "formed"
             : "dissipated";
-      const label = INTENSITY_LABEL[storm.intensity];
-      const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
-
-      const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
 
       Modal.info({
         icon: null,
