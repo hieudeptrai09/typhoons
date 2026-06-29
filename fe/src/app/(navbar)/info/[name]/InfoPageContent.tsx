@@ -1,4 +1,4 @@
-import { CircleHelp, Flame, Skull } from "lucide-react";
+import { Calendar, CircleHelp, Flame, Skull } from "lucide-react";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -9,6 +9,7 @@ import EmptyResults from "../../../../components/components/EmptyResults";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import ImageWithLoader from "../../../../components/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "../../../../constants";
+import { formatStormDateRange } from "../../../../containers/utils/fns";
 import type { SearchDetail, Storm, TyphoonName, RetiredName } from "../../../../types";
 
 interface InfoPageContentProps {
@@ -95,15 +96,31 @@ function StormCard({ storm }: { storm: Storm }) {
   const textColor = TEXT_COLOR_BADGE[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const hasMap = storm.map && storm.map.trim() !== "";
+  const dateRange = formatStormDateRange(
+    storm.year,
+    storm.monthStart,
+    storm.dateStart,
+    storm.monthEnd,
+    storm.dateEnd,
+    storm.isFromPrevYear,
+  );
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="flex h-16 items-center gap-3 px-4" style={{ backgroundColor: bgColor }}>
+      <div className="flex h-20 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
         <span className="text-sm leading-tight font-bold" style={{ color: textColor }}>
-          {label} {storm.name} ({storm.year})
+          {label} {storm.name}
         </span>
+        {dateRange && (
+          <div className="mt-1 flex items-center gap-1.5">
+            <Calendar size={12} style={{ color: textColor }} />
+            <span className="text-xs font-medium" style={{ color: textColor }}>
+              {dateRange}
+            </span>
+          </div>
+        )}
       </div>
-      <div className="relative h-48 w-full bg-slate-50">
+      <div className="relative h-44 w-full bg-slate-50">
         {hasMap ? (
           <ImageWithLoader
             src={storm.map}

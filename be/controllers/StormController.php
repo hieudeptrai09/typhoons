@@ -73,7 +73,12 @@ class StormController
                     s.year,
                     s.isStrongest,
                     s.isFirst,
-                    s.isLast
+                    s.isLast,
+                    s.dateStart,
+                    s.dateEnd,
+                    s.monthStart,
+                    s.monthEnd,
+                    s.isFromPrevYear
                   FROM storms s
                   INNER JOIN positions p ON s.position = p.id";
 
@@ -99,6 +104,11 @@ class StormController
             $row['isStrongest'] = (int)$row['isStrongest'];
             $row['isFirst'] = (int)$row['isFirst'];
             $row['isLast'] = (int)$row['isLast'];
+            $row['dateStart'] = (int)$row['dateStart'];
+            $row['dateEnd'] = (int)$row['dateEnd'];
+            $row['monthStart'] = (int)$row['monthStart'];
+            $row['monthEnd'] = (int)$row['monthEnd'];
+            $row['isFromPrevYear'] = (int)$row['isFromPrevYear'];
             return $row;
         }, $results);
 

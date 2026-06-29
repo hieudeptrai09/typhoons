@@ -10,6 +10,7 @@ import {
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "../../../../../constants";
+import { formatStormDateRange } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
@@ -65,8 +66,16 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
             const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
             const isHovered = hoveredYear === storm.year;
             const label = INTENSITY_LABEL[storm.intensity];
-            const stormTitle = `${label} ${storm.name} ${storm.year}`;
+            const stormTitle = `${label} ${storm.name}`;
             const hasMap = storm.map && storm.map.trim() !== "";
+            const dateRange = formatStormDateRange(
+              storm.year,
+              storm.monthStart,
+              storm.dateStart,
+              storm.monthEnd,
+              storm.dateEnd,
+              storm.isFromPrevYear,
+            );
 
             const row = (
               <div
@@ -82,6 +91,11 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
                     <div className="text-sm font-bold" style={{ color: textColor }}>
                       {stormTitle}
                     </div>
+                    {dateRange && (
+                      <div className="text-xs font-medium" style={{ color: textColor }}>
+                        {dateRange}
+                      </div>
+                    )}
                   </div>
                   {showMap && hasMap && (
                     <div className="relative h-32 w-48 shrink-0">

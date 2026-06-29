@@ -38,6 +38,11 @@ export interface Storm {
   isStrongest?: boolean;
   isFirst?: boolean;
   isLast?: boolean;
+  dateStart?: number;
+  dateEnd?: number;
+  monthStart?: number;
+  monthEnd?: number;
+  isFromPrevYear?: number;
 }
 
 export interface FilterParams {

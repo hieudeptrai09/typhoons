@@ -27,3 +27,36 @@ export const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: 
 export const fmt = (val: string) => toArr(val).join(", ");
 
 export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const MONTH_NAMES = [
+  "",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const formatStormDateRange = (
+  year?: number,
+  monthStart?: number,
+  dateStart?: number,
+  monthEnd?: number,
+  dateEnd?: number,
+  isFromPrevYear?: number,
+): string | null => {
+  if (!year || !monthStart || !dateStart || !monthEnd || !dateEnd) return null;
+  const startYear = isFromPrevYear ? year - 1 : year;
+  const endYear = monthEnd < monthStart ? startYear + 1 : startYear;
+  if (startYear === endYear) {
+    return `${MONTH_NAMES[monthStart]} ${dateStart} – ${MONTH_NAMES[monthEnd]} ${dateEnd}, ${endYear}`;
+  }
+  return `${MONTH_NAMES[monthStart]} ${dateStart}, ${startYear} – ${MONTH_NAMES[monthEnd]} ${dateEnd}, ${endYear}`;
+};
