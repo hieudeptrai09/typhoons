@@ -45,21 +45,15 @@ class FactController
     {
         $facts = [];
 
-        $statusFilters = [
-            ['sql' => '', 'sqlT' => '', 'label' => ''],
-            ['sql' => 'AND isRetired = 0', 'sqlT' => 'AND t.isRetired = 0', 'label' => 'active '],
-            ['sql' => 'AND isRetired = 1', 'sqlT' => 'AND t.isRetired = 1', 'label' => 'retired '],
-        ];
-
         // --- Cross-basin facts ---
 
         $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 141");
         $cnt = (int)$stmt->fetch()['cnt'];
-        $facts[] = "There are $cnt names given in Hawaiian by CPHC.";
+        $facts[] = "There are $cnt names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
         $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
-            $facts[] = $this->joinNames($names) . " are the names given in Hawaiian by CPHC.";
+            $facts[] = $this->joinNames($names) . " are the names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
         }
 
         $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
@@ -450,114 +444,104 @@ class FactController
 
         // --- Tag records ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 {$sf['sql']} GROUP BY tag ORDER BY cnt DESC LIMIT 1");
-            $row = $stmt->fetch();
-            if ($row) {
-                $facts[] = "{$row['tag']} is the category with the most {$sf['label']}names ({$row['cnt']}).";
-            }
+        $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt DESC LIMIT 1");
+        $row = $stmt->fetch();
+        if ($row) {
+            $facts[] = "{$row['tag']} is the category with the most names ({$row['cnt']}).";
+        }
 
-            $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 {$sf['sql']} GROUP BY tag ORDER BY cnt ASC LIMIT 1");
-            $row = $stmt->fetch();
-            if ($row) {
-                $facts[] = "{$row['tag']} is the category with the fewest {$sf['label']}names ({$row['cnt']}).";
-            }
+        $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt ASC LIMIT 1");
+        $row = $stmt->fetch();
+        if ($row) {
+            $facts[] = "{$row['tag']} is the category with the fewest names ({$row['cnt']}).";
         }
 
         // --- Rare languages ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("SELECT language, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 {$sf['sql']} GROUP BY language HAVING cnt <= 3 ORDER BY cnt");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $cnt = (int)$row['cnt'];
-                if ($cnt === 1) {
-                    $facts[] = "There is only 1 {$sf['label']}name from the {$row['language']} language.";
-                } else {
-                    $facts[] = "There are only $cnt {$sf['label']}names from the {$row['language']} language.";
-                }
-                $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND language = :lang {$sf['sql']} ORDER BY name");
-                $stmt2->execute([':lang' => $row['language']]);
-                $names = array_column($stmt2->fetchAll(), 'name');
-                if (!empty($names)) {
-                    $nl = count($names) === 1 ? "is the only {$sf['label']}name" : "are the only {$sf['label']}names";
-                    $facts[] = $this->joinNames($names) . " $nl from the {$row['language']} language.";
-                }
+        $stmt = $this->conn->query("SELECT language, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY language HAVING cnt <= 3 ORDER BY cnt");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $cnt = (int)$row['cnt'];
+            if ($cnt === 1) {
+                $facts[] = "There is only 1 name from the {$row['language']} language.";
+            } else {
+                $facts[] = "There are only $cnt names from the {$row['language']} language.";
+            }
+            $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND language = :lang ORDER BY name");
+            $stmt2->execute([':lang' => $row['language']]);
+            $names = array_column($stmt2->fetchAll(), 'name');
+            if (!empty($names)) {
+                $nl = count($names) === 1 ? "is the only name" : "are the only names";
+                $facts[] = $this->joinNames($names) . " $nl from the {$row['language']} language.";
             }
         }
 
         // --- Names per tag ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 {$sf['sql']} GROUP BY tag ORDER BY cnt");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $cnt = (int)$row['cnt'];
-                $facts[] = "There are $cnt {$sf['label']}names in the category {$row['tag']}.";
-                if ($cnt <= 3 && $cnt > 0) {
-                    $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = :tag {$sf['sql']} ORDER BY name");
-                    $stmt2->execute([':tag' => $row['tag']]);
-                    $names = array_column($stmt2->fetchAll(), 'name');
-                    if (!empty($names)) {
-                        $nl = count($names) === 1 ? "is the only {$sf['label']}name" : "are the only {$sf['label']}names";
-                        $facts[] = $this->joinNames($names) . " $nl in the category {$row['tag']}.";
-                    }
+        $stmt = $this->conn->query("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $cnt = (int)$row['cnt'];
+            $facts[] = "There are $cnt names in the category {$row['tag']}.";
+            if ($cnt <= 3 && $cnt > 0) {
+                $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = :tag ORDER BY name");
+                $stmt2->execute([':tag' => $row['tag']]);
+                $names = array_column($stmt2->fetchAll(), 'name');
+                if (!empty($names)) {
+                    $nl = count($names) === 1 ? "is the only name" : "are the only names";
+                    $facts[] = $this->joinNames($names) . " $nl in the category {$row['tag']}.";
                 }
             }
         }
 
         // --- Language-tag rare combinations ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("
-                SELECT language, tag, COUNT(*) as cnt FROM typhoonnames
-                WHERE position <= 140 {$sf['sql']} GROUP BY language, tag HAVING cnt <= 3 ORDER BY cnt, tag
-            ");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $cnt = (int)$row['cnt'];
-                if ($cnt === 1) {
-                    $facts[] = "There is only 1 {$sf['label']}name from the {$row['language']} language in the category {$row['tag']}.";
-                } else {
-                    $facts[] = "There are only $cnt {$sf['label']}names from the {$row['language']} language in the category {$row['tag']}.";
-                }
-                $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND language = :lang AND tag = :tag {$sf['sql']} ORDER BY name");
-                $stmt2->execute([':lang' => $row['language'], ':tag' => $row['tag']]);
-                $names = array_column($stmt2->fetchAll(), 'name');
-                if (!empty($names)) {
-                    $nl = count($names) === 1 ? "is the only {$sf['label']}name" : "are the only {$sf['label']}names";
-                    $facts[] = $this->joinNames($names) . " $nl from the {$row['language']} language in the category {$row['tag']}.";
-                }
+        $stmt = $this->conn->query("
+            SELECT language, tag, COUNT(*) as cnt FROM typhoonnames
+            WHERE position <= 140 GROUP BY language, tag HAVING cnt <= 3 ORDER BY cnt, tag
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $cnt = (int)$row['cnt'];
+            if ($cnt === 1) {
+                $facts[] = "There is only 1 name from the {$row['language']} language in the category {$row['tag']}.";
+            } else {
+                $facts[] = "There are only $cnt names from the {$row['language']} language in the category {$row['tag']}.";
+            }
+            $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND language = :lang AND tag = :tag ORDER BY name");
+            $stmt2->execute([':lang' => $row['language'], ':tag' => $row['tag']]);
+            $names = array_column($stmt2->fetchAll(), 'name');
+            if (!empty($names)) {
+                $nl = count($names) === 1 ? "is the only name" : "are the only names";
+                $facts[] = $this->joinNames($names) . " $nl from the {$row['language']} language in the category {$row['tag']}.";
             }
         }
 
         // --- Country-tag rare combinations ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("
-                SELECT p.country, t.tag, COUNT(*) as cnt FROM typhoonnames t
+        $stmt = $this->conn->query("
+            SELECT p.country, t.tag, COUNT(*) as cnt FROM typhoonnames t
+            INNER JOIN positions p ON t.position = p.id
+            WHERE t.position <= 140 GROUP BY p.country, t.tag HAVING cnt <= 3 ORDER BY cnt, t.tag
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $cnt = (int)$row['cnt'];
+            if ($cnt === 1) {
+                $facts[] = "There is only 1 name contributed by {$row['country']} in the category {$row['tag']}.";
+            } else {
+                $facts[] = "There are only $cnt names contributed by {$row['country']} in the category {$row['tag']}.";
+            }
+            $stmt2 = $this->conn->prepare("
+                SELECT t.name FROM typhoonnames t
                 INNER JOIN positions p ON t.position = p.id
-                WHERE t.position <= 140 {$sf['sqlT']} GROUP BY p.country, t.tag HAVING cnt <= 3 ORDER BY cnt, t.tag
+                WHERE t.position <= 140 AND p.country = :country AND t.tag = :tag ORDER BY t.name
             ");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $cnt = (int)$row['cnt'];
-                if ($cnt === 1) {
-                    $facts[] = "There is only 1 {$sf['label']}name contributed by {$row['country']} in the category {$row['tag']}.";
-                } else {
-                    $facts[] = "There are only $cnt {$sf['label']}names contributed by {$row['country']} in the category {$row['tag']}.";
-                }
-                $stmt2 = $this->conn->prepare("
-                    SELECT t.name FROM typhoonnames t
-                    INNER JOIN positions p ON t.position = p.id
-                    WHERE t.position <= 140 AND p.country = :country AND t.tag = :tag {$sf['sqlT']} ORDER BY t.name
-                ");
-                $stmt2->execute([':country' => $row['country'], ':tag' => $row['tag']]);
-                $names = array_column($stmt2->fetchAll(), 'name');
-                if (!empty($names)) {
-                    $nl = count($names) === 1 ? "is the only {$sf['label']}name" : "are the only {$sf['label']}names";
-                    $facts[] = $this->joinNames($names) . " $nl contributed by {$row['country']} in the category {$row['tag']}.";
-                }
+            $stmt2->execute([':country' => $row['country'], ':tag' => $row['tag']]);
+            $names = array_column($stmt2->fetchAll(), 'name');
+            if (!empty($names)) {
+                $nl = count($names) === 1 ? "is the only name" : "are the only names";
+                $facts[] = $this->joinNames($names) . " $nl contributed by {$row['country']} in the category {$row['tag']}.";
             }
         }
 
@@ -602,63 +586,89 @@ class FactController
 
         // --- Missing letters ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("SELECT DISTINCT UPPER(LEFT(name, 1)) as letter FROM typhoonnames WHERE position <= 140 {$sf['sql']}");
-            $existing = array_column($stmt->fetchAll(), 'letter');
-            $missing = array_diff(range('A', 'Z'), $existing);
-            if (!empty($missing)) {
-                $facts[] = "No {$sf['label']}names start with the letter " . $this->joinNames(array_values($missing)) . ".";
+        $stmt = $this->conn->query("SELECT DISTINCT UPPER(LEFT(name, 1)) as letter FROM typhoonnames WHERE position <= 140");
+        $existing = array_column($stmt->fetchAll(), 'letter');
+        $missing = array_diff(range('A', 'Z'), $existing);
+        if (!empty($missing)) {
+            $facts[] = "No names start with the letter " . $this->joinNames(array_values($missing)) . ".";
+        }
+
+        // --- Letters with only active or only retired names ---
+
+        $stmt = $this->conn->query("
+            SELECT UPPER(LEFT(name, 1)) as letter,
+                   SUM(CASE WHEN isRetired = 0 THEN 1 ELSE 0 END) as active_cnt,
+                   SUM(CASE WHEN isRetired = 1 THEN 1 ELSE 0 END) as retired_cnt
+            FROM typhoonnames WHERE position <= 140
+            GROUP BY letter
+        ");
+        $rows = $stmt->fetchAll();
+        $onlyActive = [];
+        $onlyRetired = [];
+        foreach ($rows as $row) {
+            if ((int)$row['active_cnt'] > 0 && (int)$row['retired_cnt'] === 0) {
+                $onlyActive[] = $row['letter'];
+            } elseif ((int)$row['retired_cnt'] > 0 && (int)$row['active_cnt'] === 0) {
+                $onlyRetired[] = $row['letter'];
             }
+        }
+        sort($onlyActive);
+        sort($onlyRetired);
+        if (!empty($onlyActive)) {
+            $label = count($onlyActive) === 1 ? "letter" : "letters";
+            $verb = count($onlyActive) === 1 ? "has" : "have";
+            $facts[] = "The $label " . $this->joinNames($onlyActive) . " $verb only active names (no retired names).";
+        }
+        if (!empty($onlyRetired)) {
+            $label = count($onlyRetired) === 1 ? "letter" : "letters";
+            $verb = count($onlyRetired) === 1 ? "has" : "have";
+            $facts[] = "The $label " . $this->joinNames($onlyRetired) . " $verb only retired names (no active names).";
         }
 
         // --- Rare starting letters ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("
-                SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
-                FROM typhoonnames WHERE position <= 140 {$sf['sql']}
-                GROUP BY letter HAVING cnt <= 3 ORDER BY cnt, letter
-            ");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $cnt = (int)$row['cnt'];
-                if ($cnt === 1) {
-                    $facts[] = "There is only 1 {$sf['label']}name starting with the letter {$row['letter']}.";
-                } else {
-                    $facts[] = "There are only $cnt {$sf['label']}names starting with the letter {$row['letter']}.";
-                }
-                $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = :letter {$sf['sql']} ORDER BY name");
-                $stmt2->execute([':letter' => $row['letter']]);
-                $names = array_column($stmt2->fetchAll(), 'name');
-                if (!empty($names)) {
-                    $nl = count($names) === 1 ? "is the only {$sf['label']}name" : "are the only {$sf['label']}names";
-                    $facts[] = $this->joinNames($names) . " $nl starting with the letter {$row['letter']}.";
-                }
+        $stmt = $this->conn->query("
+            SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
+            FROM typhoonnames WHERE position <= 140
+            GROUP BY letter HAVING cnt <= 3 ORDER BY cnt, letter
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            $cnt = (int)$row['cnt'];
+            if ($cnt === 1) {
+                $facts[] = "There is only 1 name starting with the letter {$row['letter']}.";
+            } else {
+                $facts[] = "There are only $cnt names starting with the letter {$row['letter']}.";
+            }
+            $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = :letter ORDER BY name");
+            $stmt2->execute([':letter' => $row['letter']]);
+            $names = array_column($stmt2->fetchAll(), 'name');
+            if (!empty($names)) {
+                $nl = count($names) === 1 ? "is the only name" : "are the only names";
+                $facts[] = $this->joinNames($names) . " $nl starting with the letter {$row['letter']}.";
             }
         }
 
         // --- Most/least common starting letter ---
 
-        foreach ($statusFilters as $sf) {
-            $stmt = $this->conn->query("
-                SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
-                FROM typhoonnames WHERE position <= 140 {$sf['sql']}
-                GROUP BY letter ORDER BY cnt DESC LIMIT 1
-            ");
-            $row = $stmt->fetch();
-            if ($row) {
-                $facts[] = "The letter {$row['letter']} has the most {$sf['label']}names starting with it ({$row['cnt']}).";
-            }
+        $stmt = $this->conn->query("
+            SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
+            FROM typhoonnames WHERE position <= 140
+            GROUP BY letter ORDER BY cnt DESC LIMIT 1
+        ");
+        $row = $stmt->fetch();
+        if ($row) {
+            $facts[] = "The letter {$row['letter']} has the most names starting with it ({$row['cnt']}).";
+        }
 
-            $stmt = $this->conn->query("
-                SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
-                FROM typhoonnames WHERE position <= 140 {$sf['sql']}
-                GROUP BY letter ORDER BY cnt ASC LIMIT 1
-            ");
-            $row = $stmt->fetch();
-            if ($row) {
-                $facts[] = "The letter {$row['letter']} has the fewest {$sf['label']}names starting with it ({$row['cnt']}).";
-            }
+        $stmt = $this->conn->query("
+            SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
+            FROM typhoonnames WHERE position <= 140
+            GROUP BY letter ORDER BY cnt ASC LIMIT 1
+        ");
+        $row = $stmt->fetch();
+        if ($row) {
+            $facts[] = "The letter {$row['letter']} has the fewest names starting with it ({$row['cnt']}).";
         }
 
         return $facts;
