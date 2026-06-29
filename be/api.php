@@ -80,6 +80,18 @@ try {
             }
             break;
 
+        case 'on-this-day':
+            $controller = new StormController($db);
+            if ($method === 'GET') {
+                $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
+                $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
+                $result = $controller->getOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
         case 'search':
             $controller = new SearchController($db);
             if ($method === 'GET') {
