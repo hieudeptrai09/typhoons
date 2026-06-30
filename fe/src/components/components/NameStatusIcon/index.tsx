@@ -1,4 +1,4 @@
-import { CircleHelp, Flame, SpellCheck2, Skull } from "lucide-react";
+import { CircleHelp, Flame, Skull, SpellCheck2 } from "lucide-react";
 import { getNameStatusColorClass } from "../../colors";
 
 interface Props {

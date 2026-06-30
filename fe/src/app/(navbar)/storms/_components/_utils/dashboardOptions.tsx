@@ -1,18 +1,18 @@
 import {
-  CloudLightning,
-  Star,
   Activity,
-  Ruler,
+  ArrowDownToLine,
+  CloudLightning,
+  Globe,
   Grid3x3,
   List,
-  Zap,
-  Medal,
-  ArrowDownToLine,
   MapPin,
-  Tag,
-  Globe,
-  Sun,
+  Medal,
   Moon,
+  Ruler,
+  Star,
+  Sun,
+  Tag,
+  Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 

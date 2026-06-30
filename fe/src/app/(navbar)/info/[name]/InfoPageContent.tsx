@@ -1,8 +1,8 @@
 import { Calendar } from "lucide-react";
 import {
   BACKGROUND_BADGE,
-  TEXT_COLOR_BADGE,
   getNameStatusColorClass,
+  TEXT_COLOR_BADGE,
 } from "../../../../components/colors";
 import CountryFlag from "../../../../components/components/CountryFlag";
 import EmptyResults from "../../../../components/components/EmptyResults";
@@ -11,7 +11,7 @@ import ImageWithLoader from "../../../../components/components/ImageWithLoader";
 import NameStatusIcon from "../../../../components/components/NameStatusIcon";
 import { INTENSITY_LABEL } from "../../../../constants";
 import { formatStormDateRange } from "../../../../containers/utils/fns";
-import type { SearchDetail, Storm, TyphoonName, RetiredName } from "../../../../types";
+import type { RetiredName, SearchDetail, Storm, TyphoonName } from "../../../../types";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;

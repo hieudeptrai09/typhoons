@@ -5,7 +5,7 @@ import Tabs, { type Tab } from "../../../../../components/components/Tabs";
 import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
 import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
 import SuggestionCard from "../_components/SuggestionCard";
-import type { RetiredName, Suggestion, BaseModalProps } from "../../../../../types";
+import type { BaseModalProps, RetiredName, Suggestion } from "../../../../../types";
 
 export interface RetiredNameDetailsModalProps extends BaseModalProps {
   selectedName: RetiredName;

@@ -1,7 +1,7 @@
 import { Modal, Popover } from "antd";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
 import { INTENSITY_LABEL } from "../../../../../constants";
+import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
 interface AverageModalProps extends BaseModalProps {

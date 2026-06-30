@@ -4,7 +4,7 @@ import { SORTING_RANK } from "../../../../../constants";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import { getHighlights } from "../../_utils/fns";
 import StormGrid from "../_components/StormGrid";
-import type { Storm, DashboardParams, IntensityType } from "../../../../../types";
+import type { DashboardParams, IntensityType, Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
 interface HighlightsViewProps {

@@ -1,4 +1,4 @@
-import { CloudLightning, BookText } from "lucide-react";
+import { BookText, CloudLightning } from "lucide-react";
 import NavLink from "./NavLink";
 
 interface DesktopNavProps {

@@ -3,10 +3,10 @@ import { Table } from "antd";
 import { getDistanceColor } from "../../../../../components/colors";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
-import { calculateDistances, getGroupedStorms, formatDistance } from "../../_utils/fns";
+import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import StormGrid from "../_components/StormGrid";
-import type { Storm, DashboardParams } from "../../../../../types";
+import type { DashboardParams, Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
 interface DistanceViewProps {

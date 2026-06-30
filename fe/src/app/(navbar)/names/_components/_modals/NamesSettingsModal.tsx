@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Switch, Radio, Button } from "antd";
+import { Button, Modal, Radio, Switch } from "antd";
 import { Paintbrush } from "lucide-react";
 import type { BaseModalProps } from "../../../../../types";
 

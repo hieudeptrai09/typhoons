@@ -1,11 +1,11 @@
 import { notFound, redirect } from "next/navigation";
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
-  isValidStormsSlug,
-  slugToParams,
-  paramsToPath,
   getDashboardDescription,
   getDashboardTitle,
+  isValidStormsSlug,
+  paramsToPath,
+  slugToParams,
 } from "../_utils/fns";
 import DashboardPageContent from "../DashboardPageContent";
 import type { Storm } from "../../../../types";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "antd";
 import { Search } from "lucide-react";
 import Link from "next/link";

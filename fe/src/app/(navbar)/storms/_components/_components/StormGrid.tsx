@@ -1,10 +1,10 @@
-import { useState, useMemo, type ReactNode } from "react";
-import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
+import { useMemo, useState, type ReactNode } from "react";
+import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import PositionGrid from "../../../../../components/components/PositionGrid";
 import {
-  getIntensityFromNumber,
   calculateAverage,
   getHighlights,
+  getIntensityFromNumber,
   sortNamesByFirstYear,
 } from "../../_utils/fns";
 import GridCell from "./GridCell";

@@ -5,7 +5,7 @@ import { getPositionTitle } from "../../../containers/utils/fns";
 import { getNameStatusColor } from "../../colors";
 import ImageWithLoader from "../../components/ImageWithLoader";
 import TyphoonSpinner from "../../components/TyphoonSpinner";
-import type { BaseModalProps, TyphoonName, Storm } from "../../../types";
+import type { BaseModalProps, Storm, TyphoonName } from "../../../types";
 
 interface HistoryModalProps extends BaseModalProps {
   position: number;

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Badge } from "antd";
 import { Filter, Flame, Settings } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +12,7 @@ import FilteredNamesTable from "../_components/FilteredNamesTable";
 import PositionNameGrid from "../_components/PositionNameGrid";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
-import type { TyphoonName, FilterParams } from "../../../../../types";
+import type { FilterParams, TyphoonName } from "../../../../../types";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
 
 interface NameFilterValues {

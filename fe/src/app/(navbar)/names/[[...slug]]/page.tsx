@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
-  isValidNamesSlug,
-  slugToParams,
   canonicalPath,
   getNamesDescription,
   getNamesTitle,
+  isValidNamesSlug,
+  slugToParams,
 } from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
 import type { RetiredName } from "../../../../types";

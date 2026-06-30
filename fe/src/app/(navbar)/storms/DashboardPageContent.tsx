@@ -15,14 +15,14 @@ import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
 import {
-  getDashboardTitle,
-  slugToParams,
-  paramsToPath,
   calculateAverage,
-  getGroupedStorms,
+  getDashboardTitle,
   getEffectiveMonth,
+  getGroupedStorms,
+  paramsToPath,
+  slugToParams,
 } from "./_utils/fns";
-import type { Storm, DashboardParams } from "../../../types";
+import type { DashboardParams, Storm } from "../../../types";
 
 interface SelectedData {
   title?: string;

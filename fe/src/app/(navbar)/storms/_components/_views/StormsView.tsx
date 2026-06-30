@@ -2,11 +2,11 @@ import { Table } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
-import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
 import StormGrid from "../_components/StormGrid";
-import type { Storm, DashboardParams } from "../../../../../types";
+import type { DashboardParams, Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
 interface StormsViewProps {

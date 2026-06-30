@@ -1,10 +1,10 @@
 import { Button } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import {
-  getIntensityFromNumber,
   calculateAverage,
-  SPECIAL_POSITIONS,
+  getIntensityFromNumber,
   sortNamesByFirstYear,
+  SPECIAL_POSITIONS,
 } from "../../_utils/fns";
 import type { Storm } from "../../../../../types";
 

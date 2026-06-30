@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Badge } from "antd";
 import { Filter, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,7 +10,7 @@ import { paramsToPath } from "../../_utils/fns";
 import RetiredNamesTable from "../_components/RetiredNamesTable";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
 import RetiredNameDetailsModal from "../_modals/RetiredNameDetailsModal";
-import type { RetiredName, Suggestion, RetiredFilterParams } from "../../../../../types";
+import type { RetiredFilterParams, RetiredName, Suggestion } from "../../../../../types";
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];

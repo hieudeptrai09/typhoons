@@ -1,6 +1,6 @@
 import { INTENSITY_RANK } from "../../../../constants";
-import { normalizeParam, capitalize } from "../../../../containers/utils/fns";
-import type { Storm, IntensityType, DashboardParams } from "../../../../types";
+import { capitalize, normalizeParam } from "../../../../containers/utils/fns";
+import type { DashboardParams, IntensityType, Storm } from "../../../../types";
 
 const VALID_FILTERS: Record<string, string[]> = {
   storms: ["position", "name"],

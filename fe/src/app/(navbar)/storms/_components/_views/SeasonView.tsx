@@ -1,13 +1,23 @@
 import { useMemo } from "react";
 import { Table } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import { getIntensityFromNumber, calculateAverage, getEffectiveMonth } from "../../_utils/fns";
+import { calculateAverage, getEffectiveMonth, getIntensityFromNumber } from "../../_utils/fns";
 import type { Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 interface SeasonData {
