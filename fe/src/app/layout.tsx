@@ -1,6 +1,11 @@
 import { TITLE_COMMON } from "../constants";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 const SITE_URL = "https://typhoons.vercel.app";
 const SITE_DESCRIPTION =
