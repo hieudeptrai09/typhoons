@@ -18,6 +18,8 @@ interface HighlightRow {
   year: number;
   intensity: IntensityType;
   position: number;
+  monthStart?: number;
+  isFromPrevYear?: number;
 }
 
 const columns: ColumnsType<HighlightRow> = [
@@ -44,6 +46,24 @@ const columns: ColumnsType<HighlightRow> = [
     dataIndex: "year",
     key: "year",
     sorter: (a, b) => a.year - b.year,
+  },
+  {
+    title: "Month",
+    key: "month",
+    sorter: (a, b) => {
+      const keyA = a.isFromPrevYear ? 0 : (a.monthStart ?? 0);
+      const keyB = b.isFromPrevYear ? 0 : (b.monthStart ?? 0);
+      return keyA - keyB;
+    },
+    render: (_: unknown, row: HighlightRow) => {
+      if (!row.monthStart) return null;
+      const displayYear = row.isFromPrevYear ? row.year - 1 : row.year;
+      return (
+        <span>
+          {row.monthStart}/{displayYear}
+        </span>
+      );
+    },
   },
   {
     title: "Intensity",
@@ -82,6 +102,8 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
     year: s.year,
     intensity: s.intensity,
     position: s.position,
+    monthStart: s.monthStart,
+    isFromPrevYear: s.isFromPrevYear,
   }));
 
   return (
