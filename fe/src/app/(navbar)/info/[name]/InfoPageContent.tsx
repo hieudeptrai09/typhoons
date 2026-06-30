@@ -1,4 +1,4 @@
-import { Calendar, CircleHelp, Flame, Skull } from "lucide-react";
+import { Calendar } from "lucide-react";
 import {
   BACKGROUND_BADGE,
   TEXT_COLOR_BADGE,
@@ -8,6 +8,7 @@ import CountryFlag from "../../../../components/components/CountryFlag";
 import EmptyResults from "../../../../components/components/EmptyResults";
 import FrownNotFound from "../../../../components/components/FrownNotFound";
 import ImageWithLoader from "../../../../components/components/ImageWithLoader";
+import NameStatusIcon from "../../../../components/components/NameStatusIcon";
 import { INTENSITY_LABEL } from "../../../../constants";
 import { formatStormDateRange } from "../../../../containers/utils/fns";
 import type { SearchDetail, Storm, TyphoonName, RetiredName } from "../../../../types";
@@ -17,7 +18,50 @@ interface InfoPageContentProps {
   name: string;
 }
 
-function NameDetailsSection({ name }: { name: TyphoonName | RetiredName }) {
+function StatusBadge({
+  isInPosition,
+  isRetired,
+  isMisspelling,
+}: {
+  isInPosition: boolean;
+  isRetired: boolean;
+  isMisspelling: boolean;
+}) {
+  if (!isInPosition) {
+    return (
+      <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-500">
+        External name
+      </span>
+    );
+  }
+  if (isMisspelling) {
+    return (
+      <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-600">
+        Misspelling
+      </span>
+    );
+  }
+  if (isRetired) {
+    return (
+      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">
+        Retired
+      </span>
+    );
+  }
+  return (
+    <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-600">
+      Active
+    </span>
+  );
+}
+
+function NameDetailsSection({
+  name,
+  correctSpelling,
+}: {
+  name: TyphoonName | RetiredName;
+  correctSpelling?: string;
+}) {
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 
@@ -34,23 +78,17 @@ function NameDetailsSection({ name }: { name: TyphoonName | RetiredName }) {
           </div>
 
           <div className="border-t border-slate-200 pt-3">
-            <div className="mb-2 text-sm font-medium text-slate-500">Origin</div>
-            <div className="flex items-center gap-3">
-              <CountryFlag country={name.country} className="h-8 w-12" />
-              <div className="text-base font-semibold text-slate-800">{name.country}</div>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-200 pt-3">
             <div className="text-sm font-medium text-slate-500">Language</div>
             <div className="mt-1 text-base text-slate-700">{name.language}</div>
           </div>
 
-          {"replacementName" in name && name.replacementName && (
+          {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
             <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-medium text-slate-500">Replaced by</div>
+              <div className="text-sm font-medium text-slate-500">
+                {correctSpelling ? "Correct spelling" : "Replaced by"}
+              </div>
               <div className="mt-1 text-base font-semibold text-teal-600">
-                {name.replacementName}
+                {correctSpelling || ("replacementName" in name ? name.replacementName : "")}
               </div>
             </div>
           )}
@@ -139,24 +177,10 @@ function StormCard({ storm }: { storm: Storm }) {
   );
 }
 
-function StormsSection({ storms }: { name: string; storms: Storm[] }) {
+function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
-        {storms.length > 0 && (
-          <div className="flex items-center gap-2">
-            <CountryFlag country={storms[0].country} className="h-5 w-8" />
-            <span className="text-sm text-slate-600">Position {storms[0].position}</span>
-          </div>
-        )}
-      </div>
-
-      {storms[0]?.correctSpelling && (
-        <div className="mb-4 text-sm text-slate-600">
-          <span className="font-semibold">Correct spelling:</span> {storms[0].correctSpelling}
-        </div>
-      )}
+      <h2 className="mb-4 text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
 
       {storms.length === 0 ? (
         <p className="py-4 text-center text-gray-500">No storms found for this name.</p>
@@ -192,24 +216,47 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
     return <EmptyResults description="No typhoon named this was found." />;
   }
 
+  const correctSpelling = storms[0]?.correctSpelling;
+  const isMisspelling = nameData?.isLanguageProblem === 2;
+  const metaCountry = nameData?.country ?? storms[0]?.country;
+  const metaPosition = nameData?.position ?? storms[0]?.position;
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
-      <div className="mb-8 flex items-center gap-3">
-        {!isInPosition ? (
-          <CircleHelp className={titleColorClass} size={28} />
-        ) : isRetired ? (
-          <Skull className={titleColorClass} size={28} />
-        ) : (
-          <Flame className={titleColorClass} size={28} />
-        )}
+      <div className="mb-3 flex items-center gap-3">
+        <NameStatusIcon
+          isRetired={isRetired}
+          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+          position={nameData?.position}
+          size={28}
+        />
         <h1 className={`text-3xl font-bold capitalize ${titleColorClass}`}>
           {displayName.toLowerCase()}
         </h1>
       </div>
 
+      <div className="mb-8 flex flex-wrap items-center gap-3">
+        {metaCountry && (
+          <div className="flex items-center gap-2">
+            {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
+            <span className="text-base font-medium text-slate-700">{metaCountry}</span>
+          </div>
+        )}
+        {isInPosition && metaPosition != null && (
+          <span className="text-base text-slate-500">· #{metaPosition}</span>
+        )}
+        <StatusBadge
+          isInPosition={isInPosition}
+          isRetired={isRetired}
+          isMisspelling={isMisspelling}
+        />
+      </div>
+
       <div className="space-y-6">
-        {isInPosition && nameData && <NameDetailsSection name={nameData} />}
-        <StormsSection name={displayName} storms={storms} />
+        {isInPosition && nameData && (
+          <NameDetailsSection name={nameData} correctSpelling={correctSpelling} />
+        )}
+        <StormsSection storms={storms} />
       </div>
     </div>
   );

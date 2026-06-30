@@ -2,14 +2,13 @@
 
 import { useMemo } from "react";
 import { Table } from "antd";
-import { CircleHelp, Flame, Skull } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getNameStatusColorClass } from "../../../components/colors";
 import CountryFlag from "../../../components/components/CountryFlag";
 import EmptyResults from "../../../components/components/EmptyResults";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import HighlightedName from "../../../components/components/HighlightedName";
+import NameStatusIcon from "../../../components/components/NameStatusIcon";
 import PageHeader from "../../../components/components/PageHeader";
 import type { SearchResult } from "../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -59,18 +58,14 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     title: "Status",
     key: "status",
     sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
-    render: (_: unknown, record: SearchResult) => {
-      const isInPosition = record.position >= 1 && record.position <= 140;
-      if (!isInPosition) {
-        return <CircleHelp className="text-slate-500" size={20} />;
-      }
-      const status = { ...record, isRetired: Boolean(record.isRetired) };
-      return record.isRetired ? (
-        <Skull className={getNameStatusColorClass(status)} size={20} />
-      ) : (
-        <Flame className={getNameStatusColorClass(status)} size={20} />
-      );
-    },
+    render: (_: unknown, record: SearchResult) => (
+      <NameStatusIcon
+        isRetired={Boolean(record.isRetired)}
+        isLanguageProblem={record.isLanguageProblem}
+        position={record.position}
+        size={20}
+      />
+    ),
   },
   {
     title: "Storms",

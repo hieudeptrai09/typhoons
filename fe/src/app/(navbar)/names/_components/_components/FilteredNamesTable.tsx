@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Table } from "antd";
-import { Flame, Skull } from "lucide-react";
 import { getNameStatusColorClass } from "../../../../../components/colors";
 import EmptyResults from "../../../../../components/components/EmptyResults";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import NameStatusIcon from "../../../../../components/components/NameStatusIcon";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
 import type { TyphoonName } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
@@ -46,12 +46,13 @@ const FilteredNamesTable = ({
         dataIndex: "isRetired",
         key: "isRetired",
         sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
-        render: (_: unknown, record: TyphoonName) =>
-          record.isRetired ? (
-            <Skull className={getNameStatusColorClass(record)} size={20} />
-          ) : (
-            <Flame className={getNameStatusColorClass(record)} size={20} />
-          ),
+        render: (_: unknown, record: TyphoonName) => (
+          <NameStatusIcon
+            isRetired={record.isRetired}
+            isLanguageProblem={record.isLanguageProblem}
+            size={20}
+          />
+        ),
       },
       {
         title: "Country",
