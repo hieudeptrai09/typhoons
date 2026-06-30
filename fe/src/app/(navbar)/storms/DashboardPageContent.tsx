@@ -4,15 +4,23 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import FrownNotFound from "../../../components/components/FrownNotFound";
 import PageHeader from "../../../components/components/PageHeader";
-import { INTENSITY_RANK } from "../../../constants";
 import { getPositionTitle } from "../../../containers/utils/fns";
 import DashboardViewButton from "./_components/_components/DashboardViewButton";
 import AverageModal from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
-import DashboardContent from "./_components/DashboardContent";
-import { getDashboardTitle, slugToParams, paramsToPath } from "./_utils/fns";
+import AverageView from "./_components/_views/AverageView";
+import DistanceView from "./_components/_views/DistanceView";
+import HighlightsView from "./_components/_views/HighlightsView";
+import StormsView from "./_components/_views/StormsView";
+import {
+  getDashboardTitle,
+  slugToParams,
+  paramsToPath,
+  calculateAverage,
+  getGroupedStorms,
+} from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
 
 interface SelectedData {
@@ -40,6 +48,15 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const currentParams: DashboardParams = slugToParams(slug);
   const { view, mode, filter } = currentParams;
 
+  const averageValues =
+    view === "average" || view === "storms"
+      ? Object.fromEntries(
+          Object.entries(getGroupedStorms(stormsData || [], "position")).map(
+            ([position, storms]) => [Number(position), calculateAverage(storms)],
+          ),
+        )
+      : null;
+
   const handleApplyFilter = (newParams: DashboardParams) => {
     setIsFilterModalOpen(false);
     router.push(paramsToPath(newParams));
@@ -50,8 +67,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
     // Storms view — name list mode: clicking a name row
     if (view === "storms" && key === "name") {
-      const avgIntensity =
-        storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
+      const avgIntensity = calculateAverage(storms);
       setSelectedData({ name: data as string, storms, avgIntensity });
       setIsNameListModalOpen(true);
       return;
@@ -66,8 +82,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     }
 
     if (view === "average" && filter === "name") {
-      const avg = storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
-      setSelectedData({ title: String(data), average: avg, storms });
+      setSelectedData({ title: String(data), average: calculateAverage(storms), storms });
       setIsAverageModalOpen(true);
       return;
     }
@@ -86,9 +101,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       year: `Year ${data}`,
     };
 
-    const avg = storms.reduce((sum, s) => sum + INTENSITY_RANK[s.intensity], 0) / storms.length;
-
-    setSelectedData({ title: titleMap[key], average: avg, storms });
+    setSelectedData({ title: titleMap[key], average: calculateAverage(storms), storms });
     setIsAverageModalOpen(true);
   };
 
@@ -100,11 +113,46 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     <PageHeader title={getDashboardTitle(view, mode, filter)}>
       <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
 
-      <DashboardContent
-        params={currentParams}
-        stormsData={stormsData}
-        onCellClick={handleCellClick}
-      />
+      {(() => {
+        switch (view) {
+          case "storms":
+            return (
+              <StormsView
+                params={currentParams}
+                stormsData={stormsData}
+                averageValues={averageValues}
+                onCellClick={handleCellClick}
+              />
+            );
+          case "highlights":
+            return (
+              <HighlightsView
+                params={currentParams}
+                stormsData={stormsData}
+                onCellClick={handleCellClick}
+              />
+            );
+          case "average":
+            return (
+              <AverageView
+                params={currentParams}
+                stormsData={stormsData}
+                averageValues={averageValues}
+                onCellClick={handleCellClick}
+              />
+            );
+          case "distance":
+            return (
+              <DistanceView
+                params={currentParams}
+                stormsData={stormsData}
+                onCellClick={handleCellClick}
+              />
+            );
+          default:
+            return <div className="text-center text-gray-500">Select filters to view data</div>;
+        }
+      })()}
 
       <DashboardModal
         key={JSON.stringify(currentParams)}

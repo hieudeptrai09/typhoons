@@ -1,7 +1,12 @@
 import { useState, useMemo, type ReactNode } from "react";
 import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
 import PositionGrid from "../../../../../components/components/PositionGrid";
-import { getIntensityFromNumber, calculateAverage, getHighlights } from "../../_utils/fns";
+import {
+  getIntensityFromNumber,
+  calculateAverage,
+  getHighlights,
+  sortNamesByFirstYear,
+} from "../../_utils/fns";
 import GridCell from "./GridCell";
 import type { Storm } from "../../../../../types";
 
@@ -96,20 +101,14 @@ const StormGrid = ({
       return acc;
     }, {});
 
-    return Object.entries(nameMap)
-      .sort(([, aStorms], [, bStorms]) => {
-        const aFirst = Math.min(...aStorms.map((s) => s.year));
-        const bFirst = Math.min(...bStorms.map((s) => s.year));
-        return aFirst - bFirst;
-      })
-      .map(([name, nameStorms]) => {
-        let color = "#374151";
-        if (nameAverageValues) {
-          const avg = nameAverageValues[name] ?? calculateAverage(nameStorms);
-          color = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avg)];
-        }
-        return { name, color };
-      });
+    return sortNamesByFirstYear(Object.entries(nameMap)).map(([name, nameStorms]) => {
+      let color = "#374151";
+      if (nameAverageValues) {
+        const avg = nameAverageValues[name] ?? calculateAverage(nameStorms);
+        color = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avg)];
+      }
+      return { name, color };
+    });
   };
 
   const renderCellContent = (

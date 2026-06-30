@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND, getDistanceColor } from "../../../../../components/colors";
-import { getIntensityFromNumber } from "../../_utils/fns";
+import { getIntensityFromNumber, SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface SpecialButtonsProps {
   onCellClick: (data: number, key: string) => void;
@@ -15,12 +15,6 @@ const SpecialButtons = ({
   averageValues = null,
   distanceValues = null,
 }: SpecialButtonsProps) => {
-  const buttons = [
-    { id: 141, label: "CPHC" },
-    { id: 142, label: "NHC" },
-    { id: 143, label: "IMD" },
-  ];
-
   const getButtonContent = (buttonId: number): { color: string; suffix: string } => {
     if (distanceValues && distanceValues[buttonId] !== undefined) {
       const dist = distanceValues[buttonId];
@@ -43,7 +37,7 @@ const SpecialButtons = ({
   return (
     <div className="mb-6 flex justify-center gap-4">
       <div className="mr-2 self-center text-sm font-semibold text-gray-700">Other Regions:</div>
-      {buttons.map((button) => {
+      {SPECIAL_POSITIONS.map((button) => {
         const { color, suffix } = getButtonContent(button.id);
         return (
           <Button

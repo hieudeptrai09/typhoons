@@ -3,7 +3,12 @@ import { Table } from "antd";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import { getPositionTitle } from "../../../../../containers/utils/fns";
-import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import {
+  getIntensityFromNumber,
+  calculateAverage,
+  getGroupedStorms,
+  SPECIAL_POSITIONS,
+} from "../../_utils/fns";
 import SpecialButtons from "../_components/SpecialButtons";
 import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
 import StormGrid from "../_components/StormGrid";
@@ -181,12 +186,6 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
   }
 };
 
-const SPECIAL_YEAR_POSITIONS = [
-  { id: 141, label: "CPHC" },
-  { id: 142, label: "NHC" },
-  { id: 143, label: "IMD" },
-];
-
 const AverageView = ({ params, stormsData, averageValues, onCellClick }: AverageViewProps) => {
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
@@ -228,7 +227,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
 
   // Average / year / table → year highlights grid + read-only special regions
   if (params.filter === "year" && params.mode === "table") {
-    const specialPositions = SPECIAL_YEAR_POSITIONS.map(({ id, label }) => {
+    const specialPositions = SPECIAL_POSITIONS.map(({ id, label }) => {
       const years = new Set(stormsData.filter((s) => s.position === id).map((s) => s.year));
       return { id, label, years };
     });

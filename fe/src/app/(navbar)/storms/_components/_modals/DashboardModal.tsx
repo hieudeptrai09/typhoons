@@ -15,6 +15,7 @@ import {
   Globe,
   Calendar,
 } from "lucide-react";
+import { isListOnly } from "../../_utils/fns";
 import type { BaseModalProps, DashboardParams } from "../../../../../types";
 
 interface DashboardModalProps extends BaseModalProps {
@@ -88,12 +89,6 @@ const Section = ({ label, children }: SectionProps) => {
       {children}
     </div>
   );
-};
-
-const isTableModeDisabled = (view: string, filter: string): boolean => {
-  if (view === "average" && filter === "country") return true;
-  if (view === "distance" && filter === "name") return true;
-  return false;
 };
 
 const isListModeDisabled = (view: string, filter: string): boolean => {
@@ -197,7 +192,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
             options={MODE_OPTIONS.map((opt) => ({
               ...opt,
               disabled:
-                (opt.value === "table" && isTableModeDisabled(view, filter)) ||
+                (opt.value === "table" && isListOnly(view, filter)) ||
                 (opt.value === "list" && isListModeDisabled(view, filter)),
             }))}
             value={mode}

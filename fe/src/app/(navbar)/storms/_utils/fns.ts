@@ -39,7 +39,7 @@ export const isValidStormsSlug = (slug: string[] = []): boolean => {
   return false;
 };
 
-const isListOnly = (view: string, filter: string): boolean =>
+export const isListOnly = (view: string, filter: string): boolean =>
   (view === "average" && filter === "country") || (view === "distance" && filter === "name");
 
 export const slugToParams = (slug: string[] = []): DashboardParams => {
@@ -132,6 +132,18 @@ export const calculateDistances = (
 };
 
 export const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
+
+export const sortNamesByFirstYear = (entries: [string, Storm[]][]): [string, Storm[]][] =>
+  [...entries].sort(
+    ([, aStorms], [, bStorms]) =>
+      Math.min(...aStorms.map((s) => s.year)) - Math.min(...bStorms.map((s) => s.year)),
+  );
+
+export const SPECIAL_POSITIONS = [
+  { id: 141, label: "CPHC" },
+  { id: 142, label: "NHC" },
+  { id: 143, label: "IMD" },
+] as const;
 
 export const getDashboardTitle = (
   view: string | string[] | undefined,
