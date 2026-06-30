@@ -1,13 +1,7 @@
-import { useState } from "react";
 import { Modal, Popover } from "antd";
-import {
-  BACKGROUND_BADGE,
-  TEXT_COLOR_BADGE,
-  TEXT_COLOR_WHITE_BACKGROUND,
-  BACKGROUND_HOVER_BADGE,
-} from "../../../../../components/colors";
-import IntensityBadge from "../../../../../components/components/IntensityBadge";
+import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import { getIntensityFromNumber, calculateAverage, getGroupedStorms } from "../../_utils/fns";
+import { INTENSITY_LABEL } from "../../../../../constants";
 import type { BaseModalProps, Storm } from "../../../../../types";
 
 interface AverageModalProps extends BaseModalProps {
@@ -30,12 +24,10 @@ const AverageModalInner = ({
   average: number;
   nameData: NameAverageData[];
 }) => {
-  const [hoveredName, setHoveredName] = useState<string | null>(null);
-
   return (
     <div className="space-y-3">
       <div>
-        <span id="avg-intensity-label" className="text-blue-700">
+        <span id="avg-intensity-label" className="text-gray-500">
           Overall Average Intensity:{" "}
         </span>
         <span
@@ -47,29 +39,31 @@ const AverageModalInner = ({
         </span>
       </div>
       <div>
-        <div className="mb-2 text-blue-700">Storm names at this position:</div>
+        <div className="mb-2 text-gray-500">Storm names at this position:</div>
+        {nameData.length === 0 && (
+          <div className="text-sm text-gray-400">No storms at this position.</div>
+        )}
         <div className="space-y-2">
           {nameData.map((data, idx) => {
             const intensityLabel = getIntensityFromNumber(data.average);
             const bgColor = BACKGROUND_BADGE[intensityLabel];
-            const hoverColor = BACKGROUND_HOVER_BADGE[intensityLabel];
-            const textColor = TEXT_COLOR_BADGE[intensityLabel];
-            const isHovered = hoveredName === data.name;
 
             return (
               <Popover
-                key={idx}
+                key={data.name}
+                styles={{ container: { backgroundColor: "#f3f4f6" } }}
                 content={
                   <div className="flex flex-col gap-1.5">
-                    {data.storms.map((storm, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <IntensityBadge intensity={storm.intensity} />
+                    {data.storms.map((storm) => (
+                      <div key={storm.year} className="text-sm text-gray-600">
+                        {INTENSITY_LABEL[storm.intensity]}{" "}
                         <span
-                          className="text-sm"
+                          className="font-semibold"
                           style={{ color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity] }}
                         >
-                          {storm.year}
-                        </span>
+                          {data.name}
+                        </span>{" "}
+                        {storm.year}
                       </div>
                     ))}
                   </div>
@@ -78,29 +72,28 @@ const AverageModalInner = ({
                 placement="bottom"
               >
                 <div
-                  className="cursor-pointer rounded-lg bg-white px-2 transition-colors hover:bg-gray-100"
-                  onMouseEnter={() => setHoveredName(data.name)}
-                  onMouseLeave={() => setHoveredName(null)}
+                  className="flex cursor-pointer items-center justify-between rounded-md bg-white px-3 py-2 transition-colors hover:bg-gray-200"
+                  style={{ borderLeft: `4px solid ${bgColor}` }}
                 >
-                  <div
-                    className="flex items-center justify-between rounded-md px-3 py-2 transition-colors"
-                    style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
+                  <span
+                    className="font-semibold text-gray-700"
+                    aria-describedby={`avg-stats-${idx}`}
                   >
-                    <span
-                      className="font-semibold"
-                      aria-describedby={`avg-stats-${idx}`}
-                      style={{ color: textColor }}
-                    >
-                      {data.name}
+                    {data.name}
+                  </span>
+                  <div id={`avg-stats-${idx}`} className="flex gap-3 text-sm text-gray-500">
+                    <span>
+                      Count: <span className="font-semibold text-gray-700">{data.count}</span>
                     </span>
-                    <div id={`avg-stats-${idx}`} className="flex gap-3 text-sm">
-                      <span style={{ color: textColor }}>
-                        Count: <span className="font-semibold">{data.count}</span>
+                    <span>
+                      Avg:{" "}
+                      <span
+                        className="font-semibold"
+                        style={{ color: TEXT_COLOR_WHITE_BACKGROUND[intensityLabel] }}
+                      >
+                        {data.average.toFixed(2)}
                       </span>
-                      <span style={{ color: textColor }}>
-                        Avg: <span className="font-semibold">{data.average.toFixed(2)}</span>
-                      </span>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </Popover>
@@ -115,8 +108,9 @@ const AverageModalInner = ({
 const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalProps) => {
   const nameAverages = getGroupedStorms(storms, "name");
   const nameData: NameAverageData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
-    const avg = calculateAverage(nameStorms);
-    return { name, average: avg, count: nameStorms.length, storms: nameStorms };
+    const sortedStorms = [...nameStorms].sort((a, b) => a.year - b.year);
+    const avg = calculateAverage(sortedStorms);
+    return { name, average: avg, count: sortedStorms.length, storms: sortedStorms };
   });
 
   return (
