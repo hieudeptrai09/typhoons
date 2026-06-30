@@ -10,7 +10,31 @@
   position: absolute;
   inset: 0;
   bottom: 40%;
-  background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 50%, #38bdf8 100%);
+  overflow: hidden;
+  background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0284c7 100%);
+}
+
+/* Subtle rain streaks on the sky */
+.nf-sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Thin oval per tile = discrete raindrop shape */
+  background-image: radial-gradient(
+    1px 16px at 50% 50%,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 100%
+  );
+  /* ~26 columns × ~10 rows of drops */
+  background-size: 55px 65px;
+  /* Tilt left for wind-driven rain */
+  transform: rotate(-8deg) scale(1.15);
+  animation: rain-fall 0.65s linear infinite;
+}
+
+@keyframes rain-fall {
+  from { background-position: 0 0; }
+  to { background-position: 0 65px; }
 }
 
 .nf-sea {
@@ -96,47 +120,34 @@
   to { transform: rotate(-360deg); }
 }
 
+/* Gentle wind sway — atmospheric, not jarring */
 .nf-blow {
-  animation: blow-away 5s ease-in-out infinite;
+  animation: wind-sway 6s ease-in-out infinite;
 }
 
 .nf-blow-1 { animation-delay: 0s; }
-.nf-blow-2 { animation-delay: 0.2s; }
-.nf-blow-3 { animation-delay: 0.4s; }
+.nf-blow-2 { animation-delay: 0.3s; }
+.nf-blow-3 { animation-delay: 0.6s; }
 
-@keyframes blow-away {
-  0% {
-    opacity: 1;
-    translate: 0 0;
-  }
-  60% {
-    opacity: 1;
-    translate: 0 0;
-  }
-  80% {
-    opacity: 0;
-    translate: -120px -60px;
-  }
-  81% {
-    opacity: 0;
-    translate: 80px 30px;
-  }
-  100% {
-    opacity: 1;
-    translate: 0 0;
-  }
+@keyframes wind-sway {
+  0%, 100% { translate: 0 0; }
+  25%       { translate: -8px -3px; }
+  75%       { translate: 10px 2px; }
 }
 
+/* Button — sky-600 to match the site's blue identity */
 .nf-btn {
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #0284c7;
+  color: white;
+  border: none;
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.45);
 }
 
 .nf-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: #0369a1;
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(2, 132, 199, 0.55);
 }
 
 .nf-btn:active {

@@ -5,7 +5,7 @@ import "./not-found.css";
 const NotFound = () => {
   return (
     <div className="not-found-page">
-      {/* Sky */}
+{/* Sky */}
       <div className="nf-sky" />
 
       {/* Sea: ocean + waves bob together */}
@@ -38,7 +38,7 @@ const NotFound = () => {
 
         <Link
           href="/"
-          className="nf-btn inline-block rounded-full bg-white/15 px-8 py-3 font-semibold text-white backdrop-blur-sm"
+          className="nf-btn inline-block rounded-full px-8 py-3 font-semibold"
         >
           Return to Safety
         </Link>
