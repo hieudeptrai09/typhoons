@@ -11,7 +11,8 @@ import {
   Grid3x3,
   List,
   Globe,
-  Calendar,
+  Sun,
+  Moon,
   ArrowDownToLine,
   Ruler,
 } from "lucide-react";
@@ -40,7 +41,8 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
       position: MapPin,
       name: Tag,
       country: Globe,
-      year: Calendar,
+      year: Sun,
+      month: Moon,
     },
     mode: {
       table: Grid3x3,

@@ -13,7 +13,8 @@ import {
   MapPin,
   Tag,
   Globe,
-  Calendar,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { isListOnly } from "../../_utils/fns";
 import type { BaseModalProps, DashboardParams } from "../../../../../types";
@@ -56,8 +57,8 @@ const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
     { label: icon(Globe, "Country"), value: "country" },
-    { label: icon(Calendar, "Year"), value: "year" },
-    { label: icon(Calendar, "Month"), value: "month" },
+    { label: icon(Sun, "Year"), value: "year" },
+    { label: icon(Moon, "Month"), value: "month" },
   ],
   distance: [
     { label: icon(MapPin, "Position"), value: "position" },
