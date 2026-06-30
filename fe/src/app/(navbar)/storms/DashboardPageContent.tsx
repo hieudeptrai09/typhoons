@@ -20,6 +20,7 @@ import {
   paramsToPath,
   calculateAverage,
   getGroupedStorms,
+  getEffectiveMonth,
 } from "./_utils/fns";
 import type { Storm, DashboardParams } from "../../../types";
 
@@ -83,6 +84,19 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
     if (view === "average" && filter === "name") {
       setSelectedData({ title: String(data), average: calculateAverage(storms), storms });
+      setIsAverageModalOpen(true);
+      return;
+    }
+
+    // Average / month: clicking a month row opens storm detail modal
+    if (view === "average" && filter === "month") {
+      const monthName = new Date(2000, (data as number) - 1, 1).toLocaleString("default", {
+        month: "long",
+      });
+      const monthStorms = (stormsData || []).filter(
+        (s) => getEffectiveMonth(s) === (data as number),
+      );
+      setSelectedData({ title: monthName, storms: monthStorms });
       setIsAverageModalOpen(true);
       return;
     }

@@ -5,7 +5,7 @@ import type { Storm, IntensityType, DashboardParams } from "../../../../types";
 const VALID_FILTERS: Record<string, string[]> = {
   storms: ["position", "name"],
   highlights: ["strongest", "first", "last"],
-  average: ["position", "name", "country", "year"],
+  average: ["position", "name", "country", "year", "month"],
   distance: ["position", "name"],
 };
 
@@ -40,7 +40,9 @@ export const isValidStormsSlug = (slug: string[] = []): boolean => {
 };
 
 export const isListOnly = (view: string, filter: string): boolean =>
-  (view === "average" && filter === "country") || (view === "distance" && filter === "name");
+  (view === "average" && filter === "country") ||
+  (view === "average" && filter === "month") ||
+  (view === "distance" && filter === "name");
 
 export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
@@ -50,7 +52,6 @@ export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (first === "list") return { view: "storms", mode: "list", filter: "name" };
   if (first === "names") return { view: "storms", mode: "table", filter: "name" };
   if (first === "positions") return { view: "storms", mode: "table", filter: "position" };
-
   const view = first;
   const filter = second || DEFAULT_FILTER[view] || "position";
   const mode = third === "list" || isListOnly(view, filter) ? "list" : "table";
@@ -64,7 +65,6 @@ export const paramsToPath = (params: DashboardParams): string => {
   if (view === "storms" && filter === "position") return "/storms/positions/";
   if (view === "storms" && filter === "name" && mode === "table") return "/storms/";
   if (view === "storms" && filter === "name" && mode === "list") return "/storms/list/";
-
   const base = `/storms/${view}/${filter}/`;
   if (mode === "list") return `${base}list/`;
   return base;
@@ -145,6 +145,11 @@ export const SPECIAL_POSITIONS = [
   { id: 143, label: "IMD" },
 ] as const;
 
+export const getEffectiveMonth = (storm: Storm): number | null => {
+  if (!storm.monthStart || storm.year < 2000) return null;
+  return storm.isFromPrevYear ? 1 : storm.monthStart;
+};
+
 export const getDashboardTitle = (
   view: string | string[] | undefined,
   mode: string | string[] | undefined,
@@ -208,6 +213,8 @@ export const getDashboardDescription = (
       country:
         "View average typhoon intensity statistics by contributing country. See how different countries' name contributions perform.",
       year: "Track average typhoon intensity trends by year. Analyze how storm strength has evolved over time in the Western Pacific.",
+      month:
+        "Explore typhoon activity patterns throughout the year. See how many storms form each month and compare their average intensities across the season.",
     };
     return (
       averageDescriptions[filterStr] ||

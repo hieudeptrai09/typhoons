@@ -57,6 +57,7 @@ const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]
     { label: icon(Tag, "Name"), value: "name" },
     { label: icon(Globe, "Country"), value: "country" },
     { label: icon(Calendar, "Year"), value: "year" },
+    { label: icon(Calendar, "Month"), value: "month" },
   ],
   distance: [
     { label: icon(MapPin, "Position"), value: "position" },
@@ -121,7 +122,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
     setFilter(newFilter);
     if (view === "storms" && newFilter === "position") {
       setMode("table");
-    } else if (view === "average" && newFilter === "country") {
+    } else if (view === "average" && (newFilter === "country" || newFilter === "month")) {
       setMode("list");
     } else if (view === "distance" && newFilter === "name") {
       setMode("list");

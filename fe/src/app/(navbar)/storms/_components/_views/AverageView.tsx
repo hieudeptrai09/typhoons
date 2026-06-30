@@ -9,6 +9,7 @@ import {
   getGroupedStorms,
   SPECIAL_POSITIONS,
 } from "../../_utils/fns";
+import SeasonView from "./SeasonView";
 import SpecialButtons from "../_components/SpecialButtons";
 import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
 import StormGrid from "../_components/StormGrid";
@@ -278,6 +279,11 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
         />
       </div>
     );
+  }
+
+  // Average / month / list → SeasonView
+  if (params.filter === "month") {
+    return <SeasonView stormsData={stormsData} onCellClick={onCellClick} />;
   }
 
   // List modes (position / name / country / year)
