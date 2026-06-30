@@ -1,23 +1,7 @@
 import type { ReactNode } from "react";
 import { Button } from "antd";
-import {
-  CloudLightning,
-  Star,
-  Activity,
-  Zap,
-  Medal,
-  MapPin,
-  Tag,
-  Grid3x3,
-  List,
-  Globe,
-  Sun,
-  Moon,
-  ArrowDownToLine,
-  Ruler,
-} from "lucide-react";
 import type { DashboardParams } from "../../../../../types";
-import type { LucideIcon } from "lucide-react";
+import { DASHBOARD_ICON_MAP } from "../_utils/dashboardOptions";
 
 interface FilterButtonProps {
   onClick: () => void;
@@ -26,29 +10,7 @@ interface FilterButtonProps {
 
 const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
   const iconSize = 20;
-
-  const iconMap: Record<string, Record<string, LucideIcon>> = {
-    view: {
-      storms: CloudLightning,
-      highlights: Star,
-      average: Activity,
-      distance: Ruler,
-    },
-    filter: {
-      strongest: Zap,
-      first: Medal,
-      last: ArrowDownToLine,
-      position: MapPin,
-      name: Tag,
-      country: Globe,
-      year: Sun,
-      month: Moon,
-    },
-    mode: {
-      table: Grid3x3,
-      list: List,
-    },
-  };
+  const iconMap = DASHBOARD_ICON_MAP;
 
   const buildIconNodes = (): ReactNode[] => {
     const icons: ReactNode[] = [];
