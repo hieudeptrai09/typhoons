@@ -38,8 +38,9 @@ if (empty($request)) {
             'GET /typhoon-names?isRetired={0|1}' => 'Get typhoon names by retirement status',
             'GET /suggested-names' => 'Get all suggested names',
             'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
+            'GET /search/names' => 'Get all typhoon name strings (for autocomplete and static params)',
             'GET /search?q={query}' => 'Search typhoon names with storm counts',
-            'GET /search?nameId={id}' => 'Get full details for a typhoon name (storms, name info)'
+            'GET /typhoon-names?name={name}' => 'Get full details for a typhoon name (name info + storms)'
         ]
     ]);
 }
@@ -62,8 +63,12 @@ try {
         case 'typhoon-names':
             $controller = new TyphoonNameController($db);
             if ($method === 'GET') {
-                $isRetired = isset($_GET['isRetired']) ? intval($_GET['isRetired']) : null;
-                $result = $controller->getTyphoonNames($isRetired);
+                if (isset($_GET['name'])) {
+                    $result = $controller->getByName(trim($_GET['name']));
+                } else {
+                    $isRetired = isset($_GET['isRetired']) ? intval($_GET['isRetired']) : null;
+                    $result = $controller->getTyphoonNames($isRetired);
+                }
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
@@ -106,18 +111,15 @@ try {
         case 'search':
             $controller = new SearchController($db);
             if ($method === 'GET') {
-                if (isset($_GET['nameId'])) {
-                    $nameId = intval($_GET['nameId']);
-                    $result = $controller->getByNameId($nameId);
-                    sendResponse(200, $result);
-                } elseif (isset($_GET['name']) && strlen(trim($_GET['name'])) > 0) {
-                    $result = $controller->getByName(trim($_GET['name']));
+                $subResource = $request[1] ?? null;
+                if ($subResource === 'names') {
+                    $result = $controller->getNameList();
                     sendResponse(200, $result);
                 } elseif (isset($_GET['q']) && strlen(trim($_GET['q'])) > 0) {
                     $result = $controller->search(trim($_GET['q']));
                     sendResponse(200, $result);
                 } else {
-                    sendResponse(400, ['error' => 'Missing required parameter: q or nameId']);
+                    sendResponse(400, ['error' => 'Missing required parameter: q']);
                 }
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
