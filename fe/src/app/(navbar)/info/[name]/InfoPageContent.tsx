@@ -227,7 +227,7 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
         <NameStatusIcon
           isRetired={isRetired}
           isLanguageProblem={nameData?.isLanguageProblem ?? 0}
-          position={nameData?.position}
+          position={isInPosition ? nameData?.position : 0}
           size={28}
         />
         <h1 className={`text-3xl font-bold capitalize ${titleColorClass}`}>

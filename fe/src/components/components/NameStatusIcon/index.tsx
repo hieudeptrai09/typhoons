@@ -1,4 +1,4 @@
-import { CircleHelp, Flame, Pencil, Skull } from "lucide-react";
+import { CircleHelp, Flame, SpellCheck2, Skull } from "lucide-react";
 import { getNameStatusColorClass } from "../../colors";
 
 interface Props {
@@ -19,7 +19,7 @@ export default function NameStatusIcon({
   }
   const colorClass = getNameStatusColorClass({ isRetired, isLanguageProblem });
   if (isLanguageProblem === 2) {
-    return <Pencil className={colorClass} size={size} />;
+    return <SpellCheck2 className={colorClass} size={size} />;
   }
   if (isRetired) {
     return <Skull className={colorClass} size={size} />;
