@@ -1,6 +1,6 @@
 import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import InfoPageContent from "./InfoPageContent";
-import type { SearchDetail, SearchResult } from "../../../../types";
+import type { SearchDetail, TyphoonName } from "../../../../types";
 import type { Metadata } from "next";
 
 interface InfoPageProps {
@@ -8,7 +8,7 @@ interface InfoPageProps {
 }
 
 export async function generateStaticParams() {
-  const result = await fetchServerData<SearchResult[]>("/search");
+  const result = await fetchServerData<TyphoonName[]>("/typhoon-names");
   if (!result?.data) return [];
   return result.data.map((item) => ({ name: item.name.toLowerCase() }));
 }
