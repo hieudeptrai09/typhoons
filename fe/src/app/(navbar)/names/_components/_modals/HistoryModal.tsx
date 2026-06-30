@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button, Modal } from "antd";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
-import { getPositionTitle } from "../../../containers/utils/fns";
-import { getNameStatusColor } from "../../colors";
-import ImageWithLoader from "../../components/ImageWithLoader";
-import TyphoonSpinner from "../../components/TyphoonSpinner";
-import type { BaseModalProps, Storm, TyphoonName } from "../../../types";
+import { getNameStatusColor } from "../../../../../components/colors";
+import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
+import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
+import { useFetchData } from "../../../../../containers/hooks/useFetchData";
+import { getPositionTitle } from "../../../../../containers/utils/fns";
+import type { BaseModalProps, Storm, TyphoonName } from "../../../../../types";
 
 interface HistoryModalProps extends BaseModalProps {
   position: number;

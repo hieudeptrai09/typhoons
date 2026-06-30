@@ -3,8 +3,8 @@ import { Modal } from "antd";
 import { getRetiredReasonColorClass } from "../../../../../components/colors";
 import Tabs, { type Tab } from "../../../../../components/components/Tabs";
 import TyphoonSpinner from "../../../../../components/components/TyphoonSpinner";
-import { NameDetailsContent } from "../../../../../components/ui/NameDetailsModal";
 import SuggestionCard from "../_components/SuggestionCard";
+import { NameDetailsContent } from "./NameDetailsModal";
 import type { BaseModalProps, RetiredName, Suggestion } from "../../../../../types";
 
 export interface RetiredNameDetailsModalProps extends BaseModalProps {

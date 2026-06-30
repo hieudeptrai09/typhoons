@@ -15,91 +15,8 @@ export interface NameListModalProps extends BaseModalProps {
   avgIntensity?: number;
 }
 
-const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] }) => {
-  const [showMap, setShowMap] = useState(false);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span id="namelist-country-label" className="font-semibold text-gray-700">
-              Country:
-            </span>
-            <CountryFlag country={storms[0].country} className="h-5 w-8" />
-          </div>
-          <div>
-            <span id="namelist-position-label" className="font-semibold text-gray-700">
-              Position:
-            </span>
-            <span className="ml-2 text-gray-700" aria-describedby="namelist-position-label">
-              {storms[0].position}
-            </span>
-          </div>
-          {storms[0].correctSpelling && (
-            <div>
-              <span className="font-semibold text-gray-700">Correct spelling:</span>
-              <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show Map</span>
-          <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
-        </div>
-      </div>
-
-      <div>
-        <h3 id="storm-list-heading" className="mb-3 font-semibold text-gray-700">
-          All {name} Storms ({storms.length})
-        </h3>
-        <div className="space-y-1" aria-describedby="storm-list-heading">
-          {storms.map((storm) => {
-            const borderColor = BACKGROUND_BADGE[storm.intensity];
-            const textColor = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
-            const label = INTENSITY_LABEL[storm.intensity];
-            const stormTitle = `${label} ${storm.name}`;
-            const hasMap = storm.map && storm.map.trim() !== "";
-            const dateRange = formatStormDateRange(
-              storm.year,
-              storm.monthStart,
-              storm.dateStart,
-              storm.monthEnd,
-              storm.dateEnd,
-              storm.isFromPrevYear,
-            );
-
-            return (
-              <div
-                key={`${storm.year}-${storm.name}`}
-                className="rounded-md px-3 py-2 transition-colors hover:bg-gray-50"
-                style={{ borderLeft: `4px solid ${borderColor}` }}
-              >
-                {showMap && hasMap && (
-                  <div className="relative mb-2 h-48 w-full">
-                    <ImageWithLoader
-                      src={storm.map}
-                      alt={`${storm.name} ${storm.year} track`}
-                      fill
-                      className="rounded border border-gray-200 object-contain"
-                      unoptimized
-                    />
-                  </div>
-                )}
-                <div className="text-sm font-bold" style={{ color: textColor }}>
-                  {stormTitle}
-                </div>
-                {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: NameListModalProps) => {
+  const [showMap, setShowMap] = useState(false);
   const titleStyle: CSSProperties = {
     color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avgIntensity)],
   };
@@ -125,11 +42,86 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
       }
     >
       <div className="pt-4">
-        <NameListModalInner name={name} storms={storms} />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span id="namelist-country-label" className="font-semibold text-gray-700">
+                  Country:
+                </span>
+                <CountryFlag country={storms[0].country} className="h-5 w-8" />
+              </div>
+              <div>
+                <span id="namelist-position-label" className="font-semibold text-gray-700">
+                  Position:
+                </span>
+                <span className="ml-2 text-gray-700" aria-describedby="namelist-position-label">
+                  {storms[0].position}
+                </span>
+              </div>
+              {storms[0].correctSpelling && (
+                <div>
+                  <span className="font-semibold text-gray-700">Correct spelling:</span>
+                  <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-gray-700">Show Map</span>
+              <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
+            </div>
+          </div>
+
+          <div>
+            <h3 id="storm-list-heading" className="mb-3 font-semibold text-gray-700">
+              All {name} Storms ({storms.length})
+            </h3>
+            <div className="space-y-1" aria-describedby="storm-list-heading">
+              {storms.map((storm) => {
+                const borderColor = BACKGROUND_BADGE[storm.intensity];
+                const textColor = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
+                const label = INTENSITY_LABEL[storm.intensity];
+                const stormTitle = `${label} ${storm.name}`;
+                const hasMap = storm.map && storm.map.trim() !== "";
+                const dateRange = formatStormDateRange(
+                  storm.year,
+                  storm.monthStart,
+                  storm.dateStart,
+                  storm.monthEnd,
+                  storm.dateEnd,
+                  storm.isFromPrevYear,
+                );
+
+                return (
+                  <div
+                    key={`${storm.year}-${storm.name}`}
+                    className="rounded-md px-3 py-2 transition-colors hover:bg-gray-50"
+                    style={{ borderLeft: `4px solid ${borderColor}` }}
+                  >
+                    {showMap && hasMap && (
+                      <div className="relative mb-2 h-48 w-full">
+                        <ImageWithLoader
+                          src={storm.map}
+                          alt={`${storm.name} ${storm.year} track`}
+                          fill
+                          className="rounded border border-gray-200 object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    )}
+                    <div className="text-sm font-bold" style={{ color: textColor }}>
+                      {stormTitle}
+                    </div>
+                    {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   );
 };
 
-export { NameListModalInner };
 export default NameListModal;
