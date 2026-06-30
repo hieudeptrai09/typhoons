@@ -22,7 +22,7 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
 
   const toggleView = () => {
     if (viewMode === "retired") {
-      router.push(paramsToPath("grid"));
+      router.push(paramsToPath("current", false, true));
     } else {
       router.push(`${paramsToPath("retired")}?letter=A`);
     }
