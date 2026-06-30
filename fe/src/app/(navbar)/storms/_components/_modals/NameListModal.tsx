@@ -1,12 +1,7 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import { Modal, Switch, Popover } from "antd";
-import {
-  BACKGROUND_BADGE,
-  TEXT_COLOR_BADGE,
-  BACKGROUND_HOVER_BADGE,
-  TEXT_COLOR_WHITE_BACKGROUND,
-} from "../../../../../components/colors";
+import { Modal, Switch } from "antd";
+import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import CountryFlag from "../../../../../components/components/CountryFlag";
 import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "../../../../../constants";
@@ -22,7 +17,6 @@ export interface NameListModalProps extends BaseModalProps {
 
 const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] }) => {
   const [showMap, setShowMap] = useState(false);
-  const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
   return (
     <div className="space-y-4">
@@ -59,12 +53,10 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
         <h3 id="storm-list-heading" className="mb-3 font-semibold text-gray-700">
           All {name} Storms ({storms.length})
         </h3>
-        <div className="space-y-2" aria-describedby="storm-list-heading">
-          {storms.map((storm, idx) => {
-            const bgColor = BACKGROUND_BADGE[storm.intensity];
-            const textColor = TEXT_COLOR_BADGE[storm.intensity];
-            const hoverColor = BACKGROUND_HOVER_BADGE[storm.intensity];
-            const isHovered = hoveredYear === storm.year;
+        <div className="space-y-1" aria-describedby="storm-list-heading">
+          {storms.map((storm) => {
+            const borderColor = BACKGROUND_BADGE[storm.intensity];
+            const textColor = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
             const label = INTENSITY_LABEL[storm.intensity];
             const stormTitle = `${label} ${storm.name}`;
             const hasMap = storm.map && storm.map.trim() !== "";
@@ -77,65 +69,29 @@ const NameListModalInner = ({ name, storms }: { name: string; storms: Storm[] })
               storm.isFromPrevYear,
             );
 
-            const row = (
+            return (
               <div
-                className="cursor-pointer rounded-lg bg-white px-2 transition-colors hover:bg-gray-100"
-                onMouseEnter={() => setHoveredYear(storm.year)}
-                onMouseLeave={() => setHoveredYear(null)}
+                key={`${storm.year}-${storm.name}`}
+                className="rounded-md px-3 py-2 transition-colors hover:bg-gray-50"
+                style={{ borderLeft: `4px solid ${borderColor}` }}
               >
-                <div
-                  className="flex items-center gap-4 rounded-md p-2 transition-colors"
-                  style={{ backgroundColor: isHovered ? hoverColor : bgColor }}
-                >
-                  <div className="flex-1">
-                    <div className="text-sm font-bold" style={{ color: textColor }}>
-                      {stormTitle}
-                    </div>
-                    {dateRange && (
-                      <div className="text-xs font-medium" style={{ color: textColor }}>
-                        {dateRange}
-                      </div>
-                    )}
+                {showMap && hasMap && (
+                  <div className="relative mb-2 h-48 w-full">
+                    <ImageWithLoader
+                      src={storm.map}
+                      alt={`${storm.name} ${storm.year} track`}
+                      fill
+                      className="rounded border border-gray-200 object-contain"
+                      unoptimized
+                    />
                   </div>
-                  {showMap && hasMap && (
-                    <div className="relative h-32 w-48 shrink-0">
-                      <ImageWithLoader
-                        src={storm.map}
-                        alt={`${storm.name} ${storm.year} track`}
-                        fill
-                        className="rounded border-2 border-white/30 object-cover"
-                        unoptimized
-                      />
-                    </div>
-                  )}
+                )}
+                <div className="text-sm font-bold" style={{ color: textColor }}>
+                  {stormTitle}
                 </div>
+                {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
               </div>
             );
-
-            if (hasMap) {
-              return (
-                <Popover
-                  key={idx}
-                  content={
-                    <div className="relative h-[200px] w-[300px]">
-                      <ImageWithLoader
-                        src={storm.map}
-                        alt={`${storm.name} ${storm.year} track`}
-                        fill
-                        className="object-contain"
-                        unoptimized
-                      />
-                    </div>
-                  }
-                  trigger={["hover", "click"]}
-                  placement="top"
-                >
-                  {row}
-                </Popover>
-              );
-            }
-
-            return <div key={idx}>{row}</div>;
           })}
         </div>
       </div>
