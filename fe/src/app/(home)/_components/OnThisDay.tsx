@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Button, Modal } from "antd";
 import { Calendar } from "lucide-react";
+import { useState } from "react";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../components/colors";
 import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "../../../constants";
@@ -142,7 +142,7 @@ const OnThisDay = () => {
   return (
     <Button
       type="text"
-      icon={loading ? <TyphoonSpinner size="small" /> : <Calendar size={16} />}
+      icon={loading ? <TyphoonSpinner color="amber-600" size="small" /> : <Calendar size={16} />}
       onClick={fetchStorms}
       disabled={loading}
       className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
