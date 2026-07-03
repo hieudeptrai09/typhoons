@@ -1,13 +1,13 @@
-import { useMemo } from "react";
+import CountryFlag from "@/common/components/CountryFlag";
+import type { DashboardParams, Storm } from "@/common/types";
+import { getDistanceColor } from "@/common/utils/colors";
+import { getPositionTitle } from "@/common/utils/fns";
 import { Table } from "antd";
-import { getDistanceColor } from "../../../../../components/colors";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
-import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
-import SpecialButtons from "../_components/SpecialButtons";
-import StormGrid from "../_components/StormGrid";
-import type { DashboardParams, Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
+import SpecialButtons from "../_widgets/SpecialButtons";
+import StormGrid from "../_widgets/StormGrid";
+import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
 
 interface DistanceViewProps {
   params: DashboardParams;

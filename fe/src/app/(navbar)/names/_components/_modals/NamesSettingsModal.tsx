@@ -1,7 +1,7 @@
-import { useState } from "react";
+import type { BaseModalProps } from "@/common/types";
 import { Button, Modal, Radio, Switch } from "antd";
 import { Paintbrush } from "lucide-react";
-import type { BaseModalProps } from "../../../../../types";
+import { useState } from "react";
 
 type DisplayMode = "grid" | "list";
 

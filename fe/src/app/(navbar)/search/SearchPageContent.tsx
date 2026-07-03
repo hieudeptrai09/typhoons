@@ -1,17 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import CountryFlag from "@/common/components/CountryFlag";
+import EmptyResults from "@/common/components/EmptyResults";
+import FrownNotFound from "@/common/components/FrownNotFound";
+import HighlightedName from "@/common/components/HighlightedName";
+import NameStatusIcon from "@/common/components/NameStatusIcon";
+import PageHeader from "@/common/components/PageHeader";
+import type { SearchResult } from "@/common/types";
 import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CountryFlag from "../../../components/components/CountryFlag";
-import EmptyResults from "../../../components/components/EmptyResults";
-import FrownNotFound from "../../../components/components/FrownNotFound";
-import HighlightedName from "../../../components/components/HighlightedName";
-import NameStatusIcon from "../../../components/components/NameStatusIcon";
-import PageHeader from "../../../components/components/PageHeader";
-import type { SearchResult } from "../../../types";
-import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
 
 const getColumns = (query: string): ColumnsType<SearchResult> => [
   {

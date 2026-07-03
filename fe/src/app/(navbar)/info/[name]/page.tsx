@@ -1,7 +1,7 @@
-import { fetchServerData } from "../../../../containers/utils/fetchServerData";
-import InfoPageContent from "./InfoPageContent";
-import type { SearchDetail } from "../../../../types";
+import type { SearchDetail } from "@/common/types";
+import { fetchServerData } from "@/common/utils/fetchServerData";
 import type { Metadata } from "next";
+import InfoPageContent from "./InfoPageContent";
 
 interface InfoPageProps {
   params: Promise<{ name: string }>;

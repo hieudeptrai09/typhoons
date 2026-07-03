@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import EmptyResults from "@/common/components/EmptyResults";
+import ImageWithLoader from "@/common/components/ImageWithLoader";
+import NameStatusIcon from "@/common/components/NameStatusIcon";
+import type { TyphoonName } from "@/common/types";
+import { getNameStatusColorClass } from "@/common/utils/colors";
+import { getPositionTitle } from "@/common/utils/fns";
 import { Table } from "antd";
-import { getNameStatusColorClass } from "../../../../../components/colors";
-import EmptyResults from "../../../../../components/components/EmptyResults";
-import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import NameStatusIcon from "../../../../../components/components/NameStatusIcon";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
-import type { TyphoonName } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
 
 interface FilteredNamesTableProps {
   filteredNames: TyphoonName[];

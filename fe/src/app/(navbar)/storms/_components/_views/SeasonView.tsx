@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import type { Storm } from "@/common/types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Table } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import { calculateAverage, getEffectiveMonth, getIntensityFromNumber } from "../../_utils/fns";
-import type { Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
+import { calculateAverage, getEffectiveMonth, getIntensityFromNumber } from "../../_utils/fns";
 
 const MONTH_NAMES = [
   "January",

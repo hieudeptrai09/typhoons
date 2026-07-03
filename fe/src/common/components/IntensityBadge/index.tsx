@@ -1,6 +1,6 @@
 import { Tag } from "antd";
-import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "../../colors";
-import type { IntensityType } from "../../../types";
+import type { IntensityType } from "@/common/types";
+import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/common/utils/colors";
 
 interface IntensityBadgeProps {
   intensity: IntensityType;

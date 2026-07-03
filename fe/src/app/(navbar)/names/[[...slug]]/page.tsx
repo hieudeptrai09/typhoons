@@ -1,5 +1,7 @@
+import type { RetiredName } from "@/common/types";
+import { fetchServerData } from "@/common/utils/fetchServerData";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
   canonicalPath,
   getNamesDescription,
@@ -8,8 +10,6 @@ import {
   slugToParams,
 } from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
-import type { RetiredName } from "../../../../types";
-import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;

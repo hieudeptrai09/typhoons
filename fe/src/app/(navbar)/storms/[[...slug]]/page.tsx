@@ -1,5 +1,7 @@
+import type { Storm } from "@/common/types";
+import { fetchServerData } from "@/common/utils/fetchServerData";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { fetchServerData } from "../../../../containers/utils/fetchServerData";
 import {
   getDashboardDescription,
   getDashboardTitle,
@@ -8,8 +10,6 @@ import {
   slugToParams,
 } from "../_utils/fns";
 import DashboardPageContent from "../DashboardPageContent";
-import type { Storm } from "../../../../types";
-import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;

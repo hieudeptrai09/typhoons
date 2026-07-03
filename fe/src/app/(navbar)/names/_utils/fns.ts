@@ -1,4 +1,4 @@
-import { normalizeParam } from "../../../../containers/utils/fns";
+import { normalizeParam } from "@/common/utils/fns";
 
 export interface NamesSlugParams {
   view: string;

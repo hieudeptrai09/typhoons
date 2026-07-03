@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import FrownNotFound from "@/common/components/FrownNotFound";
+import PageHeader from "@/common/components/PageHeader";
+import type { RetiredName } from "@/common/types";
 import { useParams, useRouter } from "next/navigation";
-import FrownNotFound from "../../../components/components/FrownNotFound";
-import PageHeader from "../../../components/components/PageHeader";
+import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
 import RetiredView from "./_components/_views/RetiredView";
 import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
-import type { RetiredName } from "../../../types";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;

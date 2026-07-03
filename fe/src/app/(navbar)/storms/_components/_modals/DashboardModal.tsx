@@ -1,8 +1,8 @@
-import { useState } from "react";
+import type { BaseModalProps, DashboardParams } from "@/common/types";
 import { Button, Modal, Segmented } from "antd";
-import { isListOnly } from "../../_utils/fns";
+import { useState } from "react";
 import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../_utils/dashboardOptions";
-import type { BaseModalProps, DashboardParams } from "../../../../../types";
+import { isListOnly } from "../../_utils/fns";
 
 interface DashboardModalProps extends BaseModalProps {
   onApply: (params: DashboardParams) => void;

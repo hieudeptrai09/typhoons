@@ -1,20 +1,20 @@
-import { useMemo, useState } from "react";
+import CountryFlag from "@/common/components/CountryFlag";
+import type { DashboardParams, Storm } from "@/common/types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import { getPositionTitle } from "@/common/utils/fns";
 import { Table } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
+import type { ColumnsType } from "antd/es/table";
+import { useMemo, useState } from "react";
+import SpecialButtons from "../_widgets/SpecialButtons";
+import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
+import StormGrid from "../_widgets/StormGrid";
 import {
   calculateAverage,
   getGroupedStorms,
   getIntensityFromNumber,
   SPECIAL_POSITIONS,
 } from "../../_utils/fns";
-import SpecialButtons from "../_components/SpecialButtons";
-import SpecialNamesListDiv from "../_components/SpecialNamesListDiv";
-import StormGrid from "../_components/StormGrid";
 import SeasonView from "./SeasonView";
-import type { DashboardParams, Storm } from "../../../../../types";
-import type { ColumnsType } from "antd/es/table";
 
 interface AverageViewProps {
   params: DashboardParams;

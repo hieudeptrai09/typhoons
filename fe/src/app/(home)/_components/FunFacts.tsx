@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import TyphoonSpinner from "@/common/components/TyphoonSpinner";
 import { Button, Modal } from "antd";
 import { Sparkles } from "lucide-react";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
+import { useState } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import HighlightedName from "@/common/components/HighlightedName";
+import TyphoonSpinner from "@/common/components/TyphoonSpinner";
+import { useFetchData } from "@/common/hooks/useFetchData";
 import { Input } from "antd";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFetchData } from "../../../containers/hooks/useFetchData";
-import HighlightedName from "../../components/HighlightedName";
-import TyphoonSpinner from "../../components/TyphoonSpinner";
+import { useEffect, useRef, useState } from "react";
 
 const SearchBar = () => {
   const router = useRouter();

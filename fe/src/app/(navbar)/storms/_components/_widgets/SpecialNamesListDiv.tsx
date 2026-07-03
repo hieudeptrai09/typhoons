@@ -1,12 +1,12 @@
+import type { Storm } from "@/common/types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button } from "antd";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import {
   calculateAverage,
   getIntensityFromNumber,
   sortNamesByFirstYear,
   SPECIAL_POSITIONS,
 } from "../../_utils/fns";
-import type { Storm } from "../../../../../types";
 
 interface SpecialNamesListDivProps {
   stormsData: Storm[];

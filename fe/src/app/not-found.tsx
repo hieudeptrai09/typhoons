@@ -1,5 +1,5 @@
+import TyphoonSymbol from "@/common/components/TyphoonSpinner/TyphoonSymbol";
 import Link from "next/link";
-import TyphoonSymbol from "../components/components/TyphoonSpinner/TyphoonSymbol";
 import "./not-found.css";
 
 const NotFound = () => {

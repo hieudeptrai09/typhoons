@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import TyphoonSpinner from "@/common/components/TyphoonSpinner";
+import { INTENSITY_LABEL } from "@/common/constants";
+import type { IntensityType } from "@/common/types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button, Modal } from "antd";
 import { Calendar } from "lucide-react";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "../../../components/colors";
-import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
-import { INTENSITY_LABEL } from "../../../constants";
-import type { IntensityType } from "../../../types";
+import { useState } from "react";
 
 interface OnThisDayStorm {
   name: string;

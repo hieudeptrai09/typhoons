@@ -1,11 +1,11 @@
+import IntensityBadge from "@/common/components/IntensityBadge";
+import { SORTING_RANK } from "@/common/constants";
+import type { DashboardParams, IntensityType, Storm } from "@/common/types";
+import { getPositionTitle } from "@/common/utils/fns";
 import { Table } from "antd";
-import IntensityBadge from "../../../../../components/components/IntensityBadge";
-import { SORTING_RANK } from "../../../../../constants";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
-import { getHighlights } from "../../_utils/fns";
-import StormGrid from "../_components/StormGrid";
-import type { DashboardParams, IntensityType, Storm } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
+import StormGrid from "../_widgets/StormGrid";
+import { getHighlights } from "../../_utils/fns";
 
 interface HighlightsViewProps {
   params: DashboardParams;

@@ -1,6 +1,7 @@
+import PositionGrid from "@/common/components/PositionGrid";
+import type { Storm } from "@/common/types";
+import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { useMemo, useState, type ReactNode } from "react";
-import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import PositionGrid from "../../../../../components/components/PositionGrid";
 import {
   calculateAverage,
   getHighlights,
@@ -8,7 +9,6 @@ import {
   sortNamesByFirstYear,
 } from "../../_utils/fns";
 import GridCell from "./GridCell";
-import type { Storm } from "../../../../../types";
 
 interface StormGridProps {
   viewType: "storms" | "average" | "highlights" | "distance" | "names" | "yearHighlights";

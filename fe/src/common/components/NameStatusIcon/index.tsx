@@ -1,5 +1,5 @@
 import { CircleHelp, Flame, Skull, SpellCheck2 } from "lucide-react";
-import { getNameStatusColorClass } from "../../colors";
+import { getNameStatusColorClass } from "@/common/utils/colors";
 
 interface Props {
   isRetired: boolean;

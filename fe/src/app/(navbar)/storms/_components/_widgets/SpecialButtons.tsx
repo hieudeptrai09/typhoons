@@ -1,5 +1,5 @@
+import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button } from "antd";
-import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
 import { getIntensityFromNumber, SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface SpecialButtonsProps {

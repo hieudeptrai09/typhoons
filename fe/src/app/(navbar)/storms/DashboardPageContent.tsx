@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import FrownNotFound from "@/common/components/FrownNotFound";
+import PageHeader from "@/common/components/PageHeader";
+import type { DashboardParams, Storm } from "@/common/types";
+import { getPositionTitle } from "@/common/utils/fns";
 import { useParams, useRouter } from "next/navigation";
-import FrownNotFound from "../../../components/components/FrownNotFound";
-import PageHeader from "../../../components/components/PageHeader";
-import { getPositionTitle } from "../../../containers/utils/fns";
-import DashboardViewButton from "./_components/_components/DashboardViewButton";
+import { useState } from "react";
 import AverageModal from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
 import NameListModal from "./_components/_modals/NameListModal";
@@ -14,6 +14,7 @@ import AverageView from "./_components/_views/AverageView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
+import DashboardViewButton from "./_components/_widgets/DashboardViewButton";
 import {
   calculateAverage,
   getDashboardTitle,
@@ -22,7 +23,6 @@ import {
   paramsToPath,
   slugToParams,
 } from "./_utils/fns";
-import type { DashboardParams, Storm } from "../../../types";
 
 interface SelectedData {
   title?: string;

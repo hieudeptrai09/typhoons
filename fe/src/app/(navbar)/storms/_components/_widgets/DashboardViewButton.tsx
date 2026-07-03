@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
+import type { DashboardParams } from "@/common/types";
 import { Button } from "antd";
+import type { ReactNode } from "react";
 import { DASHBOARD_ICON_MAP } from "../_utils/dashboardOptions";
-import type { DashboardParams } from "../../../../../types";
 
 interface FilterButtonProps {
   onClick: () => void;

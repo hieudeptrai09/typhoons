@@ -1,7 +1,7 @@
-import { fetchServerData } from "../../../containers/utils/fetchServerData";
-import SearchPageContent from "./SearchPageContent";
-import type { SearchResult } from "../../../types";
+import type { SearchResult } from "@/common/types";
+import { fetchServerData } from "@/common/utils/fetchServerData";
 import type { Metadata } from "next";
+import SearchPageContent from "./SearchPageContent";
 
 export const metadata: Metadata = {
   title: "Search Typhoon Names",

@@ -1,6 +1,6 @@
 "use client";
 
-import FrownNotFound from "../components/components/FrownNotFound";
+import FrownNotFound from "@/common/components/FrownNotFound";
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (

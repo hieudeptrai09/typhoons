@@ -1,5 +1,8 @@
 "use client";
 
+import PositionGrid from "@/common/components/PositionGrid";
+import type { TyphoonName } from "@/common/types";
+import { getNameStatusColorClass } from "@/common/utils/colors";
 import {
   Gem,
   Ham,
@@ -14,9 +17,6 @@ import {
   User,
   Wind,
 } from "lucide-react";
-import { getNameStatusColorClass } from "../../../../../components/colors";
-import PositionGrid from "../../../../../components/components/PositionGrid";
-import type { TyphoonName } from "../../../../../types";
 import type { LucideIcon } from "lucide-react";
 
 const TAG_ICONS: Record<string, LucideIcon> = {

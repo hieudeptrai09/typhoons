@@ -1,8 +1,8 @@
+import CountryFlag from "@/common/components/CountryFlag";
+import ImageWithLoader from "@/common/components/ImageWithLoader";
+import type { BaseModalProps, RetiredName, TyphoonName } from "@/common/types";
+import { getNameStatusColorClass } from "@/common/utils/colors";
 import { Modal } from "antd";
-import { getNameStatusColorClass } from "../../../../../components/colors";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import type { BaseModalProps, RetiredName, TyphoonName } from "../../../../../types";
 
 interface NameDetailsContentProps {
   name: TyphoonName | RetiredName;

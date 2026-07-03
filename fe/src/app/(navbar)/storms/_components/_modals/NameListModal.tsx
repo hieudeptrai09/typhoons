@@ -1,13 +1,13 @@
+import CountryFlag from "@/common/components/CountryFlag";
+import ImageWithLoader from "@/common/components/ImageWithLoader";
+import { INTENSITY_LABEL } from "@/common/constants";
+import type { BaseModalProps, Storm } from "@/common/types";
+import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import { formatStormDateRange } from "@/common/utils/fns";
+import { Modal, Switch } from "antd";
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import { Modal, Switch } from "antd";
-import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "../../../../../components/colors";
-import CountryFlag from "../../../../../components/components/CountryFlag";
-import ImageWithLoader from "../../../../../components/components/ImageWithLoader";
-import { INTENSITY_LABEL } from "../../../../../constants";
-import { formatStormDateRange } from "../../../../../containers/utils/fns";
 import { getIntensityFromNumber } from "../../_utils/fns";
-import type { BaseModalProps, Storm } from "../../../../../types";
 
 export interface NameListModalProps extends BaseModalProps {
   name: string;

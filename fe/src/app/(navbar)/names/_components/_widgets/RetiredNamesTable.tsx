@@ -1,8 +1,8 @@
+import EmptyResults from "@/common/components/EmptyResults";
+import type { RetiredName } from "@/common/types";
+import { getRetiredReasonColorClass } from "@/common/utils/colors";
+import { getPositionTitle } from "@/common/utils/fns";
 import { Table } from "antd";
-import { getRetiredReasonColorClass } from "../../../../../components/colors";
-import EmptyResults from "../../../../../components/components/EmptyResults";
-import { getPositionTitle } from "../../../../../containers/utils/fns";
-import type { RetiredName } from "../../../../../types";
 import type { ColumnsType } from "antd/es/table";
 
 interface RetiredNamesTableProps {

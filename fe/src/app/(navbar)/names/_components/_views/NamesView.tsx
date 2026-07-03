@@ -1,19 +1,19 @@
-import { useCallback, useMemo, useState } from "react";
+import LetterNavigation from "@/common/components/LetterNavigation";
+import { defaultTyphoonName } from "@/common/constants";
+import type { FilterParams, TyphoonName } from "@/common/types";
+import { toArr } from "@/common/utils/fns";
 import { Badge } from "antd";
 import { Filter, Flame, Settings } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import LetterNavigation from "../../../../../components/components/LetterNavigation";
-import { defaultTyphoonName } from "../../../../../constants";
-import { toArr } from "../../../../../containers/utils/fns";
-import { paramsToPath } from "../../_utils/fns";
-import FilteredNamesTable from "../_components/FilteredNamesTable";
-import PositionNameGrid from "../_components/PositionNameGrid";
+import { useCallback, useMemo, useState } from "react";
 import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NameDetailsModal from "../_modals/NameDetailsModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
-import type { FilterParams, TyphoonName } from "../../../../../types";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
+import FilteredNamesTable from "../_widgets/FilteredNamesTable";
+import PositionNameGrid from "../_widgets/PositionNameGrid";
+import { paramsToPath } from "../../_utils/fns";
 
 interface NameFilterValues {
   name: string;

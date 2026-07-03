@@ -1,16 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import LetterNavigation from "@/common/components/LetterNavigation";
+import { defaultRetiredName } from "@/common/constants";
+import { useFetchData } from "@/common/hooks/useFetchData";
+import type { RetiredFilterParams, RetiredName, Suggestion } from "@/common/types";
+import { toArr } from "@/common/utils/fns";
 import { Badge } from "antd";
 import { Filter, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import LetterNavigation from "../../../../../components/components/LetterNavigation";
-import { defaultRetiredName } from "../../../../../constants";
-import { useFetchData } from "../../../../../containers/hooks/useFetchData";
-import { toArr } from "../../../../../containers/utils/fns";
-import { paramsToPath } from "../../_utils/fns";
-import RetiredNamesTable from "../_components/RetiredNamesTable";
+import { useCallback, useMemo, useState } from "react";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
 import RetiredNameDetailsModal from "../_modals/RetiredNameDetailsModal";
-import type { RetiredFilterParams, RetiredName, Suggestion } from "../../../../../types";
+import RetiredNamesTable from "../_widgets/RetiredNamesTable";
+import { paramsToPath } from "../../_utils/fns";
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];

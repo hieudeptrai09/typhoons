@@ -1,4 +1,4 @@
-import { TITLE_COMMON } from "../constants";
+import { TITLE_COMMON } from "@/common/constants";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
