@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Button, Modal } from "antd";
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
 import TyphoonSpinner from "../../../components/components/TyphoonSpinner";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
@@ -40,7 +40,13 @@ const FunFacts = () => {
   return (
     <Button
       type="text"
-      icon={loading ? <TyphoonSpinner size="small" color="amber-600" /> : <Sparkles size={16} />}
+      icon={
+        loading ? (
+          <TyphoonSpinner size="small" colorClass="text-amber-600" />
+        ) : (
+          <Sparkles size={16} />
+        )
+      }
       onClick={showFact}
       disabled={loading}
       className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"

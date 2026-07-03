@@ -11,10 +11,10 @@ const sizeMap: Record<TyphoonSpinnerSize, number> = {
 
 const TyphoonSpinner = ({
   size = "medium",
-  color,
+  colorClass = "text-sky-600",
 }: {
   size?: TyphoonSpinnerSize;
-  color?: string;
+  colorClass?: string;
 }) => {
   const px = sizeMap[size];
 
@@ -25,7 +25,7 @@ const TyphoonSpinner = ({
       aria-label="Loading"
       style={{ width: px, height: px }}
     >
-      <TyphoonSymbol className={`text-${color || "sky-600"}`} style={{ width: px, height: px }} />
+      <TyphoonSymbol className={colorClass} style={{ width: px, height: px }} />
     </div>
   );
 };
