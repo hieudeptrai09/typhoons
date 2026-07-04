@@ -1,4 +1,4 @@
-import type { IntensityType, RetiredName, TyphoonName } from "@/common/types";
+import type { IntensityType, RetiredName, TyphoonName } from "@/lib/types";
 
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 

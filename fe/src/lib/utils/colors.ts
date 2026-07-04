@@ -1,4 +1,4 @@
-import type { IntensityType } from "@/common/types";
+import type { IntensityType } from "@/lib/types";
 
 // --- Intensity badge colors ---
 

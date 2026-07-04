@@ -1,5 +1,5 @@
-import type { Storm } from "@/common/types";
-import { fetchServerData } from "@/common/utils/fetchServerData";
+import type { Storm } from "@/lib/types";
+import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {

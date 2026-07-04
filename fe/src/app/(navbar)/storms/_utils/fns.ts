@@ -1,6 +1,6 @@
-import { INTENSITY_RANK } from "@/common/constants";
-import type { DashboardParams, IntensityType, Storm } from "@/common/types";
-import { capitalize, normalizeParam } from "@/common/utils/fns";
+import { INTENSITY_RANK } from "@/lib/constants";
+import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
+import { capitalize, normalizeParam } from "@/lib/utils/fns";
 
 const VALID_FILTERS: Record<string, string[]> = {
   storms: ["position", "name"],

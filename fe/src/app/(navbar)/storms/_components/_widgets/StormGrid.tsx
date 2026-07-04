@@ -1,6 +1,6 @@
-import PositionGrid from "@/common/components/PositionGrid";
-import type { Storm } from "@/common/types";
-import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import PositionGrid from "@/lib/components/PositionGrid";
+import type { Storm } from "@/lib/types";
+import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo, useState, type ReactNode } from "react";
 import {
   calculateAverage,

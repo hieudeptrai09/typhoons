@@ -1,8 +1,8 @@
 "use client";
 
-import PositionGrid from "@/common/components/PositionGrid";
-import type { TyphoonName } from "@/common/types";
-import { getNameStatusColorClass } from "@/common/utils/colors";
+import PositionGrid from "@/lib/components/PositionGrid";
+import type { TyphoonName } from "@/lib/types";
+import { getNameStatusColorClass } from "@/lib/utils/colors";
 import {
   Gem,
   Ham,

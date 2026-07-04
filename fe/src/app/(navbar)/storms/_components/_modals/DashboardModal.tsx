@@ -1,4 +1,4 @@
-import type { BaseModalProps, DashboardParams } from "@/common/types";
+import type { BaseModalProps, DashboardParams } from "@/lib/types";
 import { Button, Modal, Segmented } from "antd";
 import { useState } from "react";
 import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../_utils/dashboardOptions";

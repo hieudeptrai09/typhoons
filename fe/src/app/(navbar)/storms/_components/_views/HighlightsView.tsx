@@ -1,7 +1,7 @@
-import IntensityBadge from "@/common/components/IntensityBadge";
-import { SORTING_RANK } from "@/common/constants";
-import type { DashboardParams, IntensityType, Storm } from "@/common/types";
-import { getPositionTitle } from "@/common/utils/fns";
+import IntensityBadge from "@/lib/components/IntensityBadge";
+import { SORTING_RANK } from "@/lib/constants";
+import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import StormGrid from "../_widgets/StormGrid";

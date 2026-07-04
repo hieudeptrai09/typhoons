@@ -1,4 +1,4 @@
-import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button } from "antd";
 import { getIntensityFromNumber, SPECIAL_POSITIONS } from "../../_utils/fns";
 

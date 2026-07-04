@@ -1,4 +1,4 @@
-import type { BaseModalProps } from "@/common/types";
+import type { BaseModalProps } from "@/lib/types";
 import { Button, Modal, Radio, Switch } from "antd";
 import { Paintbrush } from "lucide-react";
 import { useState } from "react";

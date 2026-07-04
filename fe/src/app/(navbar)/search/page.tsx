@@ -1,5 +1,5 @@
-import type { SearchResult } from "@/common/types";
-import { fetchServerData } from "@/common/utils/fetchServerData";
+import type { SearchResult } from "@/lib/types";
+import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import SearchPageContent from "./SearchPageContent";
 

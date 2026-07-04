@@ -1,9 +1,9 @@
 "use client";
 
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
-import { INTENSITY_LABEL } from "@/common/constants";
-import type { IntensityType } from "@/common/types";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { INTENSITY_LABEL } from "@/lib/constants";
+import type { IntensityType } from "@/lib/types";
+import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button, Modal } from "antd";
 import { Calendar, LogIn, LogOut, Play, RefreshCw, Square } from "lucide-react";
 import { useState } from "react";
@@ -41,11 +41,17 @@ const MONTH_NAMES = [
   "December",
 ];
 
-const getReasonIcon = (storm: OnThisDayStorm): { Icon: typeof Play; color: string; label: string } => {
+const getReasonIcon = (
+  storm: OnThisDayStorm,
+): { Icon: typeof Play; color: string; label: string } => {
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
   if (isExternal) {
     if (storm.reason === "both") {
-      return { Icon: RefreshCw, color: "#d97706", label: "Entered and exited the West Pacific basin" };
+      return {
+        Icon: RefreshCw,
+        color: "#d97706",
+        label: "Entered and exited the West Pacific basin",
+      };
     }
     return storm.reason === "started"
       ? { Icon: LogIn, color: "#16a34a", label: "Entered the West Pacific basin" }

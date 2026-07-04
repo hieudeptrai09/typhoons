@@ -1,8 +1,8 @@
-import LetterNavigation from "@/common/components/LetterNavigation";
-import { defaultRetiredName } from "@/common/constants";
-import { useFetchData } from "@/common/hooks/useFetchData";
-import type { RetiredFilterParams, RetiredName, Suggestion } from "@/common/types";
-import { toArr } from "@/common/utils/fns";
+import LetterNavigation from "@/lib/components/LetterNavigation";
+import { defaultRetiredName } from "@/lib/constants";
+import { useFetchData } from "@/lib/hooks/useFetchData";
+import type { RetiredFilterParams, RetiredName, Suggestion } from "@/lib/types";
+import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

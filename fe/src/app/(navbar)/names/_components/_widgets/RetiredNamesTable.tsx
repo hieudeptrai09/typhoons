@@ -1,7 +1,7 @@
-import EmptyResults from "@/common/components/EmptyResults";
-import type { RetiredName } from "@/common/types";
-import { getRetiredReasonColorClass } from "@/common/utils/colors";
-import { getPositionTitle } from "@/common/utils/fns";
+import EmptyResults from "@/lib/components/EmptyResults";
+import type { RetiredName } from "@/lib/types";
+import { getRetiredReasonColorClass } from "@/lib/utils/colors";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 

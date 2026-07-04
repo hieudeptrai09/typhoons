@@ -1,8 +1,8 @@
 "use client";
 
-import FrownNotFound from "@/common/components/FrownNotFound";
-import PageHeader from "@/common/components/PageHeader";
-import type { RetiredName } from "@/common/types";
+import FrownNotFound from "@/lib/components/FrownNotFound";
+import PageHeader from "@/lib/components/PageHeader";
+import type { RetiredName } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";

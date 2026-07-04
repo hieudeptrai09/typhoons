@@ -1,5 +1,5 @@
-import ImageWithLoader from "@/common/components/ImageWithLoader";
-import type { Suggestion } from "@/common/types";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import type { Suggestion } from "@/lib/types";
 
 interface SuggestionCardProps {
   suggestion: Suggestion;

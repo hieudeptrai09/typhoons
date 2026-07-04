@@ -1,4 +1,4 @@
-import Navbar from "@/common/layout/NavBar";
+import Navbar from "@/lib/layout/NavBar";
 import type { ReactNode } from "react";
 
 interface WithNavbarLayoutProps {

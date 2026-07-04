@@ -1,7 +1,7 @@
-import Tabs, { type Tab } from "@/common/components/Tabs";
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
-import type { BaseModalProps, RetiredName, Suggestion } from "@/common/types";
-import { getRetiredReasonColorClass } from "@/common/utils/colors";
+import Tabs, { type Tab } from "@/lib/components/Tabs";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import type { BaseModalProps, RetiredName, Suggestion } from "@/lib/types";
+import { getRetiredReasonColorClass } from "@/lib/utils/colors";
 import { Modal } from "antd";
 import { useState } from "react";
 import SuggestionCard from "../_widgets/SuggestionCard";

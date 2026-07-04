@@ -1,9 +1,9 @@
-import EmptyResults from "@/common/components/EmptyResults";
-import ImageWithLoader from "@/common/components/ImageWithLoader";
-import NameStatusIcon from "@/common/components/NameStatusIcon";
-import type { TyphoonName } from "@/common/types";
-import { getNameStatusColorClass } from "@/common/utils/colors";
-import { getPositionTitle } from "@/common/utils/fns";
+import EmptyResults from "@/lib/components/EmptyResults";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import type { TyphoonName } from "@/lib/types";
+import { getNameStatusColorClass } from "@/lib/utils/colors";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";

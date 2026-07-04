@@ -1,4 +1,4 @@
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 
 export default function Loading() {
   return (

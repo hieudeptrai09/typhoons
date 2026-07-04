@@ -1,5 +1,5 @@
-import type { RetiredName } from "@/common/types";
-import { fetchServerData } from "@/common/utils/fetchServerData";
+import type { RetiredName } from "@/lib/types";
+import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {

@@ -1,7 +1,7 @@
-import CountryFlag from "@/common/components/CountryFlag";
-import type { DashboardParams, Storm } from "@/common/types";
-import { getDistanceColor } from "@/common/utils/colors";
-import { getPositionTitle } from "@/common/utils/fns";
+import CountryFlag from "@/lib/components/CountryFlag";
+import type { DashboardParams, Storm } from "@/lib/types";
+import { getDistanceColor } from "@/lib/utils/colors";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";

@@ -1,9 +1,9 @@
-import ImageWithLoader from "@/common/components/ImageWithLoader";
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
-import { useFetchData } from "@/common/hooks/useFetchData";
-import type { BaseModalProps, Storm, TyphoonName } from "@/common/types";
-import { getNameStatusColor } from "@/common/utils/colors";
-import { getPositionTitle } from "@/common/utils/fns";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { useFetchData } from "@/lib/hooks/useFetchData";
+import type { BaseModalProps, Storm, TyphoonName } from "@/lib/types";
+import { getNameStatusColor } from "@/lib/utils/colors";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { Button, Modal } from "antd";
 import { useState } from "react";
 

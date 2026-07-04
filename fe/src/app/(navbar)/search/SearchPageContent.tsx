@@ -1,12 +1,12 @@
 "use client";
 
-import CountryFlag from "@/common/components/CountryFlag";
-import EmptyResults from "@/common/components/EmptyResults";
-import FrownNotFound from "@/common/components/FrownNotFound";
-import HighlightedName from "@/common/components/HighlightedName";
-import NameStatusIcon from "@/common/components/NameStatusIcon";
-import PageHeader from "@/common/components/PageHeader";
-import type { SearchResult } from "@/common/types";
+import CountryFlag from "@/lib/components/CountryFlag";
+import EmptyResults from "@/lib/components/EmptyResults";
+import FrownNotFound from "@/lib/components/FrownNotFound";
+import HighlightedName from "@/lib/components/HighlightedName";
+import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import PageHeader from "@/lib/components/PageHeader";
+import type { SearchResult } from "@/lib/types";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";

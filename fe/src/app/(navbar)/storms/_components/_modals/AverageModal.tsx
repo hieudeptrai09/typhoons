@@ -1,6 +1,6 @@
-import { INTENSITY_LABEL } from "@/common/constants";
-import type { BaseModalProps, Storm } from "@/common/types";
-import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
+import { INTENSITY_LABEL } from "@/lib/constants";
+import type { BaseModalProps, Storm } from "@/lib/types";
+import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Modal, Popover } from "antd";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 

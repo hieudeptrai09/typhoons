@@ -1,4 +1,4 @@
-import TyphoonSymbol from "@/common/components/TyphoonSpinner/TyphoonSymbol";
+import TyphoonSymbol from "@/lib/components/TyphoonSpinner/TyphoonSymbol";
 import Link from "next/link";
 import "./not-found.css";
 

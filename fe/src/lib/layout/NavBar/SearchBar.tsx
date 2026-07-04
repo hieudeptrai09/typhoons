@@ -1,8 +1,8 @@
 "use client";
 
-import HighlightedName from "@/common/components/HighlightedName";
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
-import { useFetchData } from "@/common/hooks/useFetchData";
+import HighlightedName from "@/lib/components/HighlightedName";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { useFetchData } from "@/lib/hooks/useFetchData";
 import { Input } from "antd";
 import { Search } from "lucide-react";
 import Link from "next/link";

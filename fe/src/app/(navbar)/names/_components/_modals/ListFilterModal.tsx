@@ -1,5 +1,5 @@
-import type { BaseModalProps, FilterParams } from "@/common/types";
-import { toArr, toOpts, toStr } from "@/common/utils/fns";
+import type { BaseModalProps, FilterParams } from "@/lib/types";
+import { toArr, toOpts, toStr } from "@/lib/utils/fns";
 import { Button, Form, Input, InputNumber, Modal, Radio, Select } from "antd";
 
 export interface ListFilterModalProps extends BaseModalProps {

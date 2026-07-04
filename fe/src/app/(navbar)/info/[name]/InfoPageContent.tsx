@@ -1,12 +1,12 @@
-import CountryFlag from "@/common/components/CountryFlag";
-import EmptyResults from "@/common/components/EmptyResults";
-import FrownNotFound from "@/common/components/FrownNotFound";
-import ImageWithLoader from "@/common/components/ImageWithLoader";
-import NameStatusIcon from "@/common/components/NameStatusIcon";
-import { INTENSITY_LABEL } from "@/common/constants";
-import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/common/types";
-import { BACKGROUND_BADGE, getNameStatusColorClass, TEXT_COLOR_BADGE } from "@/common/utils/colors";
-import { formatStormDateRange } from "@/common/utils/fns";
+import CountryFlag from "@/lib/components/CountryFlag";
+import EmptyResults from "@/lib/components/EmptyResults";
+import FrownNotFound from "@/lib/components/FrownNotFound";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import { INTENSITY_LABEL } from "@/lib/constants";
+import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
+import { BACKGROUND_BADGE, getNameStatusColorClass, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
+import { formatStormDateRange } from "@/lib/utils/fns";
 import { Calendar } from "lucide-react";
 
 interface InfoPageContentProps {

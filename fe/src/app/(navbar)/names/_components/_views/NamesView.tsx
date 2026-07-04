@@ -1,7 +1,7 @@
-import LetterNavigation from "@/common/components/LetterNavigation";
-import { defaultTyphoonName } from "@/common/constants";
-import type { FilterParams, TyphoonName } from "@/common/types";
-import { toArr } from "@/common/utils/fns";
+import LetterNavigation from "@/lib/components/LetterNavigation";
+import { defaultTyphoonName } from "@/lib/constants";
+import type { FilterParams, TyphoonName } from "@/lib/types";
+import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, Flame, Settings } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

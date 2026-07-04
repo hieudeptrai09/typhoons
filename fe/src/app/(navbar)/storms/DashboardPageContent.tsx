@@ -1,9 +1,9 @@
 "use client";
 
-import FrownNotFound from "@/common/components/FrownNotFound";
-import PageHeader from "@/common/components/PageHeader";
-import type { DashboardParams, Storm } from "@/common/types";
-import { getPositionTitle } from "@/common/utils/fns";
+import FrownNotFound from "@/lib/components/FrownNotFound";
+import PageHeader from "@/lib/components/PageHeader";
+import type { DashboardParams, Storm } from "@/lib/types";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal from "./_components/_modals/AverageModal";

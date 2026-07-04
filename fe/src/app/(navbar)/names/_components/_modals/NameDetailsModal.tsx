@@ -1,7 +1,7 @@
-import CountryFlag from "@/common/components/CountryFlag";
-import ImageWithLoader from "@/common/components/ImageWithLoader";
-import type { BaseModalProps, RetiredName, TyphoonName } from "@/common/types";
-import { getNameStatusColorClass } from "@/common/utils/colors";
+import CountryFlag from "@/lib/components/CountryFlag";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import type { BaseModalProps, RetiredName, TyphoonName } from "@/lib/types";
+import { getNameStatusColorClass } from "@/lib/utils/colors";
 import { Modal } from "antd";
 
 interface NameDetailsContentProps {

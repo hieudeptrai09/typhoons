@@ -1,6 +1,6 @@
 "use client";
 
-import TyphoonSpinner from "@/common/components/TyphoonSpinner";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { Button, Modal } from "antd";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
