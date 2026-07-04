@@ -5,7 +5,7 @@ import { INTENSITY_LABEL } from "@/common/constants";
 import type { IntensityType } from "@/common/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button, Modal } from "antd";
-import { Calendar, RefreshCw, Wind, Zap } from "lucide-react";
+import { Calendar, LogIn, LogOut, RefreshCw, Wind, Zap } from "lucide-react";
 import { useState } from "react";
 
 interface OnThisDayStorm {
@@ -41,10 +41,22 @@ const MONTH_NAMES = [
   "December",
 ];
 
-const REASON_ICON: Record<OnThisDayStorm["reason"], { Icon: typeof Zap; color: string; label: string }> = {
-  started: { Icon: Zap, color: "#16a34a", label: "Formed" },
-  ended: { Icon: Wind, color: "#dc2626", label: "Dissipated" },
-  both: { Icon: RefreshCw, color: "#d97706", label: "Formed and dissipated" },
+const getReasonIcon = (storm: OnThisDayStorm): { Icon: typeof Zap; color: string; label: string } => {
+  const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
+  if (isExternal) {
+    if (storm.reason === "both") {
+      return { Icon: RefreshCw, color: "#d97706", label: "Entered and exited the West Pacific basin" };
+    }
+    return storm.reason === "started"
+      ? { Icon: LogIn, color: "#16a34a", label: "Entered the West Pacific basin" }
+      : { Icon: LogOut, color: "#dc2626", label: "Exited the West Pacific basin" };
+  }
+  if (storm.reason === "both") {
+    return { Icon: RefreshCw, color: "#d97706", label: "Formed and dissipated" };
+  }
+  return storm.reason === "started"
+    ? { Icon: Zap, color: "#16a34a", label: "Formed" }
+    : { Icon: Wind, color: "#dc2626", label: "Dissipated" };
 };
 
 const getVerb = (storm: OnThisDayStorm) => {
@@ -112,7 +124,7 @@ const OnThisDay = () => {
                 const label = INTENSITY_LABEL[storm.intensity];
                 const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
                 const verb = getVerb(storm);
-                const { Icon, color: reasonColor, label: reasonLabel } = REASON_ICON[storm.reason];
+                const { Icon, color: reasonColor, label: reasonLabel } = getReasonIcon(storm);
 
                 return (
                   <li
