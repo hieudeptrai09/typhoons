@@ -47,34 +47,34 @@ class FactController
 
         // --- Cross-basin facts ---
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 141 AND year >= 2000");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 141");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "There are $cnt names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND year >= 2000 ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = $this->joinNames($names) . " are the names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
         }
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "There are $cnt names assigned by NHC that cross 3 Pacific basins.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND year >= 2000 ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = $this->joinNames($names) . " are the names assigned by NHC that cross 3 Pacific basins.";
         }
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000 AND NOT (name = 'Li' AND year = 1994)");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994)");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "Besides Li (1994), there are $cnt names that cross 3 Pacific basins.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND year >= 2000 AND NOT (name = 'Li' AND year = 1994) ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994) ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = "Besides Li (1994), " . $this->joinNames($names) . " are the names that cross 3 Pacific basins.";
         }
 
-        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000 GROUP BY name HAVING cnt >= 2");
+        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 GROUP BY name HAVING cnt >= 2");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -84,7 +84,7 @@ class FactController
 
         // --- Category 5 from external basins ---
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5' AND year >= 2000");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5'");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -92,7 +92,7 @@ class FactController
             $facts[] = $this->joinNames($names) . " $label.";
         }
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5' AND year >= 2000");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5'");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -102,7 +102,7 @@ class FactController
 
         // --- Indian Ocean to Pacific ---
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 143 AND year >= 2000");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 143");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -135,22 +135,6 @@ class FactController
             $names = array_column($rows, 'name');
             $label = count($names) === 1 ? "is the only name" : "are the only names";
             $facts[] = $this->joinNames($names) . " $label with more than one record-strength storm.";
-        }
-
-        // --- External names with strongest/first/last (separate queries) ---
-
-        $roleLabels = ['isStrongest' => 'strongest', 'isFirst' => 'first', 'isLast' => 'last'];
-        foreach ($roleLabels as $col => $label) {
-            $stmt = $this->conn->query("
-                SELECT s.name, p.country
-                FROM storms s
-                INNER JOIN positions p ON s.position = p.id
-                WHERE s.position IN (141, 142, 143) AND s.$col = 1 AND s.year >= 2000
-            ");
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $facts[] = "{$row['name']} is the only name from {$row['country']} to become the $label storm.";
-            }
         }
 
         // --- Strongest storms not Cat 5 ---
