@@ -5,7 +5,7 @@ import { INTENSITY_LABEL } from "@/common/constants";
 import type { IntensityType } from "@/common/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button, Modal } from "antd";
-import { Calendar, Repeat2, Sunrise, Sunset } from "lucide-react";
+import { Calendar, RefreshCw, Wind, Zap } from "lucide-react";
 import { useState } from "react";
 
 interface OnThisDayStorm {
@@ -41,10 +41,10 @@ const MONTH_NAMES = [
   "December",
 ];
 
-const REASON_ICON: Record<OnThisDayStorm["reason"], { Icon: typeof Sunrise; color: string; label: string }> = {
-  started: { Icon: Sunrise, color: "#16a34a", label: "Formed" },
-  ended: { Icon: Sunset, color: "#dc2626", label: "Dissipated" },
-  both: { Icon: Repeat2, color: "#d97706", label: "Formed and dissipated" },
+const REASON_ICON: Record<OnThisDayStorm["reason"], { Icon: typeof Zap; color: string; label: string }> = {
+  started: { Icon: Zap, color: "#16a34a", label: "Formed" },
+  ended: { Icon: Wind, color: "#dc2626", label: "Dissipated" },
+  both: { Icon: RefreshCw, color: "#d97706", label: "Formed and dissipated" },
 };
 
 const getVerb = (storm: OnThisDayStorm) => {
