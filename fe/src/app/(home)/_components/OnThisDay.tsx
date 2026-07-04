@@ -5,7 +5,7 @@ import { INTENSITY_LABEL } from "@/common/constants";
 import type { IntensityType } from "@/common/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button, Modal } from "antd";
-import { Calendar } from "lucide-react";
+import { Calendar, Repeat2, Sunrise, Sunset } from "lucide-react";
 import { useState } from "react";
 
 interface OnThisDayStorm {
@@ -40,6 +40,12 @@ const MONTH_NAMES = [
   "November",
   "December",
 ];
+
+const REASON_ICON: Record<OnThisDayStorm["reason"], { Icon: typeof Sunrise; color: string; label: string }> = {
+  started: { Icon: Sunrise, color: "#16a34a", label: "Formed" },
+  ended: { Icon: Sunset, color: "#dc2626", label: "Dissipated" },
+  both: { Icon: Repeat2, color: "#d97706", label: "Formed and dissipated" },
+};
 
 const getVerb = (storm: OnThisDayStorm) => {
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
@@ -106,19 +112,32 @@ const OnThisDay = () => {
                 const label = INTENSITY_LABEL[storm.intensity];
                 const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
                 const verb = getVerb(storm);
+                const { Icon, color: reasonColor, label: reasonLabel } = REASON_ICON[storm.reason];
 
                 return (
-                  <li key={i} className="text-sm leading-relaxed text-gray-600">
-                    <span className="mr-1 text-gray-400">&bull;</span>
-                    {eventYear}: {label}{" "}
-                    <a
-                      href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
-                      className="font-bold"
-                      style={{ color }}
+                  <li
+                    key={i}
+                    className="flex items-start gap-1.5 text-sm leading-relaxed text-gray-600"
+                  >
+                    <Icon
+                      size={14}
+                      className="mt-0.5 shrink-0"
+                      style={{ color: reasonColor }}
+                      aria-label={reasonLabel}
                     >
-                      {storm.name}
-                    </a>{" "}
-                    {verb}
+                      <title>{reasonLabel}</title>
+                    </Icon>
+                    <span>
+                      {eventYear}: {label}{" "}
+                      <a
+                        href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
+                        className="font-bold"
+                        style={{ color }}
+                      >
+                        {storm.name}
+                      </a>{" "}
+                      {verb}
+                    </span>
                   </li>
                 );
               })}
