@@ -5,7 +5,7 @@ import { INTENSITY_LABEL } from "@/common/constants";
 import type { IntensityType } from "@/common/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/common/utils/colors";
 import { Button, Modal } from "antd";
-import { Calendar, LogIn, LogOut, RefreshCw, Wind, Zap } from "lucide-react";
+import { Calendar, LogIn, LogOut, Play, RefreshCw, Square } from "lucide-react";
 import { useState } from "react";
 
 interface OnThisDayStorm {
@@ -41,7 +41,7 @@ const MONTH_NAMES = [
   "December",
 ];
 
-const getReasonIcon = (storm: OnThisDayStorm): { Icon: typeof Zap; color: string; label: string } => {
+const getReasonIcon = (storm: OnThisDayStorm): { Icon: typeof Play; color: string; label: string } => {
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
   if (isExternal) {
     if (storm.reason === "both") {
@@ -55,8 +55,8 @@ const getReasonIcon = (storm: OnThisDayStorm): { Icon: typeof Zap; color: string
     return { Icon: RefreshCw, color: "#d97706", label: "Formed and dissipated" };
   }
   return storm.reason === "started"
-    ? { Icon: Zap, color: "#16a34a", label: "Formed" }
-    : { Icon: Wind, color: "#dc2626", label: "Dissipated" };
+    ? { Icon: Play, color: "#16a34a", label: "Formed" }
+    : { Icon: Square, color: "#dc2626", label: "Dissipated" };
 };
 
 const getVerb = (storm: OnThisDayStorm) => {
