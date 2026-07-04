@@ -135,11 +135,11 @@ const OnThisDay = () => {
                 return (
                   <li
                     key={i}
-                    className="flex items-start gap-1.5 text-sm leading-relaxed text-gray-600"
+                    className="flex items-baseline gap-1.5 text-sm leading-relaxed text-gray-600"
                   >
                     <Icon
                       size={14}
-                      className="mt-0.5 shrink-0"
+                      className="shrink-0"
                       style={{ color: reasonColor }}
                       aria-label={reasonLabel}
                     >
