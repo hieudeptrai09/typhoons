@@ -4,7 +4,7 @@ import FrownNotFound from "@/lib/components/FrownNotFound";
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-stone-100">
+    <div className="fixed inset-0 flex flex-col items-center justify-center">
       <FrownNotFound />
       <button
         onClick={reset}
