@@ -47,34 +47,34 @@ class FactController
 
         // --- Cross-basin facts ---
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 141");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 141 AND year >= 2000");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "There are $cnt names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND year >= 2000 ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = $this->joinNames($names) . " are the names given in Hawaiian by CPHC and crossed into the West Pacific basin.";
         }
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "There are $cnt names assigned by NHC that cross 3 Pacific basins.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND year >= 2000 ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = $this->joinNames($names) . " are the names assigned by NHC that cross 3 Pacific basins.";
         }
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994)");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000 AND NOT (name = 'Li' AND year = 1994)");
         $cnt = (int)$stmt->fetch()['cnt'];
         $facts[] = "Besides Li (1994), there are $cnt names that cross 3 Pacific basins.";
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994) ORDER BY name");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND year >= 2000 AND NOT (name = 'Li' AND year = 1994) ORDER BY name");
         $names = array_column($stmt->fetchAll(), 'name');
         if (!empty($names)) {
             $facts[] = "Besides Li (1994), " . $this->joinNames($names) . " are the names that cross 3 Pacific basins.";
         }
 
-        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 GROUP BY name HAVING cnt >= 2");
+        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 AND year >= 2000 GROUP BY name HAVING cnt >= 2");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -84,7 +84,7 @@ class FactController
 
         // --- Category 5 from external basins ---
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5'");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5' AND year >= 2000");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -92,7 +92,7 @@ class FactController
             $facts[] = $this->joinNames($names) . " $label.";
         }
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5'");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5' AND year >= 2000");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -102,7 +102,7 @@ class FactController
 
         // --- Indian Ocean to Pacific ---
 
-        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 143");
+        $stmt = $this->conn->query("SELECT DISTINCT name FROM storms WHERE position = 143 AND year >= 2000");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -116,6 +116,7 @@ class FactController
             SELECT DISTINCT t.name, s.intensity FROM typhoonnames t
             INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t.lastYear
             WHERE t.isRetired = 1 AND t.isLanguageProblem = 0 AND t.position <= 140
+            AND s.year >= 2000
             AND s.intensity IN ('TD', 'TS', 'STS')
             ORDER BY t.name
         ");
@@ -128,7 +129,7 @@ class FactController
 
         // --- Strongest storms records ---
 
-        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE isStrongest = 1 GROUP BY name HAVING cnt > 1");
+        $stmt = $this->conn->query("SELECT name, COUNT(*) as cnt FROM storms WHERE isStrongest = 1 AND year >= 2000 GROUP BY name HAVING cnt > 1");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $names = array_column($rows, 'name');
@@ -144,7 +145,7 @@ class FactController
                 SELECT s.name, p.country
                 FROM storms s
                 INNER JOIN positions p ON s.position = p.id
-                WHERE s.position IN (141, 142, 143) AND s.$col = 1
+                WHERE s.position IN (141, 142, 143) AND s.$col = 1 AND s.year >= 2000
             ");
             $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
@@ -154,7 +155,7 @@ class FactController
 
         // --- Strongest storms not Cat 5 ---
 
-        $stmt = $this->conn->query("SELECT name, year, intensity FROM storms WHERE isStrongest = 1 AND intensity != '5' ORDER BY year");
+        $stmt = $this->conn->query("SELECT name, year, intensity FROM storms WHERE isStrongest = 1 AND intensity != '5' AND year >= 2000 ORDER BY year");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $items = array_map(fn($r) => "{$r['name']} ({$r['year']})", $rows);
@@ -164,7 +165,7 @@ class FactController
 
         // --- First storms that are Cat 5 ---
 
-        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE isFirst = 1 AND intensity = '5' ORDER BY year");
+        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE isFirst = 1 AND intensity = '5' AND year >= 2000 ORDER BY year");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $items = array_map(fn($r) => "{$r['name']} ({$r['year']})", $rows);
@@ -174,7 +175,7 @@ class FactController
 
         // --- Storms spanning multiple years ---
 
-        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE monthStart IS NOT NULL AND monthEnd IS NOT NULL AND monthEnd < monthStart ORDER BY year");
+        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE monthStart IS NOT NULL AND monthEnd IS NOT NULL AND monthEnd < monthStart AND year >= 2000 ORDER BY year");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $items = array_map(fn($r) => "{$r['name']} ({$r['year']})", $rows);
@@ -184,12 +185,12 @@ class FactController
 
         // --- Seasons ending with Cat 5 ---
 
-        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE isLast = 1 AND intensity = '5'");
+        $stmt = $this->conn->query("SELECT COUNT(*) as cnt FROM storms WHERE isLast = 1 AND intensity = '5' AND year >= 2000");
         $cnt = (int)$stmt->fetch()['cnt'];
         if ($cnt > 0) {
             $facts[] = "There are $cnt seasons that ended with a category 5 storm.";
         }
-        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE isLast = 1 AND intensity = '5' ORDER BY year");
+        $stmt = $this->conn->query("SELECT name, year FROM storms WHERE isLast = 1 AND intensity = '5' AND year >= 2000 ORDER BY year");
         $rows = $stmt->fetchAll();
         if (!empty($rows)) {
             $items = array_map(fn($r) => "{$r['name']} ({$r['year']})", $rows);
@@ -199,7 +200,7 @@ class FactController
         // --- Strongest storms in off-season months (per month) ---
 
         foreach ([1, 2, 3, 4, 12] as $month) {
-            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE isStrongest = 1 AND monthStart = :month ORDER BY year");
+            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE isStrongest = 1 AND monthStart = :month AND year >= 2000 ORDER BY year");
             $stmt->execute([':month' => $month]);
             $rows = $stmt->fetchAll();
             if (!empty($rows)) {
@@ -213,7 +214,7 @@ class FactController
         // --- First storms in late months (per month) ---
 
         foreach ([6, 7, 8] as $month) {
-            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE isFirst = 1 AND monthStart = :month ORDER BY year");
+            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE isFirst = 1 AND monthStart = :month AND year >= 2000 ORDER BY year");
             $stmt->execute([':month' => $month]);
             $rows = $stmt->fetchAll();
             if (!empty($rows)) {
@@ -227,7 +228,7 @@ class FactController
         // --- Cat 5 in off-season months (per month) ---
 
         foreach ([1, 2, 3, 4, 12] as $month) {
-            $stmt = $this->conn->prepare("SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND monthStart = :month");
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND monthStart = :month AND year >= 2000");
             $stmt->execute([':month' => $month]);
             $cnt = (int)$stmt->fetch()['cnt'];
             if ($cnt > 0) {
@@ -235,7 +236,7 @@ class FactController
                 $label = $cnt === 1 ? "is" : "are";
                 $facts[] = "There $label $cnt category 5 storm" . ($cnt > 1 ? "s" : "") . " that formed in $monthName.";
             }
-            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE intensity = '5' AND monthStart = :month ORDER BY year");
+            $stmt = $this->conn->prepare("SELECT name, year FROM storms WHERE intensity = '5' AND monthStart = :month AND year >= 2000 ORDER BY year");
             $stmt->execute([':month' => $month]);
             $rows = $stmt->fetchAll();
             if (!empty($rows)) {
@@ -253,10 +254,10 @@ class FactController
             WHERE t.position <= 140 AND t.isRetired = 0
             AND NOT EXISTS (
                 SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
-                AND s.intensity IN ('1','2','3','4','5')
+                AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
             )
             AND EXISTS (
-                SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
+                SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position AND s.year >= 2000
             )
         ");
         $cnt = (int)$stmt->fetch()['cnt'];
@@ -268,10 +269,10 @@ class FactController
             WHERE t.position <= 140 AND t.isRetired = 0
             AND NOT EXISTS (
                 SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
-                AND s.intensity IN ('1','2','3','4','5')
+                AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
             )
             AND EXISTS (
-                SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
+                SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position AND s.year >= 2000
             )
             ORDER BY t.name
         ");
@@ -284,7 +285,7 @@ class FactController
 
         $stmt = $this->conn->query("
             SELECT name, COUNT(*) as total
-            FROM storms WHERE position <= 140
+            FROM storms WHERE position <= 140 AND year >= 2000
             GROUP BY name, position
             HAVING total >= 2 AND total = SUM(CASE WHEN intensity = '5' THEN 1 ELSE 0 END)
         ");
@@ -302,7 +303,7 @@ class FactController
 
         $stmt = $this->conn->query("
             SELECT name, COUNT(*) as total
-            FROM storms WHERE position <= 140
+            FROM storms WHERE position <= 140 AND year >= 2000
             GROUP BY name, position
             HAVING total >= 2 AND total = SUM(CASE WHEN intensity = '4' THEN 1 ELSE 0 END)
         ");
@@ -330,7 +331,7 @@ class FactController
             SELECT MAX(storm_count) as max_count FROM (
                 SELECT COUNT(s.id) as storm_count FROM typhoonnames t
                 INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-                WHERE t.isRetired = 0 AND t.position <= 140
+                WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
                 GROUP BY t.name, t.position
             ) as sub
         ");
@@ -340,7 +341,7 @@ class FactController
                 SELECT COUNT(*) as cnt FROM (
                     SELECT t.name FROM typhoonnames t
                     INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-                    WHERE t.isRetired = 0 AND t.position <= 140
+                    WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
                     GROUP BY t.name, t.position HAVING COUNT(s.id) = :maxCount
                 ) as sub
             ");
@@ -351,7 +352,7 @@ class FactController
             $stmt = $this->conn->prepare("
                 SELECT t.name FROM typhoonnames t
                 INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-                WHERE t.isRetired = 0 AND t.position <= 140
+                WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
                 GROUP BY t.name, t.position HAVING COUNT(s.id) = :maxCount
                 ORDER BY t.name
             ");
@@ -391,24 +392,24 @@ class FactController
 
         // --- Year records ---
 
-        $stmt = $this->conn->query("SELECT year, COUNT(*) as cnt FROM storms GROUP BY year ORDER BY cnt DESC LIMIT 1");
+        $stmt = $this->conn->query("SELECT year, COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1");
         $row = $stmt->fetch();
         $facts[] = "{$row['year']} had the most storms of any season, with {$row['cnt']}.";
 
         $stmt = $this->conn->query("
             SELECT MIN(cnt) as min_cnt FROM (
-                SELECT COUNT(*) as cnt FROM storms GROUP BY year
+                SELECT COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year
             ) as sub
         ");
         $minCnt = (int)$stmt->fetch()['min_cnt'];
-        $stmt = $this->conn->prepare("SELECT year FROM storms GROUP BY year HAVING COUNT(*) = :cnt ORDER BY year");
+        $stmt = $this->conn->prepare("SELECT year FROM storms WHERE year >= 2000 GROUP BY year HAVING COUNT(*) = :cnt ORDER BY year");
         $stmt->execute([':cnt' => $minCnt]);
         $years = array_column($stmt->fetchAll(), 'year');
         $label = count($years) === 1 ? "The year" : "The years";
         $verb = count($years) === 1 ? "is" : "are";
         $facts[] = "$label with the fewest storms ($minCnt) $verb " . $this->joinNames($years) . ".";
 
-        $stmt = $this->conn->query("SELECT year, COUNT(*) as cnt FROM storms WHERE intensity = '5' GROUP BY year ORDER BY cnt DESC LIMIT 1");
+        $stmt = $this->conn->query("SELECT year, COUNT(*) as cnt FROM storms WHERE intensity = '5' AND year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1");
         $row = $stmt->fetch();
         if ($row) {
             $facts[] = "{$row['year']} had the most category 5 storms of any season.";
@@ -420,7 +421,7 @@ class FactController
             SELECT COUNT(*) as cnt FROM (
                 SELECT t.name FROM typhoonnames t
                 INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-                WHERE t.isRetired = 0 AND t.position <= 140
+                WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
                 GROUP BY t.name, t.position
                 HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
             ) as sub
@@ -432,7 +433,7 @@ class FactController
         $stmt = $this->conn->query("
             SELECT t.name FROM typhoonnames t
             INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-            WHERE t.isRetired = 0 AND t.position <= 140
+            WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
             GROUP BY t.name, t.position
             HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
             ORDER BY t.name
