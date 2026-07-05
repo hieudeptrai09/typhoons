@@ -10,6 +10,7 @@ export async function fetchServerData<T>(
   revalidate?: number,
 ): Promise<ApiResponse<T> | null> {
   try {
+    console.log("api", `${API_BASE}${endpoint}`);
     const response = await fetch(`${API_BASE}${endpoint}`, {
       next: { revalidate: revalidate ?? 3600 },
     });

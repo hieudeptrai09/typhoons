@@ -53,6 +53,7 @@ const Dashboard = async ({ params }: PageProps) => {
   }
 
   const result = await fetchServerData<Storm[]>("/storms");
+  console.log("result", result, JSON.stringify(result));
   return <DashboardPageContent stormsData={result?.data ?? null} />;
 };
 
