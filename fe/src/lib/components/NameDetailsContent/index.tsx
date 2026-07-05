@@ -1,15 +1,11 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
-import type { BaseModalProps, RetiredName, TyphoonName } from "@/lib/types";
-import { getNameStatusColorClass } from "@/lib/utils/colors";
-import { Modal } from "antd";
+import type { RetiredName, TyphoonName } from "@/lib/types";
 
-interface NameDetailsContentProps {
+export interface NameDetailsContentProps {
   name: TyphoonName | RetiredName;
   hideReplacedBy?: boolean;
 }
-
-interface NameDetailsModalProps extends BaseModalProps, NameDetailsContentProps {}
 
 const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContentProps) => {
   const hasImage = !!name.image;
@@ -93,30 +89,4 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
   );
 };
 
-const NameDetailsModal = ({ isOpen, onClose, name, hideReplacedBy }: NameDetailsModalProps) => {
-  const titleColorClass = getNameStatusColorClass(name);
-
-  return (
-    <Modal
-      open={isOpen}
-      onCancel={onClose}
-      width={560}
-      footer={null}
-      centered
-      destroyOnHidden
-      aria-label={`Details for ${name.name}`}
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
-      title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
-    >
-      <div className="pt-4">
-        <NameDetailsContent name={name} hideReplacedBy={hideReplacedBy} />
-      </div>
-    </Modal>
-  );
-};
-
-export { NameDetailsContent, type NameDetailsContentProps };
-export default NameDetailsModal;
+export default NameDetailsContent;

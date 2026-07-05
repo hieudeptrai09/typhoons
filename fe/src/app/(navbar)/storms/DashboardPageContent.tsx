@@ -8,7 +8,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
-import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import AverageView from "./_components/_views/AverageView";
 import DistanceView from "./_components/_views/DistanceView";
@@ -27,8 +26,6 @@ import {
 interface SelectedData {
   title?: string;
   storms?: Storm[];
-  name?: string;
-  avgIntensity?: number;
   average?: number;
 }
 
@@ -43,7 +40,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
-  const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
   const currentParams: DashboardParams = slugToParams(slug);
@@ -66,11 +62,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const handleCellClick = (data: number | string, key: string) => {
     const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
-    // Storms view — name list mode: clicking a name row
+    // Storms view — name list mode: clicking a name row opens the name's info modal
     if (view === "storms" && key === "name") {
-      const avgIntensity = calculateAverage(storms);
-      setSelectedData({ name: data as string, storms, avgIntensity });
-      setIsNameListModalOpen(true);
+      router.push(`/info/${encodeURIComponent((data as string).toLowerCase())}/?origin=storms`, {
+        scroll: false,
+      });
       return;
     }
 
@@ -189,14 +185,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         title={selectedData?.title || ""}
         average={selectedData?.average || 0}
         storms={selectedData?.storms || []}
-      />
-
-      <NameListModal
-        isOpen={isNameListModalOpen}
-        onClose={() => setIsNameListModalOpen(false)}
-        name={selectedData?.name || ""}
-        storms={selectedData?.storms || []}
-        avgIntensity={selectedData?.avgIntensity || 0}
       />
     </PageHeader>
   );

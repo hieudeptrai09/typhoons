@@ -1,3 +1,4 @@
+import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import type { BaseModalProps, RetiredName, Suggestion } from "@/lib/types";
@@ -5,7 +6,6 @@ import { getRetiredReasonColorClass } from "@/lib/utils/colors";
 import { Modal } from "antd";
 import { useState } from "react";
 import SuggestionCard from "../_widgets/SuggestionCard";
-import { NameDetailsContent } from "./NameDetailsModal";
 
 export interface RetiredNameDetailsModalProps extends BaseModalProps {
   selectedName: RetiredName;
