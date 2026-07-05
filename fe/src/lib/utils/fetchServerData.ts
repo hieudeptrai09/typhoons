@@ -15,7 +15,6 @@ export async function fetchServerData<T>(
     });
     return await response.json();
   } catch (e) {
-    console.log("api", `${API_BASE}${endpoint}`);
     console.error(e);
     return null;
   }
