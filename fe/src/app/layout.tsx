@@ -112,10 +112,8 @@ const jsonLd = {
 
 export default function RootLayout({
   children,
-  modal,
 }: Readonly<{
   children: React.ReactNode;
-  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -129,14 +127,10 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <meta
-          name="google-site-verification"
-          content="8LbzW8YtyO7c8biOK5LX8xyYBcU7IHuD7Je35ZNdgtc"
-        />
+        <meta name="google-site-verification" content="8LbzW8YtyO7c8biOK5LX8xyYBcU7IHuD7Je35ZNdgtc" />
       </head>
       <body>
         {children}
-        {modal}
         <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,

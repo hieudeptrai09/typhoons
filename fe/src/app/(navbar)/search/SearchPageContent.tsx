@@ -41,7 +41,6 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
           href={`/info/${encodeURIComponent(record.name.toLowerCase())}/`}
           className={`font-semibold ${color}`}
           onClick={(e) => e.stopPropagation()}
-          scroll={false}
         >
           <HighlightedName name={record.name} query={query} />
         </Link>
@@ -130,9 +129,7 @@ export default function SearchPageContent({ results, count, query }: SearchPageC
                 }
                 onRow={(record) => ({
                   onClick: () =>
-                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
-                      scroll: false,
-                    }),
+                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`),
                   "aria-label": `View details for ${record.name}`,
                   role: "button",
                   tabIndex: 0,

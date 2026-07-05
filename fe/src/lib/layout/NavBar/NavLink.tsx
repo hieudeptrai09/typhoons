@@ -1,6 +1,6 @@
 import { Button } from "antd";
-import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 
 interface NavLinkProps {
   href: string;

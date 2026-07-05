@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import DesktopNav from "./DesktopNav";
 import MenuToggle from "./MenuToggle";
 import MobileNav from "./MobileNav";
