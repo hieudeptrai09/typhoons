@@ -1,5 +1,3 @@
-import type { RetiredName } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
@@ -44,8 +42,7 @@ const NamesPage = async ({ params }: PageProps) => {
     notFound();
   }
 
-  const result = await fetchServerData<RetiredName[]>("/typhoon-names");
-  return <NamesPageContent allNames={result?.data ?? null} />;
+  return <NamesPageContent />;
 };
 
 export default NamesPage;

@@ -2,6 +2,8 @@
 
 import FrownNotFound from "@/lib/components/FrownNotFound";
 import PageHeader from "@/lib/components/PageHeader";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
@@ -29,13 +31,10 @@ interface SelectedData {
   average?: number;
 }
 
-interface DashboardPageContentProps {
-  stormsData: Storm[] | null;
-}
-
-export default function DashboardPageContent({ stormsData }: DashboardPageContentProps) {
+export default function DashboardPageContent() {
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
+  const { data: stormsData, loading } = useFetchData<Storm[]>("/storms");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -114,6 +113,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     setSelectedData({ title: titleMap[key], average: calculateAverage(storms), storms });
     setIsAverageModalOpen(true);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <TyphoonSpinner size="large" />
+      </div>
+    );
+  }
 
   if (!stormsData) {
     return <FrownNotFound />;

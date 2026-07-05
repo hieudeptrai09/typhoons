@@ -1,5 +1,3 @@
-import type { Storm } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
@@ -52,9 +50,7 @@ const Dashboard = async ({ params }: PageProps) => {
     redirect(canonicalPath);
   }
 
-  const result = await fetchServerData<Storm[]>("/storms");
-  console.log("result", result, JSON.stringify(result));
-  return <DashboardPageContent stormsData={result?.data ?? null} />;
+  return <DashboardPageContent />;
 };
 
 export default Dashboard;

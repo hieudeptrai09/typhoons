@@ -7,7 +7,9 @@ import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
+import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { SearchDetail, Storm } from "@/lib/types";
 import {
   BACKGROUND_BADGE,
@@ -20,7 +22,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
 interface InfoModalProps {
-  detail: SearchDetail | null;
   name: string;
 }
 
@@ -109,9 +110,13 @@ function StormsTab({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoModal({ detail, name }: InfoModalProps) {
+export default function InfoModal({ name }: InfoModalProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const { data: detail, loading } = useFetchData<SearchDetail>(
+    `/typhoon-names?name=${encodeURIComponent(name)}`,
+  );
 
   const nameData = detail?.name ?? null;
   const storms = detail?.storms ?? [];
@@ -125,6 +130,16 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>(
     searchParams.get("tab") === "storms" ? "storms" : "details",
   );
+
+  if (loading) {
+    return (
+      <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
+        <div className="flex justify-center py-16">
+          <TyphoonSpinner size="large" />
+        </div>
+      </Modal>
+    );
+  }
 
   if (!nameData && storms.length === 0) {
     return (

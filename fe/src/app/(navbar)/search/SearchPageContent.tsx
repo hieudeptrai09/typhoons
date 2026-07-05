@@ -6,6 +6,8 @@ import FrownNotFound from "@/lib/components/FrownNotFound";
 import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { SearchResult } from "@/lib/types";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -95,17 +97,32 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
 ];
 
 interface SearchPageContentProps {
-  results: SearchResult[] | null;
-  count: number;
   query: string;
 }
 
-export default function SearchPageContent({ results, count, query }: SearchPageContentProps) {
+export default function SearchPageContent({ query }: SearchPageContentProps) {
   const router = useRouter();
+  const trimmedQuery = query.trim();
+
+  const {
+    data: results,
+    count,
+    loading,
+  } = useFetchData<SearchResult[]>(
+    trimmedQuery ? `/search?q=${encodeURIComponent(trimmedQuery)}` : "",
+  );
 
   const columns = useMemo(() => getColumns(query), [query]);
 
-  if (query.trim() && results === null) {
+  if (trimmedQuery && loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <TyphoonSpinner size="large" />
+      </div>
+    );
+  }
+
+  if (trimmedQuery && results === null) {
     return <FrownNotFound />;
   }
 

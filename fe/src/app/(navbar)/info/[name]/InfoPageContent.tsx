@@ -1,16 +1,19 @@
+"use client";
+
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownNotFound from "@/lib/components/FrownNotFound";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
+import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
 import { BACKGROUND_BADGE, getNameStatusColorClass, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Calendar } from "lucide-react";
 
 interface InfoPageContentProps {
-  detail: SearchDetail | null;
   name: string;
 }
 
@@ -191,7 +194,19 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoPageContent({ detail, name }: InfoPageContentProps) {
+export default function InfoPageContent({ name }: InfoPageContentProps) {
+  const { data: detail, loading } = useFetchData<SearchDetail>(
+    `/typhoon-names?name=${encodeURIComponent(name)}`,
+  );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <TyphoonSpinner size="large" />
+      </div>
+    );
+  }
+
   if (!detail) {
     return <FrownNotFound />;
   }

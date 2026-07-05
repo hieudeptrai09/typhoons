@@ -1,4 +1,3 @@
-import type { SearchDetail } from "@/lib/types";
 import { fetchServerData } from "@/lib/utils/fetchServerData";
 import type { Metadata } from "next";
 import InfoPageContent from "./InfoPageContent";
@@ -30,8 +29,5 @@ export default async function InfoPage({ params }: InfoPageProps) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name);
 
-  const result = await fetchServerData<SearchDetail>(
-    `/typhoon-names?name=${encodeURIComponent(decodedName)}`,
-  );
-  return <InfoPageContent detail={result?.data ?? null} name={decodedName} />;
+  return <InfoPageContent name={decodedName} />;
 }
