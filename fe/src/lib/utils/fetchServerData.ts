@@ -14,7 +14,8 @@ export async function fetchServerData<T>(
       next: { revalidate: revalidate ?? 3600 },
     });
     return await response.json();
-  } catch {
+  } catch (error) {
+    console.error(error);
     return null;
   }
 }
