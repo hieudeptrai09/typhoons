@@ -1,13 +1,12 @@
-import pool from "@/lib/db";
+import sql from "@/lib/db";
 import type { RetiredName, SearchDetail, Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-import type { RowDataPacket } from "mysql2";
 
 interface ApiResponse<T> {
   data: T;
 }
 
-interface TyphoonNameRow extends RowDataPacket {
+interface TyphoonNameRow {
   id: number;
   name: string;
   meaning: string;
@@ -25,7 +24,7 @@ interface TyphoonNameRow extends RowDataPacket {
   tag: string;
 }
 
-interface StormRow extends RowDataPacket {
+interface StormRow {
   position: number;
   country: string;
   name: string;
@@ -44,29 +43,29 @@ interface StormRow extends RowDataPacket {
 }
 
 async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchDetail>> {
-  const [nameRows] = await pool.query<TyphoonNameRow[]>(
+  const nameRows = (await sql.query(
     `SELECT
       tn.id,
       tn.name,
       tn.meaning,
       tn.position,
       p.country,
-      tn.isRetired,
-      tn.isReplaced,
-      tn.isLanguageProblem,
-      tn.replacementName,
+      tn."isRetired",
+      tn."isReplaced",
+      tn."isLanguageProblem",
+      tn."replacementName",
       tn.note,
       tn.language,
-      tn.lastYear,
+      tn."lastYear",
       tn.image,
       tn.description,
       tn.tag
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
-    WHERE LOWER(tn.name) = LOWER(?)
+    WHERE LOWER(tn.name) = LOWER($1)
     LIMIT 1`,
     [name],
-  );
+  )) as TyphoonNameRow[];
 
   const nameRow = nameRows[0];
   const nameDetail: RetiredName | null = nameRow
@@ -89,29 +88,29 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       }
     : null;
 
-  const [stormRows] = await pool.query<StormRow[]>(
+  const stormRows = (await sql.query(
     `SELECT
       s.position,
       p.country,
       s.name,
       s.intensity,
       s.map,
-      s.correctSpelling,
+      s."correctSpelling",
       s.year,
-      s.isStrongest,
-      s.isFirst,
-      s.isLast,
-      s.dateStart,
-      s.dateEnd,
-      s.monthStart,
-      s.monthEnd,
-      s.isFromPrevYear
+      s."isStrongest",
+      s."isFirst",
+      s."isLast",
+      s."dateStart",
+      s."dateEnd",
+      s."monthStart",
+      s."monthEnd",
+      s."isFromPrevYear"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
-    WHERE LOWER(s.name) = LOWER(?)
+    WHERE LOWER(s.name) = LOWER($1)
     ORDER BY s.year ASC, s.position`,
     [name],
-  );
+  )) as StormRow[];
 
   const storms: Storm[] = stormRows.map((row) => ({
     position: Number(row.position),

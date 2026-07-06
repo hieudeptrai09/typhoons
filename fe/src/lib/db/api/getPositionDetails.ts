@@ -1,17 +1,16 @@
-import pool from "@/lib/db";
+import sql from "@/lib/db";
 import type { PositionDetail, RetiredName, Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-import type { RowDataPacket } from "mysql2";
 
 interface ApiResponse<T> {
   data: T;
 }
 
-interface PositionRow extends RowDataPacket {
+interface PositionRow {
   country: string;
 }
 
-interface TyphoonNameRow extends RowDataPacket {
+interface TyphoonNameRow {
   id: number;
   name: string;
   meaning: string;
@@ -29,7 +28,7 @@ interface TyphoonNameRow extends RowDataPacket {
   tag: string;
 }
 
-interface StormRow extends RowDataPacket {
+interface StormRow {
   position: number;
   country: string;
   name: string;
@@ -48,39 +47,38 @@ interface StormRow extends RowDataPacket {
 }
 
 async function queryPositionDetails(position: number): Promise<ApiResponse<PositionDetail | null>> {
-  const [posRows] = await pool.query<PositionRow[]>(
-    "SELECT country FROM positions WHERE id = ? LIMIT 1",
-    [position],
-  );
+  const posRows = (await sql.query("SELECT country FROM positions WHERE id = $1 LIMIT 1", [
+    position,
+  ])) as PositionRow[];
 
   const posRow = posRows[0];
   if (!posRow) {
     return { data: null };
   }
 
-  const [nameRows] = await pool.query<TyphoonNameRow[]>(
+  const nameRows = (await sql.query(
     `SELECT
       tn.id,
       tn.name,
       tn.meaning,
       tn.position,
       p.country,
-      tn.isRetired,
-      tn.isReplaced,
-      tn.isLanguageProblem,
-      tn.replacementName,
+      tn."isRetired",
+      tn."isReplaced",
+      tn."isLanguageProblem",
+      tn."replacementName",
       tn.note,
       tn.language,
-      tn.lastYear,
+      tn."lastYear",
       tn.image,
       tn.description,
       tn.tag
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
-    WHERE tn.position = ?
-    ORDER BY tn.lastYear ASC, tn.name ASC`,
+    WHERE tn.position = $1
+    ORDER BY tn."lastYear" ASC, tn.name ASC`,
     [position],
-  );
+  )) as TyphoonNameRow[];
 
   const names: RetiredName[] = nameRows.map((row) => ({
     id: Number(row.id),
@@ -100,29 +98,29 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     tag: row.tag,
   }));
 
-  const [stormRows] = await pool.query<StormRow[]>(
+  const stormRows = (await sql.query(
     `SELECT
       s.position,
       p.country,
       s.name,
       s.intensity,
       s.map,
-      s.correctSpelling,
+      s."correctSpelling",
       s.year,
-      s.isStrongest,
-      s.isFirst,
-      s.isLast,
-      s.dateStart,
-      s.dateEnd,
-      s.monthStart,
-      s.monthEnd,
-      s.isFromPrevYear
+      s."isStrongest",
+      s."isFirst",
+      s."isLast",
+      s."dateStart",
+      s."dateEnd",
+      s."monthStart",
+      s."monthEnd",
+      s."isFromPrevYear"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
-    WHERE s.position = ?
+    WHERE s.position = $1
     ORDER BY s.year ASC`,
     [position],
-  );
+  )) as StormRow[];
 
   const storms: Storm[] = stormRows.map((row) => ({
     position: Number(row.position),

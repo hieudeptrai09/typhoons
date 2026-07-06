@@ -1,14 +1,13 @@
-import pool from "@/lib/db";
+import sql from "@/lib/db";
 import type { Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-import type { RowDataPacket } from "mysql2";
 
 interface ApiResponse<T> {
   data: T;
   count: number;
 }
 
-interface StormRow extends RowDataPacket {
+interface StormRow {
   position: number;
   country: string;
   name: string;
@@ -27,33 +26,33 @@ interface StormRow extends RowDataPacket {
 }
 
 async function queryStorms(position: number | null = null): Promise<ApiResponse<Storm[]>> {
-  let sql = `SELECT
+  let query = `SELECT
       s.position,
       p.country,
       s.name,
       s.intensity,
       s.map,
-      s.correctSpelling,
+      s."correctSpelling",
       s.year,
-      s.isStrongest,
-      s.isFirst,
-      s.isLast,
-      s.dateStart,
-      s.dateEnd,
-      s.monthStart,
-      s.monthEnd,
-      s.isFromPrevYear
+      s."isStrongest",
+      s."isFirst",
+      s."isLast",
+      s."dateStart",
+      s."dateEnd",
+      s."monthStart",
+      s."monthEnd",
+      s."isFromPrevYear"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id`;
 
   const params: unknown[] = [];
   if (position !== null) {
-    sql += " WHERE s.position = ?";
+    query += ` WHERE s.position = $${params.length + 1}`;
     params.push(position);
   }
-  sql += " ORDER BY s.year ASC, s.position";
+  query += " ORDER BY s.year ASC, s.position";
 
-  const [rows] = await pool.query<StormRow[]>(sql, params);
+  const rows = (await sql.query(query, params)) as StormRow[];
 
   const data: Storm[] = rows.map((row) => ({
     position: Number(row.position),

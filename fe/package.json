@@ -10,10 +10,10 @@
     "format": "prettier  --write \"src/**/*.{js,jsx,ts,tsx}\" && eslint src --fix"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "antd": "^6.4.3",
     "country-flag-icons": "^1.6.12",
     "lucide-react": "^0.546.0",
-    "mysql2": "^3.22.5",
     "next": "^16.2.10",
     "next-pwa": "^5.6.0",
     "react": "19.2.3",

@@ -1,7 +1,6 @@
-import pool from "@/lib/db";
-import type { RowDataPacket } from "mysql2";
+import sql from "@/lib/db";
 
-type Row = RowDataPacket & Record<string, unknown>;
+type Row = Record<string, unknown>;
 
 const MONTH_NAMES: Record<number, string> = {
   1: "January",
@@ -28,13 +27,12 @@ function joinNames(items: (string | number)[], joiner = "and"): string {
   return `${rest.join(", ")} ${joiner} ${last}`;
 }
 
-async function rows(sql: string, params: unknown[] = []): Promise<Row[]> {
-  const [result] = await pool.query<Row[]>(sql, params);
-  return result;
+async function rows(query: string, params: unknown[] = []): Promise<Row[]> {
+  return (await sql.query(query, params)) as Row[];
 }
 
-async function one(sql: string, params: unknown[] = []): Promise<Row | undefined> {
-  return (await rows(sql, params))[0];
+async function one(query: string, params: unknown[] = []): Promise<Row | undefined> {
+  return (await rows(query, params))[0];
 }
 
 async function generateFacts(): Promise<string[]> {
@@ -81,7 +79,7 @@ async function generateFacts(): Promise<string[]> {
   }
 
   let rowsResult = await rows(
-    "SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 GROUP BY name HAVING cnt >= 2",
+    "SELECT name, COUNT(*) as cnt FROM storms WHERE position = 142 GROUP BY name HAVING COUNT(*) >= 2",
   );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
@@ -126,8 +124,8 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT DISTINCT t.name, s.intensity FROM typhoonnames t
-    INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t.lastYear
-    WHERE t.isRetired = 1 AND t.isLanguageProblem = 0 AND t.position <= 140
+    INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t."lastYear"
+    WHERE t."isRetired" = 1 AND t."isLanguageProblem" = 0 AND t.position <= 140
     AND s.year >= 2000
     AND s.intensity IN ('TD', 'TS', 'STS')
     ORDER BY t.name
@@ -145,7 +143,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Strongest storms records ---
 
   rowsResult = await rows(
-    "SELECT name, COUNT(*) as cnt FROM storms WHERE isStrongest = 1 AND year >= 2000 GROUP BY name HAVING cnt > 1",
+    `SELECT name, COUNT(*) as cnt FROM storms WHERE "isStrongest" = 1 AND year >= 2000 GROUP BY name HAVING COUNT(*) > 1`,
   );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
@@ -156,7 +154,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Strongest storms not Cat 5 ---
 
   rowsResult = await rows(
-    "SELECT name, year, intensity FROM storms WHERE isStrongest = 1 AND intensity != '5' AND year >= 2000 ORDER BY year",
+    `SELECT name, year, intensity FROM storms WHERE "isStrongest" = 1 AND intensity != '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -167,7 +165,7 @@ async function generateFacts(): Promise<string[]> {
   // --- First storms that are Cat 5 ---
 
   rowsResult = await rows(
-    "SELECT name, year FROM storms WHERE isFirst = 1 AND intensity = '5' AND year >= 2000 ORDER BY year",
+    `SELECT name, year FROM storms WHERE "isFirst" = 1 AND intensity = '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -178,7 +176,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Storms spanning multiple years ---
 
   rowsResult = await rows(
-    "SELECT name, year FROM storms WHERE monthStart IS NOT NULL AND monthEnd IS NOT NULL AND monthEnd < monthStart AND year >= 2000 ORDER BY year",
+    `SELECT name, year FROM storms WHERE "monthStart" IS NOT NULL AND "monthEnd" IS NOT NULL AND "monthEnd" < "monthStart" AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -188,13 +186,13 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Seasons ending with Cat 5 ---
 
-  row = await one("SELECT COUNT(*) as cnt FROM storms WHERE isLast = 1 AND intensity = '5' AND year >= 2000");
+  row = await one(`SELECT COUNT(*) as cnt FROM storms WHERE "isLast" = 1 AND intensity = '5' AND year >= 2000`);
   cnt = Number(row?.cnt ?? 0);
   if (cnt > 0) {
     facts.push(`There are ${cnt} seasons that ended with a category 5 storm.`);
   }
   rowsResult = await rows(
-    "SELECT name, year FROM storms WHERE isLast = 1 AND intensity = '5' AND year >= 2000 ORDER BY year",
+    `SELECT name, year FROM storms WHERE "isLast" = 1 AND intensity = '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -205,7 +203,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     rowsResult = await rows(
-      "SELECT name, year FROM storms WHERE isStrongest = 1 AND monthStart = ? AND year >= 2000 ORDER BY year",
+      `SELECT name, year FROM storms WHERE "isStrongest" = 1 AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -221,7 +219,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [6, 7, 8]) {
     rowsResult = await rows(
-      "SELECT name, year FROM storms WHERE isFirst = 1 AND monthStart = ? AND year >= 2000 ORDER BY year",
+      `SELECT name, year FROM storms WHERE "isFirst" = 1 AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -237,7 +235,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     row = await one(
-      "SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND monthStart = ? AND year >= 2000",
+      `SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND "monthStart" = $1 AND year >= 2000`,
       [month],
     );
     cnt = Number(row?.cnt ?? 0);
@@ -247,7 +245,7 @@ async function generateFacts(): Promise<string[]> {
       facts.push(`There ${label} ${cnt} category 5 storm${cnt > 1 ? "s" : ""} that formed in ${monthName}.`);
     }
     rowsResult = await rows(
-      "SELECT name, year FROM storms WHERE intensity = '5' AND monthStart = ? AND year >= 2000 ORDER BY year",
+      `SELECT name, year FROM storms WHERE intensity = '5' AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -262,7 +260,7 @@ async function generateFacts(): Promise<string[]> {
 
   row = await one(`
     SELECT COUNT(*) as cnt FROM typhoonnames t
-    WHERE t.position <= 140 AND t.isRetired = 0
+    WHERE t.position <= 140 AND t."isRetired" = 0
     AND NOT EXISTS (
         SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
         AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
@@ -277,7 +275,7 @@ async function generateFacts(): Promise<string[]> {
   }
   rowsResult = await rows(`
     SELECT t.name FROM typhoonnames t
-    WHERE t.position <= 140 AND t.isRetired = 0
+    WHERE t.position <= 140 AND t."isRetired" = 0
     AND NOT EXISTS (
         SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
         AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
@@ -297,7 +295,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT name, COUNT(*) as total
     FROM storms WHERE position <= 140 AND year >= 2000
     GROUP BY name, position
-    HAVING total >= 2 AND total = SUM(CASE WHEN intensity = '5' THEN 1 ELSE 0 END)
+    HAVING COUNT(*) >= 2 AND COUNT(*) = SUM(CASE WHEN intensity = '5' THEN 1 ELSE 0 END)
   `);
   let byCount = new Map<number, string[]>();
   for (const r of rowsResult) {
@@ -318,7 +316,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT name, COUNT(*) as total
     FROM storms WHERE position <= 140 AND year >= 2000
     GROUP BY name, position
-    HAVING total >= 2 AND total = SUM(CASE WHEN intensity = '4' THEN 1 ELSE 0 END)
+    HAVING COUNT(*) >= 2 AND COUNT(*) = SUM(CASE WHEN intensity = '4' THEN 1 ELSE 0 END)
   `);
   byCount = new Map<number, string[]>();
   for (const r of rowsResult) {
@@ -351,7 +349,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT MAX(storm_count) as max_count FROM (
         SELECT COUNT(s.id) as storm_count FROM typhoonnames t
         INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-        WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
+        WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
         GROUP BY t.name, t.position
     ) as sub
   `);
@@ -362,8 +360,8 @@ async function generateFacts(): Promise<string[]> {
       SELECT COUNT(*) as cnt FROM (
           SELECT t.name FROM typhoonnames t
           INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-          WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
-          GROUP BY t.name, t.position HAVING COUNT(s.id) = ?
+          WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+          GROUP BY t.name, t.position HAVING COUNT(s.id) = $1
       ) as sub
       `,
       [maxCount],
@@ -375,8 +373,8 @@ async function generateFacts(): Promise<string[]> {
       `
       SELECT t.name FROM typhoonnames t
       INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-      WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
-      GROUP BY t.name, t.position HAVING COUNT(s.id) = ?
+      WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+      GROUP BY t.name, t.position HAVING COUNT(s.id) = $1
       ORDER BY t.name
       `,
       [maxCount],
@@ -409,7 +407,7 @@ async function generateFacts(): Promise<string[]> {
     `
     SELECT p.country FROM typhoonnames t
     INNER JOIN positions p ON t.position = p.id
-    WHERE t.position <= 140 GROUP BY p.country HAVING COUNT(*) = ? ORDER BY p.country
+    WHERE t.position <= 140 GROUP BY p.country HAVING COUNT(*) = $1 ORDER BY p.country
     `,
     [minCnt],
   );
@@ -430,7 +428,7 @@ async function generateFacts(): Promise<string[]> {
   `);
   const minYearCnt = Number(row?.min_cnt ?? 0);
   rowsResult = await rows(
-    "SELECT year FROM storms WHERE year >= 2000 GROUP BY year HAVING COUNT(*) = ? ORDER BY year",
+    "SELECT year FROM storms WHERE year >= 2000 GROUP BY year HAVING COUNT(*) = $1 ORDER BY year",
     [minYearCnt],
   );
   const years = rowsResult.map((r) => Number(r.year));
@@ -453,7 +451,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT COUNT(*) as cnt FROM (
         SELECT t.name FROM typhoonnames t
         INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-        WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
+        WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
         GROUP BY t.name, t.position
         HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
     ) as sub
@@ -465,7 +463,7 @@ async function generateFacts(): Promise<string[]> {
   rowsResult = await rows(`
     SELECT t.name FROM typhoonnames t
     INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-    WHERE t.isRetired = 0 AND t.position <= 140 AND s.year >= 2000
+    WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
     GROUP BY t.name, t.position
     HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
     ORDER BY t.name
@@ -489,7 +487,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Rare languages ---
 
   rowsResult = await rows(
-    "SELECT language, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY language HAVING cnt <= 3 ORDER BY cnt",
+    "SELECT language, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY language HAVING COUNT(*) <= 3 ORDER BY cnt",
   );
   for (const r of rowsResult) {
     const rCnt = Number(r.cnt);
@@ -499,7 +497,7 @@ async function generateFacts(): Promise<string[]> {
       facts.push(`There are only ${rCnt} names from the ${r.language} language.`);
     }
     const langNames = (
-      await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND language = ? ORDER BY name", [
+      await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 ORDER BY name", [
         r.language,
       ])
     ).map((nr) => String(nr.name));
@@ -519,7 +517,7 @@ async function generateFacts(): Promise<string[]> {
     facts.push(`There are ${rCnt} names in the category ${r.tag}.`);
     if (rCnt <= 3 && rCnt > 0) {
       const tagNames = (
-        await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = ? ORDER BY name", [r.tag])
+        await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name", [r.tag])
       ).map((nr) => String(nr.name));
       if (tagNames.length > 0) {
         const nl = tagNames.length === 1 ? "is the only name" : "are the only names";
@@ -532,7 +530,7 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT language, tag, COUNT(*) as cnt FROM typhoonnames
-    WHERE position <= 140 GROUP BY language, tag HAVING cnt <= 3 ORDER BY cnt, tag
+    WHERE position <= 140 GROUP BY language, tag HAVING COUNT(*) <= 3 ORDER BY cnt, tag
   `);
   for (const r of rowsResult) {
     const rCnt = Number(r.cnt);
@@ -543,7 +541,7 @@ async function generateFacts(): Promise<string[]> {
     }
     const combNames = (
       await rows(
-        "SELECT name FROM typhoonnames WHERE position <= 140 AND language = ? AND tag = ? ORDER BY name",
+        "SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 AND tag = $2 ORDER BY name",
         [r.language, r.tag],
       )
     ).map((nr) => String(nr.name));
@@ -558,7 +556,7 @@ async function generateFacts(): Promise<string[]> {
   rowsResult = await rows(`
     SELECT p.country, t.tag, COUNT(*) as cnt FROM typhoonnames t
     INNER JOIN positions p ON t.position = p.id
-    WHERE t.position <= 140 GROUP BY p.country, t.tag HAVING cnt <= 3 ORDER BY cnt, t.tag
+    WHERE t.position <= 140 GROUP BY p.country, t.tag HAVING COUNT(*) <= 3 ORDER BY cnt, t.tag
   `);
   for (const r of rowsResult) {
     const rCnt = Number(r.cnt);
@@ -572,7 +570,7 @@ async function generateFacts(): Promise<string[]> {
         `
         SELECT t.name FROM typhoonnames t
         INNER JOIN positions p ON t.position = p.id
-        WHERE t.position <= 140 AND p.country = ? AND t.tag = ? ORDER BY t.name
+        WHERE t.position <= 140 AND p.country = $1 AND t.tag = $2 ORDER BY t.name
         `,
         [r.country, r.tag],
       )
@@ -585,11 +583,11 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Language reason retirements ---
 
-  row = await one("SELECT COUNT(*) as cnt FROM typhoonnames WHERE isLanguageProblem = 1 AND isRetired = 1");
+  row = await one(`SELECT COUNT(*) as cnt FROM typhoonnames WHERE "isLanguageProblem" = 1 AND "isRetired" = 1`);
   cnt = Number(row?.cnt ?? 0);
   facts.push(`There are ${cnt} names retired for language-related reasons.`);
   names = (
-    await rows("SELECT name FROM typhoonnames WHERE isLanguageProblem = 1 AND isRetired = 1 ORDER BY name")
+    await rows(`SELECT name FROM typhoonnames WHERE "isLanguageProblem" = 1 AND "isRetired" = 1 ORDER BY name`)
   ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(`${joinNames(names)} are the names retired for language-related reasons.`);
@@ -597,7 +595,7 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Nearest equator ---
 
-  rowsResult = await rows("SELECT name FROM typhoonnames WHERE isLanguageProblem = 3");
+  rowsResult = await rows(`SELECT name FROM typhoonnames WHERE "isLanguageProblem" = 3`);
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label = names.length === 1 ? "is the storm" : "are the storms";
@@ -608,7 +606,7 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT name, note FROM typhoonnames
-    WHERE isLanguageProblem = 1 AND isRetired = 1 AND note IS NOT NULL AND note != ''
+    WHERE "isLanguageProblem" = 1 AND "isRetired" = 1 AND note IS NOT NULL AND note != ''
   `);
   for (const r of rowsResult) {
     const reason = String(r.note);
@@ -636,8 +634,8 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT UPPER(LEFT(name, 1)) as letter,
-           SUM(CASE WHEN isRetired = 0 THEN 1 ELSE 0 END) as active_cnt,
-           SUM(CASE WHEN isRetired = 1 THEN 1 ELSE 0 END) as retired_cnt
+           SUM(CASE WHEN "isRetired" = 0 THEN 1 ELSE 0 END) as active_cnt,
+           SUM(CASE WHEN "isRetired" = 1 THEN 1 ELSE 0 END) as retired_cnt
     FROM typhoonnames WHERE position <= 140
     GROUP BY letter
   `);
@@ -670,7 +668,7 @@ async function generateFacts(): Promise<string[]> {
   rowsResult = await rows(`
     SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
     FROM typhoonnames WHERE position <= 140
-    GROUP BY letter HAVING cnt <= 3 ORDER BY cnt, letter
+    GROUP BY letter HAVING COUNT(*) <= 3 ORDER BY cnt, letter
   `);
   for (const r of rowsResult) {
     const rCnt = Number(r.cnt);
@@ -681,7 +679,7 @@ async function generateFacts(): Promise<string[]> {
     }
     const letterNames = (
       await rows(
-        "SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = ? ORDER BY name",
+        "SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = $1 ORDER BY name",
         [r.letter],
       )
     ).map((nr) => String(nr.name));

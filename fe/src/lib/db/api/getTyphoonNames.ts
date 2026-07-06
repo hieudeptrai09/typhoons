@@ -1,14 +1,13 @@
-import pool from "@/lib/db";
+import sql from "@/lib/db";
 import type { RetiredName } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-import type { RowDataPacket } from "mysql2";
 
 interface ApiResponse<T> {
   data: T;
   count: number;
 }
 
-interface TyphoonNameRow extends RowDataPacket {
+interface TyphoonNameRow {
   id: number;
   name: string;
   meaning: string;
@@ -27,19 +26,19 @@ interface TyphoonNameRow extends RowDataPacket {
 }
 
 async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiResponse<RetiredName[]>> {
-  let sql = `SELECT
+  let query = `SELECT
       tn.id,
       tn.name,
       tn.meaning,
       tn.position,
       p.country,
-      tn.isRetired,
-      tn.isReplaced,
-      tn.isLanguageProblem,
-      tn.replacementName,
+      tn."isRetired",
+      tn."isReplaced",
+      tn."isLanguageProblem",
+      tn."replacementName",
       tn.note,
       tn.language,
-      tn.lastYear,
+      tn."lastYear",
       tn.image,
       tn.description,
       tn.tag
@@ -49,15 +48,15 @@ async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiRe
   const params: unknown[] = [];
   if (isRetired !== null) {
     if (isRetired === 1) {
-      sql += " WHERE tn.isRetired = ?";
+      query += ` WHERE tn."isRetired" = $${params.length + 1}`;
       params.push(isRetired);
     } else {
-      sql += " WHERE tn.isRetired = ? OR tn.isReplaced = 0";
+      query += ` WHERE tn."isRetired" = $${params.length + 1} OR tn."isReplaced" = 0`;
       params.push(isRetired);
     }
   }
 
-  const [rows] = await pool.query<TyphoonNameRow[]>(sql, params);
+  const rows = (await sql.query(query, params)) as TyphoonNameRow[];
 
   const data: RetiredName[] = rows.map((row) => ({
     id: Number(row.id),

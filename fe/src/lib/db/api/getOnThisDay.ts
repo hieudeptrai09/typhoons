@@ -1,7 +1,6 @@
-import pool from "@/lib/db";
+import sql from "@/lib/db";
 import type { IntensityType } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-import type { RowDataPacket } from "mysql2";
 
 export interface OnThisDayStorm {
   name: string;
@@ -14,7 +13,7 @@ export interface OnThisDayStorm {
   reason: "started" | "ended" | "both";
 }
 
-interface OnThisDayRow extends RowDataPacket {
+interface OnThisDayRow {
   name: string;
   intensity: string;
   position: number;
@@ -30,22 +29,22 @@ async function queryOnThisDay(
   day: number,
   month: number,
 ): Promise<{ count: number; data: OnThisDayStorm[] }> {
-  const sql = `SELECT
+  const query = `SELECT
       s.name,
       s.intensity,
       s.position,
       s.year,
-      s.dateStart,
-      s.monthStart,
-      s.dateEnd,
-      s.monthEnd,
-      s.isFromPrevYear
+      s."dateStart",
+      s."monthStart",
+      s."dateEnd",
+      s."monthEnd",
+      s."isFromPrevYear"
     FROM storms s
-    WHERE (s.monthStart = ? AND s.dateStart = ?)
-       OR (s.monthEnd = ? AND s.dateEnd = ?)
+    WHERE (s."monthStart" = $1 AND s."dateStart" = $2)
+       OR (s."monthEnd" = $3 AND s."dateEnd" = $4)
     ORDER BY s.year ASC`;
 
-  const [rows] = await pool.query<OnThisDayRow[]>(sql, [month, day, month, day]);
+  const rows = (await sql.query(query, [month, day, month, day])) as OnThisDayRow[];
 
   const data: OnThisDayStorm[] = rows.map((row) => {
     const monthStart = Number(row.monthStart);
