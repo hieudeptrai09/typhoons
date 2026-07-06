@@ -15,10 +15,47 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
   position: number;
+}
+
+const TOTAL_POSITIONS = 140;
+
+function PositionPagination({ position }: { position: number }) {
+  const isFirst = position === 1;
+  const isLast = position === TOTAL_POSITIONS;
+  const prevPosition = isFirst ? TOTAL_POSITIONS : position - 1;
+  const nextPosition = isLast ? 1 : position + 1;
+
+  const linkClass = (isWrap: boolean) =>
+    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+      isWrap
+        ? "border-slate-100 text-slate-300 hover:bg-slate-50 hover:text-slate-400"
+        : "border-slate-200 text-slate-700 hover:bg-slate-50"
+    }`;
+
+  return (
+    <nav
+      className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
+      aria-label="Position pagination"
+    >
+      <Link href={`/positions/${prevPosition}`} className={linkClass(isFirst)}>
+        <ChevronLeft className="h-4 w-4" />
+        {getPositionTitle(prevPosition)}
+      </Link>
+      <span className="text-sm text-slate-400">
+        {position} / {TOTAL_POSITIONS}
+      </span>
+      <Link href={`/positions/${nextPosition}`} className={linkClass(isLast)}>
+        {getPositionTitle(nextPosition)}
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    </nav>
+  );
 }
 
 function NameRosterCard({ name, storms }: { name: TyphoonName; storms: Storm[] }) {
@@ -191,6 +228,8 @@ export default function PositionPageContent({ detail, position }: PositionPageCo
         <NamesSection names={names} storms={storms} />
         <StormsSection storms={storms} />
       </div>
+
+      <PositionPagination position={position} />
     </div>
   );
 }
