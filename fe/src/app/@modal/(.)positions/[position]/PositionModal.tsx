@@ -333,7 +333,7 @@ export default function PositionModal({ detail, position }: PositionModalProps) 
         </div>
       }
     >
-      <div className="pt-4">{body}</div>
+      <div className="pt-4 pb-px">{body}</div>
     </Modal>
   );
 }
