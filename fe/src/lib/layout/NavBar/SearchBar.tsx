@@ -15,7 +15,7 @@ const SearchBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: allNames, loading } = useFetchData<string[]>("/search/names");
+  const { data: allNames, loading } = useFetchData<string[]>("/api/search/names");
 
   const trimmed = query.trim();
   const filtered =

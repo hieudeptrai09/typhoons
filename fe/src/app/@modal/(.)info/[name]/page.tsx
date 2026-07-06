@@ -1,5 +1,4 @@
-import type { SearchDetail } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
+import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import InfoModal from "./InfoModal";
 
 interface InfoModalPageProps {
@@ -10,9 +9,7 @@ export default async function InfoModalPage({ params }: InfoModalPageProps) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name);
 
-  const result = await fetchServerData<SearchDetail>(
-    `/typhoon-names?name=${encodeURIComponent(decodedName)}`,
-  );
+  const result = await getTyphoonNameByName(decodedName);
 
   return <InfoModal detail={result?.data ?? null} name={decodedName} />;
 }

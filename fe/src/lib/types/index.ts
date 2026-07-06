@@ -27,7 +27,6 @@ export interface Suggestion {
 }
 
 export interface Storm {
-  id: number;
   name: string;
   year: number;
   intensity: IntensityType;
@@ -104,7 +103,6 @@ export interface SearchDetail {
 }
 
 export interface PositionDetail {
-  position: number;
   country: string;
   names: TyphoonName[];
   storms: Storm[];

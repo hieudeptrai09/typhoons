@@ -1,5 +1,4 @@
-import type { PositionDetail } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
+import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { Metadata } from "next";
 import PositionPageContent from "./PositionPageContent";
@@ -37,7 +36,7 @@ export default async function PositionPage({ params }: PositionPageProps) {
     return <PositionPageContent detail={null} position={positionNum} />;
   }
 
-  const result = await fetchServerData<PositionDetail>(`/positions?position=${positionNum}`);
+  const result = await getPositionDetails(positionNum);
 
   return <PositionPageContent detail={result?.data ?? null} position={positionNum} />;
 }

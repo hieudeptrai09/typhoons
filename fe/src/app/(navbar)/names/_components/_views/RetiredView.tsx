@@ -40,7 +40,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     loading: suggestionsLoading,
     error: suggestionsError,
   } = useFetchData<Suggestion[]>(
-    selectedRetiredName.id ? `/suggested-names?nameId=${selectedRetiredName.id}` : "",
+    selectedRetiredName.id ? `/api/suggested-names?nameId=${selectedRetiredName.id}` : "",
   );
 
   const isSuggestionsReady = !suggestionsLoading;

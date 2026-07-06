@@ -16,14 +16,10 @@ interface OnThisDayStorm {
   monthStart: number;
   monthEnd: number;
   isFromPrevYear: number;
-  country: string;
-  meaning: string | null;
   reason: "started" | "ended" | "both";
 }
 
 const EXTERNAL_POSITIONS = [141, 142, 143];
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 const MONTH_NAMES = [
   "",
@@ -98,7 +94,7 @@ const OnThisDay = () => {
   const fetchStorms = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/on-this-day`);
+      const res = await fetch("/api/on-this-day");
       const json = await res.json();
       const storms: OnThisDayStorm[] = json.data ?? [];
 

@@ -1,5 +1,4 @@
-import type { Storm } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
+import { getStorms } from "@/lib/db/api/getStorms";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
@@ -52,7 +51,7 @@ const Dashboard = async ({ params }: PageProps) => {
     redirect(canonicalPath);
   }
 
-  const result = await fetchServerData<Storm[]>("/storms");
+  const result = await getStorms();
   return <DashboardPageContent stormsData={result?.data ?? null} />;
 };
 

@@ -1,5 +1,4 @@
-import type { PositionDetail } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
+import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
 import PositionModal from "./PositionModal";
 
 interface PositionModalPageProps {
@@ -17,7 +16,7 @@ export default async function PositionModalPage({ params }: PositionModalPagePro
     return <PositionModal detail={null} position={positionNum} />;
   }
 
-  const result = await fetchServerData<PositionDetail>(`/positions?position=${positionNum}`);
+  const result = await getPositionDetails(positionNum);
 
   return <PositionModal detail={result?.data ?? null} position={positionNum} />;
 }

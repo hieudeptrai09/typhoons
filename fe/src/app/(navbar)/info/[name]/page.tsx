@@ -1,5 +1,5 @@
-import type { SearchDetail } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
+import { getNameList } from "@/lib/db/api/getNameList";
+import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import type { Metadata } from "next";
 import InfoPageContent from "./InfoPageContent";
 
@@ -8,7 +8,7 @@ interface InfoPageProps {
 }
 
 export async function generateStaticParams() {
-  const result = await fetchServerData<string[]>("/search/names");
+  const result = await getNameList();
   if (!result?.data) return [];
   return result.data.map((name) => ({ name: name.toLowerCase() }));
 }
@@ -30,8 +30,6 @@ export default async function InfoPage({ params }: InfoPageProps) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name);
 
-  const result = await fetchServerData<SearchDetail>(
-    `/typhoon-names?name=${encodeURIComponent(decodedName)}`,
-  );
+  const result = await getTyphoonNameByName(decodedName);
   return <InfoPageContent detail={result?.data ?? null} name={decodedName} />;
 }
