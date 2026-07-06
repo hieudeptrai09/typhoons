@@ -10,6 +10,7 @@ require_once 'controllers/TyphoonNameController.php';
 require_once 'controllers/SuggestedNameController.php';
 require_once 'controllers/SearchController.php';
 require_once 'controllers/FactController.php';
+require_once 'controllers/PositionController.php';
 
 // Parse the request
 $method = $_SERVER['REQUEST_METHOD'];
@@ -40,7 +41,8 @@ if (empty($request)) {
             'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
             'GET /search/names' => 'Get all typhoon name strings (for autocomplete and static params)',
             'GET /search?q={query}' => 'Search typhoon names with storm counts',
-            'GET /typhoon-names?name={name}' => 'Get full details for a typhoon name (name info + storms)'
+            'GET /typhoon-names?name={name}' => 'Get full details for a typhoon name (name info + storms)',
+            'GET /positions?position={id}' => 'Get full details for a naming position (country + names roster + storms)'
         ]
     ]);
 }
@@ -103,6 +105,20 @@ try {
             if ($method === 'GET') {
                 $result = $controller->getRandomFact();
                 sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'positions':
+            $controller = new PositionController($db);
+            if ($method === 'GET') {
+                if (!isset($_GET['position'])) {
+                    sendResponse(400, ['error' => 'Missing required parameter: position']);
+                } else {
+                    $result = $controller->getPositionDetails(intval($_GET['position']));
+                    sendResponse(200, $result);
+                }
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
             }

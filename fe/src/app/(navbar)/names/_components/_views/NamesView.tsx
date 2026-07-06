@@ -5,7 +5,6 @@ import { Badge } from "antd";
 import { Filter, Flame, Settings } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
@@ -106,9 +105,6 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [historyPosition, setHistoryPosition] = useState<number>(0);
-  const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -212,9 +208,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
 
   const handleCellClick = (position: number, names: TyphoonName[]) => {
     if (settings.showHistory) {
-      setHistoryPosition(position);
-      setHistoryPositionNames(names);
-      setIsHistoryModalOpen(true);
+      router.push(`/positions/${position}?origin=names`, { scroll: false });
     } else {
       if (names.length > 0) handleNameClick(names[0]);
     }
@@ -318,13 +312,6 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
         displayMode={displayMode}
         settings={settings}
         onApply={handleApplySettings}
-      />
-
-      <HistoryModal
-        isOpen={isHistoryModalOpen}
-        position={historyPosition}
-        positionNames={historyPositionNames}
-        onClose={() => setIsHistoryModalOpen(false)}
       />
     </>
   );

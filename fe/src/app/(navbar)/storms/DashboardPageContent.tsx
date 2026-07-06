@@ -3,7 +3,6 @@
 import FrownNotFound from "@/lib/components/FrownNotFound";
 import PageHeader from "@/lib/components/PageHeader";
 import type { DashboardParams, Storm } from "@/lib/types";
-import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal from "./_components/_modals/AverageModal";
@@ -70,11 +69,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Storms view — any table mode (position or name grid): clicking a cell
-    if (view === "storms" && key === "position") {
-      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
-      setSelectedData({ title, storms });
-      setIsDetailModalOpen(true);
+    // Any cell keyed by position: opens the position's page/modal, in the "storms"
+    // lens for storms/distance views, "average" lens everywhere else.
+    if (key === "position") {
+      const origin = view === "storms" || view === "distance" ? "storms" : "average";
+      router.push(`/positions/${Number(data)}?origin=${origin}`, { scroll: false });
       return;
     }
 
@@ -97,16 +96,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Distance view: clicking a position or name opens the storm detail modal
+    // Distance view: clicking a name opens the storm detail modal
     if (view === "distance") {
-      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
-      setSelectedData({ title, storms });
+      setSelectedData({ title: String(data), storms });
       setIsDetailModalOpen(true);
       return;
     }
 
     const titleMap: Record<string, string> = {
-      position: getPositionTitle(Number(data)),
       country: data as string,
       year: `Year ${data}`,
     };

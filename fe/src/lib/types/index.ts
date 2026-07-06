@@ -102,3 +102,10 @@ export interface SearchDetail {
   name: TyphoonName | RetiredName;
   storms: Storm[];
 }
+
+export interface PositionDetail {
+  position: number;
+  country: string;
+  names: TyphoonName[];
+  storms: Storm[];
+}
