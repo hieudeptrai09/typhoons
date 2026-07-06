@@ -34,7 +34,7 @@ function PositionPagination({ position }: { position: number }) {
     `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
       isWrap
         ? "border-slate-100 text-slate-400 hover:bg-slate-50 hover:text-slate-500"
-        : "border-slate-200 bg-sky-50 text-slate-700 hover:bg-sky-100"
+        : "border-sky-600 bg-sky-600 text-white hover:border-sky-700 hover:bg-sky-700"
     }`;
 
   // Plain <a> tags (not next/link) force a hard navigation, which is the only way to
