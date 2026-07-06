@@ -69,9 +69,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Any cell keyed by position: navigates to the position's page.
+    // Any cell keyed by position: opens the position's page/modal, in the "storms"
+    // lens for storms/distance views, "average" lens everywhere else.
     if (key === "position") {
-      router.push(`/positions/${Number(data)}`, { scroll: false });
+      const origin = view === "storms" || view === "distance" ? "storms" : "average";
+      router.push(`/positions/${Number(data)}?origin=${origin}`, { scroll: false });
       return;
     }
 

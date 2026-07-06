@@ -16,7 +16,6 @@ import {
 } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
@@ -38,22 +37,24 @@ function PositionPagination({ position }: { position: number }) {
         : "border-slate-200 text-slate-700 hover:bg-slate-50"
     }`;
 
+  // Plain <a> tags (not next/link) force a hard navigation, which is the only way to
+  // bypass the @modal/(.)positions interception so prev/next lands on the full page.
   return (
     <nav
       className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
       aria-label="Position pagination"
     >
-      <Link href={`/positions/${prevPosition}`} className={linkClass(isFirst)}>
+      <a href={`/positions/${prevPosition}`} className={linkClass(isFirst)}>
         <ChevronLeft className="h-4 w-4" />
         {getPositionTitle(prevPosition)}
-      </Link>
+      </a>
       <span className="text-sm text-slate-400">
         {position} / {TOTAL_POSITIONS}
       </span>
-      <Link href={`/positions/${nextPosition}`} className={linkClass(isLast)}>
+      <a href={`/positions/${nextPosition}`} className={linkClass(isLast)}>
         {getPositionTitle(nextPosition)}
         <ChevronRight className="h-4 w-4" />
-      </Link>
+      </a>
     </nav>
   );
 }
