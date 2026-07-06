@@ -208,7 +208,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
 
   const handleCellClick = (position: number, names: TyphoonName[]) => {
     if (settings.showHistory) {
-      router.push(`/positions/${position}?origin=names`, { scroll: false });
+      router.push(`/positions/${position}`, { scroll: false });
     } else {
       if (names.length > 0) handleNameClick(names[0]);
     }
