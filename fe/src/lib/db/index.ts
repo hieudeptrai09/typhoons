@@ -7,11 +7,11 @@ declare global {
 const pool =
   global._mysqlPool ??
   mysql.createPool({
-    host: process.env.DB_HOST_1,
-    port: process.env.DB_PORT_1 ? Number(process.env.DB_PORT_1) : 3306,
-    user: process.env.DB_USER_1,
-    password: process.env.DB_PASSWORD_1,
-    database: process.env.DB_NAME_1,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
   });
