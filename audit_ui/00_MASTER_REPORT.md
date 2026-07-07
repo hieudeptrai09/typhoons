@@ -22,6 +22,7 @@
 > - **Home:** the lack of a navbar is confirmed **intentional** (a minimal game/launcher layout — logo + primary buttons + search act as the navigation); that critique is withdrawn. "On this day"/"Useless Facts" will move into a home hamburger menu (the "weak hierarchy" finding is withdrawn; the amber-contrast fix still applies wherever they land). The logo→Facebook easter egg is kept and downgraded to a minor accessibility note.
 > - **Storms → Highlights:** these grids are intentional sparse **charts** (strongest/first/last per position); the color→meaning mapping is arbitrary, so **no color legend is needed** — the finding is downgraded to a minor "make blank cells look intentional" note. The three highlight colors are already distinct, which is the only real requirement.
 > - **Error vs empty states:** confirmed `FrownNotFound` is the intended **error** component (backs `error.tsx`) and `EmptyResults` the **empty-result** component. Agreed edits: rename `FrownNotFound` → `ErrorState`, make its message flexible and add a reset button; make `EmptyResults` icon + text flexible/suitable; route empty/not-found cases to `EmptyResults` rather than the error component.
+> - **Names:** the compact icon-button design is intentional (clean, space-efficient) and the filter/settings icons are fine — only the all-names↔retired **view toggle** needs work, since its icon doesn't convey the action. Note: the main (flame) view is meant to show *all* names, so its "active names" label/behavior should be reconciled to that intent.
 
 Per-section detail lives in `findings/`:
 - `findings/01_home_search_nav.md` — Home, Search, Navigation (10)
@@ -53,9 +54,9 @@ The intensity color ramp (`TEXT_COLOR_WHITE_BACKGROUND` in `lib/utils/colors.ts`
 Intensity categories (TD/TS/Cat 1–5), letter-nav status (blue/red/green), and distance buckets all encode critical meaning purely in hue, with **no legend on any screen**. Color-blind users get nothing; sighted first-timers can't decode "green 22" vs "red 56". *(Exception, per owner review: the Highlights charts' colors are decorative/arbitrary, not semantic — the page title carries the meaning — so those need no legend; they only need to stay visually distinct from each other, which they already are.)*
 - **Fix once:** Build one shared `IntensityLegend` component (swatch + label, driven by `colors.ts`) and render it under the header on every data-viz view; add a small legend beside `LetterNavigation`; pair color with a non-color cue (badge shape, weight, dot).
 
-### C. Icon-only controls with no labels kill discoverability
-The dashboard view-switcher pill, the Names active↔retired toggle (a lone `Flame`/`Skull`), and the flame/filter/gear icon row all carry primary navigation/actions with meaning living only in `title`/`aria-label`.
-- **Fix once:** Adopt labeled controls (segmented tabs "Active | Retired", "Settings / <view> ▾") and never let an icon be the *sole* signifier of a primary action.
+### C. Icon-only *view switchers* where the action isn't legible
+Two controls carry primary navigation with meaning living only in `title`/`aria-label`: the Storms dashboard view-switcher pill, and the Names all-names↔retired **view toggle** (a lone `Flame`/`Skull`). *(Per owner review, the compact-icon approach is intentional and the filter/funnel and settings/gear icons are conventional and fine — the issue is specifically these two view-switchers, whose icons don't communicate what they do or where they go.)*
+- **Fix:** Keep the compact footprint but make the destination/state explicit — a small labeled toggle chip, or a two-option segmented control that doubles as a "you are here" indicator (`[ All names | Retired ]`, `Settings / <view> ▾`). Never let an icon be the *sole* signifier of a view switch.
 
 ### D. Interactive elements declared as buttons aren't keyboard-operable (WCAG 2.1.1)
 Both the search-result rows (`SearchPageContent` `onRow`) and the storm grid cells (`GridCell`) set `role="button"` + `tabIndex={0}` + `onClick` **without `onKeyDown`** — focusable, announced as buttons, but Enter/Space do nothing.

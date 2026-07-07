@@ -1,6 +1,6 @@
 # Names Section — UI/UX Findings
 
-The Names section is feature-rich (grid/list/retired views, letter navigation, three modals) but leans heavily on icon-only affordances and undocumented color coding, so its most powerful controls are hard to discover and several states read as errors. The single most damaging issue is that the Retired tab opens to an empty "no results" state on first load; below that, the biggest themes are discoverability of the active/retired toggle, misleading filter state, mobile grid overflow, and WCAG-failing name-text contrast.
+The Names section is feature-rich (grid/list/retired views, letter navigation, three modals). Its compact icon-button controls are an intentional, space-efficient design — the filter (funnel) and settings (gear) icons are conventional and fine — so the discoverability concern narrows to the single all-names↔retired **view toggle**, whose action isn't legible. The single most damaging issue is that the Retired tab opens to an empty "no results" state on first load; below that, the biggest themes are that view toggle, misleading filter state (plus undocumented color coding), mobile grid overflow, and WCAG-failing name-text contrast.
 
 ---
 
@@ -12,11 +12,11 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 
 ---
 
-### [High] Active↔Retired switching is a single icon with no tab/label — undiscoverable navigation
+### [High] The all-names ↔ retired view toggle is a lone icon whose action isn't legible
 - **Screens:** 30_names_current__desktop.png, 32_names_retired__desktop.png, 34_names_current_tab (both), mobile variants
 - **Category:** Discoverability, navigation, information architecture
-- **Problem:** The only way to move between the active-names and retired-names views is a single icon button (green `Flame` on active, red `Skull` on retired) rendered in `NamesView.tsx`/`RetiredView.tsx`. There is no persistent tab bar, no text label, and no "you are here" indicator. A flame conventionally signals "active/hot," not "go to the retired list," and a skull reads as a status glyph rather than a back-toggle. The meaning lives only in `title`/`aria-label`. First-time users have no way to know these two large datasets are toggled by this icon.
-- **Fix:** Replace the lone toggle icon with a labeled segmented control / tab pair ("Active" | "Retired") using the existing `Tabs` component pattern (`lib/components/Tabs`), or at minimum add a visible text label beside the icon (e.g. `Flame` + "Retired names →"). Keep the icon as reinforcement but never as the sole signifier.
+- **Problem:** The compact-icon control scheme on this page is a deliberate, space-efficient choice, and the **filter (funnel) and settings (gear) icons are conventional and fine** — this finding is *only* about the view toggle. Switching between the two primary views is done by one icon button: a `Flame` on the main page (`aria-label="Viewing active names, click to switch to retired"`) and a `Skull` on the retired page. Two issues: (1) the icon's *action* isn't legible — a flame doesn't say "go to the retired list," and the skull sits on the page you're already on, so it reads as a status glyph rather than a "switch view" control; the meaning lives only in `title`/`aria-label`. (2) The label is semantically off: the main view is intended to show **all names (active + retired)**, but its `aria-label` says "active names" and the code filters it to `status="current"` (`selectedStatus`, which hides retired-and-replaced names) — so intent, label, and behavior disagree (see the filter-badge finding).
+- **Fix (keep the clean icon design):** No heavy tab bar needed — keep it compact but make the *destination* explicit. Options: (a) a small labeled toggle chip naming where it goes — on the main page a `Skull` + "Retired →", on the retired page a "← All names" chip; or (b) a two-option segmented control `[ All names | Retired ]` (skull on the Retired segment) that also serves as the "you are here" indicator. Either keeps the footprint tiny while removing the guesswork. Also relabel the main view / `aria-label` from "active names" to match its real scope ("All names" / "Names") so it agrees with the intent.
 
 ---
 
