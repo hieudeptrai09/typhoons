@@ -39,7 +39,7 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Screens:** 02/03 search (state logic)
 - **Category:** Error state / Feedback
 - **Problem:** In `SearchPageContent.tsx` line 108, `query.trim() && results === null` renders `FrownNotFound` ("Something went wrong. Please try again later."). `results` is null both on a real fetch failure and whenever the API returns no `data` for a valid query (`page.tsx` line 21 passes `result?.data ?? null`). So a legitimately empty/edge query can surface a scary "something went wrong" error instead of the friendlier empty state, and true errors give no retry action.
-- **Fix:** Distinguish transport errors from empty results (e.g. a discriminated fetch result). Route genuine emptiness to `EmptyResults`, and give the real error state an actionable Retry button rather than a dead end.
+- **Fix:** Distinguish transport errors from empty results (e.g. a discriminated fetch result). Route genuine emptiness to `EmptyResults` (with suitable, non-"filter" copy and icon), and reserve the error component for real failures — giving it an actionable Retry/reset button rather than a dead end. This is the same error-vs-empty component split called out in the Detail-pages findings (rename `FrownNotFound` → `ErrorState` with a `reset` button; make `EmptyResults` icon/text flexible).
 
 ### [Medium] Mobile results table hides Storms / Replacement / Note behind horizontal scroll with no affordance
 - **Screens:** 02_search_results__mobile.png

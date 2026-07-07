@@ -21,6 +21,7 @@
 > **Owner review (2026-07-07):**
 > - **Home:** the lack of a navbar is confirmed **intentional** (a minimal game/launcher layout — logo + primary buttons + search act as the navigation); that critique is withdrawn. "On this day"/"Useless Facts" will move into a home hamburger menu (the "weak hierarchy" finding is withdrawn; the amber-contrast fix still applies wherever they land). The logo→Facebook easter egg is kept and downgraded to a minor accessibility note.
 > - **Storms → Highlights:** these grids are intentional sparse **charts** (strongest/first/last per position); the color→meaning mapping is arbitrary, so **no color legend is needed** — the finding is downgraded to a minor "make blank cells look intentional" note. The three highlight colors are already distinct, which is the only real requirement.
+> - **Error vs empty states:** confirmed `FrownNotFound` is the intended **error** component (backs `error.tsx`) and `EmptyResults` the **empty-result** component. Agreed edits: rename `FrownNotFound` → `ErrorState`, make its message flexible and add a reset button; make `EmptyResults` icon + text flexible/suitable; route empty/not-found cases to `EmptyResults` rather than the error component.
 
 Per-section detail lives in `findings/`:
 - `findings/01_home_search_nav.md` — Home, Search, Navigation (10)
@@ -62,7 +63,7 @@ Both the search-result rows (`SearchPageContent` `onRow`) and the storm grid cel
 
 ### E. Empty & error states are misleading, dead-ended, and inconsistent
 Beyond the Critical retired-tab issue: invalid/nonexistent positions (incl. `/positions/141`) show a transient **"Something went wrong. Please try again later."** server-error screen instead of a proper not-found; search's zero-result copy references **"filters"** that don't exist on that page; real fetch errors and legitimately-empty results are conflated; two different not-found designs (`FrownNotFound` frown vs `EmptyResults` filter-X icon) with broken grammar ("No typhoon named this was found.") and **no next-step CTA** anywhere.
-- **Fix:** Use `notFound()` for bad IDs with a dedicated component + CTA; reserve "Something went wrong" for genuine failures; make empty-state copy context-specific and echo the query.
+- **Fix (component model — confirmed with owner):** Give the app three clear states. (1) **Error:** rename `FrownNotFound` → `ErrorState`/`ErrorFallback` (it backs `error.tsx` and is not a "not found" component), make its message a prop, and add a **retry/reset button** wired to the error boundary's `reset()`. (2) **Empty / not-found:** make `EmptyResults` flexible — an optional `icon` prop (neutral default, not `FilterX`) + a CTA slot + neutral default copy — and use it for every empty/invalid case with context-specific text. (3) Optionally `notFound()` for out-of-range IDs. Never show the error component (with its pointless "try again") for a bad URL or an empty result; echo the query where relevant.
 
 ### F. Modal ≠ page content parity
 The intercept modals reorganize the same record into different tab sets and field lists than the full pages, and — most damagingly — the Info modal **drops the "Retired" badge and the "Replaced by" name**, leaving only an ambiguous skull. Both modals also force a fixed `height: 70vh` body, producing large empty voids for short records.
