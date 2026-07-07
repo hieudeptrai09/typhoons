@@ -14,11 +14,13 @@
 |---|---|---|
 | 🔴 Critical | 2 | Ship-blockers / broken first impressions |
 | 🟠 High | 14 | Serious usability or accessibility failures |
-| 🟡 Medium | 22 | Notable friction, clarity, consistency |
-| ⚪ Low | 10 | Polish, copy, code hygiene |
+| 🟡 Medium | 21 | Notable friction, clarity, consistency |
+| ⚪ Low | 11 | Polish, copy, code hygiene |
 | **Total** | **48** | |
 
-> **Owner review (2026-07-07):** The home page's lack of a navbar is confirmed **intentional** (a minimal game/launcher layout — logo + primary buttons + search act as the navigation); that critique has been withdrawn. "On this day"/"Useless Facts" will move into a home hamburger menu (the "weak hierarchy" finding is withdrawn; the amber-contrast fix still applies wherever they land). The logo→Facebook easter egg is kept and downgraded to a minor accessibility note.
+> **Owner review (2026-07-07):**
+> - **Home:** the lack of a navbar is confirmed **intentional** (a minimal game/launcher layout — logo + primary buttons + search act as the navigation); that critique is withdrawn. "On this day"/"Useless Facts" will move into a home hamburger menu (the "weak hierarchy" finding is withdrawn; the amber-contrast fix still applies wherever they land). The logo→Facebook easter egg is kept and downgraded to a minor accessibility note.
+> - **Storms → Highlights:** these grids are intentional sparse **charts** (strongest/first/last per position); the color→meaning mapping is arbitrary, so **no color legend is needed** — the finding is downgraded to a minor "make blank cells look intentional" note. The three highlight colors are already distinct, which is the only real requirement.
 
 Per-section detail lives in `findings/`:
 - `findings/01_home_search_nav.md` — Home, Search, Navigation (10)
@@ -47,7 +49,7 @@ The intensity color ramp (`TEXT_COLOR_WHITE_BACKGROUND` in `lib/utils/colors.ts`
 - **Fix once:** Add a dedicated darker "on-light" color ramp in `colors.ts` (separate from the on-badge palette) where every entry clears 4.5:1, **or** render these values as filled `IntensityBadge` chips (colored background + light text, which already pass). Darken name-status and helper-text classes. This single change touches Storms, Names, and Detail findings simultaneously.
 
 ### B. Color is the *only* channel of meaning, and there is no legend anywhere (WCAG 1.4.1)
-Intensity categories (TD/TS/Cat 1–5), letter-nav status (blue/red/green), distance buckets, and highlight colors (pink/blue/orange) all encode critical meaning purely in hue, with **no legend on any screen**. Color-blind users get nothing; sighted first-timers can't decode "green 22" vs "red 56".
+Intensity categories (TD/TS/Cat 1–5), letter-nav status (blue/red/green), and distance buckets all encode critical meaning purely in hue, with **no legend on any screen**. Color-blind users get nothing; sighted first-timers can't decode "green 22" vs "red 56". *(Exception, per owner review: the Highlights charts' colors are decorative/arbitrary, not semantic — the page title carries the meaning — so those need no legend; they only need to stay visually distinct from each other, which they already are.)*
 - **Fix once:** Build one shared `IntensityLegend` component (swatch + label, driven by `colors.ts`) and render it under the header on every data-viz view; add a small legend beside `LetterNavigation`; pair color with a non-color cue (badge shape, weight, dot).
 
 ### C. Icon-only controls with no labels kill discoverability
