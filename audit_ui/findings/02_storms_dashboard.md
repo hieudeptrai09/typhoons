@@ -83,11 +83,11 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 - **Problem:** The settings modal's View segmented control labels the fourth view "Distance," but its page title is "Average Gap Between Storms by Position" — two names for one feature. Similarly the position-grouped Storms view is titled "All Storms" while the name-grouped one is "All Typhoon Names (Grid)"; the switch from "Storms" to "Typhoon Names" for what is the same "Storms" view is easy to misread as a different section.
 - **Fix:** Align labels: rename the modal option to "Gap" / "Frequency" to match the title, or retitle the view "Storm Distance." Standardize the Storms view titles around one noun.
 
-### [Low] Invisible 7px near-white duplicate storm-name text baked into every grid cell
-- **Screens:** 10/12/16 grids (not visibly rendered, but present in DOM)
-- **Category:** Code hygiene / Accessibility (noise)
-- **Problem:** `GridCell.tsx` renders `<div className="absolute top-0 text-[7px] text-stone-100 …">{stormNames.join(", ")}</div>` — a 7px, `stone-100`-on-white string that is effectively invisible and serves no clear purpose (the same names are already in the cell's `title` and `aria-label`). It adds visual grime on hover (`group-hover:text-stone-200`) and redundant noise for assistive tech.
-- **Fix:** Remove the hidden `text-[7px]` div; the `title`/`aria-label` already convey the names. If a peek of names is intended, make it a real, legible tooltip.
+### [Low] Hidden Ctrl+F text in grid cells is a good idea — make it transparent + aria-hidden for robustness
+- **Screens:** 10/12/16 grids (not visibly rendered; present in DOM)
+- **Category:** Robustness / Accessibility (minor)
+- **Problem:** `GridCell.tsx` renders `<div className="absolute top-0 text-[7px] text-stone-100 group-hover:text-stone-200">{stormNames.join(", ")}</div>`. This is **intentional and useful**: the position/average grids display numbers, so this invisible line makes the storm *names* findable via the browser's **Ctrl+F**. (I was wrong to call it purposeless, and my "grime on hover" note was also wrong — on hover the text becomes `stone-200` to match the `hover:bg-stone-200` cell, so it stays invisible.) The only fragility is that the color is pinned to `stone-100`/`stone-200`, so it has to stay in lockstep with the cell background — if a row/theme ever uses a different background, the 7px text would faintly show — and the node currently sits in the accessibility tree.
+- **Fix (optional, keeps Ctrl+F):** Use `text-transparent` instead of matching `stone-100`/`stone-200`: transparent text is invisible on **any** background/hover/theme yet is still found (and highlighted) by find-in-page, so there's no color to keep in sync. Add `aria-hidden="true"` (find-in-page ignores it, so Ctrl+F still works) plus `select-none pointer-events-none` so it can't be selected or intercept clicks. Same feature, removes the only failure mode.
 
 ### [Low] Modal disabled options give no reason; Reset silently jumps away from current view
 - **Screens:** 60_modal_dashboard_settings (desktop+mobile)
