@@ -68,11 +68,11 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 
 ---
 
-### [Medium] Retired details modal has a fixed 70vh body producing large empty whitespace
+### [Low] Retired details modal's fixed 70vh body (intentional for tab stability) looks empty for short records
 - **Screens:** 64_modal_retired_details__desktop.png, 64_modal_retired_details__mobile.png
 - **Category:** Layout, visual balance
-- **Problem:** `RetiredNameDetailsModal.tsx` sets `body: { height: "70vh", overflowY: "auto" }`. For a short record like "Haiyan" (meaning, origin, language, replaced-by) the content fills only the top third and the modal shows a tall empty void below. The reserved "No image" placeholder box adds to the imbalance.
-- **Fix:** Use `maxHeight: "70vh"` instead of a fixed `height` so the modal sizes to content and only scrolls when needed. Consider not reserving the image column (or shrinking the "No image" placeholder) when there is no image.
+- **Problem:** `RetiredNameDetailsModal.tsx` is tabbed and sets `body: { height: "70vh" }`. As with the other tabbed modals this is **intentional** — the fixed height stops the dialog jumping when switching tabs of unequal length — but for a short record like "Haiyan" the content fills only the top portion, leaving a void below. My earlier "use maxHeight" suggestion is **withdrawn** (it would bring back the jump).
+- **Fix (optional):** Keep the fixed height. If you want to trim the void without reintroducing the jump, size it to the tallest tab's content rather than a flat `70vh`. Separately (still worth doing): swap the tiny "No image" text placeholder for a gray placeholder graphic — see the broken-image finding in the Detail-pages report.
 
 ---
 
