@@ -1,20 +1,21 @@
 # Home, Search & Navigation — UI/UX Findings
 
-Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty states, and the global navbar (desktop 1440 / mobile 390). Overall the visual language is clean and consistent, but the home page is navigationally isolated from the rest of the app, the two search experiences diverge, and several text/link colors fail WCAG AA contrast on the app's light backgrounds.
+Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty states, and the global navbar (desktop 1440 / mobile 390). Overall the visual language is clean and consistent. The home page intentionally uses a minimal game/launcher-style layout (logo + primary buttons + search, **no navbar**) — a coherent, deliberate choice (confirmed with the owner), where the buttons and search bar act as the navigation — so the remaining home findings focus on the two divergent search experiences and several text/link colors that fail WCAG AA contrast on the app's light backgrounds.
 
 ---
 
-### [High] Home page has no persistent navbar and its logo links to Facebook instead of Home
-- **Screens:** 01_home__desktop.png, 01_home__mobile.png (vs 02/30 navbar)
-- **Category:** Consistency / Affordance / Navigation
-- **Problem:** The `(home)` route group (`app/(home)/page.tsx`) renders only a centered hero + footer — the blue sticky navbar from `(navbar)/layout.tsx` is absent. So the home page has a completely different chrome from every other page. Worse, the one prominent brand element, the logo, is wrapped in `<a href="https://www.facebook.com/...">` opening a new tab (`page.tsx` lines 14–22). The universal convention "logo = go/stay home" is broken: on the home page the logo silently throws the user out to an external Facebook page. Users landing here also get no visible "Storms/Names/Search" chrome that matches the rest of the site — only the two big CTA buttons.
-- **Fix:** Either mount the shared `NavBar` on the home route too (move the hero into `(navbar)`), or add a lightweight persistent header. Make the logo link to `/` (home) and move the Facebook link to the footer with a recognizable icon + label. If the logo must stay external, it should not look like the primary site brand/home affordance.
+### [Low] Home logo is an unlabeled external link (easter egg) — a footer social icon is more conventional
+- **Screens:** 01_home__desktop.png, 01_home__mobile.png
+- **Category:** Affordance / Accessibility (minor)
+- **Problem:** The minimal game/launcher home layout (logo + primary buttons + search, **no navbar**) is an intentional, coherent pattern — the buttons and search bar serve as the navigation, so the earlier "no navbar / navigationally isolated" concern is withdrawn. The one small caveat is the logo itself: it is wrapped in `<a href="https://www.facebook.com/..." target="_blank">` (`page.tsx` lines 14–22), so activating the brand mark ejects the user to an external Facebook page in a new tab with no visual or `aria` cue that it leaves the site. As a hidden easter egg for mouse users this is low-harm (the new tab preserves their place), but a keyboard/screen-reader user hears only a generic "link" and the external jump is a surprise.
+- **Fix:** Keep the easter egg if you like it — it is harmless in a new tab. For a discoverable, conventional social link, add a labeled Facebook icon to the footer (the design already has one). If you keep the logo link, add `aria-label="JEBI.SE Malakas — our Facebook (opens in a new tab)"` and `rel="noopener noreferrer"` so the destination isn't a silent surprise for assistive tech.
 
-### [High] "On this day" / "Useless Facts" links fail WCAG AA contrast (2.78:1)
+### [Medium] "On this day" / "Useless Facts" amber links fail WCAG AA contrast (2.78:1)
 - **Screens:** 01_home__desktop.png, 01_home__mobile.png
 - **Category:** Contrast / Accessibility
-- **Problem:** Both buttons use `text-amber-600!` (#d97706) small semibold text sitting on the `bg-sky-100` (#e0f2fe) home background (`OnThisDay.tsx` / `FunFacts.tsx` line ~52). Measured contrast is **2.78:1**, well below the 4.5:1 AA minimum for normal text. They are the primary discovery hooks for two features yet are the hardest text on the page to read.
-- **Fix:** Darken to `text-amber-700` (#b45309 ≈ 3.9:1) or `text-amber-800` (passes AA), or give the pair a white/elevated pill background. Also bump from `text-sm` — at semibold ~13px these are borderline even ignoring color.
+- **Problem:** Both buttons use `text-amber-600!` (#d97706) small semibold text sitting on the `bg-sky-100` (#e0f2fe) home background (`OnThisDay.tsx` / `FunFacts.tsx` line ~52). Measured contrast is **2.78:1**, well below the 4.5:1 AA minimum for normal text.
+- **Planned change (agreed with owner):** These two entries will be removed from the hero and relocated into a hamburger / overflow menu on the home page (leaving room for future items). That resolves their cramped placement between the search field and the CTA buttons — the earlier separate "weak visual hierarchy" finding is therefore withdrawn. However, the color token still fails AA on any light menu background, so the contrast fix is still required in the new location.
+- **Fix:** Darken to `text-amber-700` (#b45309 ≈ 3.9:1) or `text-amber-800` (passes AA), or use white text on a colored chip, in `OnThisDay.tsx`/`FunFacts.tsx` — wherever the items ultimately render. Usability caveat: a hamburger hides these engagement hooks, so give the menu trigger a clear, high-contrast affordance so the features are still discoverable.
 
 ### [High] Search-result table rows are not keyboard-operable
 - **Screens:** 02_search_results__desktop.png, 02_search_results__mobile.png
@@ -45,12 +46,6 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Category:** Responsive
 - **Problem:** The results table uses `scroll={{ x: "max-content" }}` with 7 columns. On 390px only #, Name, Country, Status fit; Storms ("x5"), Replacement ("Tomo") and Note are off-screen to the right (compare the desktop shot, which shows them). There is no scroll shadow, chevron, or hint that more columns exist, so mobile users will likely believe the row has only 4 fields. Sort arrows in the header are also tiny touch targets.
 - **Fix:** Add a horizontal-scroll shadow/indicator (antd `sticky`/gradient) or, better, switch to a stacked card layout below `md`, or prioritize columns and move Replacement/Note into an expandable row so the key data is visible without discovery-blind scrolling.
-
-### [Medium] Weak visual hierarchy for the two secondary actions on home
-- **Screens:** 01_home__desktop.png, 01_home__mobile.png
-- **Category:** Visual hierarchy / Affordance
-- **Problem:** "On this day" and "Useless Facts" are low-contrast amber text buttons wedged between the search field and the two large solid CTA pills (`page.tsx` lines 33–36). Sandwiched between much heavier elements, and styled as plain text, they read as incidental labels rather than tappable feature entry points — most users will skip them. Their default antd text-button height (~32px) is also under the 44px touch-target guideline on mobile.
-- **Fix:** Give them a consistent secondary treatment (outlined chips or an icon-tile pair) distinct from body text, increase hit area to ≥44px, and consider placing them below the primary CTAs so the visual order matches their priority (search → browse/explore → extras).
 
 ### [Low] The reported "white circle" over the search input is the low-contrast prefix icon, not a spinner
 - **Screens:** 01_home__desktop.png (zoomed)

@@ -13,13 +13,15 @@
 | Severity | Count | |
 |---|---|---|
 | 🔴 Critical | 2 | Ship-blockers / broken first impressions |
-| 🟠 High | 16 | Serious usability or accessibility failures |
+| 🟠 High | 14 | Serious usability or accessibility failures |
 | 🟡 Medium | 22 | Notable friction, clarity, consistency |
-| ⚪ Low | 9 | Polish, copy, code hygiene |
-| **Total** | **49** | |
+| ⚪ Low | 10 | Polish, copy, code hygiene |
+| **Total** | **48** | |
+
+> **Owner review (2026-07-07):** The home page's lack of a navbar is confirmed **intentional** (a minimal game/launcher layout — logo + primary buttons + search act as the navigation); that critique has been withdrawn. "On this day"/"Useless Facts" will move into a home hamburger menu (the "weak hierarchy" finding is withdrawn; the amber-contrast fix still applies wherever they land). The logo→Facebook easter egg is kept and downgraded to a minor accessibility note.
 
 Per-section detail lives in `findings/`:
-- `findings/01_home_search_nav.md` — Home, Search, Navigation (11)
+- `findings/01_home_search_nav.md` — Home, Search, Navigation (10)
 - `findings/02_storms_dashboard.md` — Storms dashboard, all views + modals (15)
 - `findings/03_names.md` — Names section, all tabs + modals (11)
 - `findings/04_detail_pages_modals.md` — Position/Info pages, not-found states, intercept modals (11)
