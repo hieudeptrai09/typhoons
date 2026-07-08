@@ -5,6 +5,7 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 ---
 
 ### [Critical] The view switcher is a single unlabeled icon "pill" — the only way to change views, but it barely reads as a control
+- **Status:** 🟡 **Partial (fix aa12635):** view-switcher pill darkened + a hint chip "Click the button above to change view" added — discoverability improved, but the pill still doesn't show the current view/state or that it holds all view/filter/mode options.
 - **Screens:** 10_storms_grid (desktop+mobile), 12_storms_positions, 16_storms_avg_position, 60_modal_dashboard_settings, and every dashboard screen
 - **Category:** Discoverability / Information scent / Affordance
 - **Problem:** The purple pill (`DashboardViewButton.tsx`) is the *sole* entry point to switch between Storms/Highlights/Average/Distance, change grouping, and toggle table/list. It renders only 2–3 Lucide icons separated by literal "/" glyphs (e.g. cloud / tag / grid), with no text label, no caret, and no tooltips. Its icons also *change* per view, so there is no stable "settings" affordance to learn. A first-time user has no reason to believe the pill is clickable or that it holds every mode of the page; it looks like a decorative status badge. The `/` separators read as breadcrumb decoration, not interactivity.
@@ -23,12 +24,14 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 - **Fix:** Add a compact horizontal legend chip row beneath the switcher for Average/Highlights/Distance views (reuse `BACKGROUND_BADGE`/`TEXT_COLOR_WHITE_BACKGROUND` and `INTENSITY_LABEL`): swatch + label for TD, TS, Cat 1–5. Render it from a shared `IntensityLegend` component so it stays in sync with `colors.ts`.
 
 ### [High] Intensity text colors fail WCAG AA contrast on the light grid background
+- **Status:** 🟡 **Partial (aa12635):** ramp darkened (e.g. orange `#FF9900`→`#C98600`, ~2.1→**3.05:1** on white). Now clears AA-large (3:1) on white but sits at **~2.8:1 on the actual stone-100 cells** and below the owner's ~3.5 target. Better, not there yet.
 - **Screens:** 16_storms_avg_position, 17_storms_avg_name, 18/20 average list views, 68_modal_average
 - **Category:** Accessibility (contrast) / Color
 - **Problem:** `TEXT_COLOR_WHITE_BACKGROUND` values are used as small text on white/`stone-100` cells. Several fall well below the 4.5:1 AA threshold for normal text: TS `#00BB00` (~2.3:1), Cat 1 `#CC9900` (~2.7:1), Cat 2 `#FF9900` (~2.1:1), Cat 3 `#FF5500` (~3.0:1), TD `#0099CC` (~3.3:1); Cat 4 `#DD0000` (~4.3:1) is borderline. In the Average-by-Name grid these are `text-xs` names, and in the Average-by-Month list the intensity values (e.g. orange "1.75") are the primary data — all hard to read for low-vision users and in bright light.
 - **Fix:** Darken the on-white palette in `colors.ts` (a separate, higher-contrast set from the on-badge colors), or don't rely on hue alone — pair each value with a small filled badge/swatch (as `IntensityBadge` already does) so color is redundant with shape/position. Verify each entry hits ≥4.5:1 (or ≥3:1 with the badge treatment) against `#f5f5f4`.
 
 ### [High] Grid cells are declared as buttons but aren't keyboard-operable
+- **Status:** ❌ **Not fixed (aa12635):** `GridCell` still has `role="button"`+`tabIndex` with only `onClick`; no `onKeyDown` added — grid cells remain keyboard-inoperable.
 - **Screens:** 10/12/16 grids, 67_modal_storm_detail (opened from a cell)
 - **Category:** Accessibility (keyboard)
 - **Problem:** `GridCell.tsx` renders a `<td>` with `role="button"` and `tabIndex={0}` but only an `onClick` handler — there is no `onKeyDown` for Enter/Space. Keyboard users can focus a cell but cannot activate it, so opening a position's storms (the core interaction of every grid view) is impossible without a mouse. The nested name buttons in the Names grid *are* real `<button>`s, but the position cells that open `/positions/[n]` are not.
@@ -53,6 +56,7 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 - **Fix:** Widen the container (`max-w-5xl` or full-width with padding) and enable `pagination` (or virtualization) plus `sticky` header on the antd `Table`. On mobile, switch to a stacked card list rather than a horizontally-scrolled 6-column table.
 
 ### [Low] Distance "gap" view: the <6 / =6 / >6 split is intentional — refine the palette so the norm recedes and deviations pop
+- **Status:** 🟡 **Partial (aa12635):** done well — norm (`=6`) now neutral grey, deviations red/blue, so exceptions pop. ⚠️ **New sub-issue:** the norm grey is `#9ca3af` (~**2.3:1** on the cells) — since ~60% of cells are the `6.00y` norm, most numbers are now faint. Use `gray-500`/`gray-600` so it recedes yet stays readable.
 - **Screens:** 21_storms_dist_position, 22_storms_dist_name, SpecialButtons row
 - **Category:** Data visualization
 - **Problem:** `getDistanceColor()` returns green for `< 6.0`, blue for `=== 6.0`, red for `> 6.0`. This **is** meaningful: ~6 years is the dominant reuse cadence across positions 1–140, so the `=6` bucket is the **norm** and `<6`/`>6` are the interesting deviations (faster / slower). So the 3-way split is intentional (my "arbitrary / fragile equality / meaningless" framing is withdrawn), and — for integer year-gaps whose averages land on 6 — the `=== 6.0` test is reliable, not fragile. Two refinements only: (a) the **norm is currently the most vivid colour** (saturated blue `#2563eb`), so the grid reads as a sea of blue with a few green/red cells — the common case visually dominates the exceptions you actually want to spot; (b) `<6` green + `>6` red is the classic red-green colour-blind pairing.
@@ -84,6 +88,7 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 - **Fix:** Align labels: rename the modal option to "Gap" / "Frequency" to match the title, or retitle the view "Storm Distance." Standardize the Storms view titles around one noun.
 
 ### [Low] Hidden Ctrl+F text in grid cells is a good idea — make it transparent + aria-hidden for robustness
+- **Status:** 🟡 **Partial (aa12635):** switched to `text-transparent select-none pointer-events-none` ✅. ⚠️ **New bug:** the aria attribute is misspelled `arid-hidden` (not `aria-hidden`), so it does nothing — the hidden storm-name string is now exposed to screen readers on every grid cell. One-char fix: `arid-hidden` → `aria-hidden`.
 - **Screens:** 10/12/16 grids (not visibly rendered; present in DOM)
 - **Category:** Robustness / Accessibility (minor)
 - **Problem:** `GridCell.tsx` renders `<div className="absolute top-0 text-[7px] text-stone-100 group-hover:text-stone-200">{stormNames.join(", ")}</div>`. This is **intentional and useful**: the position/average grids display numbers, so this invisible line makes the storm *names* findable via the browser's **Ctrl+F**. (I was wrong to call it purposeless, and my "grime on hover" note was also wrong — on hover the text becomes `stone-200` to match the `hover:bg-stone-200` cell, so it stays invisible.) The only fragility is that the color is pinned to `stone-100`/`stone-200`, so it has to stay in lockstep with the cell background — if a row/theme ever uses a different background, the 7px text would faintly show — and the node currently sits in the accessibility tree.

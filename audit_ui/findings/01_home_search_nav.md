@@ -5,12 +5,14 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 ---
 
 ### [Low] Home logo is an unlabeled external link (easter egg) — a footer social icon is more conventional
+- **Status:** 🟡 **Partial (aa12635):** a labeled Facebook icon + nav links (Storms/Names/Search/Info/Positions) were added to the footer ✅; the logo `<a>` still lacks `aria-label`/`rel` (unchanged easter egg).
 - **Screens:** 01_home__desktop.png, 01_home__mobile.png
 - **Category:** Affordance / Accessibility (minor)
 - **Problem:** The minimal game/launcher home layout (logo + primary buttons + search, **no navbar**) is an intentional, coherent pattern — the buttons and search bar serve as the navigation, so the earlier "no navbar / navigationally isolated" concern is withdrawn. The one small caveat is the logo itself: it is wrapped in `<a href="https://www.facebook.com/..." target="_blank">` (`page.tsx` lines 14–22), so activating the brand mark ejects the user to an external Facebook page in a new tab with no visual or `aria` cue that it leaves the site. As a hidden easter egg for mouse users this is low-harm (the new tab preserves their place), but a keyboard/screen-reader user hears only a generic "link" and the external jump is a surprise.
 - **Fix:** Keep the easter egg if you like it — it is harmless in a new tab. For a discoverable, conventional social link, add a labeled Facebook icon to the footer (the design already has one). If you keep the logo link, add `aria-label="JEBI.SE Malakas — our Facebook (opens in a new tab)"` and `rel="noopener noreferrer"` so the destination isn't a silent surprise for assistive tech.
 
 ### [Medium] "On this day" / "Useless Facts" amber links fail WCAG AA contrast (2.78:1)
+- **Status:** ✅ **Addressed (aa12635):** "On this day"/"Useless Facts" were moved off the hero into a `QuickActionsMenu` (hamburger), per plan; verify the menu items themselves meet the ~3.5 floor.
 - **Screens:** 01_home__desktop.png, 01_home__mobile.png
 - **Category:** Contrast / Accessibility
 - **Problem:** Both buttons use `text-amber-600!` (#d97706) small semibold text sitting on the `bg-sky-100` (#e0f2fe) home background (`OnThisDay.tsx` / `FunFacts.tsx` line ~52). Measured contrast is **2.78:1**, well below the 4.5:1 AA minimum for normal text.
@@ -18,6 +20,7 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Fix:** Darken to `text-amber-700` (#b45309 ≈ 3.9:1) or `text-amber-800` (passes AA), or use white text on a colored chip, in `OnThisDay.tsx`/`FunFacts.tsx` — wherever the items ultimately render. Usability caveat: a hamburger hides these engagement hooks, so give the menu trigger a clear, high-contrast affordance so the features are still discoverable.
 
 ### [High] Search-result table rows are not keyboard-operable
+- **Status:** ❌ **Not fixed (aa12635):** `onRow` still sets `role="button"`+`onClick` with no `onKeyDown`.
 - **Screens:** 02_search_results__desktop.png, 02_search_results__mobile.png
 - **Category:** Accessibility
 - **Problem:** In `SearchPageContent.tsx` (`onRow`, lines 131–139) each row is given `role="button"`, `tabIndex: 0`, and an `onClick` that navigates to the storm detail — but there is **no `onKeyDown` handler**. A keyboard/screen-reader user can focus the row (it announces as a button) but pressing Enter/Space does nothing; the only keyboard-reachable target is the inner Name `<Link>`. This is a broken interactive affordance and an AA (2.1.1 Keyboard) failure.
@@ -30,12 +33,14 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Fix:** Reuse one search component. At minimum give the home input the same live dropdown, and/or add a visible submit affordance (search-icon button) so the "press Enter" requirement is discoverable, especially on touch.
 
 ### [Medium] Empty-state microcopy references "filters" that don't exist on the search page
+- **Status:** ✅ **Fixed (aa12635):** empty search now shows `No typhoon names match "X". Check the spelling or try a shorter name.`
 - **Screens:** 03_search_no_results__desktop.png, 03_search_no_results__mobile.png
 - **Category:** Empty state / Microcopy
 - **Problem:** A zero-result search renders `EmptyResults` with its default text "No typhoon names match your current filters. Try adjusting your search criteria." (`SearchPageContent.tsx` line 118 → `EmptyResults/index.tsx`). The `/search` page has **no filter controls** — the user can only change the free-text query — so "filters" and "criteria" are borrowed from the Names page and are misleading here. The user is told to adjust something that isn't on screen.
 - **Fix:** Pass a query-specific `description`, e.g. `No typhoon names match "{query}". Check the spelling or try a shorter name.` Echoing the actual query also confirms what was searched.
 
 ### [Medium] Error and no-data states are conflated behind a generic "Something went wrong"
+- **Status:** ✅ **Fixed (aa12635):** `search/page.tsx` now derives `isError = q && result === null` and passes it separately; `FrownNotFound` (error, with Retry) vs `EmptyResults` (empty) are now correctly split.
 - **Screens:** 02/03 search (state logic)
 - **Category:** Error state / Feedback
 - **Problem:** In `SearchPageContent.tsx` line 108, `query.trim() && results === null` renders `FrownNotFound` ("Something went wrong. Please try again later."). `results` is null both on a real fetch failure and whenever the API returns no `data` for a valid query (`page.tsx` line 21 passes `result?.data ?? null`). So a legitimately empty/edge query can surface a scary "something went wrong" error instead of the friendlier empty state, and true errors give no retry action.

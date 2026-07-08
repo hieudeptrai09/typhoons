@@ -5,6 +5,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [Critical] Retired Names tab opens to an empty "no results" state
+- **Status:** ❌ **Not fixed (aa12635):** `RetiredView` still defaults `currentLetter = searchParams.get("letter") || "A"` and the toggle still lands on `?letter=A`; "A" has no retired names, so the tab still opens on the empty state (verified in the rebuilt app). This is the top-priority Critical still open.
 - **Screens:** 32_names_retired__desktop.png, 32_names_retired__mobile.png
 - **Category:** Empty/default state, first impression, logic bug
 - **Problem:** Opening the Retired view shows the `EmptyResults` "No typhoon names match your current filters" panel even though ~50 retired names exist. Root cause: `NamesPageContent.tsx` `toggleView()` pushes `/names/retired/?letter=A`, and `RetiredView.tsx` defaults `currentLetter = searchParams.get("letter") || "A"`. No retired name starts with "A" (letter A is rendered disabled/gray in the nav), so `displayedNames` filters to zero and the table renders `EmptyResults`. The `FilterX` empty icon further implies the user applied a filter they never touched. This is the worst possible first impression for the tab.
@@ -13,6 +14,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [High] The all-names ↔ retired view toggle is a lone icon whose action isn't legible
+- **Status:** ✅ **Fixed (aa12635):** all-names page now shows a red `Skull` ("view retired") + hint chip "Click the skull icon to view retired names"; retired page shows a blue `List` + "Click the list icon to view all names"; `aria-label` updated to "all names". `Flame` freed from the toggle. Matches the agreed design.
 - **Screens:** 30_names_current__desktop.png, 32_names_retired__desktop.png, 34_names_current_tab (both), mobile variants
 - **Category:** Discoverability, navigation, information architecture
 - **Problem:** The compact-icon control scheme on this page is a deliberate, space-efficient choice, and the **filter (funnel) and settings (gear) icons are conventional and fine** — this finding is *only* about the view toggle. Switching between the two primary views is done by one icon button: a `Flame` on the main page (`aria-label="Viewing active names, click to switch to retired"`) and a `Skull` on the retired page. Two issues: (1) the icon's *action* isn't legible — a flame doesn't say "go to the retired list," and the skull sits on the page you're already on, so it reads as a status glyph rather than a "switch view" control; the meaning lives only in `title`/`aria-label`. (2) The label is semantically off: the main view is intended to show **all names (active + retired)**, but its `aria-label` says "active names" and the code filters it to `status="current"` (`selectedStatus`, which hides retired-and-replaced names) — so intent, label, and behavior disagree (see the filter-badge finding).
@@ -21,6 +23,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [High] Filter badge shows "1" on the default view when no filter is applied
+- **Status:** ❌ **Not fixed (aa12635):** `activeFilterCount` still counts the implicit `selectedStatus="current"`, so the funnel badge still reads "1" on first load (visible in the rebuilt app).
 - **Screens:** 30_names_current__desktop.png (green "1" badge on funnel), 34_names_current_tab, 62_modal_names_settings
 - **Category:** Feedback, misleading state
 - **Problem:** In `NamesView.tsx`, `selectedStatus` defaults to `"current"` on the Current view and `activeFilterCount` includes `selectedStatus` in its `.filter(Boolean)` count. So the `Badge count={activeFilterCount}` on the filter funnel always reads "1" on first load even though the user has applied nothing. This trains users to distrust the badge and hides when a real filter is actually active. The filter modal compounds it by showing Status pre-set to "Current".
@@ -37,6 +40,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [High] Name-text colors fail WCAG AA contrast (amber and green on white)
+- **Status:** 🟡 **Partial (aa12635):** darkened — active `green-600`→`emerald-600` (**3.45:1** on cells, meets ~3.5), misspelling `amber-500`→`amber-600` (~**3.2:1**), external added (`slate-600`, 7.6:1). Improved; the letter-nav palette (`#22c55e` 2.28:1 etc.) is still low and was only annotated in code comments, not changed.
 - **Screens:** 30_names_current, 31_names_list, 33_names_history, 64_modal_retired_details (all)
 - **Category:** Contrast / accessibility (WCAG 1.4.3)
 - **Problem:** Grid/list name labels use `getNameStatusColorClass`: `text-amber-500` (#f59e0b) for misspelling names and `text-green-600` (#16a34a) for active names, on a white/very-light background, at 12–14px semibold. Amber-500 on white is ~1.9:1 and green-600 is ~3.9:1 — both fail the 4.5:1 AA threshold for normal text (amber fails even large-text 3:1). The amber "misspelling" names are effectively unreadable. Retired letter-nav red `#ef4444` on the light page background is also ~3.3:1 (fails AA for the small letters).
