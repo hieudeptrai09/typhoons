@@ -83,6 +83,7 @@ The Storms dashboard packs an unusually large feature set — four views (Storms
 - **Fix:** Show the country name beside the flag (flag + label) in both the list Country column and the header. Format the `-1.00`/TD case as a labeled category ("TD") rather than a raw negative number, or suppress averages for single-storm regions like IMD (count 1).
 
 ### [Low] Inconsistent terminology: "Distance" (control) vs "Average Gap" (title); "All Storms" vs "All Typhoon Names"
+- **Status:** 🟡 **Partial (titles fixed):** `getDashboardTitle` rewritten — the storms views are now the consistent, self-orienting **"All Storms by Name"** / **"All Storms by Position"** (no more "All Typhoon Names (Grid)" in the Storms section), and the `(List View)` mode suffixes are dropped. The remaining mismatch is only the settings modal labelling the view "Distance" while its title reads "Average Gap Between Storms by …".
 - **Screens:** 60_modal_dashboard_settings, 21_storms_dist_position, 12_storms_positions, 10_storms_grid
 - **Category:** Consistency / Copy
 - **Problem:** The settings modal's View segmented control labels the fourth view "Distance," but its page title is "Average Gap Between Storms by Position" — two names for one feature. Similarly the position-grouped Storms view is titled "All Storms" while the name-grouped one is "All Typhoon Names (Grid)"; the switch from "Storms" to "Typhoon Names" for what is the same "Storms" view is easy to misread as a different section.

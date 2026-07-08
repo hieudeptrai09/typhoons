@@ -56,14 +56,8 @@ export const getNamesTitle = (
   const viewStr = normalizeParam(view) || "grid";
 
   if (viewStr === "retired") return "Retired Typhoon Names";
-  if (viewStr === "list") return "All Typhoon Names (List)";
-
-  const nameOn = normalizeParam(showName) === "true";
-  const historyOn = normalizeParam(showHistory) === "true";
-
-  const nameLabel = nameOn ? "Name" : "Icon";
-  const historyLabel = historyOn ? "History" : "Current";
-  return `All Typhoon Names (${nameLabel}, ${historyLabel})`;
+  if (normalizeParam(showHistory) === "true") return "Typhoon Name History";
+  return "Current Typhoon Names";
 };
 
 export const getNamesDescription = (

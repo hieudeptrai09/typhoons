@@ -97,6 +97,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [Low] Cryptic parenthetical titles and no "reset to defaults"
+- **Status:** 🟡 **Partial (titles fixed):** `getNamesTitle` rewritten to plain, self-orienting titles — **"Current Typhoon Names"**, **"Typhoon Name History"**, "Retired Typhoon Names" — dropping the `(Name/Icon, Current/History)` and `(List)` tuples. The Display-Settings modal still has no "Reset to defaults" button (separate, still open).
 - **Screens:** 30/33/34 titles ("All Typhoon Names (Name, Current)" / "(Name, History)" / "(List)"), 62_modal_names_settings
 - **Category:** Copy, learnability
 - **Problem:** The page title exposes internal mode tuples like "(Name, Current)" and "(Name, History)" (from `getNamesTitle`), which are developer shorthand meaningless to end users. The Display Settings modal also has no "Reset to defaults" affordance, so after experimenting a user must remember the original toggle states.
