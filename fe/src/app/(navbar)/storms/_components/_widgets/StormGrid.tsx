@@ -78,18 +78,10 @@ const StormGrid = ({
     return [...new Set(storms.map((storm) => storm.name))];
   };
 
-  // Per owner review (see audit_ui/00_MASTER_REPORT.md Theme B and
-  // findings/02_storms_dashboard.md): this red/blue/orange mapping for
-  // strongest/first/last is an intentional, arbitrary chart palette — no
-  // legend needed, the three hues just need to stay distinct (they do).
-  // Not re-flagging that as a semantic conflict. One thing outside that
-  // prior review: bg-blue-300 is reused below with a *different* meaning
-  // for `yearHighlights` cells ("position has storms in the hovered year",
-  // ~line 233/241) — same class, two meanings, in the same component.
   const getHighlightColorClass = (): string => {
     switch (highlightType) {
       case "strongest":
-        return "bg-red-300";
+        return "bg-rose-300";
       case "first":
         return "bg-blue-300";
       case "last":
@@ -242,10 +234,6 @@ const StormGrid = ({
           ) : (
             ""
           ),
-          // bg-blue-300 here means "this position has storms in the hovered
-          // year" — see the semantic-collision note on getHighlightColorClass
-          // above (same class, "first storm of period" meaning, elsewhere in
-          // this file).
           className: isInHoveredYear ? "bg-stone-200" : hasStorms ? "bg-blue-300" : "",
           cellClickable: false,
         };

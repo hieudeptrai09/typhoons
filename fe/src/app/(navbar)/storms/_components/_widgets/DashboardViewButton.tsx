@@ -46,18 +46,16 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
           type="primary"
           onClick={onClick}
           aria-label="Change dashboard view settings"
-          // WCAG: white icon/text on purple-500 (#a855f7) -> 3.96:1, fails
-          // 4.5:1 normal-text AA (would need to qualify as large-text/UI-only
-          // to pass at 3:1).
-          // SEMANTIC NOTE: purple-500 here is a pure UI-brand accent for this
-          // button, unrelated to colors.ts's use of purple (#CC00CC "Super
-          // Typhoon" intensity badge, text-purple-600 "Special Storm"
-          // retirement reason) — three unrelated purples across the app.
-          style={{ backgroundColor: "#a855f7", borderColor: "#a855f7" }}
-          className="!px-6 !py-5 !font-semibold hover:!border-purple-600 hover:!bg-purple-600"
+          style={{ backgroundColor: "#9333ea", borderColor: "#9333ea" }}
+          className="!px-6 !py-5 !font-semibold hover:!border-purple-700 hover:!bg-purple-700"
         >
           <span className="flex items-center gap-2">{buildIconNodes()}</span>
         </Button>
+      </div>
+      <div className="mt-2 flex justify-center">
+        <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
+          Click the button above to change view
+        </span>
       </div>
     </div>
   );

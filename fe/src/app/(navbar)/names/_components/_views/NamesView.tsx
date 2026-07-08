@@ -2,7 +2,7 @@ import LetterNavigation from "@/lib/components/LetterNavigation";
 import type { FilterParams, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
-import { Filter, Flame, Settings } from "lucide-react";
+import { Filter, Settings, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import ListFilterModal from "../_modals/ListFilterModal";
@@ -259,17 +259,12 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
           <button
             onClick={onToggleView}
             title="Switch to retired names"
-            aria-label="Viewing active names, click to switch to retired"
-            className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
+            aria-label="Viewing all names, click to switch to retired"
+            className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
-            {/* SEMANTIC NOTE: emerald-600 here is a 3rd hue used for "active" page
-                context, alongside colors.ts's green-600 (getNameStatusColorClass
-                default) and InfoPageContent.tsx's teal-600 "Active" pill — three
-                different greens for the same concept across the app. */}
-            <Flame size={30} />
+            <Skull size={30} />
           </button>
-          {/* #10b981 = emerald-500, a 4th shade in the same "active" green family. */}
-          <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
+          <Badge count={activeFilterCount} color="#ef4444" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
@@ -287,6 +282,11 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
           >
             <Settings size={30} />
           </button>
+        </div>
+        <div className="mt-2 flex justify-center">
+          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+            Click the skull icon to view retired names
+          </span>
         </div>
       </div>
 

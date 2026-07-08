@@ -7,8 +7,10 @@ import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
 import type { SearchResult } from "@/lib/types";
-import { Table } from "antd";
+import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
+import { Empty, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -31,20 +33,11 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: SearchResult) => {
-      // DUPLICATE + LOGIC DRIFT from colors.ts's getNameStatusColorClass:
-      // this branches on `!isRetired` first (always green if not retired,
-      // even when isLanguageProblem === 2), whereas getNameStatusColorClass
-      // checks isLanguageProblem === 2 first regardless of retired status —
-      // the two can disagree on which color an active-but-language-problem
-      // name gets. Also uses text-amber-600 here vs the canonical
-      // text-amber-500 in colors.ts for the same "language problem" meaning
-      // (amber-600 on white -> 3.19:1, still fails normal-text AA like
-      // amber-500's 2.15:1, so neither passes, but the shades don't match).
-      const color = !record.isRetired
-        ? "text-green-600"
-        : record.isLanguageProblem === 2
-          ? "text-amber-600"
-          : "text-red-600";
+      const color = getNameStatusColorClass({
+        isRetired: Boolean(record.isRetired),
+        isLanguageProblem: record.isLanguageProblem,
+        isExternal: isExternalPosition(record.position),
+      });
       return (
         <Link
           href={`/info/${encodeURIComponent(record.name.toLowerCase())}/`}
@@ -104,27 +97,41 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
 ];
 
 interface SearchPageContentProps {
-  results: SearchResult[] | null;
+  results: SearchResult[];
   count: number;
   query: string;
+  isError: boolean;
 }
 
-export default function SearchPageContent({ results, count, query }: SearchPageContentProps) {
+export default function SearchPageContent({
+  results,
+  count,
+  query,
+  isError,
+}: SearchPageContentProps) {
   const router = useRouter();
 
   const columns = useMemo(() => getColumns(query), [query]);
 
-  if (query.trim() && results === null) {
-    return <FrownNotFound />;
+  if (query.trim() && isError) {
+    return <FrownNotFound onRetry={() => router.refresh()} />;
   }
 
   return (
     <PageHeader title="Search Typhoon Names">
       <div className="mx-auto max-w-4xl">
         {!query.trim() ? (
-          <div className="py-12 text-center text-gray-400">Type a name to search</div>
+          <div className="p-8">
+            <Empty
+              image={<Search size={64} strokeWidth={1.5} className="text-gray-300" />}
+              imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
+              description="Type a name to search"
+            />
+          </div>
         ) : count === 0 ? (
-          <EmptyResults />
+          <EmptyResults
+            description={`No typhoon names match "${query}". Check the spelling or try a shorter name.`}
+          />
         ) : (
           <>
             <div id="search-result-count" className="mb-4 text-sm text-gray-500">
@@ -132,7 +139,7 @@ export default function SearchPageContent({ results, count, query }: SearchPageC
             </div>
             <div className="overflow-x-auto pb-px" aria-describedby="search-result-count">
               <Table<SearchResult>
-                dataSource={results || []}
+                dataSource={results}
                 columns={columns}
                 rowKey={(record) =>
                   record.id !== null ? String(record.id) : `storm-${record.name}`

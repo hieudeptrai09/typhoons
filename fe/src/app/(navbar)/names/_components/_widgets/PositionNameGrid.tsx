@@ -34,15 +34,6 @@ const TAG_ICONS: Record<string, LucideIcon> = {
   Thing: Hammer,
 };
 
-// SEMANTIC CONFLICT: these are purely decorative per-category icon colors
-// (12 unrelated naming categories), but several reuse the exact same classes
-// that colors.ts assigns specific status meanings to elsewhere in the app:
-//   "Food and beverage": text-red-500  — close to (not identical to, but easily
-//     confused with) text-red-600 used for "retired name" (getNameStatusColorClass)
-//   Plant: text-green-600 — identical class to "active name" (getNameStatusColorClass
-//     default) and getDistanceColor's "<6 years"
-// A user scanning for retired/active-name colors could misread these tag icons
-// as status indicators.
 const TAG_COLORS: Record<string, string> = {
   Animal: "text-emerald-700",
   "Celestial body": "text-indigo-800",
@@ -58,15 +49,6 @@ const TAG_COLORS: Record<string, string> = {
   Thing: "text-amber-800",
 };
 
-// SEMANTIC CONFLICT: this is a "how many times has this name been reused"
-// frequency scale, unrelated to name status, but it reuses the literal same
-// classes colors.ts uses for status meaning:
-//   count 1 -> text-green-600 (== "active name")
-//   count 3 -> text-amber-600 (close to "language problem" text-amber-500)
-//   count >=4 -> text-red-600 (== "retired name")
-// So a "reused 4+ times" cell and a "retired" cell render in identical red,
-// and a "reused once" cell and an "active" name render in identical green,
-// despite being unrelated facts about the name.
 const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
 const getHistoryCountColor = (count: number) =>
   count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-gray-600";

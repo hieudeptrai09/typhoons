@@ -100,6 +100,18 @@ try {
             }
             break;
 
+        case 'active-on-this-day':
+            $controller = new StormController($db);
+            if ($method === 'GET') {
+                $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
+                $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
+                $result = $controller->getActiveOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
         case 'facts':
             $controller = new FactController($db);
             if ($method === 'GET') {

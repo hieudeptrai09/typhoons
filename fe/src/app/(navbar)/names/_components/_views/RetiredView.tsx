@@ -4,7 +4,7 @@ import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { RetiredFilterParams, RetiredName, Suggestion } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
-import { Filter, Skull } from "lucide-react";
+import { Filter, List } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
@@ -159,19 +159,13 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
         <div className="flex items-center justify-center gap-9">
           <button
             onClick={onToggleView}
-            title="Switch to active names"
-            aria-label="Viewing retired names, click to switch to active"
-            className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
+            title="Switch to all names"
+            aria-label="Viewing retired names, click to switch to all names"
+            className="cursor-pointer border-0 bg-transparent p-1 text-blue-500 transition-colors hover:text-blue-700"
           >
-            {/* SEMANTIC NOTE: red-500 here means "go to retired view" (page nav),
-                a different meaning from colors.ts's red-600 "this name is retired"
-                and StormGrid's red-300 "strongest storm" — yet another red reuse. */}
-            <Skull size={30} />
+            <List size={30} />
           </button>
-          {/* #f97316 = orange-500, parallels NamesView's emerald-500 filter badge;
-              decorative page-accent only, unrelated to the amber/orange used for
-              storm-intensity categories 2-3 in colors.ts. */}
-          <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
+          <Badge count={activeFilterCount} color="#3b82f6" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
@@ -181,6 +175,11 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
               <Filter size={30} />
             </button>
           </Badge>
+        </div>
+        <div className="mt-2 flex justify-center">
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+            Click the list icon to view all names
+          </span>
         </div>
       </div>
 

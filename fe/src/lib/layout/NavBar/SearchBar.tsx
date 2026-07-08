@@ -2,65 +2,31 @@
 
 import HighlightedName from "@/lib/components/HighlightedName";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { useFetchData } from "@/lib/hooks/useFetchData";
+import { useSearchAutocomplete } from "@/lib/hooks/useSearchAutocomplete";
 import { Input } from "antd";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 
 const SearchBar = () => {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const { data: allNames, loading } = useFetchData<string[]>("/search/names");
-
-  const trimmed = query.trim();
-  const filtered =
-    trimmed && allNames
-      ? allNames.filter((name) => name.toLowerCase().includes(trimmed.toLowerCase()))
-      : [];
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleLinkClick = () => {
-    setIsDropdownOpen(false);
-    setQuery("");
-  };
-
-  const handleViewAll = () => {
-    setIsDropdownOpen(false);
-    setQuery("");
-    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-  };
-
-  const handleKeyDown = (e: { key: string }) => {
-    if (e.key === "Enter" && trimmed) {
-      handleViewAll();
-    }
-  };
+  const {
+    query,
+    setQuery,
+    isDropdownOpen,
+    setIsDropdownOpen,
+    containerRef,
+    trimmed,
+    filtered,
+    loading,
+    handleLinkClick,
+    handleViewAll,
+    handleKeyDown,
+  } = useSearchAutocomplete();
 
   return (
     <>
       <div ref={containerRef} className="relative w-full">
         <Input
-          // WCAG: white/70% over the bg-blue-600 navbar composites to
-          // ~3.34:1 — fails 4.5:1 normal-text AA, borderline for the 3:1
-          // large-text/icon minimum. See globals.css .search-bar-input for
-          // the placeholder/clear-icon contrast on the input itself
-          // (composited on top of this same translucent-white-on-blue-600
-          // background), which fails more severely (~2.42:1 at rest).
-          prefix={<Search size={16} className="text-white/70" />}
+          prefix={<Search size={16} className="text-white" />}
           placeholder="Search names..."
           aria-label="Search typhoon names"
           aria-describedby={isDropdownOpen && trimmed ? "search-status" : undefined}

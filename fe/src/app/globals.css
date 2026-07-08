@@ -95,12 +95,6 @@ a:hover {
 }
 
 /* Search bar in navbar */
-/* WCAG: composited over the translucent input bg (white/0.15 on bg-blue-600
-   navbar, see NavBar/SearchBar.tsx), white/0.6 placeholder and clear-icon
-   text resolve to ~2.42:1 against that input background — WCAG FAIL (well
-   under both 4.5:1 text and 3:1 UI-component minimums). The hover state
-   (white/0.9) resolves to ~3.54:1 — still fails 4.5:1 normal-text AA, though
-   it clears the 3:1 large-text/icon threshold. */
 .search-bar-input .ant-input::placeholder {
   color: rgba(255, 255, 255, 0.6) !important;
 }

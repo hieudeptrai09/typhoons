@@ -1,4 +1,4 @@
-import { getNameStatusColorClass } from "@/lib/utils/colors";
+import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
 import { CircleHelp, Flame, Skull, SpellCheck2 } from "lucide-react";
 
 interface Props {
@@ -14,10 +14,11 @@ export default function NameStatusIcon({
   size = 20,
   position,
 }: Props) {
-  if (position !== undefined && (position < 1 || position > 140)) {
-    return <CircleHelp className="text-slate-500" size={size} />;
+  const isExternal = isExternalPosition(position);
+  const colorClass = getNameStatusColorClass({ isRetired, isLanguageProblem, isExternal });
+  if (isExternal) {
+    return <CircleHelp className={colorClass} size={size} />;
   }
-  const colorClass = getNameStatusColorClass({ isRetired, isLanguageProblem });
   if (isLanguageProblem === 2) {
     return <SpellCheck2 className={colorClass} size={size} />;
   }

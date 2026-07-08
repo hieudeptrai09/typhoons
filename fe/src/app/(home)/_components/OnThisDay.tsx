@@ -45,12 +45,15 @@ const getReasonIcon = (
   storm: OnThisDayStorm,
 ): { Icon: typeof Play; color: string; label: string } => {
   // DUPLICATE + SEMANTIC NOTE: #16a34a/#dc2626/#d97706 are the exact same
-  // hexes as colors.ts's getDistanceColor/getNameStatusColor (green-600,
-  // red-600, and amber-600 respectively — d97706 is amber-600, distinct from
-  // getNameStatusColor's amber-500 #f59e0b), but hardcoded independently here
-  // rather than imported. The meaning is a 4th unrelated concept:
-  // "storm formed/entered" (green) vs "dissipated/exited" (red) vs "both on
-  // the same day" (amber) — nothing to do with name status or distance.
+  // hexes as colors.ts's getNameStatusColor (green-600, red-600, and
+  // amber-600 respectively — getNameStatusColor's "language problem" color
+  // is this same #d97706 amber-600), but hardcoded independently here rather
+  // than imported. #dc2626 is also getDistanceColor's "faster than normal"
+  // hot color (a deliberate reuse, not a fresh hue, per owner's call) —
+  // three unrelated meanings for the same red now. The meaning here is a
+  // 4th unrelated concept: "storm formed/entered"
+  // (green) vs "dissipated/exited" (red) vs "both on the same day" (amber)
+  // — nothing to do with name status or distance.
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
   if (isExternal) {
     if (storm.reason === "both") {
@@ -188,18 +191,14 @@ const OnThisDay = () => {
       type="text"
       icon={
         loading ? (
-          <TyphoonSpinner colorClass="text-amber-600" size="small" />
+          <TyphoonSpinner colorClass="text-amber-700" size="small" />
         ) : (
           <Calendar size={16} />
         )
       }
       onClick={fetchStorms}
       disabled={loading}
-      // WCAG FAIL (already logged in audit_ui/findings/01_home_search_nav.md):
-      // text-amber-600 (#d97706) on the bg-sky-100 home background measures
-      // 2.78:1, well under the 4.5:1 AA minimum. Same class/pattern
-      // duplicated in FunFacts.tsx's "Useless Facts" button.
-      className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
+      className="w-full! justify-start! text-sm! font-semibold! text-amber-700! hover:text-amber-800!"
     >
       On this day
     </Button>

@@ -5,65 +5,39 @@ import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
 import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
-import { getNameStatusColorClass } from "@/lib/utils/colors";
+import {
+  getNameStatusBgClass,
+  getNameStatusColorClass,
+  isExternalPosition,
+} from "@/lib/utils/colors";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
   name: string;
 }
 
-// DUPLICATE + DIVERGES from colors.ts's getNameStatusColorClass/getNameStatusBgClass
-// (already imported into this file below, for a different consumer) — this
-// component reimplements the same "status -> bg+text pill" idea from scratch,
-// introduces a 4th "Active" hue (teal, not the green/emerald used elsewhere),
-// and adds an "External name" state (slate) that colors.ts's helpers don't
-// model at all. getNameStatusBgClass is otherwise unused in the app; this is
-// the component that needed it and didn't use it.
-// WCAG (pill = small bold text on tinted bg, needs 4.5:1 as normal text):
-//   Misspelling: bg-amber-100 + text-amber-600 -> 2.86:1  WCAG FAIL
-//     (also a shade mismatch: colors.ts uses amber-500 for the same concept,
-//      whose own pairing with amber-100 would be 1.93:1, an even worse fail)
-//   Retired:     bg-red-100 + text-red-600     -> 3.95:1  FAIL normal-text AA
-//     (passes 3:1 large-text/UI only)
-//   Active:      bg-teal-100 + text-teal-600   -> 3.32:1  FAIL normal-text AA
-//     (passes 3:1 large-text/UI only; also: if this used colors.ts's actual
-//      "active" pairing, bg-emerald-100 + text-green-600 -> 2.91:1, worse)
-//   External name: bg-slate-100 + text-slate-500 -> 4.34:1  FAIL normal-text AA
-//     (just under 4.5:1 threshold)
-// None of the four pill variants clears 4.5:1 for normal-size text.
 function StatusBadge({
   isInPosition,
   isRetired,
-  isMisspelling,
+  isLanguageProblem,
 }: {
   isInPosition: boolean;
   isRetired: boolean;
-  isMisspelling: boolean;
+  isLanguageProblem: number;
 }) {
-  if (!isInPosition) {
-    return (
-      <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-500">
-        External name
-      </span>
-    );
-  }
-  if (isMisspelling) {
-    return (
-      <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-600">
-        Misspelling
-      </span>
-    );
-  }
-  if (isRetired) {
-    return (
-      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">
-        Retired
-      </span>
-    );
-  }
+  const status = { isRetired, isLanguageProblem, isExternal: !isInPosition };
+  const label = !isInPosition
+    ? "External name"
+    : isLanguageProblem === 2
+      ? "Misspelling"
+      : isRetired
+        ? "Retired"
+        : "Active";
   return (
-    <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-600">
-      Active
+    <span
+      className={`rounded-full px-3 py-1 text-sm font-semibold ${getNameStatusBgClass(status)} ${getNameStatusColorClass(status)}`}
+    >
+      {label}
     </span>
   );
 }
@@ -85,11 +59,6 @@ function NameDetailsSection({
         <div className="flex-1 space-y-4">
           <div>
             <div className="text-sm font-medium text-slate-500">Meaning</div>
-            {/* SEMANTIC NOTE: text-teal-600 here is plain decorative emphasis for
-                "name meaning" text, same hue as the "Active" status pill above
-                (StatusBadge) and NameDetailsContent's identical usage — a
-                reader could misread teal as implying "this name is active"
-                when it's unrelated to status. */}
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>
@@ -172,14 +141,12 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
 
   const nameData = detail.name ?? null;
   const storms = detail.storms ?? [];
-  const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
+  const isInPosition = nameData ? !isExternalPosition(nameData.position) : false;
   const displayName = nameData?.name ?? name;
 
-  const titleColorClass = !isInPosition
-    ? "text-slate-500"
-    : nameData
-      ? getNameStatusColorClass(nameData)
-      : "text-slate-800";
+  const titleColorClass = nameData
+    ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
+    : "text-slate-800";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
@@ -187,7 +154,6 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
   }
 
   const correctSpelling = storms[0]?.correctSpelling;
-  const isMisspelling = nameData?.isLanguageProblem === 2;
   const metaCountry = nameData?.country ?? storms[0]?.country;
   const metaPosition = nameData?.position ?? storms[0]?.position;
 
@@ -218,7 +184,7 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
         <StatusBadge
           isInPosition={isInPosition}
           isRetired={isRetired}
-          isMisspelling={isMisspelling}
+          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
         />
       </div>
 

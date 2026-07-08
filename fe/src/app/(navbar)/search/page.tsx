@@ -18,7 +18,19 @@ const SearchPage = async ({ searchParams }: { searchParams: Promise<{ q?: string
     ? await fetchServerData<SearchResult[]>(`/search?q=${encodeURIComponent(q.trim())}`)
     : null;
 
-  return <SearchPageContent results={result?.data ?? null} count={result?.count ?? 0} query={q} />;
+  // A real fetch failure yields no ApiResponse at all; a successful response
+  // with no matches (or a missing/empty data array) is genuine emptiness, not
+  // an error, so it must not be conflated into the same "results" signal.
+  const isError = q.trim() !== "" && result === null;
+
+  return (
+    <SearchPageContent
+      results={result?.data ?? []}
+      count={result?.count ?? 0}
+      query={q}
+      isError={isError}
+    />
+  );
 };
 
 export default SearchPage;
