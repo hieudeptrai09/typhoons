@@ -49,6 +49,10 @@ const FunFacts = () => {
       }
       onClick={showFact}
       disabled={loading}
+      // WCAG FAIL (audit_ui/findings/01_home_search_nav.md): text-amber-600
+      // (#d97706) on bg-sky-100 -> 2.78:1, fails 4.5:1 AA. Same
+      // hardcoded class pattern duplicated in OnThisDay.tsx's button —
+      // candidate to share a single "hero link button" style/constant.
       className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
     >
       Useless Facts

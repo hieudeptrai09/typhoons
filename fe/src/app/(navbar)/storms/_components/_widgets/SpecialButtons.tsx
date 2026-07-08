@@ -19,6 +19,10 @@ const SpecialButtons = ({
     if (distanceValues && distanceValues[buttonId] !== undefined) {
       const dist = distanceValues[buttonId];
       return {
+        // "#9ca3af" (gray-400) = "no distance data (0/N/A)" companion color for
+        // getDistanceColor, duplicated as a raw hex literal here and in
+        // DistanceView.tsx / StormGrid.tsx instead of being exported
+        // alongside getDistanceColor in colors.ts.
         color: dist === 0 ? "#9ca3af" : getDistanceColor(dist),
         suffix: dist === 0 ? "" : ` · ${dist.toFixed(2)}y`,
       };

@@ -271,6 +271,9 @@ export default function PositionModal({ detail, position }: PositionModalProps) 
     );
   }
 
+  // "#64748b" (slate-500) "no average yet" fallback is duplicated as a raw
+  // hex literal in InfoModal.tsx and PositionPageContent.tsx instead of a
+  // shared constant next to TEXT_COLOR_WHITE_BACKGROUND in colors.ts.
   const avgIntensityColor =
     storms.length > 0
       ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
@@ -314,6 +317,7 @@ export default function PositionModal({ detail, position }: PositionModalProps) 
       centered
       destroyOnHidden
       styles={{
+        // CONSOLIDATION: duplicated modal-header style, see InfoModal.tsx note.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: {
           height: isSingleLens ? "" : "70vh",

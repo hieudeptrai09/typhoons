@@ -57,6 +57,7 @@ const NamesSettingsModal = ({
       }}
       title={<span className="text-xl font-bold text-gray-700">Display Settings</span>}
       styles={{
+        // CONSOLIDATION: duplicated modal-header style, see InfoModal.tsx note.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
       }}
       footer={[

@@ -31,6 +31,15 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: SearchResult) => {
+      // DUPLICATE + LOGIC DRIFT from colors.ts's getNameStatusColorClass:
+      // this branches on `!isRetired` first (always green if not retired,
+      // even when isLanguageProblem === 2), whereas getNameStatusColorClass
+      // checks isLanguageProblem === 2 first regardless of retired status —
+      // the two can disagree on which color an active-but-language-problem
+      // name gets. Also uses text-amber-600 here vs the canonical
+      // text-amber-500 in colors.ts for the same "language problem" meaning
+      // (amber-600 on white -> 3.19:1, still fails normal-text AA like
+      // amber-500's 2.15:1, so neither passes, but the shades don't match).
       const color = !record.isRetired
         ? "text-green-600"
         : record.isLanguageProblem === 2

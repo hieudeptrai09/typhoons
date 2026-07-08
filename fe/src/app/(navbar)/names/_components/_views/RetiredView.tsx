@@ -137,6 +137,12 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     router.push(`${paramsToPath("retired")}${buildQuery({ letter })}`);
   };
 
+  // DUPLICATE: same "retired" red pair (#991b1b active / #ef4444 inactive) as
+  // NamesView.tsx's getLetterConfig "all-retired" branch, but re-typed here
+  // independently — see the WCAG ratios and consolidation note there
+  // (retired-active #991b1b -> 8.31:1 PASS AAA; retired-inactive #ef4444 ->
+  // 3.76:1 FAILS normal-text AA, passes 3:1 large-text/UI only). Neither copy
+  // imports from colors.ts.
   const getLetterConfig = (letter: string) => {
     const isAvailable = availableLettersMap[letter];
     const isActive = currentLetter === letter;
@@ -157,8 +163,14 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
             aria-label="Viewing retired names, click to switch to active"
             className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
+            {/* SEMANTIC NOTE: red-500 here means "go to retired view" (page nav),
+                a different meaning from colors.ts's red-600 "this name is retired"
+                and StormGrid's red-300 "strongest storm" — yet another red reuse. */}
             <Skull size={30} />
           </button>
+          {/* #f97316 = orange-500, parallels NamesView's emerald-500 filter badge;
+              decorative page-accent only, unrelated to the amber/orange used for
+              storm-intensity categories 2-3 in colors.ts. */}
           <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}

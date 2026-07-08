@@ -34,6 +34,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
       centered
       destroyOnHidden
       styles={{
+        // CONSOLIDATION: duplicated modal-header style, see InfoModal.tsx note.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}

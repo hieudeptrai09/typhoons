@@ -214,6 +214,26 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     }
   };
 
+  // DUPLICATE: re-implements name-status color logic locally with its own hex
+  // values instead of using colors.ts's getNameStatusColor/getNameStatusColorClass.
+  // This is one of 3 independent copies of "status -> color" branching in the
+  // app (see also RetiredView.tsx's getLetterConfig and SearchPageContent.tsx's
+  // inline ternary) — none share a single source of truth, so shades/hues can
+  // (and do) drift between them.
+  // WCAG (all measured as text color on white, per LetterNavigation rendering):
+  //   mixed active   #1e3a8a -> 10.36:1 PASS AAA
+  //   mixed inactive #3b82f6 ->  3.68:1 FAIL normal-text AA (passes 3:1 large-text/UI only)
+  //   all-retired active   #991b1b -> 8.31:1 PASS AAA
+  //   all-retired inactive #ef4444 -> 3.76:1 FAIL normal-text AA (passes 3:1 large-text/UI only)
+  //   all-active active    #166534 -> 7.13:1 PASS AAA
+  //   all-active inactive  #22c55e -> 2.28:1 WCAG FAIL (fails even 3:1 large-text/UI)
+  //   unavailable           #d1d5db -> 1.47:1 (intentionally muted, but this low a
+  //     ratio also risks failing to be perceivable as "text" at all against white)
+  // SEMANTIC NOTE: the "all-retired" red (#991b1b/#ef4444) is a 4th distinct red
+  // shade pair in the app alongside colors.ts's red-600 (#dc2626, "retired name"),
+  // StormGrid's red-300 ("strongest storm"), and PositionNameGrid's red-500
+  // ("Food and beverage" tag) — none of these reds are reused consistently even
+  // when they mean the same "retired" concept.
   const getLetterConfig = (letter: string) => {
     const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;
@@ -242,8 +262,13 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
             aria-label="Viewing active names, click to switch to retired"
             className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
           >
+            {/* SEMANTIC NOTE: emerald-600 here is a 3rd hue used for "active" page
+                context, alongside colors.ts's green-600 (getNameStatusColorClass
+                default) and InfoPageContent.tsx's teal-600 "Active" pill — three
+                different greens for the same concept across the app. */}
             <Flame size={30} />
           </button>
+          {/* #10b981 = emerald-500, a 4th shade in the same "active" green family. */}
           <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}

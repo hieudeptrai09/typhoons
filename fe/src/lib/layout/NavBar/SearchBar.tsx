@@ -54,6 +54,12 @@ const SearchBar = () => {
     <>
       <div ref={containerRef} className="relative w-full">
         <Input
+          // WCAG: white/70% over the bg-blue-600 navbar composites to
+          // ~3.34:1 — fails 4.5:1 normal-text AA, borderline for the 3:1
+          // large-text/icon minimum. See globals.css .search-bar-input for
+          // the placeholder/clear-icon contrast on the input itself
+          // (composited on top of this same translucent-white-on-blue-600
+          // background), which fails more severely (~2.42:1 at rest).
           prefix={<Search size={16} className="text-white/70" />}
           placeholder="Search names..."
           aria-label="Search typhoon names"

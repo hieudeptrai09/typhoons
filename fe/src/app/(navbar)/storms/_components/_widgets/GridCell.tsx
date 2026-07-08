@@ -35,6 +35,15 @@ const GridCell = ({
       title={viewType !== "highlights" && stormNames.length > 0 ? stormNames.join(", ") : ""}
     >
       {viewType !== "highlights" && stormNames.length > 0 && (
+        // Per owner review (audit_ui/findings/02_storms_dashboard.md, "Hidden
+        // Ctrl+F text"): this near-zero-contrast text (stone-100 on white
+        // ~1.09:1, matched to stone-200 on hover so it stays invisible) is
+        // INTENTIONAL — it makes storm names findable via the browser's
+        // Ctrl+F/find-in-page over an otherwise all-graphical grid. Not a
+        // WCAG bug to fix. Owner-endorsed robustness tweak (not yet applied):
+        // swap to `text-transparent` + `aria-hidden="true"` + `select-none
+        // pointer-events-none`, which stays invisible on any background/theme
+        // without needing the text/hover colors kept in sync with the cell bg.
         <div className="absolute top-0 text-[7px] text-stone-100 group-hover:text-stone-200">
           {stormNames.join(", ")}
         </div>

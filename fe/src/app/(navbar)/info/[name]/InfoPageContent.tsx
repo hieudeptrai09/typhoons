@@ -12,6 +12,25 @@ interface InfoPageContentProps {
   name: string;
 }
 
+// DUPLICATE + DIVERGES from colors.ts's getNameStatusColorClass/getNameStatusBgClass
+// (already imported into this file below, for a different consumer) — this
+// component reimplements the same "status -> bg+text pill" idea from scratch,
+// introduces a 4th "Active" hue (teal, not the green/emerald used elsewhere),
+// and adds an "External name" state (slate) that colors.ts's helpers don't
+// model at all. getNameStatusBgClass is otherwise unused in the app; this is
+// the component that needed it and didn't use it.
+// WCAG (pill = small bold text on tinted bg, needs 4.5:1 as normal text):
+//   Misspelling: bg-amber-100 + text-amber-600 -> 2.86:1  WCAG FAIL
+//     (also a shade mismatch: colors.ts uses amber-500 for the same concept,
+//      whose own pairing with amber-100 would be 1.93:1, an even worse fail)
+//   Retired:     bg-red-100 + text-red-600     -> 3.95:1  FAIL normal-text AA
+//     (passes 3:1 large-text/UI only)
+//   Active:      bg-teal-100 + text-teal-600   -> 3.32:1  FAIL normal-text AA
+//     (passes 3:1 large-text/UI only; also: if this used colors.ts's actual
+//      "active" pairing, bg-emerald-100 + text-green-600 -> 2.91:1, worse)
+//   External name: bg-slate-100 + text-slate-500 -> 4.34:1  FAIL normal-text AA
+//     (just under 4.5:1 threshold)
+// None of the four pill variants clears 4.5:1 for normal-size text.
 function StatusBadge({
   isInPosition,
   isRetired,
@@ -66,6 +85,11 @@ function NameDetailsSection({
         <div className="flex-1 space-y-4">
           <div>
             <div className="text-sm font-medium text-slate-500">Meaning</div>
+            {/* SEMANTIC NOTE: text-teal-600 here is plain decorative emphasis for
+                "name meaning" text, same hue as the "Active" status pill above
+                (StatusBadge) and NameDetailsContent's identical usage — a
+                reader could misread teal as implying "this name is active"
+                when it's unrelated to status. */}
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>

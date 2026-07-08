@@ -134,6 +134,9 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
     );
   }
 
+  // "#64748b" (slate-500) fallback duplicated across 3 files — see
+  // PositionModal.tsx note. Also reused a second time immediately below for
+  // an unrelated fallback (no name-status data), same hex, different meaning.
   const avgIntensityColor =
     storms.length > 0
       ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
@@ -180,6 +183,12 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
       centered
       destroyOnHidden
       styles={{
+        // CONSOLIDATION: this exact `{ borderBottom: "1px solid #9ca3af",
+        // paddingBottom: "12px" }` header style is copy-pasted verbatim into
+        // 9 modal components (PositionModal, StormDetailModal,
+        // NamesSettingsModal, AverageModal, DashboardModal, ListFilterModal,
+        // RetiredNameDetailsModal, RetiredFilterModal, plus this one) —
+        // candidate for one shared `modalHeaderStyles` constant/style object.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: {
           height: !detailsOnly && !stormsOnly ? "70vh" : "",

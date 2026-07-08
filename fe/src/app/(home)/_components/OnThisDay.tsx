@@ -44,6 +44,13 @@ const MONTH_NAMES = [
 const getReasonIcon = (
   storm: OnThisDayStorm,
 ): { Icon: typeof Play; color: string; label: string } => {
+  // DUPLICATE + SEMANTIC NOTE: #16a34a/#dc2626/#d97706 are the exact same
+  // hexes as colors.ts's getDistanceColor/getNameStatusColor (green-600,
+  // red-600, and amber-600 respectively — d97706 is amber-600, distinct from
+  // getNameStatusColor's amber-500 #f59e0b), but hardcoded independently here
+  // rather than imported. The meaning is a 4th unrelated concept:
+  // "storm formed/entered" (green) vs "dissipated/exited" (red) vs "both on
+  // the same day" (amber) — nothing to do with name status or distance.
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
   if (isExternal) {
     if (storm.reason === "both") {
@@ -188,6 +195,10 @@ const OnThisDay = () => {
       }
       onClick={fetchStorms}
       disabled={loading}
+      // WCAG FAIL (already logged in audit_ui/findings/01_home_search_nav.md):
+      // text-amber-600 (#d97706) on the bg-sky-100 home background measures
+      // 2.78:1, well under the 4.5:1 AA minimum. Same class/pattern
+      // duplicated in FunFacts.tsx's "Useless Facts" button.
       className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
     >
       On this day

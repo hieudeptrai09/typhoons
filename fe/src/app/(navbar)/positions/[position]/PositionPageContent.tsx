@@ -210,6 +210,8 @@ export default function PositionPageContent({ detail, position }: PositionPageCo
 
   const { country, names, storms } = detail;
   const positionTitle = getPositionTitle(position);
+  // "#64748b" (slate-500) fallback duplicated across 3 files — see
+  // PositionModal.tsx note.
   const titleColor =
     storms.length > 0
       ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
