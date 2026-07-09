@@ -24,7 +24,7 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
     if (viewMode === "retired") {
       router.push(paramsToPath("current", false, true));
     } else {
-      router.push(`${paramsToPath("retired")}?letter=A`);
+      router.push(paramsToPath("retired"));
     }
   };
 

@@ -17,10 +17,14 @@ interface RetiredViewProps {
   onToggleView: () => void;
 }
 
+const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) => {
+  const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  return allLetters.find((letter) => availableLettersMap[letter]) ?? "A";
+};
+
 const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentLetter = searchParams.get("letter") || "A";
 
   const searchName = searchParams.get("name") || "";
   const selectedYear = searchParams.get("year") || "";
@@ -59,6 +63,16 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     searchPosition,
   ].filter(Boolean).length;
 
+  const availableLettersMap = useMemo(() => {
+    const map: Record<string, boolean> = {};
+    retiredNames.forEach((n) => {
+      map[n.name.charAt(0).toUpperCase()] = true;
+    });
+    return map;
+  }, [retiredNames]);
+
+  const currentLetter = searchParams.get("letter") || getFirstAvailableLetter(availableLettersMap);
+
   const displayedNames = useMemo(() => {
     let filtered = [...retiredNames];
 
@@ -95,14 +109,6 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     searchPosition,
     currentLetter,
   ]);
-
-  const availableLettersMap = useMemo(() => {
-    const map: Record<string, boolean> = {};
-    retiredNames.forEach((n) => {
-      map[n.name.charAt(0).toUpperCase()] = true;
-    });
-    return map;
-  }, [retiredNames]);
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();

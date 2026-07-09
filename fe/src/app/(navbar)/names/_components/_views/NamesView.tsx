@@ -77,12 +77,16 @@ const categorizeLettersByStatus = (
   return letterStatusMap;
 };
 
+const getFirstAvailableLetter = (letterStatusMap: Record<string, [boolean, boolean, boolean]>) => {
+  const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  return allLetters.find((letter) => letterStatusMap[letter]?.[0]) ?? "A";
+};
+
 const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: NamesViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const displayMode = viewMode === "list" ? ("list" as const) : ("grid" as const);
-  const currentLetter = searchParams.get("letter") || "A";
   const currentPath = paramsToPath(displayMode, showHistory, showName);
 
   const searchName = searchParams.get("name") || "";
@@ -140,13 +144,15 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     [searchName, countryArr, languageArr, tagArr, searchPosition, selectedStatus],
   );
 
+  const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
+  const currentLetter =
+    searchParams.get("letter") || getFirstAvailableLetter(letterStatusMap);
+
   const filteredAllNames = useMemo(() => {
     if (hasActiveFilters) return applyNameFilters(allNames, filterValues);
     if (!settings.showLetterNav) return [...allNames];
     return allNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
   }, [allNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
-
-  const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
 
   const showLetterNav = !hasActiveFilters && settings.showLetterNav;
 
