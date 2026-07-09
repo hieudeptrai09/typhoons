@@ -4,6 +4,21 @@ Reviewed by rebuilding the app (production build) with the DB up and rendering t
 
 ---
 
+## Round 3 — commits `b0a20fd…bdf8aa0` (3 commits)
+
+**Newly ✅ fixed (verified in the rebuilt app):**
+- ✅ **Filter badge "1"** — `activeFilterCount` now counts `selectedStatus` only when `showHistory` is true; the phantom badge is gone.
+- ✅ **Intensity legend** — a persistent **`IntensityFooter`** (badge swatch + label + rank for TD/TS/STS/Cat 1–5) is mounted on the Storms dashboard.
+- ✅ **Average modal unified + correct copy** — all Average cells (position included) now open the single in-place `AverageModal`, parameterised by a `criteria` prop, so the heading is context-correct ("Storms in position #1 by intensity"). The old two-mechanism split + "at this position" bug are gone.
+- ✅ **Info-modal retired parity** — the info modal now shows "Replaced by: Tomo" + a "Contributed by" flag/country (retired conveyed by red skull + red title). *(A literal "Retired" text pill would remove the last bit of colour/shape-only reliance.)*
+- ✅ **Position intercept modal removed** — positions are now always the full page; the earlier no-origin "omits Storms" fallback concern is moot.
+
+**🟡 Improved:** the Storms `PositionGrid` gained a mobile **"Swipe right to see full table"** hint (edge fade / sticky first column / header still worth adding). The **Names** `PositionNameGrid` grid is unchanged, so that Names grid finding stays open.
+
+**⚠️ New issues:** none. *(Build compiles + typechecks; all routes 200.)*
+
+---
+
 ## Round 2 — commits `54b5adb…df03f19` (5 commits)
 
 **Newly ✅ fixed (verified in the rebuilt app):**
