@@ -12,6 +12,7 @@ import type { SearchDetail, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Modal, Switch } from "antd";
+import { Inbox, SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -64,7 +65,7 @@ function StormsTab({ storms }: { storms: Storm[] }) {
   const [showMap, setShowMap] = useState(false);
 
   if (storms.length === 0) {
-    return <EmptyResults description="No storms found for this name." />;
+    return <EmptyResults icon={Inbox} description="No storms found for this name." />;
   }
 
   return (
@@ -121,7 +122,7 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   if (!nameData && storms.length === 0) {
     return (
       <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
-        <EmptyResults description="No typhoon named this was found." />
+        <EmptyResults icon={SearchX} description="No typhoon with that name was found." />
       </Modal>
     );
   }
@@ -136,7 +137,7 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   const detailsContent = nameData ? (
     <NameDetailsContent name={nameData} />
   ) : (
-    <EmptyResults description="No name details available for this external name." />
+    <EmptyResults icon={Inbox} description="No name details available for this external name." />
   );
   const stormsContent = <StormsTab storms={storms} />;
 

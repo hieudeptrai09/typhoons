@@ -10,11 +10,29 @@ import {
   getNameStatusColorClass,
   isExternalPosition,
 } from "@/lib/utils/colors";
+import { SearchX } from "lucide-react";
+import Link from "next/link";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
   name: string;
+  isError?: boolean;
 }
+
+const nameNotFound = (name: string) => (
+  <EmptyResults
+    icon={SearchX}
+    description={`No typhoon with the name "${name}" was found.`}
+    action={
+      <Link
+        href="/names/"
+        className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+      >
+        Browse names
+      </Link>
+    }
+  />
+);
 
 function StatusBadge({
   isInPosition,
@@ -134,9 +152,12 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoPageContent({ detail, name }: InfoPageContentProps) {
-  if (!detail) {
+export default function InfoPageContent({ detail, name, isError = false }: InfoPageContentProps) {
+  if (isError) {
     return <FrownError />;
+  }
+  if (!detail) {
+    return nameNotFound(name);
   }
 
   const nameData = detail.name ?? null;
@@ -150,7 +171,7 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
-    return <EmptyResults description="No typhoon named this was found." />;
+    return nameNotFound(name);
   }
 
   const correctSpelling = storms[0]?.correctSpelling;

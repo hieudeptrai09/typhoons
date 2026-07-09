@@ -5,6 +5,7 @@ import {
   sortNamesByFirstYear,
 } from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
+import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormCard from "@/lib/components/StormCard";
@@ -15,12 +16,13 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import Link from "next/link";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
   position: number;
+  isError?: boolean;
 }
 
 const TOTAL_POSITIONS = 140;
@@ -116,7 +118,7 @@ function NamesSection({ names, storms }: { names: TyphoonName[]; storms: Storm[]
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-slate-800">Names Used ({names.length})</h2>
       {names.length === 0 ? (
-        <p className="py-4 text-center text-gray-500">No names have been assigned this slot.</p>
+        <p className="py-4 text-center text-gray-500">No names have been assigned to this slot.</p>
       ) : (
         <div className="space-y-3">
           {sortedNames.map((name) => (
@@ -202,9 +204,33 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function PositionPageContent({ detail, position }: PositionPageContentProps) {
-  if (!detail || (detail.names.length === 0 && detail.storms.length === 0)) {
+export default function PositionPageContent({
+  detail,
+  position,
+  isError = false,
+}: PositionPageContentProps) {
+  if (isError) {
     return <FrownError />;
+  }
+  if (!detail || (detail.names.length === 0 && detail.storms.length === 0)) {
+    return (
+      <EmptyResults
+        icon={SearchX}
+        description={
+          Number.isFinite(position)
+            ? `Position #${position} doesn't exist — naming positions run 1–140.`
+            : "That naming position doesn't exist — positions run 1–140."
+        }
+        action={
+          <Link
+            href="/storms/positions/"
+            className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+          >
+            Browse all positions
+          </Link>
+        }
+      />
+    );
   }
 
   const { country, names, storms } = detail;

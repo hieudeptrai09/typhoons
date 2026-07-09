@@ -11,7 +11,7 @@ import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
 import { Empty, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Search } from "lucide-react";
+import { Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -131,6 +131,7 @@ export default function SearchPageContent({
           </div>
         ) : count === 0 ? (
           <EmptyResults
+            icon={SearchX}
             description={`No typhoon names match "${query}". Check the spelling or try a shorter name.`}
           />
         ) : (
