@@ -6,6 +6,7 @@ import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { SearchResult } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
@@ -139,32 +140,31 @@ export default function SearchPageContent({
             <div id="search-result-count" className="mb-4 text-sm text-gray-500">
               {count} result{count !== 1 ? "s" : ""} found
             </div>
-            <p className="mb-2 text-xs text-gray-500 md:hidden sticky">
-              Swipe right to see full table
-            </p>
             <div aria-describedby="search-result-count">
-              <Table<SearchResult>
-                dataSource={results}
-                columns={columns}
-                rowKey={(record) =>
-                  record.id !== null ? String(record.id) : `storm-${record.name}`
-                }
-                onRow={(record) =>
-                  clickableRowProps(`View details for ${record.name}`, () =>
-                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
-                      scroll: false,
-                    }),
-                  )
-                }
-                rowClassName={(_record, index) =>
-                  `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-                }
-                pagination={false}
-                size="large"
-                className="typhoon-table"
-                scroll={{ x: "max-content" }}
-                sticky
-              />
+              <TableScrollHint>
+                <Table<SearchResult>
+                  dataSource={results}
+                  columns={columns}
+                  rowKey={(record) =>
+                    record.id !== null ? String(record.id) : `storm-${record.name}`
+                  }
+                  onRow={(record) =>
+                    clickableRowProps(`View details for ${record.name}`, () =>
+                      router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
+                        scroll: false,
+                      }),
+                    )
+                  }
+                  rowClassName={(_record, index) =>
+                    `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+                  }
+                  pagination={false}
+                  size="large"
+                  className="typhoon-table"
+                  scroll={{ x: "max-content" }}
+                  sticky
+                />
+              </TableScrollHint>
             </div>
           </>
         )}

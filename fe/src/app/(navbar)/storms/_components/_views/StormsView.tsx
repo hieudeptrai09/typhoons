@@ -1,4 +1,5 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -128,24 +129,25 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <p className="mb-2 text-xs text-gray-500 md:hidden">Swipe right to see full table →</p>
-      <Table<NameData>
-        dataSource={nameData}
-        columns={makeNameColumns()}
-        rowKey="name"
-        onRow={(row) =>
-          clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
-        }
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-        sticky
-      />
+    <div className="mx-auto max-w-2xl">
+      <TableScrollHint>
+        <Table<NameData>
+          dataSource={nameData}
+          columns={makeNameColumns()}
+          rowKey="name"
+          onRow={(row) =>
+            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

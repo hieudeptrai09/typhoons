@@ -96,7 +96,7 @@ const NameButton = ({
       e.stopPropagation();
       onNameClick(name);
     }}
-    className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
+    className="flex min-h-11 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-1 hover:bg-stone-100 md:min-h-0 md:p-0.5"
   >
     {showName ? (
       <span
@@ -127,7 +127,7 @@ const CellContent = ({
   if (showHistory) {
     const colorOverride = colorfulHistory ? getHistoryCountColor(names.length) : undefined;
     return (
-      <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
+      <div className="flex min-h-16 flex-col items-center justify-center gap-1 py-1 md:gap-0.5">
         {names.length === 0 ? (
           <span className="text-xs text-gray-400">—</span>
         ) : (

@@ -1,4 +1,5 @@
 import EmptyResults from "@/lib/components/EmptyResults";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { RetiredName } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getRetiredReasonColorClass } from "@/lib/utils/colors";
@@ -10,13 +11,6 @@ interface RetiredNamesTableProps {
   paginatedData: RetiredName[];
   onNameClick: (name: RetiredName) => void;
 }
-
-const REASON_LABELS: Record<number, string> = {
-  0: "Destructive Storm",
-  1: "Language Problem",
-  2: "Misspelling",
-  3: "Special Storm",
-};
 
 const columns: ColumnsType<RetiredName> = [
   {
@@ -48,17 +42,6 @@ const columns: ColumnsType<RetiredName> = [
     render: (_: unknown, record: RetiredName) => (
       <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
         {record.meaning || "-"}
-      </span>
-    ),
-  },
-  {
-    title: "Reason",
-    dataIndex: "isLanguageProblem",
-    key: "reason",
-    sorter: (a, b) => a.isLanguageProblem - b.isLanguageProblem,
-    render: (_: unknown, record: RetiredName) => (
-      <span className={`font-medium whitespace-nowrap ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>
-        {REASON_LABELS[record.isLanguageProblem] ?? "—"}
       </span>
     ),
   },
@@ -100,23 +83,24 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
 
   return (
     <div className="mx-auto max-w-5xl">
-      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
-      <Table<RetiredName>
-        dataSource={paginatedData}
-        columns={columns}
-        rowKey="id"
-        onRow={(record) =>
-          clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
-        }
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-        sticky
-      />
+      <TableScrollHint>
+        <Table<RetiredName>
+          dataSource={paginatedData}
+          columns={columns}
+          rowKey="id"
+          onRow={(record) =>
+            clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };
