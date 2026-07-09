@@ -15,10 +15,11 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
 
   return (
     <div>
-      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
-      <div className="overflow-x-auto">
-        <table
-          className="min-w-full border-collapse"
+      <p className="mb-2 text-xs text-gray-500 md:hidden">Swipe right to see full table →</p>
+      <div className="relative">
+        <div className="overflow-x-auto">
+          <table
+            className="min-w-full border-collapse"
           aria-label="Typhoon name positions by country"
         >
           <colgroup>
@@ -53,7 +54,12 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-stone-100 to-transparent md:hidden"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

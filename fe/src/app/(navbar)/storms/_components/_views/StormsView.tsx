@@ -128,8 +128,8 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
+    <div className="mx-auto max-w-5xl">
+      <p className="mb-2 text-xs text-gray-500 md:hidden">Swipe right to see full table →</p>
       <Table<NameData>
         dataSource={nameData}
         columns={makeNameColumns()}

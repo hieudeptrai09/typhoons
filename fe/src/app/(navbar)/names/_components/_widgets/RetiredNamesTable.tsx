@@ -11,6 +11,13 @@ interface RetiredNamesTableProps {
   onNameClick: (name: RetiredName) => void;
 }
 
+const REASON_LABELS: Record<number, string> = {
+  0: "Destructive Storm",
+  1: "Language Problem",
+  2: "Misspelling",
+  3: "Special Storm",
+};
+
 const columns: ColumnsType<RetiredName> = [
   {
     title: "#",
@@ -41,6 +48,17 @@ const columns: ColumnsType<RetiredName> = [
     render: (_: unknown, record: RetiredName) => (
       <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
         {record.meaning || "-"}
+      </span>
+    ),
+  },
+  {
+    title: "Reason",
+    dataIndex: "isLanguageProblem",
+    key: "reason",
+    sorter: (a, b) => a.isLanguageProblem - b.isLanguageProblem,
+    render: (_: unknown, record: RetiredName) => (
+      <span className={`font-medium whitespace-nowrap ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>
+        {REASON_LABELS[record.isLanguageProblem] ?? "—"}
       </span>
     ),
   },
