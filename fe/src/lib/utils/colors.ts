@@ -1,5 +1,7 @@
 import type { IntensityType } from "@/lib/types";
 
+// --- Intensity badge colors ---
+
 export const BACKGROUND_BADGE: Record<IntensityType, string> = {
   TD: "#00CCFF",
   TS: "#00FF00",
@@ -35,7 +37,7 @@ export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
 
 export const getDistanceColor = (years: number): string => {
   if (years < 6.0) return "#dc2626";
-  if (years === 6.0) return "#9ca3af";
+  if (years === 6.0) return "#6b7280";
   return "#2563eb";
 };
 

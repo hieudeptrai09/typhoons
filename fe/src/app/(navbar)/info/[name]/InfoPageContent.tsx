@@ -1,6 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
@@ -136,7 +136,7 @@ function StormsSection({ storms }: { storms: Storm[] }) {
 
 export default function InfoPageContent({ detail, name }: InfoPageContentProps) {
   if (!detail) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   const nameData = detail.name ?? null;

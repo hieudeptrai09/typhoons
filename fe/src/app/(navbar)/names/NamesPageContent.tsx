@@ -1,6 +1,6 @@
 "use client";
 
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
 import type { RetiredName } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
   };
 
   if (!allNames) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   return (

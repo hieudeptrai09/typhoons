@@ -5,7 +5,7 @@ import {
   sortNamesByFirstYear,
 } from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormCard from "@/lib/components/StormCard";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
@@ -205,7 +205,7 @@ function StormsSection({ storms }: { storms: Storm[] }) {
 
 export default function PositionPageContent({ detail, position }: PositionPageContentProps) {
   if (!detail || (detail.names.length === 0 && detail.storms.length === 0)) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   const { country, names, storms } = detail;

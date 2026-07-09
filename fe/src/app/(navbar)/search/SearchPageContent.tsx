@@ -2,7 +2,7 @@
 
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
@@ -115,7 +115,7 @@ export default function SearchPageContent({
   const columns = useMemo(() => getColumns(query), [query]);
 
   if (query.trim() && isError) {
-    return <FrownNotFound onRetry={() => router.refresh()} />;
+    return <FrownError onRetry={() => router.refresh()} />;
   }
 
   return (

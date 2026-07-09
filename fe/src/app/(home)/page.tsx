@@ -11,7 +11,6 @@ const HomePage = () => {
           href="https://www.facebook.com/profile.php?id=61586585781960"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Visit our Facebook page"
           className="mb-4"
         >
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />

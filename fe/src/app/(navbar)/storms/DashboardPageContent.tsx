@@ -1,6 +1,6 @@
 "use client";
 
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
@@ -113,7 +113,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   };
 
   if (!stormsData) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   return (

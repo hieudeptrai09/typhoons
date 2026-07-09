@@ -1,13 +1,19 @@
 import { Button, Empty } from "antd";
 import { Frown } from "lucide-react";
 
-const FrownNotFound = ({ onRetry }: { onRetry?: () => void } = {}) => {
+const FrownError = ({
+  description = "Something went wrong. Please try again later.",
+  onRetry,
+}: {
+  description?: string;
+  onRetry?: () => void;
+} = {}) => {
   return (
     <div className="mx-auto max-w-4xl p-8">
       <Empty
         image={<Frown size={64} strokeWidth={1.5} className="text-gray-300" />}
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-        description="Something went wrong. Please try again later."
+        description={description}
       >
         {onRetry && (
           <Button type="primary" onClick={onRetry}>
@@ -19,4 +25,4 @@ const FrownNotFound = ({ onRetry }: { onRetry?: () => void } = {}) => {
   );
 };
 
-export default FrownNotFound;
+export default FrownError;
