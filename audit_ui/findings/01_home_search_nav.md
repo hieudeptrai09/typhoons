@@ -51,7 +51,7 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Screens:** 02_search_results__mobile.png
 - **Category:** Responsive
 - **Problem:** The results table uses `scroll={{ x: "max-content" }}` with 7 columns. On 390px only #, Name, Country, Status fit; Storms ("x5"), Replacement ("Tomo") and Note are off-screen to the right (compare the desktop shot, which shows them). There is no scroll shadow, chevron, or hint that more columns exist, so mobile users will likely believe the row has only 4 fields. Sort arrows in the header are also tiny touch targets.
-- **Fix:** Add a horizontal-scroll shadow/indicator (antd `sticky`/gradient) or, better, switch to a stacked card layout below `md`, or prioritize columns and move Replacement/Note into an expandable row so the key data is visible without discovery-blind scrolling.
+- **Fix (per owner — keep desktop parity):** Below `md`, switch to a **stacked card layout** and add a **sort control above the cards** — a compact "Sort by ▾" / radio-segmented group listing the *same* sortable columns as the desktop table, plus an asc/desc toggle — so mobile users can sort exactly like clicking a desktop column header. Apply the sort over the **full result set client-side** (not per page). *(If you keep the table instead, add a right-edge scroll shadow + a "swipe for more" hint.)*
 
 ### [Low] The reported "white circle" over the search input is the low-contrast prefix icon, not a spinner
 - **Screens:** 01_home__desktop.png (zoomed)

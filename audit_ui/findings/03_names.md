@@ -35,7 +35,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 - **Screens:** 30_names_current__mobile.png, 33_names_history__mobile.png, 34_names_current_tab__mobile.png
 - **Category:** Responsive, readability
 - **Problem:** `PositionNameGrid` renders a 14-column country grid. On mobile only ~4.5 columns fit; the rest is clipped ("Koi…", "Ton…", "He…" cut off at the right edge) with no visible scroll affordance or edge fade. `NamesView` defaults `settings.showLetterNav = false`, so in grid mode the whole 140-name matrix loads at once with no chunking. There is no responsive fallback (e.g. per-letter paging) for small screens.
-- **Fix:** On small breakpoints, either default `showLetterNav` to true (so the grid shows one letter at a time) or add a visible horizontal-scroll indicator / gradient fade on the grid container in `PositionNameGrid`. Consider a `md:` breakpoint that switches the grid to the list layout automatically. Add `aria`/visual scroll hints so the clipped columns are discoverable.
+- **Fix (per owner — mobile matches desktop):** On small breakpoints switch the grid to the **list layout the app already has**, and give that list the same **sort control** as the other mobile lists (radio/segmented mirroring the desktop columns + direction) so mobile users sort like desktop. Where the grid is kept, default `showLetterNav` to true (one letter at a time) and add a visible horizontal-scroll indicator / gradient fade on the `PositionNameGrid` container with `aria`/visual scroll hints so the clipped columns are discoverable.
 
 ---
 
@@ -92,7 +92,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 - **Screens:** 31_names_list__desktop.png (very long page), 31_names_list__mobile.png
 - **Category:** Density, scannability
 - **Problem:** `FilteredNamesTable` and `RetiredNamesTable` both set `pagination={false}`, so the list mode is one continuous ~140-row scroll — the desktop screenshot is nearly 9000px tall. There's no page size control, sticky filters bar, or "jump to letter" while scrolling (letter nav scrolls away at the top). Separately, the Retired filter modal lets users filter by "Retirement Reason", but `RetiredNamesTable` has no reason column — the reason is only encoded as the name's text color, so a user who filters by reason can't see the reason in the results.
-- **Fix:** Add optional antd pagination (or virtualized scroll) and/or keep the letter navigation sticky in list mode. Add a "Reason" column (or a labeled tag) to `RetiredNamesTable` so the filterable attribute is visible in results.
+- **Fix (per owner):** Keep the full list and make the **header + letter navigation sticky** in list mode so scanning works without paging (owner prefers scrolling over click-to-page); virtualize only if perf needs it. Sort **globally over all rows client-side**; any pagination must page the pre-sorted full array. On mobile, use **stacked cards with a sort control above** that mirrors the desktop sortable columns (+ direction). Separately, add a **"Reason" column** (or labeled tag) to `RetiredNamesTable` so the filterable attribute is visible in results.
 
 ---
 
