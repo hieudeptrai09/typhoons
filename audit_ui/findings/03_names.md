@@ -66,6 +66,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [Medium] Display Settings switches grey out based on hidden mode dependencies
+- **Status:** ✅ **Fixed (61f450b):** the modal is now grouped into labelled sections — the universal options (Display Mode, Letter Navigation, Show History) up top, then a bordered **"GRID MODE OPTIONS"** block (Show Name, Color by Reuse Count) and a **"LIST MODE OPTIONS"** block (Show Images & Descriptions) — so it's clear which mode each switch belongs to. "Colorful" was renamed **"Color by Reuse Count"** with a **"Requires Show History"** helper line under it explaining the dependency. Verified in the rebuilt app.
 - **Screens:** 62_modal_names_settings__desktop.png, 62_modal_names_settings__mobile.png
 - **Category:** Modal clarity, learnability
 - **Problem:** `NamesSettingsModal.tsx` mixes grid-only and list-only options in one flat list. Selecting "List" greys out Letter Navigation, Show Name, Show History, and Colorful; selecting "Grid" greys out "Show Images & Descriptions"; "Colorful" additionally depends on "Show History". None of these dependencies are explained — toggling the Display Mode radio makes half the panel go gray with no cause shown. "Colorful" also has no description of what it colors.

@@ -69,6 +69,7 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Fix:** Use the same `Empty` component (with a search icon) for parity, and darken the guidance text to at least `text-gray-500` (≈4.4:1) or `text-gray-600`. **(Done — `text-gray-600` description across the no-query, no-results, and error states.)**
 
 ### [Low] Redundant triple ARIA labeling on nav and menu links
+- **Status:** ✅ **Fixed (61f450b):** the duplicate `aria-label`s were dropped from both the `<Link>` and the inner antd `<Button>` in `NavLink.tsx` and the home `Menu.tsx`, leaving the visible text as the single accessible name. The icon-only hamburger keeps its one label (`MenuToggle.tsx`).
 - **Screens:** 02/30 navbar, 01 home CTAs
 - **Category:** Accessibility
 - **Problem:** `NavLink.tsx` applies `aria-label` on the `<Link>`, again on the inner antd `<Button>`, and also renders the visible text label; `Menu.tsx` repeats the pattern (Link `aria-label` + Button `aria-label` + text). Screen readers get the same label announced redundantly and the visible text is overridden by an identical `aria-label` for no benefit.
