@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageOff } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import type { ComponentProps } from "react";
@@ -20,8 +21,8 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
       )}
 
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-xs text-gray-600">
-          No image
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <ImageOff className="h-1/4 w-1/4 min-h-6 min-w-6 text-gray-300" strokeWidth={1.5} />
         </div>
       )}
 
