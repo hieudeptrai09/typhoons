@@ -129,7 +129,7 @@ const CellContent = ({
     return (
       <div className="flex min-h-16 flex-col items-center justify-center gap-1 py-1 md:gap-0.5">
         {names.length === 0 ? (
-          <span className="text-xs text-gray-400">—</span>
+          <span className="text-xs text-gray-300">—</span>
         ) : (
           sortByOldest(names).map((n) => (
             <NameButton
@@ -156,7 +156,7 @@ const CellContent = ({
           onNameClick={onNameClick}
         />
       ) : (
-        <span className="text-xs text-gray-400">—</span>
+        <span className="text-xs text-gray-300">—</span>
       )}
     </div>
   );
@@ -191,11 +191,14 @@ const PositionNameGrid = ({
       <PositionGrid
         renderCell={(position, _row, col) => {
           const positionNames = namesByPosition[position] ?? [];
+          const isEmpty = positionNames.length === 0;
 
           return (
             <td
               key={col}
-              className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
+              className={`border border-stone-300 p-0 transition-colors ${
+                isEmpty ? "cursor-default bg-gray-100" : "cursor-pointer hover:bg-stone-100"
+              }`}
               role="button"
               tabIndex={0}
               aria-label={`Position ${position}`}

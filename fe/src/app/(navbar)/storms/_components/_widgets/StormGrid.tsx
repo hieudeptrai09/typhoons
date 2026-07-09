@@ -164,7 +164,11 @@ const StormGrid = ({
       case "highlights": {
         const positionStorms = highlightedStorms.filter((s) => s.position === position);
         if (positionStorms.length === 0)
-          return { content: "", className: "", cellClickable: false };
+          return {
+            content: <span className="text-sm text-gray-300">—</span>,
+            className: "bg-gray-100",
+            cellClickable: false,
+          };
         return {
           content: (
             <div className="flex flex-col items-center gap-1">

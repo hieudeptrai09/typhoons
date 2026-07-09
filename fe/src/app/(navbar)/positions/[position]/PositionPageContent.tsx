@@ -34,10 +34,10 @@ function PositionPagination({ position }: { position: number }) {
   const nextPosition = isLast ? 1 : position + 1;
 
   const linkClass = (isWrap: boolean) =>
-    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors ${
       isWrap
-        ? "border-slate-100 text-slate-400 hover:bg-slate-50 hover:text-slate-500"
-        : "border-sky-600 bg-sky-600 text-white hover:border-sky-700 hover:bg-sky-700"
+        ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
+        : "border-sky-600 bg-sky-600 hover:border-sky-700 hover:bg-sky-700"
     }`;
 
   return (
@@ -49,7 +49,7 @@ function PositionPagination({ position }: { position: number }) {
         <ChevronLeft className="h-4 w-4" />
         {getPositionTitle(prevPosition)}
       </Link>
-      <span className="text-sm text-slate-400">
+      <span className="text-sm text-slate-600">
         {position} / {TOTAL_POSITIONS}
       </span>
       <Link href={`/positions/${nextPosition}`} className={linkClass(isLast)}>

@@ -1,3 +1,4 @@
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -91,27 +92,28 @@ const SeasonView = ({ stormsData, onCellClick }: SeasonViewProps) => {
 
   return (
     <div className="mx-auto max-w-lg">
-      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
-      <Table<SeasonData>
-        dataSource={data}
-        columns={columns}
-        rowKey="month"
-        onRow={(row) =>
-          row.count > 0
-            ? clickableRowProps(`View storms in ${row.monthName}`, () =>
-                onCellClick(row.month, "monthStart"),
-              )
-            : {}
-        }
-        rowClassName={(record, index) =>
-          `${record.count > 0 ? "cursor-pointer" : "cursor-default"} ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-        sticky
-      />
+      <TableScrollHint>
+        <Table<SeasonData>
+          dataSource={data}
+          columns={columns}
+          rowKey="month"
+          onRow={(row) =>
+            row.count > 0
+              ? clickableRowProps(`View storms in ${row.monthName}`, () =>
+                  onCellClick(row.month, "monthStart"),
+                )
+              : {}
+          }
+          rowClassName={(record, index) =>
+            `${record.count > 0 ? "cursor-pointer" : "cursor-default"} ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

@@ -46,8 +46,25 @@ const Tabs = <T extends string = string>({
         ))}
       </div>
 
-      <div className="flex-1" id={`${idPrefix}-${activeTab}`} role="tabpanel">
-        {tabs.find((t) => t.key === activeTab)?.content}
+      <div className="grid">
+        {tabs.map((tab) => {
+          const isActive = tab.key === activeTab;
+          return (
+            <div
+              key={tab.key}
+              id={`${idPrefix}-${tab.key}`}
+              role="tabpanel"
+              aria-hidden={!isActive}
+              className="col-start-1 row-start-1"
+              style={{
+                visibility: isActive ? "visible" : "hidden",
+                pointerEvents: isActive ? "auto" : "none",
+              }}
+            >
+              {tab.content}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

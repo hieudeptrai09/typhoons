@@ -1,6 +1,5 @@
 "use client";
 
-import { calculateAverage, getIntensityFromNumber } from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
@@ -9,7 +8,12 @@ import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { SearchDetail, Storm } from "@/lib/types";
-import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import {
+  BACKGROUND_BADGE,
+  getNameStatusColor,
+  isExternalPosition,
+  TEXT_COLOR_WHITE_BACKGROUND,
+} from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Modal, Switch } from "antd";
 import { Inbox, SearchX } from "lucide-react";
@@ -127,12 +131,11 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
     );
   }
 
-  // "#64748b" (slate-500) fallback duplicated across 2 files — see
-  // PositionPageContent.tsx note.
-  const avgIntensityColor =
-    storms.length > 0
-      ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
-      : "#64748b";
+  const nameStatusColor = getNameStatusColor({
+    isRetired,
+    isLanguageProblem: nameData?.isLanguageProblem ?? 0,
+    isExternal: isExternalPosition(nameData?.position),
+  });
 
   const detailsContent = nameData ? (
     <NameDetailsContent name={nameData} />
@@ -163,11 +166,7 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
         // plus this one) — candidate for one shared `modalHeaderStyles`
         // constant/style object.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: {
-          height: "70vh",
-          maxHeight: "70vh",
-          overflowY: "auto",
-        },
+        body: { maxHeight: "70vh", overflowY: "auto" },
       }}
       title={
         <div className="flex items-center gap-2">
@@ -177,7 +176,7 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
             position={nameData?.position ?? 0}
             size={24}
           />
-          <span className="text-2xl font-bold capitalize" style={{ color: avgIntensityColor }}>
+          <span className="text-2xl font-bold capitalize" style={{ color: nameStatusColor }}>
             {displayName.toLowerCase()}
           </span>
         </div>

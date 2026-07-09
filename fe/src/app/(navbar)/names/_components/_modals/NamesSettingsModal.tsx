@@ -87,18 +87,6 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
-            Show Name
-          </span>
-          <Switch
-            checked={isGrid && draftSettings.showName}
-            onChange={(v) => updateDraft({ showName: v })}
-            disabled={!isGrid}
-            aria-label="Show Name"
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
           <span className="text-sm font-semibold text-gray-700">Show History</span>
           <Switch
             checked={draftSettings.showHistory}
@@ -107,31 +95,62 @@ const NamesSettingsModal = ({
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <span
-            className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-gray-700" : "text-gray-400"}`}
-          >
-            <Paintbrush size={15} />
-            Colorful
-          </span>
-          <Switch
-            checked={!colorfulDisabled && draftSettings.colorfulHistory}
-            onChange={(v) => updateDraft({ colorfulHistory: v })}
-            disabled={colorfulDisabled}
-            aria-label="Colorful History"
-          />
+        <div className="space-y-5 border-t border-stone-200 pt-5">
+          <div className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
+            Grid Mode Options
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
+              Show Name
+            </span>
+            <Switch
+              checked={isGrid && draftSettings.showName}
+              onChange={(v) => updateDraft({ showName: v })}
+              disabled={!isGrid}
+              aria-label="Show Name"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <span
+                className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-gray-700" : "text-gray-400"}`}
+              >
+                <Paintbrush size={15} />
+                Color by Reuse Count
+              </span>
+              <span
+                className={`block text-xs text-gray-400 ${isGrid && !draftSettings.showHistory ? "" : "invisible"}`}
+              >
+                Requires Show History
+              </span>
+            </div>
+            <Switch
+              checked={!colorfulDisabled && draftSettings.colorfulHistory}
+              onChange={(v) => updateDraft({ colorfulHistory: v })}
+              disabled={colorfulDisabled}
+              aria-label="Color by Reuse Count"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isList ? "text-gray-700" : "text-gray-400"}`}>
-            Show Images & Descriptions
-          </span>
-          <Switch
-            checked={isList && draftSettings.showImageAndDescription}
-            onChange={(v) => updateDraft({ showImageAndDescription: v })}
-            disabled={!isList}
-            aria-label="Show Images and Descriptions"
-          />
+        <div className="space-y-5 border-t border-stone-200 pt-5">
+          <div className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
+            List Mode Options
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className={`text-sm font-semibold ${isList ? "text-gray-700" : "text-gray-400"}`}>
+              Show Images & Descriptions
+            </span>
+            <Switch
+              checked={isList && draftSettings.showImageAndDescription}
+              onChange={(v) => updateDraft({ showImageAndDescription: v })}
+              disabled={!isList}
+              aria-label="Show Images and Descriptions"
+            />
+          </div>
         </div>
       </div>
     </Modal>

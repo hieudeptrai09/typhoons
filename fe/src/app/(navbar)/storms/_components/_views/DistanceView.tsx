@@ -1,4 +1,5 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
@@ -192,26 +193,27 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
 
     return (
       <div className="mx-auto max-w-2xl">
-        <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
-        <Table<PositionRow>
-          key="position"
-          dataSource={data}
-          columns={positionColumns}
-          rowKey="position"
-          onRow={(row) =>
-            clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
-              onCellClick(row.position, "position"),
-            )
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
+        <TableScrollHint>
+          <Table<PositionRow>
+            key="position"
+            dataSource={data}
+            columns={positionColumns}
+            rowKey="position"
+            onRow={(row) =>
+              clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
+                onCellClick(row.position, "position"),
+              )
+            }
+            rowClassName={(_record, index) =>
+              `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+            }
+            pagination={false}
+            size="large"
+            className="typhoon-table"
+            scroll={{ x: "max-content" }}
+            sticky
+          />
+        </TableScrollHint>
       </div>
     );
   }
@@ -230,24 +232,25 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
 
   return (
     <div className="mx-auto max-w-2xl">
-      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
-      <Table<NameRow>
-        key="name"
-        dataSource={data}
-        columns={nameColumns}
-        rowKey="name"
-        onRow={(row) =>
-          clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
-        }
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-        sticky
-      />
+      <TableScrollHint>
+        <Table<NameRow>
+          key="name"
+          dataSource={data}
+          columns={nameColumns}
+          rowKey="name"
+          onRow={(row) =>
+            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };
