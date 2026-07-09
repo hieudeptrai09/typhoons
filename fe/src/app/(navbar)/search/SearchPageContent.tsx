@@ -125,9 +125,9 @@ export default function SearchPageContent({
         {!query.trim() ? (
           <div className="p-8">
             <Empty
-              image={<Search size={64} strokeWidth={1.5} className="text-gray-300" />}
+              image={<Search size={64} strokeWidth={1.5} className="text-gray-400" />}
               imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-              description="Type a name to search"
+              description={<span className="text-gray-600">Type a name to search</span>}
             />
           </div>
         ) : count === 0 ? (

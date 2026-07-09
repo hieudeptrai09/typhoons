@@ -36,15 +36,15 @@
 }
 
 .navbarInput :global(.ant-input)::placeholder {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .homeInput :global(.ant-input)::placeholder {
-  color: #94a3b8 !important;
+  color: #64748b !important;
 }
 
 .navbarInput :global(.ant-input-clear-icon) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .navbarInput :global(.ant-input-clear-icon):hover {

@@ -11,9 +11,9 @@ const FrownError = ({
   return (
     <div className="mx-auto max-w-4xl p-8">
       <Empty
-        image={<Frown size={64} strokeWidth={1.5} className="text-gray-300" />}
+        image={<Frown size={64} strokeWidth={1.5} className="text-gray-400" />}
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-        description={description}
+        description={<span className="text-gray-600">{description}</span>}
       >
         {onRetry && (
           <Button type="primary" onClick={onRetry}>

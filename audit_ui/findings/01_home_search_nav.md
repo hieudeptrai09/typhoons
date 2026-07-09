@@ -55,16 +55,18 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Fix (per owner — keep the table on mobile):** The owner keeps the list/table layout on both breakpoints (better for comparing rows), so on mobile keep the horizontally-scrolling table and make it navigable — it already has a `sticky` header, `fixed:"left"` `#`/`Name` columns, and a "Swipe right →" hint. Sorting stays global over the full result set (client-side) via the sortable column headers, and a right-edge scroll fade now finishes the affordance.
 
 ### [Low] The reported "white circle" over the search input is the low-contrast prefix icon, not a spinner
+- **Status:** ✅ **Fixed:** the shared `SearchBar` now renders the home prefix icon in **`text-gray-500`** (#6b7280, **4.8:1** on the white input) — the washed-out ring is gone. Same pass, the low-contrast **placeholders** were darkened too: home `#94a3b8` (2.7:1) → **`#64748b`** (slate-500, 4.8:1), and the navbar placeholder/clear-icon were raised from `rgba(255,255,255,0.6)` (~1.9:1 on `bg-blue-600`) to **0.9 / 0.85** (~3.5:1, the practical ceiling for text on the blue input without recolouring it).
 - **Screens:** 01_home__desktop.png (zoomed)
 - **Category:** Contrast / Affordance
 - **Problem:** Zooming into the home input shows no stray spinner — the faint circular shape at the input's left edge is the lucide `Search` magnifying-glass prefix rendered in `text-gray-400` (#9ca3af), which is **2.54:1** on white and reads as a washed-out ring. I confirmed the home `SearchBar.tsx` renders no `TyphoonSpinner` (only `FunFacts`/`OnThisDay` do, and only while their own buttons load), so there is no genuine overlapping-spinner bug — just a very faint, ambiguous search glyph.
-- **Fix:** Darken the prefix icon to `text-gray-500`/`text-slate-500` so the search affordance reads clearly (icons need ≥3:1). No spinner code change needed.
+- **Fix:** Darken the prefix icon to `text-gray-500`/`text-slate-500` so the search affordance reads clearly (icons need ≥3:1). No spinner code change needed. **(Done — plus the input placeholders on both variants.)**
 
 ### [Low] `/search` no-query state and its gray text are inconsistent and low-contrast
+- **Status:** ✅ **Fixed:** the no-query state now uses the antd `Empty` (search icon) for parity, and its guidance text is an explicit **`text-gray-600`** (#4b5563, ~7:1 on stone-100) instead of the antd-default light gray. The same darkening was applied to the shared **`EmptyResults`** and **`FrownError`** descriptions (so the no-results and error states on this page — and app-wide — also pass), and their 64px illustration icons went `text-gray-300` → `text-gray-400` to drop the washed-out look.
 - **Screens:** 04_search_no_query__desktop.png, 04_search_no_query__mobile.png
 - **Category:** Empty state / Contrast
 - **Problem:** Reaching `/search` with no `q` shows a bare centered "Type a name to search" in `text-gray-400` (`SearchPageContent.tsx` line 116). On the stone-100 page this is **2.33:1** — fails AA — and the plain text is visually inconsistent with the richer antd `Empty` illustrations used for the no-results and error states on the very same page.
-- **Fix:** Use the same `Empty` component (with a search icon) for parity, and darken the guidance text to at least `text-gray-500` (≈4.4:1) or `text-gray-600`.
+- **Fix:** Use the same `Empty` component (with a search icon) for parity, and darken the guidance text to at least `text-gray-500` (≈4.4:1) or `text-gray-600`. **(Done — `text-gray-600` description across the no-query, no-results, and error states.)**
 
 ### [Low] Redundant triple ARIA labeling on nav and menu links
 - **Screens:** 02/30 navbar, 01 home CTAs
