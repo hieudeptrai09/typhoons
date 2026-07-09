@@ -90,7 +90,8 @@ const SeasonView = ({ stormsData, onCellClick }: SeasonViewProps) => {
   );
 
   return (
-    <div className="mx-auto max-w-lg overflow-x-auto pb-px">
+    <div className="mx-auto max-w-lg">
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<SeasonData>
         dataSource={data}
         columns={columns}
@@ -109,6 +110,7 @@ const SeasonView = ({ stormsData, onCellClick }: SeasonViewProps) => {
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );

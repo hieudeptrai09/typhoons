@@ -28,7 +28,7 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
 
         <div className="border-t border-slate-200 pt-3">
           <div id="name-origin-label" className="mb-2 text-sm font-medium text-slate-500">
-            Origin
+            Contributed by
           </div>
           <div className="flex items-center gap-3" aria-describedby="name-origin-label">
             <CountryFlag country={name.country} className="h-8 w-12" />

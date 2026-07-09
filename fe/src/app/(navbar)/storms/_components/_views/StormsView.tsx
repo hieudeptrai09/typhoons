@@ -54,7 +54,7 @@ const makeNameColumns = (): ColumnsType<NameData> => [
     },
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -128,7 +128,8 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-2xl">
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<NameData>
         dataSource={nameData}
         columns={makeNameColumns()}
@@ -143,6 +144,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );

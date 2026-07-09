@@ -1,6 +1,7 @@
 "use client";
 
 import FrownError from "@/lib/components/FrownError";
+import IntensityFooter from "@/lib/components/IntensityFooter";
 import PageHeader from "@/lib/components/PageHeader";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
@@ -140,81 +141,84 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   }
 
   return (
-    <PageHeader title={getDashboardTitle(view, mode, filter)}>
-      <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+    <>
+      <PageHeader title={getDashboardTitle(view, mode, filter)}>
+        <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
 
-      {(() => {
-        switch (view) {
-          case "storms":
-            return (
-              <StormsView
-                params={currentParams}
-                stormsData={stormsData}
-                averageValues={averageValues}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "highlights":
-            return (
-              <HighlightsView
-                params={currentParams}
-                stormsData={stormsData}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "average":
-            return (
-              <AverageView
-                params={currentParams}
-                stormsData={stormsData}
-                averageValues={averageValues}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "distance":
-            return (
-              <DistanceView
-                params={currentParams}
-                stormsData={stormsData}
-                onCellClick={handleCellClick}
-              />
-            );
-          default:
-            return <div className="text-center text-gray-500">Select filters to view data</div>;
-        }
-      })()}
+        {(() => {
+          switch (view) {
+            case "storms":
+              return (
+                <StormsView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  averageValues={averageValues}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "highlights":
+              return (
+                <HighlightsView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "average":
+              return (
+                <AverageView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  averageValues={averageValues}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "distance":
+              return (
+                <DistanceView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  onCellClick={handleCellClick}
+                />
+              );
+            default:
+              return <div className="text-center text-gray-500">Select filters to view data</div>;
+          }
+        })()}
 
-      <DashboardModal
-        key={JSON.stringify(currentParams)}
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        onApply={handleApplyFilter}
-        currentParams={currentParams}
-      />
+        <DashboardModal
+          key={JSON.stringify(currentParams)}
+          isOpen={isFilterModalOpen}
+          onClose={() => setIsFilterModalOpen(false)}
+          onApply={handleApplyFilter}
+          currentParams={currentParams}
+        />
 
-      <StormDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        title={selectedData?.title || ""}
-        storms={selectedData?.storms || []}
-      />
+        <StormDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          title={selectedData?.title || ""}
+          storms={selectedData?.storms || []}
+        />
 
-      <AverageModal
-        isOpen={isAverageModalOpen}
-        onClose={() => setIsAverageModalOpen(false)}
-        title={selectedData?.title || ""}
-        average={selectedData?.average || 0}
-        storms={selectedData?.storms || []}
-        criteria={selectedData?.criteria || "position"}
-      />
+        <AverageModal
+          isOpen={isAverageModalOpen}
+          onClose={() => setIsAverageModalOpen(false)}
+          title={selectedData?.title || ""}
+          average={selectedData?.average || 0}
+          storms={selectedData?.storms || []}
+          criteria={selectedData?.criteria || "position"}
+        />
 
-      <NameListModal
-        isOpen={isNameListModalOpen}
-        onClose={() => setIsNameListModalOpen(false)}
-        name={selectedData?.name || ""}
-        storms={selectedData?.storms || []}
-        avgIntensity={selectedData?.avgIntensity || 0}
-      />
-    </PageHeader>
+        <NameListModal
+          isOpen={isNameListModalOpen}
+          onClose={() => setIsNameListModalOpen(false)}
+          name={selectedData?.name || ""}
+          storms={selectedData?.storms || []}
+          avgIntensity={selectedData?.avgIntensity || 0}
+        />
+      </PageHeader>
+      <IntensityFooter />
+    </>
   );
 }

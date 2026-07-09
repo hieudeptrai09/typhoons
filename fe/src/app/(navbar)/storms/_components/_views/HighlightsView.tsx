@@ -107,7 +107,8 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-xl">
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<HighlightRow>
         key={params.filter}
         dataSource={highlightData}
@@ -118,6 +119,7 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );

@@ -83,7 +83,7 @@ const ListFilterModal = ({
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>
 
-        <Form.Item label="Country" name="country">
+        <Form.Item label="Contributed By" name="country">
           <Select
             mode="multiple"
             placeholder="All Countries"

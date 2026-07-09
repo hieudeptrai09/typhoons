@@ -3,7 +3,7 @@
 import SearchBar from "@/lib/components/SearchBar";
 import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DesktopNav from "./DesktopNav";
 import MenuToggle from "./MenuToggle";
 import MobileNav from "./MobileNav";
@@ -12,6 +12,7 @@ import NavLink from "./NavLink";
 const Navbar = () => {
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,8 +22,25 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  // Publish the navbar's real rendered height so sticky table headers
+  // (which sit below this sticky nav) can offset below it instead of
+  // being hidden underneath it.
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const updateHeight = () => {
+      document.documentElement.style.setProperty("--navbar-height", `${nav.offsetHeight}px`);
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <nav className="sticky top-0 z-50 bg-blue-600" aria-label="Main navigation">
+    <nav ref={navRef} className="sticky top-0 z-50 bg-blue-600" aria-label="Main navigation">
       <div className="mx-auto max-w-7xl px-2 py-2">
         <div className="relative flex items-center justify-between">
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />

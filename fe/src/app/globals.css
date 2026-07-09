@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --navbar-height: 64px;
 }
 
 @theme inline {
@@ -97,9 +98,16 @@ input:focus-visible,
 }
 
 .typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix {
-  background-color: #ffffff !important; 
+  background-color: #ffffff !important;
 }
 
 .typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix {
   background-color: #e4e4e7 !important; /* zinc-200 */
+}
+
+/* Stick the table header below the sticky navbar (var(--navbar-height)) */
+.typhoon-table .ant-table-sticky-holder {
+  top: var(--navbar-height) !important;
+  z-index: 20 !important;
+  padding-top: 2px;
 }

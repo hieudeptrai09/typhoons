@@ -45,7 +45,7 @@ const columns: ColumnsType<RetiredName> = [
     ),
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -81,7 +81,8 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-5xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-5xl">
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<RetiredName>
         dataSource={paginatedData}
         columns={columns}
@@ -96,6 +97,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );

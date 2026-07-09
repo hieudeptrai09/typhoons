@@ -52,7 +52,7 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     },
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -138,7 +138,10 @@ export default function SearchPageContent({
             <div id="search-result-count" className="mb-4 text-sm text-gray-500">
               {count} result{count !== 1 ? "s" : ""} found
             </div>
-            <div className="overflow-x-auto pb-px" aria-describedby="search-result-count">
+            <p className="mb-2 text-xs text-gray-500 md:hidden sticky">
+              Swipe right to see full table
+            </p>
+            <div aria-describedby="search-result-count">
               <Table<SearchResult>
                 dataSource={results}
                 columns={columns}
@@ -159,6 +162,7 @@ export default function SearchPageContent({
                 size="large"
                 className="typhoon-table"
                 scroll={{ x: "max-content" }}
+                sticky
               />
             </div>
           </>

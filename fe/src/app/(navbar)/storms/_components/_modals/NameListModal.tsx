@@ -49,7 +49,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span id="namelist-country-label" className="font-semibold text-gray-700">
-                  Country:
+                  Contributed by:
                 </span>
                 <CountryFlag country={storms[0].country} className="h-5 w-8" />
               </div>

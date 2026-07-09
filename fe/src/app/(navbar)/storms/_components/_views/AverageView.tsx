@@ -99,7 +99,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
   };
 
   const countryCol: ColumnsType<AverageData>[number] = {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
@@ -126,10 +126,10 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
       return [
         orderCol,
         {
-          title: "Country",
+          title: "Contributed By",
           dataIndex: "country",
           key: "country",
-          width: 120,
+          width: 150,
           fixed: "left" as const,
           sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
           render: (_: unknown, row: AverageData) => <CountryFlag country={row.country ?? ""} />,
@@ -298,7 +298,8 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   };
 
   return (
-    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"} overflow-x-auto pb-px`}>
+    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"}`}>
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<AverageData>
         key={params.filter}
         dataSource={data}
@@ -331,6 +332,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );

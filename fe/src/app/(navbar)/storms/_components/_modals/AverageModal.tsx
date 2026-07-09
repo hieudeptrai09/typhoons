@@ -19,17 +19,27 @@ interface IntensityGroupData {
   storms: Storm[];
 }
 
+// Positions above #140 aren't list slots — they're the agencies (CPHC, NHC, IMD)
+// that name storms outside the regular 140-name list, so they get their own wording.
+const POSITION_AGENCIES = new Set(["CPHC", "NHC", "IMD"]);
+
 const CRITERIA_TEXT: Record<
   AverageModalCriteria,
   { heading: (title: string) => string; empty: (title: string) => string }
 > = {
   position: {
-    heading: (title) => `Storms in position ${title} by intensity:`,
-    empty: (title) => `No storms in position ${title}.`,
+    heading: (title) =>
+      POSITION_AGENCIES.has(title)
+        ? `Storms which are named by ${title}, by intensity:`
+        : `Storms in position ${title} by intensity:`,
+    empty: (title) =>
+      POSITION_AGENCIES.has(title)
+        ? `No storms named by ${title}.`
+        : `No storms in position ${title}.`,
   },
   country: {
-    heading: (title) => `Storms in ${title} by intensity:`,
-    empty: (title) => `No storms in ${title}.`,
+    heading: (title) => `Storms whose names were contributed by ${title}, by intensity:`,
+    empty: (title) => `No storms whose names were contributed by ${title}.`,
   },
   year: {
     heading: (title) => `Storms in ${title} by intensity:`,

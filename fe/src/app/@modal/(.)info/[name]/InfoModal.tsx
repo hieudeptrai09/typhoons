@@ -72,7 +72,7 @@ function StormsTab({ storms }: { storms: Storm[] }) {
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-700">Country:</span>
+            <span className="font-semibold text-gray-700">Contributed by:</span>
             <CountryFlag country={storms[0].country} className="h-5 w-8" />
             <span className="text-gray-700">{storms[0].country}</span>
           </div>

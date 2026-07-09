@@ -71,7 +71,7 @@ const positionColumns: ColumnsType<PositionRow> = [
     render: (_: unknown, row: PositionRow) => <span>{getPositionTitle(row.position)}</span>,
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -106,7 +106,7 @@ const nameColumns: ColumnsType<NameRow> = [
     render: (_: unknown, row: NameRow) => <span className="font-semibold">{row.name}</span>,
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -191,7 +191,8 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
 
     return (
-      <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
+      <div className="mx-auto max-w-2xl">
+        <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
         <Table<PositionRow>
           key="position"
           dataSource={data}
@@ -209,6 +210,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           size="large"
           className="typhoon-table"
           scroll={{ x: "max-content" }}
+          sticky
         />
       </div>
     );
@@ -227,7 +229,8 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   });
 
   return (
-    <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
+    <div className="mx-auto max-w-2xl">
+      <p className="mb-2 text-xs text-gray-500 md:hidden sticky">Swipe right to see full table</p>
       <Table<NameRow>
         key="name"
         dataSource={data}
@@ -243,6 +246,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
         size="large"
         className="typhoon-table"
         scroll={{ x: "max-content" }}
+        sticky
       />
     </div>
   );
