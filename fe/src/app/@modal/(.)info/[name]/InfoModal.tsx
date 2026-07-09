@@ -9,15 +9,11 @@ import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { SearchDetail, Storm } from "@/lib/types";
-import {
-  BACKGROUND_BADGE,
-  getNameStatusColor,
-  TEXT_COLOR_WHITE_BACKGROUND,
-} from "@/lib/utils/colors";
+import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Modal, Switch } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 interface InfoModalProps {
   detail: SearchDetail | null;
@@ -118,10 +114,6 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   const displayName = nameData?.name ?? name;
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
-  const origin = searchParams.get("origin");
-  const detailsOnly = origin === "names";
-  const stormsOnly = origin === "storms";
-
   const [activeTab, setActiveTab] = useState<TabType>(
     searchParams.get("tab") === "storms" ? "storms" : "details",
   );
@@ -134,19 +126,15 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
     );
   }
 
-  // "#64748b" (slate-500) fallback duplicated across 3 files — see
-  // PositionModal.tsx note. Also reused a second time immediately below for
-  // an unrelated fallback (no name-status data), same hex, different meaning.
+  // "#64748b" (slate-500) fallback duplicated across 2 files — see
+  // PositionPageContent.tsx note.
   const avgIntensityColor =
     storms.length > 0
       ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
       : "#64748b";
-  const statusColor = nameData ? getNameStatusColor(nameData) : "#64748b";
-  const showStatusIcon = !stormsOnly && !detailsOnly;
-  const titleColor = detailsOnly ? statusColor : avgIntensityColor;
 
   const detailsContent = nameData ? (
-    <NameDetailsContent name={nameData} hideReplacedBy={!(origin === "names")} />
+    <NameDetailsContent name={nameData} />
   ) : (
     <EmptyResults description="No name details available for this external name." />
   );
@@ -156,23 +144,6 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
     { key: "storms", label: `Storms (${storms.length})`, content: stormsContent },
     { key: "details", label: "Name Details", content: detailsContent },
   ];
-
-  let body: ReactNode;
-  if (detailsOnly) {
-    body = detailsContent;
-  } else if (stormsOnly) {
-    body = stormsContent;
-  } else {
-    body = (
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        ariaLabel="Name details tabs"
-        idPrefix="info-modal-tab"
-      />
-    );
-  }
 
   return (
     <Modal
@@ -185,34 +156,41 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
       styles={{
         // CONSOLIDATION: this exact `{ borderBottom: "1px solid #9ca3af",
         // paddingBottom: "12px" }` header style is copy-pasted verbatim into
-        // 9 modal components (PositionModal, StormDetailModal,
-        // NamesSettingsModal, AverageModal, DashboardModal, ListFilterModal,
-        // RetiredNameDetailsModal, RetiredFilterModal, plus this one) —
-        // candidate for one shared `modalHeaderStyles` constant/style object.
+        // 11 modal components (StormDetailModal, NamesSettingsModal,
+        // AverageModal, DashboardModal, ListFilterModal, RetiredNameDetailsModal,
+        // RetiredFilterModal, NameDetailsModal, HistoryModal, NameListModal,
+        // plus this one) — candidate for one shared `modalHeaderStyles`
+        // constant/style object.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: {
-          height: !detailsOnly && !stormsOnly ? "70vh" : "",
+          height: "70vh",
           maxHeight: "70vh",
           overflowY: "auto",
         },
       }}
       title={
         <div className="flex items-center gap-2">
-          {showStatusIcon && (
-            <NameStatusIcon
-              isRetired={isRetired}
-              isLanguageProblem={nameData?.isLanguageProblem ?? 0}
-              position={nameData?.position ?? 0}
-              size={24}
-            />
-          )}
-          <span className="text-2xl font-bold capitalize" style={{ color: titleColor }}>
+          <NameStatusIcon
+            isRetired={isRetired}
+            isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+            position={nameData?.position ?? 0}
+            size={24}
+          />
+          <span className="text-2xl font-bold capitalize" style={{ color: avgIntensityColor }}>
             {displayName.toLowerCase()}
           </span>
         </div>
       }
     >
-      <div className="pt-4">{body}</div>
+      <div className="pt-4">
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          ariaLabel="Name details tabs"
+          idPrefix="info-modal-tab"
+        />
+      </div>
     </Modal>
   );
 }

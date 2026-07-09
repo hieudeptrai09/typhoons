@@ -57,21 +57,21 @@ const HomePage = () => {
               >
                 Search
               </Link>
-              {/* Plain <a> tags (not next/link) force a hard navigation, bypassing the
-                  @modal/(.)info and @modal/(.)positions interceptors so these land on
-                  the full page instead of opening as a modal. */}
+              {/* Plain <a> (not next/link) forces a hard navigation, bypassing the
+                  @modal/(.)info interceptor so this lands on the full page instead of
+                  opening as a modal — that modal is reserved for the search page flow. */}
               <a
                 href="/info/jebi"
                 className="text-slate-400 transition-colors hover:text-slate-200"
               >
                 Info
               </a>
-              <a
+              <Link
                 href="/positions/1"
                 className="text-slate-400 transition-colors hover:text-slate-200"
               >
                 Positions
-              </a>
+              </Link>
               <a
                 href="https://www.facebook.com/profile.php?id=61586585781960"
                 target="_blank"

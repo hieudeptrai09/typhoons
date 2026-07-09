@@ -1,11 +1,14 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
+import { defaultTyphoonName } from "@/lib/constants";
 import type { FilterParams, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, Settings, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
+import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
+import NameDetailsModal from "../_modals/NameDetailsModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
 import FilteredNamesTable from "../_widgets/FilteredNamesTable";
@@ -108,6 +111,11 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [historyPosition, setHistoryPosition] = useState<number>(0);
+  const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
   const selectedStatus = settings.showHistory ? searchParams.get("status") || "" : "current";
 
@@ -201,14 +209,15 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   };
 
   const handleNameClick = (name: TyphoonName) => {
-    router.push(`/info/${encodeURIComponent(name.name.toLowerCase())}/?origin=names`, {
-      scroll: false,
-    });
+    setSelectedName(name);
+    setIsNameModalOpen(true);
   };
 
   const handleCellClick = (position: number, names: TyphoonName[]) => {
     if (settings.showHistory) {
-      router.push(`/positions/${position}?origin=names`, { scroll: false });
+      setHistoryPosition(position);
+      setHistoryPositionNames(names);
+      setIsHistoryModalOpen(true);
     } else {
       if (names.length > 0) handleNameClick(names[0]);
     }
@@ -337,6 +346,20 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
         displayMode={displayMode}
         settings={settings}
         onApply={handleApplySettings}
+      />
+
+      <NameDetailsModal
+        isOpen={isNameModalOpen}
+        name={selectedName}
+        hideReplacedBy
+        onClose={() => setIsNameModalOpen(false)}
+      />
+
+      <HistoryModal
+        isOpen={isHistoryModalOpen}
+        position={historyPosition}
+        positionNames={historyPositionNames}
+        onClose={() => setIsHistoryModalOpen(false)}
       />
     </>
   );
