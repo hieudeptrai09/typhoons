@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import type { DashboardParams, Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -196,7 +197,11 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           dataSource={data}
           columns={positionColumns}
           rowKey="position"
-          onRow={(row) => ({ onClick: () => onCellClick(row.position, "position") })}
+          onRow={(row) =>
+            clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
+              onCellClick(row.position, "position"),
+            )
+          }
           rowClassName={(_record, index) =>
             `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
           }
@@ -228,7 +233,9 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
         dataSource={data}
         columns={nameColumns}
         rowKey="name"
-        onRow={(row) => ({ onClick: () => onCellClick(row.name, "name") })}
+        onRow={(row) =>
+          clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+        }
         rowClassName={(_record, index) =>
           `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
         }

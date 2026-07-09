@@ -1,5 +1,6 @@
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { Storm } from "@/lib/types";
+import { onEnterKeyDown } from "@/lib/utils/a11y";
 import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo, useState, type ReactNode } from "react";
 import {
@@ -219,12 +220,16 @@ const StormGrid = ({
                 <div
                   key={`${storm.name}-${storm.year}`}
                   className="flex cursor-pointer flex-col items-center rounded px-1 transition-colors hover:bg-white/40"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details for ${storm.name} ${storm.year}`}
                   onMouseEnter={() => handleYearHover(storm.year)}
                   onMouseLeave={() => handleYearHover(null)}
                   onClick={(e) => {
                     e.stopPropagation();
                     onCellClick(storm.year, "year");
                   }}
+                  onKeyDown={onEnterKeyDown(() => onCellClick(storm.year, "year"))}
                 >
                   <div className="text-xs font-bold text-gray-800">{storm.name}</div>
                   <div className="text-[10px] text-gray-600">({storm.year})</div>

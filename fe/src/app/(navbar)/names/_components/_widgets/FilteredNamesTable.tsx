@@ -2,6 +2,7 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import type { TyphoonName } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -136,12 +137,9 @@ const FilteredNamesTable = ({
         dataSource={filteredNames}
         columns={tableColumns}
         rowKey="id"
-        onRow={(record) => ({
-          onClick: () => onNameClick(record),
-          "aria-label": `View details for ${record.name}`,
-          role: "button",
-          tabIndex: 0,
-        })}
+        onRow={(record) =>
+          clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+        }
         rowClassName={(_record, index) =>
           `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
         }

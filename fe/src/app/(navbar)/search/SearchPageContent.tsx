@@ -7,6 +7,7 @@ import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
 import type { SearchResult } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
 import { Empty, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -144,15 +145,13 @@ export default function SearchPageContent({
                 rowKey={(record) =>
                   record.id !== null ? String(record.id) : `storm-${record.name}`
                 }
-                onRow={(record) => ({
-                  onClick: () =>
+                onRow={(record) =>
+                  clickableRowProps(`View details for ${record.name}`, () =>
                     router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
                       scroll: false,
                     }),
-                  "aria-label": `View details for ${record.name}`,
-                  role: "button",
-                  tabIndex: 0,
-                })}
+                  )
+                }
                 rowClassName={(_record, index) =>
                   `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
                 }

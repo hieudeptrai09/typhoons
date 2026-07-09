@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import type { DashboardParams, Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -316,12 +317,13 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
               return String(Math.random());
           }
         }}
-        onRow={(row) => ({
-          onClick: () => {
-            const value = row[params.filter as keyof AverageData];
-            if (value !== undefined) onCellClick(value as number | string, params.filter);
-          },
-        })}
+        onRow={(row) => {
+          const value = row[params.filter as keyof AverageData];
+          if (value === undefined) return {};
+          return clickableRowProps(`View details for ${value}`, () =>
+            onCellClick(value as number | string, params.filter),
+          );
+        }}
         rowClassName={(_record, index) =>
           `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
         }

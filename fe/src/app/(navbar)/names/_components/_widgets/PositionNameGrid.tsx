@@ -2,6 +2,7 @@
 
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { TyphoonName } from "@/lib/types";
+import { onEnterKeyDown } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import {
   Gem,
@@ -202,6 +203,10 @@ const PositionNameGrid = ({
                 if (positionNames.length === 0) return;
                 onCellClick(position, positionNames);
               }}
+              onKeyDown={onEnterKeyDown(() => {
+                if (positionNames.length === 0) return;
+                onCellClick(position, positionNames);
+              })}
             >
               <CellContent
                 names={positionNames}

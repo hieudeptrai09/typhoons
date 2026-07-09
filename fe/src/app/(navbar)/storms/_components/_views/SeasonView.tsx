@@ -1,4 +1,5 @@
 import type { Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -94,9 +95,13 @@ const SeasonView = ({ stormsData, onCellClick }: SeasonViewProps) => {
         dataSource={data}
         columns={columns}
         rowKey="month"
-        onRow={(row) => ({
-          onClick: () => row.count > 0 && onCellClick(row.month, "monthStart"),
-        })}
+        onRow={(row) =>
+          row.count > 0
+            ? clickableRowProps(`View storms in ${row.monthName}`, () =>
+                onCellClick(row.month, "monthStart"),
+              )
+            : {}
+        }
         rowClassName={(record, index) =>
           `${record.count > 0 ? "cursor-pointer" : "cursor-default"} ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
         }

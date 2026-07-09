@@ -209,8 +209,9 @@ function AverageTab({ storms }: { storms: Storm[] }) {
                 trigger={["hover", "click"]}
                 placement="bottom"
               >
-                <div
-                  className="flex cursor-pointer items-center justify-between rounded-md bg-white px-3 py-2 transition-colors hover:bg-gray-100"
+                <button
+                  type="button"
+                  className="flex w-full cursor-pointer items-center justify-between rounded-md border-0 bg-white px-3 py-2 text-left transition-colors hover:bg-gray-100"
                   style={{ borderLeft: `4px solid ${bgColor}` }}
                 >
                   <span
@@ -236,7 +237,7 @@ function AverageTab({ storms }: { storms: Storm[] }) {
                       </span>
                     </span>
                   </div>
-                </div>
+                </button>
               </Popover>
             );
           })}
