@@ -5,7 +5,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [Critical] Retired Names tab opens to an empty "no results" state
-- **Status:** ❌ **Not fixed (aa12635):** `RetiredView` still defaults `currentLetter = searchParams.get("letter") || "A"` and the toggle still lands on `?letter=A`; "A" has no retired names, so the tab still opens on the empty state (verified in the rebuilt app). This is the top-priority Critical still open.
+- **Status:** ✅ **Fixed (df03f19):** `RetiredView` now defaults `currentLetter` to `getFirstAvailableLetter(availableLettersMap)` and the toggle pushes `/names/retired/` (no more `?letter=A`), so the tab opens on the first available letter with names — verified in the rebuilt app ("B": Bilis / Bopha / Bualoi).
 - **Screens:** 32_names_retired__desktop.png, 32_names_retired__mobile.png
 - **Category:** Empty/default state, first impression, logic bug
 - **Problem:** Opening the Retired view shows the `EmptyResults` "No typhoon names match your current filters" panel even though ~50 retired names exist. Root cause: `NamesPageContent.tsx` `toggleView()` pushes `/names/retired/?letter=A`, and `RetiredView.tsx` defaults `currentLetter = searchParams.get("letter") || "A"`. No retired name starts with "A" (letter A is rendered disabled/gray in the nav), so `displayedNames` filters to zero and the table renders `EmptyResults`. The `FilterX` empty icon further implies the user applied a filter they never touched. This is the worst possible first impression for the tab.
@@ -23,7 +23,7 @@ The Names section is feature-rich (grid/list/retired views, letter navigation, t
 ---
 
 ### [High] Filter badge shows "1" on the default view when no filter is applied
-- **Status:** ❌ **Not fixed (aa12635):** `activeFilterCount` still counts the implicit `selectedStatus="current"`, so the funnel badge still reads "1" on first load (visible in the rebuilt app).
+- **Status:** ❌ **Still not fixed (df03f19):** `activeFilterCount` still includes the implicit `selectedStatus="current"`, so the funnel badge still reads "1" on first load (verified in the rebuilt app).
 - **Screens:** 30_names_current__desktop.png (green "1" badge on funnel), 34_names_current_tab, 62_modal_names_settings
 - **Category:** Feedback, misleading state
 - **Problem:** In `NamesView.tsx`, `selectedStatus` defaults to `"current"` on the Current view and `activeFilterCount` includes `selectedStatus` in its `.filter(Boolean)` count. So the `Badge count={activeFilterCount}` on the filter funnel always reads "1" on first load even though the user has applied nothing. This trains users to distrust the badge and hides when a real filter is actually active. The filter modal compounds it by showing Status pre-set to "Current".

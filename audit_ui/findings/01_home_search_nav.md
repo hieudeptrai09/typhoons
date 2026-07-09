@@ -20,13 +20,14 @@ Heuristic audit of the JEBI.SE Malakas home page, the `/search` results/empty st
 - **Fix:** Darken to `text-amber-700` (#b45309 ≈ 3.9:1) or `text-amber-800` (passes AA), or use white text on a colored chip, in `OnThisDay.tsx`/`FunFacts.tsx` — wherever the items ultimately render. Usability caveat: a hamburger hides these engagement hooks, so give the menu trigger a clear, high-contrast affordance so the features are still discoverable.
 
 ### [High] Search-result table rows are not keyboard-operable
-- **Status:** ❌ **Not fixed (aa12635):** `onRow` still sets `role="button"`+`onClick` with no `onKeyDown`.
+- **Status:** ✅ **Fixed (df03f19):** rows now use `clickableRowProps` (adds `onKeyDown` + role + tabindex + aria-label). Enter works; Space is a minor follow-up.
 - **Screens:** 02_search_results__desktop.png, 02_search_results__mobile.png
 - **Category:** Accessibility
 - **Problem:** In `SearchPageContent.tsx` (`onRow`, lines 131–139) each row is given `role="button"`, `tabIndex: 0`, and an `onClick` that navigates to the storm detail — but there is **no `onKeyDown` handler**. A keyboard/screen-reader user can focus the row (it announces as a button) but pressing Enter/Space does nothing; the only keyboard-reachable target is the inner Name `<Link>`. This is a broken interactive affordance and an AA (2.1.1 Keyboard) failure.
 - **Fix:** Add an `onKeyDown` that fires the same navigation on Enter/Space, or drop the row-level `role/tabIndex/onClick` entirely and rely on the Name link (simpler and avoids the nested-interactive pattern where the row and the Name link both navigate).
 
 ### [Medium] Two divergent search experiences; home search has no autocomplete and no visible submit
+- **Status:** ✅ **Fixed (df03f19):** home and navbar now share one `lib/components/SearchBar` (`variant="home"|"navbar"`); the duplicate components and the autocomplete hook were removed.
 - **Screens:** 01_home__desktop.png, 01_home__mobile.png vs 02/03/04 navbar search
 - **Category:** Consistency / Affordance
 - **Problem:** The home `SearchBar` (`app/(home)/_components/SearchBar.tsx`) and the navbar `SearchBar` (`lib/layout/NavBar/SearchBar.tsx`) are different components with different placeholders ("Search typhoon names..." vs "Search names...") and, more importantly, different behavior: the navbar version shows a live suggestion dropdown (`filtered.slice(0,5)`, "View all results"), while the home version has **no dropdown at all** and only navigates on `onPressEnter`. On the primary landing surface there is no suggestion feedback and no visible Search/submit button — a mobile user who taps the field and types has no on-screen affordance that Enter is required (they must know to press the keyboard "Go"). The weaker search is on the page most likely to be a user's first touch.

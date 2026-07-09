@@ -1,6 +1,34 @@
-# Fix Review — commit `aa12635` ("edit the app to fix the ui audit")
+# Fix Review
 
-Reviewed against the audit by rebuilding the app (production build) and rendering the affected screens. Backend + build are healthy: `next build` compiles and typechecks, all routes return 200, and the new `/active-on-this-day` API route works (proper `break`, no fall-through). Per-finding status tags are also inline in `findings/*.md`.
+Reviewed by rebuilding the app (production build) with the DB up and rendering the affected screens. Per-finding status tags are inline in `findings/*.md`; the gallery's filter bar lets you view them by status. **No regressions** — both build rounds compile + typecheck and all routes return 200.
+
+---
+
+## Round 2 — commits `54b5adb…df03f19` (5 commits)
+
+**Newly ✅ fixed (verified in the rebuilt app):**
+- 🔴→✅ **Retired tab opens empty (Critical)** — `RetiredView` defaults to `getFirstAvailableLetter(...)` and the toggle drops `?letter=A`; the tab now opens on "B" with real names.
+- ✅ **Grid cells & search rows keyboard-operable** — new `lib/utils/a11y.ts` (`onEnterKeyDown` / `clickableRowProps`) wired into `GridCell` and the search table. *(Enter only; Space would be a nice follow-up for `role="button"`.)*
+- ✅ **`arid-hidden` typo → `aria-hidden`** (the new issue from Round 1).
+- ✅ **Distance norm grey** — `#9ca3af` → `#6b7280` (readable + recedes); closes the Round-1 sub-issue.
+- ✅ **Broken-image placeholder** — `ImageWithLoader` now shows a gray `ImageOff` glyph instead of "No image" text. *(role/aria + descriptive alt still open.)*
+- ✅ **`FrownNotFound` → `FrownError`** with flexible `description` + `onRetry` retry button; error-vs-empty split reinforced.
+- ✅ **Unified SearchBar** — home + navbar now share `lib/components/SearchBar` (`variant`), removing the two divergent search components.
+- ✅ **Clear page titles** (from the prior title work) confirmed live.
+
+**🟡 Improved but not complete:**
+- **`EmptyResults`** now takes an `icon` prop, but not-found callers still don't pass a neutral icon (funnel still shows).
+- **Invalid position** — `FrownError` has a Retry now, but `positions/[position]/page.tsx` still routes bad ids to it with "Something went wrong" copy.
+
+**❌ Still open:** filter badge "1"; info-modal retired badge/replacement; no-origin `PositionModal` fallback still omits Storms; letter-nav colour contrast; intensity contrast still ~3.0 (below the ~3.5 target); view-switcher pill state; settings "Reset to defaults".
+
+**⚠️ New issues:** none introduced this round. *(An earlier render showing "Something went wrong" on `/info/yagi` was a stale Next server from a DB-down build, not a code regression — confirmed fine after a clean rebuild.)*
+
+---
+
+## Round 1 — commit `aa12635` ("edit the app to fix the ui audit")
+
+Reviewed against the audit by rebuilding the app (production build) and rendering the affected screens. The new `/active-on-this-day` API route works (proper `break`, no fall-through).
 
 ## ✅ Fixed
 | Finding | What landed |
