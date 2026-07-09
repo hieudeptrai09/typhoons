@@ -12,7 +12,10 @@ export const isValidNamesSlug = (slug: string[] = []): boolean => {
     return ["list", "retired", "history", "current"].includes(slug[0]);
   }
   if (slug.length === 2) {
-    return (slug[0] === "history" || slug[0] === "current") && slug[1] === "tag";
+    if (slug[0] === "history" || slug[0] === "current") {
+      return slug[1] === "tag" || slug[1] === "list";
+    }
+    return false;
   }
   return false;
 };
@@ -24,9 +27,11 @@ export const slugToParams = (slug: string[] = []): NamesSlugParams => {
   if (first === "retired") return { view: "retired", showName: false, showHistory: false };
 
   if (first === "history") {
+    if (second === "list") return { view: "list", showName: false, showHistory: true };
     return { view: "grid", showName: second !== "tag", showHistory: true };
   }
   if (first === "current") {
+    if (second === "list") return { view: "list", showName: false, showHistory: false };
     return { view: "grid", showName: second !== "tag", showHistory: false };
   }
 
@@ -34,7 +39,7 @@ export const slugToParams = (slug: string[] = []): NamesSlugParams => {
 };
 
 export const paramsToPath = (view: string, showHistory = false, showName = false): string => {
-  if (view === "list") return "/names/list/";
+  if (view === "list") return showHistory ? "/names/history/list/" : "/names/list/";
   if (view === "retired") return "/names/retired/";
 
   const base = showHistory ? "/names/history" : "/names/current";
@@ -50,7 +55,6 @@ export const canonicalPath = (view: string, showHistory: boolean, showName: bool
 
 export const getNamesTitle = (
   view: string | string[] | undefined,
-  showName?: string | string[] | undefined,
   showHistory?: string | string[] | undefined,
 ): string => {
   const viewStr = normalizeParam(view) || "grid";

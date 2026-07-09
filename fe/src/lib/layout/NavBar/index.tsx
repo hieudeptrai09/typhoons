@@ -1,5 +1,6 @@
 "use client";
 
+import SearchBar from "@/lib/components/SearchBar";
 import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -7,7 +8,6 @@ import DesktopNav from "./DesktopNav";
 import MenuToggle from "./MenuToggle";
 import MobileNav from "./MobileNav";
 import NavLink from "./NavLink";
-import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const pathName = usePathname();
@@ -28,7 +28,7 @@ const Navbar = () => {
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />
 
           <div className="mx-2 min-w-0 flex-1 md:mx-4 md:max-w-md">
-            <SearchBar />
+            <SearchBar variant="navbar" />
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">

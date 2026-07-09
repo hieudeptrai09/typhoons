@@ -1,12 +1,12 @@
 "use client";
 
+import SearchBar from "@/lib/components/SearchBar";
 import { Button } from "antd";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ActiveStorms from "./ActiveStorms";
 import FunFacts from "./FunFacts";
 import OnThisDay from "./OnThisDay";
-import SearchBar from "./SearchBar";
 
 const QuickActionsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const QuickActionsMenu = () => {
   return (
     <div ref={containerRef} className="relative mb-4 flex w-full max-w-sm items-center gap-2">
       <div className="min-w-0 flex-1">
-        <SearchBar />
+        <SearchBar variant="home" />
       </div>
 
       <Button

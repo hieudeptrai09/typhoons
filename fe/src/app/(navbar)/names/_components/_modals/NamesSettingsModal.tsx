@@ -39,8 +39,7 @@ const NamesSettingsModal = ({
 
   const isGrid = draftMode === "grid";
   const isList = draftMode === "list";
-  const showHistoryDisabled = !isGrid;
-  const colorfulDisabled = showHistoryDisabled || !draftSettings.showHistory;
+  const colorfulDisabled = !isGrid || !draftSettings.showHistory;
 
   return (
     <Modal
@@ -79,13 +78,10 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
-            Letter Navigation
-          </span>
+          <span className="text-sm font-semibold text-gray-700">Letter Navigation</span>
           <Switch
-            checked={isGrid && draftSettings.showLetterNav}
+            checked={draftSettings.showLetterNav}
             onChange={(v) => updateDraft({ showLetterNav: v })}
-            disabled={!isGrid}
             aria-label="Letter Navigation"
           />
         </div>
@@ -103,15 +99,10 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span
-            className={`text-sm font-semibold ${!showHistoryDisabled ? "text-gray-700" : "text-gray-400"}`}
-          >
-            Show History
-          </span>
+          <span className="text-sm font-semibold text-gray-700">Show History</span>
           <Switch
-            checked={!showHistoryDisabled && draftSettings.showHistory}
+            checked={draftSettings.showHistory}
             onChange={(v) => updateDraft({ showHistory: v })}
-            disabled={showHistoryDisabled}
             aria-label="Show History"
           />
         </div>

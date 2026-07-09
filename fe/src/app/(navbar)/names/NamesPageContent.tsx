@@ -33,7 +33,7 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
   }
 
   return (
-    <PageHeader title={getNamesTitle(viewMode, showName ? "true" : "", showHistory ? "true" : "")}>
+    <PageHeader title={getNamesTitle(viewMode, showHistory ? "true" : "")}>
       {viewMode === "retired" ? (
         <RetiredView retiredNames={retiredNames} onToggleView={toggleView} />
       ) : (

@@ -37,7 +37,7 @@ const GridCell = ({
       {viewType !== "highlights" && stormNames.length > 0 && (
         <div
           className="absolute top-0 text-[7px] text-transparent select-none pointer-events-none"
-          arid-hidden="true"
+          aria-hidden="true"
         >
           {stormNames.join(", ")}
         </div>

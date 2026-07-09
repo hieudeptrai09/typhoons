@@ -90,7 +90,6 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   const selectedLanguage = searchParams.get("language") || "";
   const selectedTag = searchParams.get("tag") || "";
   const searchPosition = searchParams.get("position") || "";
-  const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
 
   const countryArr = toArr(selectedCountry);
   const languageArr = toArr(selectedLanguage);
@@ -105,6 +104,8 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const selectedStatus = settings.showHistory ? searchParams.get("status") || "" : "current";
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -141,20 +142,13 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
 
   const filteredAllNames = useMemo(() => {
     if (hasActiveFilters) return applyNameFilters(allNames, filterValues);
-    if (displayMode === "grid" && !settings.showLetterNav) return [...allNames];
+    if (!settings.showLetterNav) return [...allNames];
     return allNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
-  }, [
-    allNames,
-    hasActiveFilters,
-    filterValues,
-    displayMode,
-    settings.showLetterNav,
-    currentLetter,
-  ]);
+  }, [allNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
 
   const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
 
-  const showLetterNav = !hasActiveFilters && (displayMode === "list" || settings.showLetterNav);
+  const showLetterNav = !hasActiveFilters && settings.showLetterNav;
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
@@ -194,7 +188,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     setSettings(newSettings);
     setIsSettingsOpen(false);
     if (mode === "list") {
-      router.push(paramsToPath("list"));
+      router.push(paramsToPath("list", newSettings.showHistory));
     } else {
       router.push(paramsToPath("grid", newSettings.showHistory, newSettings.showName));
     }

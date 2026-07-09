@@ -121,14 +121,15 @@ const ListFilterModal = ({
           />
         </Form.Item>
 
-        <Form.Item label="Status" name="status" className="mb-0">
-          <Radio.Group disabled={!showHistory}>
-            <Radio value="">All</Radio>
-            <Radio value="active">Active</Radio>
-            <Radio value="retired">Retired</Radio>
-            <Radio value="current">Current</Radio>
-          </Radio.Group>
-        </Form.Item>
+        {showHistory && (
+          <Form.Item label="Status" name="status" className="mb-0">
+            <Radio.Group>
+              <Radio value="">All</Radio>
+              <Radio value="active">Active</Radio>
+              <Radio value="retired">Retired</Radio>
+            </Radio.Group>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );
