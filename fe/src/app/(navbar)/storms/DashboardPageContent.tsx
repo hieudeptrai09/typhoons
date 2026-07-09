@@ -6,7 +6,7 @@ import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import AverageModal from "./_components/_modals/AverageModal";
+import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
@@ -30,6 +30,7 @@ interface SelectedData {
   name?: string;
   avgIntensity?: number;
   average?: number;
+  criteria?: AverageModalCriteria;
 }
 
 interface DashboardPageContentProps {
@@ -83,7 +84,12 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     }
 
     if (view === "average" && filter === "name") {
-      setSelectedData({ title: String(data), average: calculateAverage(storms), storms });
+      setSelectedData({
+        title: String(data),
+        average: calculateAverage(storms),
+        storms,
+        criteria: "name",
+      });
       setIsAverageModalOpen(true);
       return;
     }
@@ -96,7 +102,12 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       const monthStorms = (stormsData || []).filter(
         (s) => getEffectiveMonth(s) === (data as number),
       );
-      setSelectedData({ title: monthName, storms: monthStorms });
+      setSelectedData({
+        title: monthName,
+        storms: monthStorms,
+        average: calculateAverage(monthStorms),
+        criteria: "month",
+      });
       setIsAverageModalOpen(true);
       return;
     }
@@ -115,7 +126,12 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       year: `Year ${data}`,
     };
 
-    setSelectedData({ title: titleMap[key], average: calculateAverage(storms), storms });
+    setSelectedData({
+      title: titleMap[key],
+      average: calculateAverage(storms),
+      storms,
+      criteria: key as AverageModalCriteria,
+    });
     setIsAverageModalOpen(true);
   };
 
@@ -189,6 +205,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         title={selectedData?.title || ""}
         average={selectedData?.average || 0}
         storms={selectedData?.storms || []}
+        criteria={selectedData?.criteria || "position"}
       />
 
       <NameListModal

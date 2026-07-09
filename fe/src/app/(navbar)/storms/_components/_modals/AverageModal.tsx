@@ -1,29 +1,60 @@
-import { INTENSITY_LABEL } from "@/lib/constants";
-import type { BaseModalProps, Storm } from "@/lib/types";
+import { INTENSITY_LABEL, SORTING_RANK } from "@/lib/constants";
+import type { BaseModalProps, IntensityType, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Modal, Popover } from "antd";
-import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
+import { getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
+
+export type AverageModalCriteria = "position" | "country" | "year" | "month" | "name";
 
 interface AverageModalProps extends BaseModalProps {
   title: string;
   average: number;
   storms: Storm[];
+  criteria: AverageModalCriteria;
 }
 
-interface NameAverageData {
-  name: string;
-  average: number;
+interface IntensityGroupData {
+  intensity: IntensityType;
   count: number;
   storms: Storm[];
 }
 
-const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalProps) => {
-  const nameAverages = getGroupedStorms(storms, "name");
-  const nameData: NameAverageData[] = Object.entries(nameAverages).map(([name, nameStorms]) => {
-    const sortedStorms = [...nameStorms].sort((a, b) => a.year - b.year);
-    const avg = calculateAverage(sortedStorms);
-    return { name, average: avg, count: sortedStorms.length, storms: sortedStorms };
-  });
+const CRITERIA_TEXT: Record<
+  AverageModalCriteria,
+  { heading: (title: string) => string; empty: (title: string) => string }
+> = {
+  position: {
+    heading: (title) => `Storms in position ${title} by intensity:`,
+    empty: (title) => `No storms in position ${title}.`,
+  },
+  country: {
+    heading: (title) => `Storms in ${title} by intensity:`,
+    empty: (title) => `No storms in ${title}.`,
+  },
+  year: {
+    heading: (title) => `Storms in ${title} by intensity:`,
+    empty: (title) => `No storms in ${title}.`,
+  },
+  month: {
+    heading: (title) => `Storms in ${title} by intensity:`,
+    empty: (title) => `No storms in ${title}.`,
+  },
+  name: {
+    heading: (title) => `Storms named ${title} by intensity:`,
+    empty: (title) => `No storms named ${title}.`,
+  },
+};
+
+const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: AverageModalProps) => {
+  const { heading, empty } = CRITERIA_TEXT[criteria];
+  const intensityGroups = getGroupedStorms(storms, "intensity");
+  const intensityData: IntensityGroupData[] = Object.entries(intensityGroups)
+    .map(([intensity, groupStorms]) => ({
+      intensity: intensity as IntensityType,
+      count: groupStorms.length,
+      storms: [...groupStorms].sort((a, b) => a.year - b.year),
+    }))
+    .sort((a, b) => SORTING_RANK[b.intensity] - SORTING_RANK[a.intensity]);
 
   return (
     <Modal
@@ -40,7 +71,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
       }}
       title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
     >
-      <div className="pt-4">
+      <div className="pt-3">
         <div className="space-y-3">
           <div>
             <span id="avg-intensity-label" className="text-gray-500">
@@ -55,29 +86,28 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
             </span>
           </div>
           <div>
-            <div className="mb-2 text-gray-500">Storm names at this position:</div>
-            {nameData.length === 0 && (
-              <div className="text-sm text-gray-400">No storms at this position.</div>
+            <div className="mb-2 text-gray-500">{heading(title)}</div>
+            {intensityData.length === 0 && (
+              <div className="text-sm text-gray-400">{empty(title)}</div>
             )}
             <div className="space-y-2">
-              {nameData.map((data, idx) => {
-                const intensityLabel = getIntensityFromNumber(data.average);
-                const bgColor = BACKGROUND_BADGE[intensityLabel];
+              {intensityData.map((data, idx) => {
+                const bgColor = BACKGROUND_BADGE[data.intensity];
+                const textColor = TEXT_COLOR_WHITE_BACKGROUND[data.intensity];
 
                 return (
                   <Popover
-                    key={data.name}
+                    key={data.intensity}
                     styles={{ container: { backgroundColor: "#f3f4f6" } }}
                     content={
                       <div className="flex flex-col gap-1.5">
                         {data.storms.map((storm) => (
-                          <div key={storm.year} className="text-sm text-gray-600">
-                            {INTENSITY_LABEL[storm.intensity]}{" "}
-                            <span
-                              className="font-semibold"
-                              style={{ color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity] }}
-                            >
-                              {data.name}
+                          <div
+                            key={`${storm.name}-${storm.year}`}
+                            className="text-sm text-gray-600"
+                          >
+                            <span className="font-semibold" style={{ color: textColor }}>
+                              {storm.name}
                             </span>{" "}
                             {storm.year}
                           </div>
@@ -92,23 +122,15 @@ const AverageModal = ({ isOpen, onClose, title, average, storms }: AverageModalP
                       style={{ borderLeft: `4px solid ${bgColor}` }}
                     >
                       <span
-                        className="font-semibold text-gray-700"
+                        className="font-semibold"
+                        style={{ color: textColor }}
                         aria-describedby={`avg-stats-${idx}`}
                       >
-                        {data.name}
+                        {INTENSITY_LABEL[data.intensity]}
                       </span>
-                      <div id={`avg-stats-${idx}`} className="flex gap-3 text-sm text-gray-500">
+                      <div id={`avg-stats-${idx}`} className="text-sm text-gray-500">
                         <span>
                           Count: <span className="font-semibold text-gray-700">{data.count}</span>
-                        </span>
-                        <span>
-                          Avg:{" "}
-                          <span
-                            className="font-semibold"
-                            style={{ color: TEXT_COLOR_WHITE_BACKGROUND[intensityLabel] }}
-                          >
-                            {data.average.toFixed(2)}
-                          </span>
                         </span>
                       </div>
                     </div>

@@ -135,7 +135,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     selectedLanguage,
     searchPosition,
     selectedTag,
-    selectedStatus,
+    settings.showHistory ? selectedStatus : "",
   ].filter(Boolean).length;
 
   const hasActiveFilters = activeFilterCount > 0;
@@ -153,14 +153,28 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   );
 
   const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
-  const currentLetter =
-    searchParams.get("letter") || getFirstAvailableLetter(letterStatusMap);
+  const currentLetter = searchParams.get("letter") || getFirstAvailableLetter(letterStatusMap);
+
+  const statusFilteredNames = useMemo(
+    () =>
+      selectedStatus
+        ? applyNameFilters(allNames, {
+            name: "",
+            country: [],
+            language: [],
+            tag: [],
+            position: "",
+            status: selectedStatus,
+          })
+        : allNames,
+    [allNames, selectedStatus],
+  );
 
   const filteredAllNames = useMemo(() => {
-    if (hasActiveFilters) return applyNameFilters(allNames, filterValues);
-    if (!settings.showLetterNav) return [...allNames];
-    return allNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
-  }, [allNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
+    if (hasActiveFilters) return applyNameFilters(statusFilteredNames, filterValues);
+    if (!settings.showLetterNav) return statusFilteredNames;
+    return statusFilteredNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
+  }, [statusFilteredNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
 
   const showLetterNav = !hasActiveFilters && settings.showLetterNav;
 
