@@ -52,7 +52,7 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
           <span className="flex items-center gap-2">{buildIconNodes()}</span>
         </Button>
       </div>
-      <div className="mt-2 flex justify-center">
+      <div className="mt-2 hidden justify-center">
         <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
           Click the button above to change view
         </span>

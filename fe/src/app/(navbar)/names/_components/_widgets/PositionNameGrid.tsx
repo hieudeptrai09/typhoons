@@ -199,8 +199,8 @@ const PositionNameGrid = ({
               className={`border border-stone-300 p-0 transition-colors ${
                 isEmpty ? "cursor-default bg-gray-100" : "cursor-pointer hover:bg-stone-100"
               }`}
-              role="button"
-              tabIndex={0}
+              role={!isEmpty ? "button" : ""}
+              tabIndex={!isEmpty ? 0 : -1}
               aria-label={`Position ${position}`}
               onClick={() => {
                 if (positionNames.length === 0) return;

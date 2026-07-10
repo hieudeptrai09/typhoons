@@ -1,3 +1,6 @@
+"use client";
+
+import { useScrollEndFade } from "@/lib/hooks/useScrollEndFade";
 import type { ReactNode } from "react";
 import CountryFlag, { COUNTRY_NAMES } from "../CountryFlag";
 
@@ -12,12 +15,13 @@ interface PositionGridProps {
 
 const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: PositionGridProps) => {
   const columnWidth = `${100 / COLS}%`;
+  const { wrapperRef, showEndFade } = useScrollEndFade();
 
   return (
     <div>
       <p className="mb-2 text-xs text-muted hidden">Swipe right to see full table →</p>
-      <div className="relative">
-        <div className="overflow-x-auto">
+      <div ref={wrapperRef} className="relative">
+        <div className="overflow-x-auto" data-scroll-container>
           <table
             className="min-w-full border-collapse"
             aria-label="Typhoon name positions by country"
@@ -57,7 +61,9 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
           </table>
         </div>
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-stone-100 to-transparent md:hidden"
+          className={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-stone-100 to-transparent transition-opacity duration-200 md:hidden ${
+            showEndFade ? "opacity-100" : "opacity-0"
+          }`}
           aria-hidden="true"
         />
       </div>
