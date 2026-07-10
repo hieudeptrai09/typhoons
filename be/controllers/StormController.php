@@ -127,7 +127,7 @@ class StormController
         $stmt = $this->conn->query(
             "SELECT name, position FROM storms
              WHERE position BETWEEN 1 AND 140
-             ORDER BY year DESC, monthEnd DESC, dateEnd DESC, id DESC
+             ORDER BY year DESC, monthStart DESC, dateStart DESC, id DESC
              LIMIT 1"
         );
         $latest = $stmt->fetch();
@@ -136,7 +136,22 @@ class StormController
             return ['data' => null];
         }
 
-        return ['data' => ['name' => $latest['name'], 'position' => (int)$latest['position']]];
+        $nextPosition = ((int)$latest['position'] % 140) + 1;
+
+        $nameStmt = $this->conn->prepare(
+            "SELECT name FROM typhoonnames
+             WHERE position = :position AND isRetired = 0
+             LIMIT 1"
+        );
+        $nameStmt->bindParam(':position', $nextPosition, PDO::PARAM_INT);
+        $nameStmt->execute();
+        $nextName = $nameStmt->fetch();
+
+        if (!$nextName) {
+            return ['data' => ['name' => $latest['name'], 'position' => (int)$latest['position']]];
+        }
+
+        return ['data' => ['name' => $nextName['name'], 'position' => $nextPosition]];
     }
 
     public function getStorms()

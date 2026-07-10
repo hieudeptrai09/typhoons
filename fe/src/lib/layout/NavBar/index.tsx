@@ -22,9 +22,6 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  // Publish the navbar's real rendered height so sticky table headers
-  // (which sit below this sticky nav) can offset below it instead of
-  // being hidden underneath it.
   useEffect(() => {
     const nav = navRef.current;
     if (!nav) return;

@@ -44,7 +44,7 @@ const GridCell = ({
           {stormNames.join(", ")}
         </div>
       )}
-      <div className="relative z-2 flex h-16 w-full items-center justify-center">{content}</div>
+      <div className="relative z-2 flex min-h-16 w-full items-center justify-center">{content}</div>
     </td>
   );
 };

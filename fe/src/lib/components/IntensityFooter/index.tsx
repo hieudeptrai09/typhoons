@@ -1,4 +1,4 @@
-import { INTENSITY_LABEL, SORTING_RANK } from "@/lib/constants";
+import { INTENSITY_LABEL, INTENSITY_RANK, SORTING_RANK } from "@/lib/constants";
 import { IntensityType } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 
@@ -26,7 +26,7 @@ export default function IntensityFooter() {
                 </span>
                 <span className="text-xs text-slate-400">
                   {INTENSITY_LABEL[intensity]}{" "}
-                  <span className="text-slate-400">({SORTING_RANK[intensity]})</span>
+                  <span className="text-slate-400">({INTENSITY_RANK[intensity]})</span>
                 </span>
               </span>
             ))}

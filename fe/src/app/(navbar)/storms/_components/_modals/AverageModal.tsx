@@ -19,8 +19,6 @@ interface IntensityGroupData {
   storms: Storm[];
 }
 
-// Positions above #140 aren't list slots — they're the agencies (CPHC, NHC, IMD)
-// that name storms outside the regular 140-name list, so they get their own wording.
 const POSITION_AGENCIES = new Set(["CPHC", "NHC", "IMD"]);
 
 const CRITERIA_TEXT: Record<
@@ -55,6 +53,7 @@ const CRITERIA_TEXT: Record<
   },
 };
 
+// The position part is used to a part of modal @modal/(.)positions/[position], but the owner forced to divorce and go back to here.
 const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: AverageModalProps) => {
   const { heading, empty } = CRITERIA_TEXT[criteria];
   const intensityGroups = getGroupedStorms(storms, "intensity");

@@ -9,8 +9,7 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 import { getIntensityFromNumber } from "../../_utils/fns";
 
-// It's used to a part of modal InfoModal (the "storms" lens), but the owner
-// forced to divorce and go back to here.
+// It's used to a part of modal @modal/(.)info/[name], but the owner forced to divorce and go back to here.
 export interface NameListModalProps extends BaseModalProps {
   name: string;
   storms: Storm[];

@@ -8,6 +8,7 @@ export interface StormDetailModalProps extends BaseModalProps {
   storms: Storm[];
 }
 
+// It's used to a part of modal @modal/(.)positions/[position], but the owner forced to divorce and go back to here.
 const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalProps) => {
   const groupedByName = storms.reduce<Record<string, Storm[]>>((acc, storm) => {
     if (!acc[storm.name]) acc[storm.name] = [];

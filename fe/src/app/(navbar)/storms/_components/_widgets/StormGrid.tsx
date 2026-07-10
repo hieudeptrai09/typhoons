@@ -186,7 +186,7 @@ const StormGrid = ({
             names.length === 0 ? (
               <span className="text-xs text-gray-300">—</span>
             ) : (
-              <div className="flex w-full flex-col items-center justify-center gap-1 px-1 md:gap-0.5">
+              <div className="flex w-full flex-col items-center justify-center gap-0 px-1 md:gap-0.5">
                 {names.map(({ name, color }, idx) => (
                   <button
                     key={idx}

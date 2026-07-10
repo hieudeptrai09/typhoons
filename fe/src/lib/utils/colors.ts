@@ -35,6 +35,8 @@ export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
   5: "#AA00AA",
 };
 
+// --- Distance colors ---
+
 export const getDistanceColor = (years: number): string => {
   if (years < 6.0) return "#dc2626";
   if (years === 6.0) return "#6b7280";
