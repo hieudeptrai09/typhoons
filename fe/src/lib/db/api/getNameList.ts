@@ -11,12 +11,12 @@ interface NameRow {
 }
 
 async function queryNameList(): Promise<ApiResponse<string[]>> {
-  const rows = (await sql.query(
+  const rows = await sql.query<NameRow[]>(
     `SELECT name FROM typhoonnames
      UNION
      SELECT DISTINCT name FROM storms WHERE position IN (141, 142, 143)
      ORDER BY name`,
-  )) as NameRow[];
+  );
 
   const data = rows.map((row) => row.name);
 

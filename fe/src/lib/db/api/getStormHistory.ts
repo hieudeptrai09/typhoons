@@ -14,7 +14,7 @@ interface StormHistoryRow {
 }
 
 async function queryStormHistory(position: number): Promise<ApiResponse<StormHistoryEntry[]>> {
-  const rows = (await sql.query(
+  const rows = await sql.query<StormHistoryRow[]>(
     `SELECT
       s.name,
       s.position,
@@ -23,7 +23,7 @@ async function queryStormHistory(position: number): Promise<ApiResponse<StormHis
     WHERE s.position = $1
     ORDER BY s.year ASC`,
     [position],
-  )) as StormHistoryRow[];
+  );
 
   const data: StormHistoryEntry[] = rows.map((row) => ({
     name: row.name,

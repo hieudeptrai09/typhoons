@@ -1,4 +1,4 @@
-import sql from "@/lib/db";
+import sql, { type QueryParam } from "@/lib/db";
 
 type Row = Record<string, unknown>;
 
@@ -27,11 +27,11 @@ function joinNames(items: (string | number)[], joiner = "and"): string {
   return `${rest.join(", ")} ${joiner} ${last}`;
 }
 
-async function rows(query: string, params: unknown[] = []): Promise<Row[]> {
-  return (await sql.query(query, params)) as Row[];
+async function rows(query: string, params: QueryParam[] = []): Promise<Row[]> {
+  return sql.query<Row[]>(query, params);
 }
 
-async function one(query: string, params: unknown[] = []): Promise<Row | undefined> {
+async function one(query: string, params: QueryParam[] = []): Promise<Row | undefined> {
   return (await rows(query, params))[0];
 }
 
@@ -498,7 +498,7 @@ async function generateFacts(): Promise<string[]> {
     }
     const langNames = (
       await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 ORDER BY name", [
-        r.language,
+        String(r.language),
       ])
     ).map((nr) => String(nr.name));
     if (langNames.length > 0) {
@@ -517,7 +517,9 @@ async function generateFacts(): Promise<string[]> {
     facts.push(`There are ${rCnt} names in the category ${r.tag}.`);
     if (rCnt <= 3 && rCnt > 0) {
       const tagNames = (
-        await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name", [r.tag])
+        await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name", [
+          String(r.tag),
+        ])
       ).map((nr) => String(nr.name));
       if (tagNames.length > 0) {
         const nl = tagNames.length === 1 ? "is the only name" : "are the only names";
@@ -542,7 +544,7 @@ async function generateFacts(): Promise<string[]> {
     const combNames = (
       await rows(
         "SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 AND tag = $2 ORDER BY name",
-        [r.language, r.tag],
+        [String(r.language), String(r.tag)],
       )
     ).map((nr) => String(nr.name));
     if (combNames.length > 0) {
@@ -572,7 +574,7 @@ async function generateFacts(): Promise<string[]> {
         INNER JOIN positions p ON t.position = p.id
         WHERE t.position <= 140 AND p.country = $1 AND t.tag = $2 ORDER BY t.name
         `,
-        [r.country, r.tag],
+        [String(r.country), String(r.tag)],
       )
     ).map((nr) => String(nr.name));
     if (countryTagNames.length > 0) {
@@ -680,7 +682,7 @@ async function generateFacts(): Promise<string[]> {
     const letterNames = (
       await rows(
         "SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = $1 ORDER BY name",
-        [r.letter],
+        [String(r.letter)],
       )
     ).map((nr) => String(nr.name));
     if (letterNames.length > 0) {

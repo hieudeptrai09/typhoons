@@ -54,7 +54,7 @@ async function queryActiveOnThisDay(
     )
     ORDER BY s.year ASC`;
 
-  const rows = (await sql.query(query, [month, day])) as ActiveOnThisDayRow[];
+  const rows = await sql.query<ActiveOnThisDayRow[]>(query, [month, day]);
 
   const data: ActiveOnThisDayStorm[] = rows.map((row) => ({
     name: row.name,

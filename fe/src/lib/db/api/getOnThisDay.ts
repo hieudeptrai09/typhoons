@@ -44,7 +44,7 @@ async function queryOnThisDay(
        OR (s.monthend = $3 AND s.dateend = $4)
     ORDER BY s.year ASC`;
 
-  const rows = (await sql.query(query, [month, day, month, day])) as OnThisDayRow[];
+  const rows = await sql.query<OnThisDayRow[]>(query, [month, day, month, day]);
 
   const data: OnThisDayStorm[] = rows.map((row) => {
     const monthStart = Number(row.monthStart);

@@ -1,4 +1,4 @@
-import sql from "@/lib/db";
+import sql, { type QueryParam } from "@/lib/db";
 import type { Suggestion } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -14,7 +14,9 @@ interface SuggestedNameRow {
   image: string | null;
 }
 
-async function querySuggestedNames(nameId: number | null = null): Promise<ApiResponse<Suggestion[]>> {
+async function querySuggestedNames(
+  nameId: number | null = null,
+): Promise<ApiResponse<Suggestion[]>> {
   let query = `SELECT
       replacementname AS "replacementName",
       meaning as "replacementMeaning",
@@ -22,14 +24,14 @@ async function querySuggestedNames(nameId: number | null = null): Promise<ApiRes
       image
     FROM suggestednames`;
 
-  const params: unknown[] = [];
+  const params: QueryParam[] = [];
   if (nameId !== null) {
     query += ` WHERE nameid = $${params.length + 1}`;
     params.push(nameId);
   }
   query += ` ORDER BY id ASC, nameid DESC, ischosen DESC`;
 
-  const rows = (await sql.query(query, params)) as SuggestedNameRow[];
+  const rows = await sql.query<SuggestedNameRow[]>(query, params);
 
   const data: Suggestion[] = rows.map((row) => ({
     replacementName: row.replacementName,

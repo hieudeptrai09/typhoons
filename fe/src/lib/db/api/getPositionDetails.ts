@@ -47,16 +47,16 @@ interface StormRow {
 }
 
 async function queryPositionDetails(position: number): Promise<ApiResponse<PositionDetail | null>> {
-  const posRows = (await sql.query("SELECT country FROM positions WHERE id = $1 LIMIT 1", [
+  const posRows = await sql.query<PositionRow[]>("SELECT country FROM positions WHERE id = $1 LIMIT 1", [
     position,
-  ])) as PositionRow[];
+  ]);
 
   const posRow = posRows[0];
   if (!posRow) {
     return { data: null };
   }
 
-  const nameRows = (await sql.query(
+  const nameRows = await sql.query<TyphoonNameRow[]>(
     `SELECT
       tn.id,
       tn.name,
@@ -78,7 +78,7 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     WHERE tn.position = $1
     ORDER BY tn.lastyear ASC, tn.name ASC`,
     [position],
-  )) as TyphoonNameRow[];
+  );
 
   const names: RetiredName[] = nameRows.map((row) => ({
     id: Number(row.id),
@@ -98,7 +98,7 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     tag: row.tag,
   }));
 
-  const stormRows = (await sql.query(
+  const stormRows = await sql.query<StormRow[]>(
     `SELECT
       s.position,
       p.country,
@@ -120,7 +120,7 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     WHERE s.position = $1
     ORDER BY s.year ASC`,
     [position],
-  )) as StormRow[];
+  );
 
   const storms: Storm[] = stormRows.map((row) => ({
     position: Number(row.position),

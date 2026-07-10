@@ -43,7 +43,7 @@ interface StormRow {
 }
 
 async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchDetail>> {
-  const nameRows = (await sql.query(
+  const nameRows = await sql.query<TyphoonNameRow[]>(
     `SELECT
       tn.id,
       tn.name,
@@ -65,7 +65,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
     WHERE LOWER(tn.name) = LOWER($1)
     LIMIT 1`,
     [name],
-  )) as TyphoonNameRow[];
+  );
 
   const nameRow = nameRows[0];
   const nameDetail: RetiredName | null = nameRow
@@ -88,7 +88,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       }
     : null;
 
-  const stormRows = (await sql.query(
+  const stormRows = await sql.query<StormRow[]>(
     `SELECT
       s.position,
       p.country,
@@ -110,7 +110,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
     WHERE LOWER(s.name) = LOWER($1)
     ORDER BY s.year ASC, s.position`,
     [name],
-  )) as StormRow[];
+  );
 
   const storms: Storm[] = stormRows.map((row) => ({
     position: Number(row.position),

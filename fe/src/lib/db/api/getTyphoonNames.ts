@@ -1,4 +1,4 @@
-import sql from "@/lib/db";
+import sql, { type QueryParam } from "@/lib/db";
 import type { RetiredName } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -25,7 +25,9 @@ interface TyphoonNameRow {
   tag: string;
 }
 
-async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiResponse<RetiredName[]>> {
+async function queryTyphoonNames(
+  isRetired: number | null = null,
+): Promise<ApiResponse<RetiredName[]>> {
   let query = `SELECT
       tn.id,
       tn.name,
@@ -45,7 +47,7 @@ async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiRe
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id`;
 
-  const params: unknown[] = [];
+  const params: QueryParam[] = [];
   if (isRetired !== null) {
     if (isRetired === 1) {
       query += ` WHERE tn.isretired = $${params.length + 1}`;
@@ -56,7 +58,7 @@ async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiRe
     }
   }
 
-  const rows = (await sql.query(query, params)) as TyphoonNameRow[];
+  const rows = await sql.query<TyphoonNameRow[]>(query, params);
 
   const data: RetiredName[] = rows.map((row) => ({
     id: Number(row.id),

@@ -22,7 +22,7 @@ interface SearchRow {
 async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> {
   const q = `%${query}%`;
 
-  const rows = (await sql.query(
+  const rows = await sql.query<SearchRow[]>(
     `SELECT
         tn.id,
         tn.name,
@@ -59,7 +59,7 @@ async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> 
 
     ORDER BY name ASC`,
     [q, q],
-  )) as SearchRow[];
+  );
 
   const data: SearchResult[] = rows.map((row) => ({
     id: row.id !== null ? Number(row.id) : null,

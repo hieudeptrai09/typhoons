@@ -1,4 +1,4 @@
-import sql from "@/lib/db";
+import sql, { type QueryParam } from "@/lib/db";
 import type { Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -45,14 +45,14 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
     FROM storms s
     INNER JOIN positions p ON s.position = p.id`;
 
-  const params: unknown[] = [];
+  const params: QueryParam[] = [];
   if (position !== null) {
     query += ` WHERE s.position = $${params.length + 1}`;
     params.push(position);
   }
   query += " ORDER BY s.year ASC, s.position";
 
-  const rows = (await sql.query(query, params)) as StormRow[];
+  const rows = await sql.query<StormRow[]>(query, params);
 
   const data: Storm[] = rows.map((row) => ({
     position: Number(row.position),
