@@ -467,7 +467,6 @@ class FactController
         $rows = $stmt->fetchAll();
         foreach ($rows as $row) {
             $cnt = (int)$row['cnt'];
-            $facts[] = "There are $cnt names in the category {$row['tag']}.";
             if ($cnt <= 3 && $cnt > 0) {
                 $stmt2 = $this->conn->prepare("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = :tag ORDER BY name");
                 $stmt2->execute([':tag' => $row['tag']]);
@@ -632,28 +631,6 @@ class FactController
                 $nl = count($names) === 1 ? "is the only name" : "are the only names";
                 $facts[] = $this->joinNames($names) . " $nl starting with the letter {$row['letter']}.";
             }
-        }
-
-        // --- Most/least common starting letter ---
-
-        $stmt = $this->conn->query("
-            SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
-            FROM typhoonnames WHERE position <= 140
-            GROUP BY letter ORDER BY cnt DESC LIMIT 1
-        ");
-        $row = $stmt->fetch();
-        if ($row) {
-            $facts[] = "The letter {$row['letter']} has the most names starting with it ({$row['cnt']}).";
-        }
-
-        $stmt = $this->conn->query("
-            SELECT UPPER(LEFT(name, 1)) as letter, COUNT(*) as cnt
-            FROM typhoonnames WHERE position <= 140
-            GROUP BY letter ORDER BY cnt ASC LIMIT 1
-        ");
-        $row = $stmt->fetch();
-        if ($row) {
-            $facts[] = "The letter {$row['letter']} has the fewest names starting with it ({$row['cnt']}).";
         }
 
         return $facts;
