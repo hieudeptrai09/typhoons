@@ -15,6 +15,7 @@ import AverageView from "./_components/_views/AverageView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
+import { resolveViewDefaults } from "./_components/_utils/dashboardOptions";
 import DashboardViewButton from "./_components/_widgets/DashboardViewButton";
 import {
   calculateAverage,
@@ -63,6 +64,10 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const handleApplyFilter = (newParams: DashboardParams) => {
     setIsFilterModalOpen(false);
     router.push(paramsToPath(newParams));
+  };
+
+  const handleSelectView = (newView: string) => {
+    router.push(paramsToPath(resolveViewDefaults(newView)));
   };
 
   const handleCellClick = (data: number | string, key: string) => {
@@ -143,7 +148,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   return (
     <>
       <PageHeader title={getDashboardTitle(view, mode, filter)}>
-        <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+        <DashboardViewButton
+          onOpenSettings={() => setIsFilterModalOpen(true)}
+          onSelectView={handleSelectView}
+          params={currentParams}
+        />
 
         {(() => {
           switch (view) {

@@ -1,3 +1,4 @@
+import type { DashboardParams } from "@/lib/types";
 import {
   Activity,
   ArrowDownToLine,
@@ -15,6 +16,7 @@ import {
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { isListOnly } from "../../_utils/fns";
 
 export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
   view: {
@@ -79,4 +81,45 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],
+};
+
+// Plain-text labels (for the view-switcher button caption and tooltips).
+export const VIEW_LABELS: Record<string, string> = {
+  storms: "Storms",
+  highlights: "Highlights",
+  average: "Average",
+  distance: "Gap",
+};
+
+export const FILTER_LABELS: Record<string, string> = {
+  strongest: "Strongest",
+  first: "First",
+  last: "Last",
+  position: "Position",
+  name: "Name",
+  country: "Country",
+  year: "Year",
+  month: "Month",
+};
+
+export const MODE_LABELS: Record<string, string> = {
+  table: "Table",
+  list: "List",
+};
+
+// The default filter each view opens on. Shared so the inline view bar and the
+// settings modal resolve a view's starting params the same way.
+export const DEFAULT_FILTER: Record<string, string> = {
+  storms: "position",
+  highlights: "strongest",
+  average: "position",
+  distance: "position",
+};
+
+// Resolve the params to apply when a view is picked from the inline bar: the
+// view's default grouping, and a layout that respects list-only combinations.
+export const resolveViewDefaults = (view: string): DashboardParams => {
+  const filter = DEFAULT_FILTER[view] ?? "";
+  const mode = isListOnly(view, filter) ? "list" : "table";
+  return { view, filter, mode };
 };

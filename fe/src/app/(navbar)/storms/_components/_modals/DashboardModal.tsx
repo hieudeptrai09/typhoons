@@ -1,20 +1,18 @@
 import type { BaseModalProps, DashboardParams } from "@/lib/types";
 import { Button, Modal, Segmented } from "antd";
 import { useState } from "react";
-import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../_utils/dashboardOptions";
+import {
+  FILTER_OPTIONS,
+  MODE_OPTIONS,
+  resolveViewDefaults,
+  VIEW_OPTIONS,
+} from "../_utils/dashboardOptions";
 import { isListOnly } from "../../_utils/fns";
 
 interface DashboardModalProps extends BaseModalProps {
   onApply: (params: DashboardParams) => void;
   currentParams: DashboardParams;
 }
-
-export const DEFAULT_FILTER: Record<string, string> = {
-  storms: "position",
-  highlights: "strongest",
-  average: "position",
-  distance: "position",
-};
 
 interface SectionProps {
   label: string;
@@ -49,17 +47,10 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
   const filterOptions = FILTER_OPTIONS[view] ?? [];
 
   const handleViewChange = (newView: string) => {
-    const defaultFilter = DEFAULT_FILTER[newView] ?? "";
-    setView(newView);
-    setFilter(defaultFilter);
-
-    if (newView === "distance" && defaultFilter === "name") {
-      setMode("list");
-    } else if (newView === "average" && defaultFilter === "country") {
-      setMode("list");
-    } else {
-      setMode("table");
-    }
+    const defaults = resolveViewDefaults(newView);
+    setView(defaults.view);
+    setFilter(defaults.filter);
+    setMode(defaults.mode);
   };
 
   const handleFilterChange = (newFilter: string) => {

@@ -1,61 +1,64 @@
 import type { DashboardParams } from "@/lib/types";
-import { Button } from "antd";
-import type { ReactNode } from "react";
-import { DASHBOARD_ICON_MAP } from "../_utils/dashboardOptions";
+import { Button, Segmented } from "antd";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import {
+  FILTER_LABELS,
+  MODE_LABELS,
+  VIEW_LABELS,
+  VIEW_OPTIONS,
+} from "../_utils/dashboardOptions";
 
-interface FilterButtonProps {
-  onClick: () => void;
+interface DashboardViewButtonProps {
+  onOpenSettings: () => void;
+  onSelectView: (view: string) => void;
   params: DashboardParams;
 }
 
-const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
-  const iconSize = 20;
-  const iconMap = DASHBOARD_ICON_MAP;
+const DashboardViewButton = ({
+  onOpenSettings,
+  onSelectView,
+  params,
+}: DashboardViewButtonProps) => {
+  const { view, filter, mode } = params;
 
-  const buildIconNodes = (): ReactNode[] => {
-    const icons: ReactNode[] = [];
-
-    const ViewIcon = iconMap.view[params.view];
-    if (ViewIcon) icons.push(<ViewIcon key="view" size={iconSize} />);
-
-    if (params.filter) {
-      const FilterIcon = iconMap.filter[params.filter];
-      if (FilterIcon) icons.push(<FilterIcon key="filter" size={iconSize} />);
-    }
-
-    const ModeIcon = iconMap.mode[params.mode];
-    if (ModeIcon) icons.push(<ModeIcon key="mode" size={iconSize} />);
-
-    return icons.reduce<ReactNode[]>((acc, icon, index) => {
-      if (index > 0) {
-        acc.push(
-          <span key={`sep-${index}`} className="mx-1 text-white">
-            /
-          </span>,
-        );
-      }
-      acc.push(icon);
-      return acc;
-    }, []);
-  };
+  const viewLabel = VIEW_LABELS[view] ?? view;
+  const filterLabel = filter ? (FILTER_LABELS[filter] ?? filter) : "";
+  const modeLabel = MODE_LABELS[mode] ?? "";
+  const secondaryLabel = [filterLabel, modeLabel].filter(Boolean).join(" · ");
+  const fullLabel = [viewLabel, secondaryLabel].filter(Boolean).join(" · ");
 
   return (
     <div className="mx-auto mb-6 max-w-4xl">
+      {/* Desktop: the primary View axis is always visible and one click */}
+      <div className="mb-3 hidden justify-center md:flex">
+        <Segmented
+          options={VIEW_OPTIONS}
+          value={view}
+          onChange={(v) => onSelectView(String(v))}
+          size="large"
+          aria-label="Select dashboard view"
+        />
+      </div>
+
+      {/* Labeled dropdown trigger — full switcher on mobile, refinements on desktop */}
       <div className="flex justify-center">
         <Button
-          type="primary"
-          onClick={onClick}
-          aria-label="Change dashboard view settings"
-          style={{ backgroundColor: "#9333ea", borderColor: "#9333ea" }}
-          className="!px-6 !py-5 !font-semibold hover:!border-purple-700 hover:!bg-purple-700"
+          onClick={onOpenSettings}
+          title={`Current view: ${fullLabel}. Click to change the view, grouping and layout.`}
+          aria-label={`Change view options — current view: ${fullLabel}`}
+          className="!inline-flex !h-auto !items-center !gap-2 !rounded-full !border-purple-300 !bg-purple-50 !px-4 !py-2 !font-semibold !text-purple-800 hover:!border-purple-400 hover:!bg-purple-100"
         >
-          <span className="flex items-center gap-2">{buildIconNodes()}</span>
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          <span>
+            {/* view name only needed on mobile, where the Segmented bar is hidden */}
+            <span className="md:hidden">
+              {viewLabel}
+              {secondaryLabel ? " · " : ""}
+            </span>
+            {secondaryLabel}
+          </span>
+          <ChevronDown size={16} className="opacity-70" aria-hidden="true" />
         </Button>
-      </div>
-      <div className="mt-2 flex justify-center">
-        <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
-          Click the button above to change view
-        </span>
       </div>
     </div>
   );
