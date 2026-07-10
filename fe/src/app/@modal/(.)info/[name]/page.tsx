@@ -14,7 +14,5 @@ export default async function InfoModalPage({ params }: InfoModalPageProps) {
     `/typhoon-names?name=${encodeURIComponent(decodedName)}`,
   );
 
-  return (
-    <InfoModal detail={result?.data ?? null} name={decodedName} isError={result === null} />
-  );
+  return <InfoModal detail={result?.data ?? null} name={decodedName} isError={result === null} />;
 }

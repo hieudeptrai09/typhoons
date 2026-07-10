@@ -1,5 +1,5 @@
 import { INTENSITY_LABEL, INTENSITY_RANK, SORTING_RANK } from "@/lib/constants";
-import { IntensityType } from "@/lib/types";
+import type { IntensityType } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 
 export default function IntensityFooter() {

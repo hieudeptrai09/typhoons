@@ -46,12 +46,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data: allNames,
-    loading,
-    error,
-    refetch,
-  } = useFetchData<string[]>("/search/names");
+  const { data: allNames, loading, error, refetch } = useFetchData<string[]>("/search/names");
 
   const trimmed = query.trim();
   const filtered =
