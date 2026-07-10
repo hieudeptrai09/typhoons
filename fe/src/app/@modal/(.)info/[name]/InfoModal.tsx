@@ -1,8 +1,8 @@
 "use client";
 
-import { calculateAverage, getIntensityFromNumber } from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
@@ -12,16 +12,19 @@ import type { SearchDetail, Storm } from "@/lib/types";
 import {
   BACKGROUND_BADGE,
   getNameStatusColor,
+  isExternalPosition,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Modal, Switch } from "antd";
+import { Inbox, SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 interface InfoModalProps {
   detail: SearchDetail | null;
   name: string;
+  isError?: boolean;
 }
 
 type TabType = "details" | "storms";
@@ -59,7 +62,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
       <div className="text-sm font-bold" style={{ color: textColor }}>
         {label} {storm.name}
       </div>
-      {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
+      {dateRange && <div className="text-xs text-muted">{dateRange}</div>}
     </div>
   );
 }
@@ -68,7 +71,7 @@ function StormsTab({ storms }: { storms: Storm[] }) {
   const [showMap, setShowMap] = useState(false);
 
   if (storms.length === 0) {
-    return <EmptyResults description="No storms found for this name." />;
+    return <EmptyResults icon={Inbox} description="No storms found for this name." />;
   }
 
   return (
@@ -76,29 +79,29 @@ function StormsTab({ storms }: { storms: Storm[] }) {
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-700">Country:</span>
+            <span className="font-semibold text-muted">Contributed by:</span>
             <CountryFlag country={storms[0].country} className="h-5 w-8" />
-            <span className="text-gray-700">{storms[0].country}</span>
+            <span className="text-muted">{storms[0].country}</span>
           </div>
           <div>
-            <span className="font-semibold text-gray-700">Position:</span>
-            <span className="ml-2 text-gray-700">{storms[0].position}</span>
+            <span className="font-semibold text-muted">Position:</span>
+            <span className="ml-2 text-muted">{storms[0].position}</span>
           </div>
           {storms[0].correctSpelling && (
             <div>
-              <span className="font-semibold text-gray-700">Correct spelling:</span>
-              <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
+              <span className="font-semibold text-muted">Correct spelling:</span>
+              <span className="ml-2 text-muted">{storms[0].correctSpelling}</span>
             </div>
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show Map</span>
+          <span className="text-sm font-semibold text-muted">Show Map</span>
           <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 font-semibold text-gray-700">All Storms ({storms.length})</h3>
+        <h3 className="mb-3 font-semibold text-muted">All Storms ({storms.length})</h3>
         <div className="space-y-1">
           {storms.map((storm, idx) => (
             <StormRow key={`${storm.year}-${storm.name}-${idx}`} storm={storm} showMap={showMap} />
@@ -109,7 +112,7 @@ function StormsTab({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoModal({ detail, name }: InfoModalProps) {
+export default function InfoModal({ detail, name, isError = false }: InfoModalProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -118,34 +121,36 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   const displayName = nameData?.name ?? name;
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
-  const origin = searchParams.get("origin");
-  const detailsOnly = origin === "names";
-  const stormsOnly = origin === "storms";
-
   const [activeTab, setActiveTab] = useState<TabType>(
     searchParams.get("tab") === "storms" ? "storms" : "details",
   );
 
-  if (!nameData && storms.length === 0) {
+  if (isError) {
     return (
       <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
-        <EmptyResults description="No typhoon named this was found." />
+        <FrownError />
       </Modal>
     );
   }
 
-  const avgIntensityColor =
-    storms.length > 0
-      ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]
-      : "#64748b";
-  const statusColor = nameData ? getNameStatusColor(nameData) : "#64748b";
-  const showStatusIcon = !stormsOnly && !detailsOnly;
-  const titleColor = detailsOnly ? statusColor : avgIntensityColor;
+  if (!nameData && storms.length === 0) {
+    return (
+      <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
+        <EmptyResults icon={SearchX} description="No typhoon with that name was found." />
+      </Modal>
+    );
+  }
+
+  const nameStatusColor = getNameStatusColor({
+    isRetired,
+    isLanguageProblem: nameData?.isLanguageProblem ?? 0,
+    isExternal: isExternalPosition(nameData?.position),
+  });
 
   const detailsContent = nameData ? (
-    <NameDetailsContent name={nameData} hideReplacedBy={!(origin === "names")} />
+    <NameDetailsContent name={nameData} />
   ) : (
-    <EmptyResults description="No name details available for this external name." />
+    <EmptyResults icon={Inbox} description="No name details available for this external name." />
   );
   const stormsContent = <StormsTab storms={storms} />;
 
@@ -153,23 +158,6 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
     { key: "storms", label: `Storms (${storms.length})`, content: stormsContent },
     { key: "details", label: "Name Details", content: detailsContent },
   ];
-
-  let body: ReactNode;
-  if (detailsOnly) {
-    body = detailsContent;
-  } else if (stormsOnly) {
-    body = stormsContent;
-  } else {
-    body = (
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        ariaLabel="Name details tabs"
-        idPrefix="info-modal-tab"
-      />
-    );
-  }
 
   return (
     <Modal
@@ -181,29 +169,31 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
       destroyOnHidden
       styles={{
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: {
-          height: !detailsOnly && !stormsOnly ? "70vh" : "",
-          maxHeight: "70vh",
-          overflowY: "auto",
-        },
+        body: { maxHeight: "70vh", overflowY: "auto" },
       }}
       title={
         <div className="flex items-center gap-2">
-          {showStatusIcon && (
-            <NameStatusIcon
-              isRetired={isRetired}
-              isLanguageProblem={nameData?.isLanguageProblem ?? 0}
-              position={nameData?.position ?? 0}
-              size={24}
-            />
-          )}
-          <span className="text-2xl font-bold capitalize" style={{ color: titleColor }}>
+          <NameStatusIcon
+            isRetired={isRetired}
+            isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+            position={nameData?.position ?? 0}
+            size={24}
+          />
+          <span className="text-2xl font-bold capitalize" style={{ color: nameStatusColor }}>
             {displayName.toLowerCase()}
           </span>
         </div>
       }
     >
-      <div className="pt-4">{body}</div>
+      <div className="pt-4">
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          ariaLabel="Name details tabs"
+          idPrefix="info-modal-tab"
+        />
+      </div>
     </Modal>
   );
 }

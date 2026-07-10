@@ -67,7 +67,7 @@ const ListFilterModal = ({
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
         <Button key="clear" onClick={() => form.resetFields()} aria-label="Clear all filters">
           Clear All
@@ -82,7 +82,7 @@ const ListFilterModal = ({
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>
 
-        <Form.Item label="Country" name="country">
+        <Form.Item label="Contributed By" name="country">
           <Select
             mode="multiple"
             placeholder="All Countries"
@@ -120,14 +120,15 @@ const ListFilterModal = ({
           />
         </Form.Item>
 
-        <Form.Item label="Status" name="status" className="mb-0">
-          <Radio.Group disabled={!showHistory}>
-            <Radio value="">All</Radio>
-            <Radio value="active">Active</Radio>
-            <Radio value="retired">Retired</Radio>
-            <Radio value="current">Current</Radio>
-          </Radio.Group>
-        </Form.Item>
+        {showHistory && (
+          <Form.Item label="Status" name="status" className="mb-0">
+            <Radio.Group>
+              <Radio value="">All</Radio>
+              <Radio value="active">Active</Radio>
+              <Radio value="retired">Retired</Radio>
+            </Radio.Group>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

@@ -20,7 +20,7 @@ const FunFacts = () => {
         icon: null,
         centered: true,
         okText: "Got it",
-        content: <p className="leading-relaxed text-gray-600">{fact ?? "No facts available."}</p>,
+        content: <p className="leading-relaxed text-muted">{fact ?? "No facts available."}</p>,
       });
     } catch {
       Modal.info({
@@ -28,7 +28,7 @@ const FunFacts = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-gray-500">Could not load fact.</p>,
+        content: <p className="text-muted">Could not load fact.</p>,
       });
     } finally {
       setLoading(false);
@@ -40,14 +40,14 @@ const FunFacts = () => {
       type="text"
       icon={
         loading ? (
-          <TyphoonSpinner size="small" colorClass="text-amber-600" />
+          <TyphoonSpinner size="small" colorClass="text-amber-700" />
         ) : (
           <Sparkles size={16} />
         )
       }
       onClick={showFact}
       disabled={loading}
-      className="text-sm! font-semibold! text-amber-600! hover:text-amber-800!"
+      className="w-full! justify-start! text-sm! font-semibold! text-amber-700! hover:text-amber-800!"
     >
       Useless Facts
     </Button>

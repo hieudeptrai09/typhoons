@@ -44,22 +44,22 @@ const SpecialNamesListDiv = ({
 
   return (
     <div className="mb-6 flex flex-wrap justify-center gap-4">
-      <div className="mr-2 self-start pt-2 text-sm font-semibold text-gray-700">Other Regions:</div>
+      <div className="mr-2 self-start pt-2 text-sm font-semibold text-muted">Other Regions:</div>
       {stormsByPosition.map(({ id, label, names }) => (
         <div key={id} className="flex flex-col items-center gap-1">
-          <span className="mb-1 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+          <span className="mb-1 text-xs font-semibold tracking-wide text-muted uppercase">
             {label}
           </span>
-          <div className="flex min-w-16 flex-col items-center gap-0.5 rounded border border-stone-300 px-2 py-2">
+          <div className="flex min-w-16 flex-col items-center gap-1 rounded border border-stone-300 px-2 py-2 md:gap-0.5">
             {names.length === 0 ? (
-              <span className="text-xs text-gray-300">—</span>
+              <span className="text-xs text-muted">—</span>
             ) : (
               names.map(({ name, color, storms }) => (
                 <Button
                   key={name}
                   type="text"
                   onClick={() => onNameClick(name, storms)}
-                  className="!h-auto !w-full !p-0 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline"
+                  className="!h-auto !min-h-11 !w-full !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!p-0"
                   style={{ color }}
                 >
                   {name}

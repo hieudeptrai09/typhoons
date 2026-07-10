@@ -1,5 +1,7 @@
 import EmptyResults from "@/lib/components/EmptyResults";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { RetiredName } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getRetiredReasonColorClass } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -38,13 +40,13 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "meaning",
     key: "meaning",
     render: (_: unknown, record: RetiredName) => (
-      <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
+      <span className="block max-w-[200px] wrap-break-word whitespace-normal">
         {record.meaning || "-"}
       </span>
     ),
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -61,7 +63,7 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "note",
     key: "note",
     render: (_: unknown, record: RetiredName) => (
-      <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+      <span className="block max-w-[300px] wrap-break-word whitespace-normal">
         {record.note || "-"}
       </span>
     ),
@@ -80,25 +82,25 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-5xl overflow-x-auto pb-px">
-      <Table<RetiredName>
-        dataSource={paginatedData}
-        columns={columns}
-        rowKey="id"
-        onRow={(record) => ({
-          onClick: () => onNameClick(record),
-          "aria-label": `View details for ${record.name}`,
-          role: "button",
-          tabIndex: 0,
-        })}
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-      />
+    <div className="mx-auto max-w-5xl">
+      <TableScrollHint>
+        <Table<RetiredName>
+          dataSource={paginatedData}
+          columns={columns}
+          rowKey="id"
+          onRow={(record) =>
+            clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

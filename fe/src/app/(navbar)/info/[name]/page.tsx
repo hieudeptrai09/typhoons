@@ -31,5 +31,7 @@ export default async function InfoPage({ params }: InfoPageProps) {
   const decodedName = decodeURIComponent(name);
 
   const result = await getTyphoonNameByName(decodedName);
-  return <InfoPageContent detail={result?.data ?? null} name={decodedName} />;
+  return (
+    <InfoPageContent detail={result?.data ?? null} name={decodedName} isError={result === null} />
+  );
 }

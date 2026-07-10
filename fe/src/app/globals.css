@@ -3,20 +3,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --text-muted: #374151;
+  --text-disabled: #9ca3af;
+  --navbar-height: 64px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--text-muted);
+  --color-disabled: var(--text-disabled);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -31,6 +29,16 @@ a:hover {
   text-underline-offset: 4px !important;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0284c7; /* sky-600 */
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .ant-segmented {
   background: #d1d5db !important;
 }
@@ -39,19 +47,23 @@ a:hover {
   width: 100%;
 }
 
+.typhoon-table .ant-table-tbody td {
+  color: var(--text-muted) !important;
+}
+
 .typhoon-table .ant-table-thead th {
-  background-color: #0284c7 !important; /* sky-600 */
+  background-color: #0369a1 !important; /* sky-700 */
   color: #ffffff !important;
   font-weight: 600 !important;
 }
 
 .typhoon-table .ant-table-thead .ant-table-column-sorter {
-  color: #bae6fd !important; /* sky-200 — keeps arrows visible on dark header */
+  color: #ffffff !important;
 }
 
-/* Active-sort header darkens to sky-700 */
+/* Active-sort header darkens to sky-800 */
 .typhoon-table .ant-table-thead th.ant-table-column-sort {
-  background-color: #0369a1 !important; /* sky-700 */
+  background-color: #075985 !important; /* sky-800 */
   text-decoration: underline !important;
 }
 
@@ -81,53 +93,16 @@ a:hover {
 }
 
 .typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix {
-  background-color: #ffffff !important; 
+  background-color: #ffffff !important;
 }
 
 .typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix {
   background-color: #e4e4e7 !important; /* zinc-200 */
 }
 
-/* Search bar in navbar */
-.search-bar-input .ant-input::placeholder {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.search-bar-input .ant-input-clear-icon {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.search-bar-input .ant-input-clear-icon:hover {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.search-bar-input.ant-input-affix-wrapper:hover,
-.search-bar-input.ant-input-affix-wrapper:focus-within {
-  border-color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* Home page search input */
-.home-search-input.ant-input-affix-wrapper {
-  border-radius: 9999px !important;
-  padding: 10px 20px !important;
-  border: 2px solid #cbd5e1 !important;
-  background: white !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s !important;
-}
-
-.home-search-input.ant-input-affix-wrapper:hover {
-  border-color: #94a3b8 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.home-search-input.ant-input-affix-wrapper:focus-within {
-  border-color: #2563eb !important;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.15) !important;
-}
-
-.home-search-input .ant-input::placeholder {
-  color: #94a3b8 !important;
+/* Stick the table header below the sticky navbar (var(--navbar-height)) */
+.typhoon-table .ant-table-sticky-holder {
+  top: var(--navbar-height) !important;
+  z-index: 20 !important;
+  padding-top: 2px;
 }

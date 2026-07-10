@@ -1,4 +1,5 @@
 import IntensityBadge from "@/lib/components/IntensityBadge";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
@@ -107,18 +108,21 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-xl overflow-x-auto pb-px">
-      <Table<HighlightRow>
-        key={params.filter}
-        dataSource={highlightData}
-        columns={columns}
-        rowKey={(r) => `${r.name}-${r.year}`}
-        rowClassName={(_record, index) => (index % 2 === 0 ? "bg-white" : "bg-sky-100")}
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-      />
+    <div className="mx-auto max-w-xl">
+      <TableScrollHint>
+        <Table<HighlightRow>
+          key={params.filter}
+          dataSource={highlightData}
+          columns={columns}
+          rowKey={(r) => `${r.name}-${r.year}`}
+          rowClassName={(_record, index) => (index % 2 === 0 ? "bg-white" : "bg-sky-100")}
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

@@ -5,7 +5,8 @@ import {
   sortNamesByFirstYear,
 } from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import EmptyResults from "@/lib/components/EmptyResults";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormCard from "@/lib/components/StormCard";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
@@ -15,10 +16,48 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
+import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
+import Link from "next/link";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
   position: number;
+  isError?: boolean;
+}
+
+const TOTAL_POSITIONS = 140;
+
+function PositionPagination({ position }: { position: number }) {
+  const isFirst = position === 1;
+  const isLast = position === TOTAL_POSITIONS;
+  const prevPosition = isFirst ? TOTAL_POSITIONS : position - 1;
+  const nextPosition = isLast ? 1 : position + 1;
+
+  const linkClass = (isWrap: boolean) =>
+    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors ${
+      isWrap
+        ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
+        : "border-sky-600 bg-sky-600 hover:border-sky-700 hover:bg-sky-700"
+    }`;
+
+  return (
+    <nav
+      className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
+      aria-label="Position pagination"
+    >
+      <Link href={`/positions/${prevPosition}`} className={linkClass(isFirst)}>
+        <ChevronLeft className="h-4 w-4" />
+        {getPositionTitle(prevPosition)}
+      </Link>
+      <span className="text-sm text-muted">
+        {position} / {TOTAL_POSITIONS}
+      </span>
+      <Link href={`/positions/${nextPosition}`} className={linkClass(isLast)}>
+        {getPositionTitle(nextPosition)}
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    </nav>
+  );
 }
 
 function NameRosterCard({ name, storms }: { name: TyphoonName; storms: Storm[] }) {
@@ -31,16 +70,17 @@ function NameRosterCard({ name, storms }: { name: TyphoonName; storms: Storm[] }
           <div className="flex items-baseline gap-2">
             <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
             {storms.length > 0 && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-muted">
                 {storms.length} storm{storms.length > 1 ? "s" : ""} · {years}
               </span>
             )}
+            {name.language && <span className="text-xs text-muted">· {name.language}</span>}
           </div>
           {name.meaning && (
             <p className="mt-1 text-sm leading-relaxed text-teal-600 italic">{name.meaning}</p>
           )}
           {name.description && (
-            <p className="mt-1 text-xs leading-relaxed text-slate-600">{name.description}</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">{name.description}</p>
           )}
         </div>
         {name.image && (
@@ -77,9 +117,9 @@ function NamesSection({ names, storms }: { names: TyphoonName[]; storms: Storm[]
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-slate-800">Names Used ({names.length})</h2>
+      <h2 className="mb-4 text-lg font-bold text-muted">Names Used ({names.length})</h2>
       {names.length === 0 ? (
-        <p className="py-4 text-center text-gray-500">No names have been assigned this slot.</p>
+        <p className="py-4 text-center text-muted">No names have been assigned to this slot.</p>
       ) : (
         <div className="space-y-3">
           {sortedNames.map((name) => (
@@ -99,8 +139,8 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   if (storms.length === 0) {
     return (
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-bold text-slate-800">All Storms (0)</h2>
-        <p className="py-4 text-center text-gray-500">No storms recorded at this position.</p>
+        <h2 className="mb-4 text-lg font-bold text-muted">All Storms (0)</h2>
+        <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
       </section>
     );
   }
@@ -116,9 +156,9 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
+        <h2 className="text-lg font-bold text-muted">All Storms ({storms.length})</h2>
         <div>
-          <span className="text-sm font-medium text-slate-500">Overall Avg: </span>
+          <span className="text-sm font-medium text-muted">Overall Avg: </span>
           <span
             className="text-lg font-bold"
             style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(overallAverage)] }}
@@ -136,10 +176,10 @@ function StormsSection({ storms }: { storms: Storm[] }) {
                 className="mb-3 flex items-center justify-between rounded-md bg-slate-50 px-3 py-2"
                 style={{ borderLeft: `4px solid ${BACKGROUND_BADGE[intensityLabel]}` }}
               >
-                <span className="font-semibold text-slate-700">{group.name}</span>
-                <div className="flex gap-3 text-sm text-slate-500">
+                <span className="font-semibold text-muted">{group.name}</span>
+                <div className="flex gap-3 text-sm text-muted">
                   <span>
-                    Count: <span className="font-semibold text-slate-700">{group.count}</span>
+                    Count: <span className="font-semibold text-muted">{group.count}</span>
                   </span>
                   <span>
                     Avg:{" "}
@@ -165,9 +205,33 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function PositionPageContent({ detail, position }: PositionPageContentProps) {
+export default function PositionPageContent({
+  detail,
+  position,
+  isError = false,
+}: PositionPageContentProps) {
+  if (isError) {
+    return <FrownError />;
+  }
   if (!detail || (detail.names.length === 0 && detail.storms.length === 0)) {
-    return <FrownNotFound />;
+    return (
+      <EmptyResults
+        icon={SearchX}
+        description={
+          Number.isFinite(position)
+            ? `Position #${position} doesn't exist — naming positions run 1–140.`
+            : "That naming position doesn't exist — positions run 1–140."
+        }
+        action={
+          <Link
+            href="/storms/positions/"
+            className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+          >
+            Browse all positions
+          </Link>
+        }
+      />
+    );
   }
 
   const { country, names, storms } = detail;
@@ -184,13 +248,15 @@ export default function PositionPageContent({ detail, position }: PositionPageCo
         <h1 className="text-3xl font-bold" style={{ color: titleColor }}>
           {positionTitle}
         </h1>
-        {country && <span className="text-base text-slate-500">{country}</span>}
+        {country && <span className="text-base text-muted">{country}</span>}
       </div>
 
       <div className="space-y-6">
         <NamesSection names={names} storms={storms} />
         <StormsSection storms={storms} />
       </div>
+
+      <PositionPagination position={position} />
     </div>
   );
 }

@@ -38,5 +38,11 @@ export default async function PositionPage({ params }: PositionPageProps) {
 
   const result = await getPositionDetails(positionNum);
 
-  return <PositionPageContent detail={result?.data ?? null} position={positionNum} />;
+  return (
+    <PositionPageContent
+      detail={result?.data ?? null}
+      position={positionNum}
+      isError={result === null}
+    />
+  );
 }

@@ -12,11 +12,10 @@ interface NavLinkProps {
 
 const NavLink = ({ href, icon: Icon, label, isActive, onClick }: NavLinkProps) => {
   return (
-    <Link href={href} onClick={onClick} aria-label={label}>
+    <Link href={href} onClick={onClick}>
       <Button
         type="text"
         icon={<Icon size={20} />}
-        aria-label={label}
         className={`!text-white hover:!bg-white/30 hover:!text-white ${isActive ? "!font-bold" : ""}`}
       >
         {label}

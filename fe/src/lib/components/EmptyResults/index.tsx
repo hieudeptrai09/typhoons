@@ -1,18 +1,25 @@
 import { Empty } from "antd";
 import { FilterX } from "lucide-react";
+import type { ComponentType, ReactNode } from "react";
 
 const EmptyResults = ({
   description = "No typhoon names match your current filters. Try adjusting your search criteria.",
+  icon: Icon = FilterX,
+  action,
 }: {
   description?: string;
+  icon?: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  action?: ReactNode;
 }) => {
   return (
     <div className="mx-auto max-w-4xl p-8">
       <Empty
-        image={<FilterX size={64} strokeWidth={1.5} className="text-gray-300" />}
+        image={<Icon size={64} strokeWidth={1.5} className="text-gray-400" />}
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-        description={description}
-      />
+        description={<span className="text-muted">{description}</span>}
+      >
+        {action}
+      </Empty>
     </div>
   );
 };

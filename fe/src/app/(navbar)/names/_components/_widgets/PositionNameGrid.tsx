@@ -2,6 +2,7 @@
 
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { TyphoonName } from "@/lib/types";
+import { onEnterKeyDown } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import {
   Gem,
@@ -51,7 +52,7 @@ const TAG_COLORS: Record<string, string> = {
 
 const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
 const getHistoryCountColor = (count: number) =>
-  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-gray-600";
+  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-muted";
 
 const TagIcon = ({
   tag,
@@ -63,7 +64,7 @@ const TagIcon = ({
   colorOverride?: string;
 }) => {
   const Icon = TAG_ICONS[tag];
-  const colorClass = colorOverride || TAG_COLORS[tag] || "text-gray-400";
+  const colorClass = colorOverride || TAG_COLORS[tag] || "text-muted";
   if (!Icon) return null;
   return <Icon size={size} className={colorClass} />;
 };
@@ -95,7 +96,7 @@ const NameButton = ({
       e.stopPropagation();
       onNameClick(name);
     }}
-    className="flex cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100"
+    className="flex min-h-11 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0.5 hover:bg-stone-100 md:min-h-0"
   >
     {showName ? (
       <span
@@ -126,9 +127,9 @@ const CellContent = ({
   if (showHistory) {
     const colorOverride = colorfulHistory ? getHistoryCountColor(names.length) : undefined;
     return (
-      <div className="flex min-h-16 flex-col items-center justify-center gap-0.5 py-1">
+      <div className="flex min-h-16 flex-col items-center justify-center gap-0 py-4 md:py-1 md:gap-0.5">
         {names.length === 0 ? (
-          <span className="text-xs text-gray-400">—</span>
+          <span className="text-xs text-gray-300">—</span>
         ) : (
           sortByOldest(names).map((n) => (
             <NameButton
@@ -155,7 +156,7 @@ const CellContent = ({
           onNameClick={onNameClick}
         />
       ) : (
-        <span className="text-xs text-gray-400">—</span>
+        <span className="text-xs text-gray-300">—</span>
       )}
     </div>
   );
@@ -190,18 +191,25 @@ const PositionNameGrid = ({
       <PositionGrid
         renderCell={(position, _row, col) => {
           const positionNames = namesByPosition[position] ?? [];
+          const isEmpty = positionNames.length === 0;
 
           return (
             <td
               key={col}
-              className="cursor-pointer border border-stone-300 p-0 transition-colors hover:bg-stone-100"
-              role="button"
-              tabIndex={0}
+              className={`border border-stone-300 p-0 transition-colors ${
+                isEmpty ? "cursor-default bg-gray-100" : "cursor-pointer hover:bg-stone-100"
+              }`}
+              role={!isEmpty ? "button" : ""}
+              tabIndex={!isEmpty ? 0 : -1}
               aria-label={`Position ${position}`}
               onClick={() => {
                 if (positionNames.length === 0) return;
                 onCellClick(position, positionNames);
               }}
+              onKeyDown={onEnterKeyDown(() => {
+                if (positionNames.length === 0) return;
+                onCellClick(position, positionNames);
+              })}
             >
               <CellContent
                 names={positionNames}
@@ -221,7 +229,7 @@ const PositionNameGrid = ({
             {Object.entries(TAG_ICONS).map(([tag]) => (
               <div key={tag} className="flex items-center gap-1.5">
                 <TagIcon tag={tag} size={14} />
-                <span className="text-xs text-gray-600">{tag}</span>
+                <span className="text-xs text-muted">{tag}</span>
               </div>
             ))}
           </div>

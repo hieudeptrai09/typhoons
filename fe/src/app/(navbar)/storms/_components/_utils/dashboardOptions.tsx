@@ -50,7 +50,7 @@ export const VIEW_OPTIONS = [
   { label: icon(CloudLightning, "Storms"), value: "storms" },
   { label: icon(Star, "Highlights"), value: "highlights" },
   { label: icon(Activity, "Average"), value: "average" },
-  { label: icon(Ruler, "Distance"), value: "distance" },
+  { label: icon(Ruler, "Gap"), value: "distance" },
 ];
 
 export const MODE_OPTIONS = [

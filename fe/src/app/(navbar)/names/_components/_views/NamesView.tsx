@@ -1,11 +1,14 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
+import { defaultTyphoonName } from "@/lib/constants";
 import type { FilterParams, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
-import { Filter, Flame, Settings } from "lucide-react";
+import { Filter, Settings, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
+import NameDetailsModal from "../_modals/NameDetailsModal";
 import NamesSettingsModal from "../_modals/NamesSettingsModal";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
 import FilteredNamesTable from "../_widgets/FilteredNamesTable";
@@ -77,12 +80,22 @@ const categorizeLettersByStatus = (
   return letterStatusMap;
 };
 
+const getFirstAvailableLetter = (letterStatusMap: Record<string, [boolean, boolean, boolean]>) => {
+  const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  return allLetters.find((letter) => letterStatusMap[letter]?.[0]) ?? "A";
+};
+
+const STORAGE_KEYS = {
+  showLetterNav: "namesShowLetterNav",
+  colorfulHistory: "namesColorfulHistory",
+  showImageAndDescription: "namesShowImageAndDescription",
+} as const;
+
 const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: NamesViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const displayMode = viewMode === "list" ? ("list" as const) : ("grid" as const);
-  const currentLetter = searchParams.get("letter") || "A";
   const currentPath = paramsToPath(displayMode, showHistory, showName);
 
   const searchName = searchParams.get("name") || "";
@@ -90,7 +103,6 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   const selectedLanguage = searchParams.get("language") || "";
   const selectedTag = searchParams.get("tag") || "";
   const searchPosition = searchParams.get("position") || "";
-  const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
 
   const countryArr = toArr(selectedCountry);
   const languageArr = toArr(selectedLanguage);
@@ -105,6 +117,25 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [historyPosition, setHistoryPosition] = useState<number>(0);
+  const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
+  useEffect(() => {
+    setSettings((prev) => ({
+      ...prev,
+      showLetterNav: localStorage.getItem(STORAGE_KEYS.showLetterNav) === "1" || prev.showLetterNav,
+      colorfulHistory:
+        localStorage.getItem(STORAGE_KEYS.colorfulHistory) === "1" || prev.colorfulHistory,
+      showImageAndDescription:
+        localStorage.getItem(STORAGE_KEYS.showImageAndDescription) === "1" ||
+        prev.showImageAndDescription,
+    }));
+  }, []);
+
+  const selectedStatus = settings.showHistory ? searchParams.get("status") || "" : "current";
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -122,7 +153,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     selectedLanguage,
     searchPosition,
     selectedTag,
-    selectedStatus,
+    settings.showHistory ? selectedStatus : "",
   ].filter(Boolean).length;
 
   const hasActiveFilters = activeFilterCount > 0;
@@ -139,22 +170,34 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     [searchName, countryArr, languageArr, tagArr, searchPosition, selectedStatus],
   );
 
+  const statusFilteredNames = useMemo(
+    () =>
+      selectedStatus
+        ? applyNameFilters(allNames, {
+            name: "",
+            country: [],
+            language: [],
+            tag: [],
+            position: "",
+            status: selectedStatus,
+          })
+        : allNames,
+    [allNames, selectedStatus],
+  );
+
+  const letterStatusMap = useMemo(
+    () => categorizeLettersByStatus(statusFilteredNames),
+    [statusFilteredNames],
+  );
+  const currentLetter = searchParams.get("letter") || getFirstAvailableLetter(letterStatusMap);
+
   const filteredAllNames = useMemo(() => {
-    if (hasActiveFilters) return applyNameFilters(allNames, filterValues);
-    if (displayMode === "grid" && !settings.showLetterNav) return [...allNames];
-    return allNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
-  }, [
-    allNames,
-    hasActiveFilters,
-    filterValues,
-    displayMode,
-    settings.showLetterNav,
-    currentLetter,
-  ]);
+    if (hasActiveFilters) return applyNameFilters(statusFilteredNames, filterValues);
+    if (!settings.showLetterNav) return statusFilteredNames;
+    return statusFilteredNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
+  }, [statusFilteredNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
 
-  const letterStatusMap = useMemo(() => categorizeLettersByStatus(allNames), [allNames]);
-
-  const showLetterNav = !hasActiveFilters && (displayMode === "list" || settings.showLetterNav);
+  const showLetterNav = !hasActiveFilters && settings.showLetterNav;
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
@@ -193,22 +236,29 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   const handleApplySettings = (mode: "grid" | "list", newSettings: DisplaySettings) => {
     setSettings(newSettings);
     setIsSettingsOpen(false);
+    localStorage.setItem(STORAGE_KEYS.showLetterNav, newSettings.showLetterNav ? "1" : "0");
+    localStorage.setItem(STORAGE_KEYS.colorfulHistory, newSettings.colorfulHistory ? "1" : "0");
+    localStorage.setItem(
+      STORAGE_KEYS.showImageAndDescription,
+      newSettings.showImageAndDescription ? "1" : "0",
+    );
     if (mode === "list") {
-      router.push(paramsToPath("list"));
+      router.push(paramsToPath("list", newSettings.showHistory));
     } else {
       router.push(paramsToPath("grid", newSettings.showHistory, newSettings.showName));
     }
   };
 
   const handleNameClick = (name: TyphoonName) => {
-    router.push(`/info/${encodeURIComponent(name.name.toLowerCase())}/?origin=names`, {
-      scroll: false,
-    });
+    setSelectedName(name);
+    setIsNameModalOpen(true);
   };
 
   const handleCellClick = (position: number, names: TyphoonName[]) => {
     if (settings.showHistory) {
-      router.push(`/positions/${position}?origin=names`, { scroll: false });
+      setHistoryPosition(position);
+      setHistoryPositionNames(names);
+      setIsHistoryModalOpen(true);
     } else {
       if (names.length > 0) handleNameClick(names[0]);
     }
@@ -218,17 +268,17 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     const status = letterStatusMap[letter];
     const isActive = currentLetter === letter;
 
-    if (!status?.[0]) return { isAvailable: false, color: "#d1d5db" };
+    if (!status?.[0]) return { isAvailable: false, color: "#9ca3af" };
 
     const hasRetired = status[1];
     const hasAlive = status[2];
 
     if (hasRetired && hasAlive) {
-      return { isAvailable: true, color: isActive ? "#1e3a8a" : "#3b82f6", isActive };
+      return { isAvailable: true, color: isActive ? "#1e40af" : "#2563eb", isActive };
     } else if (hasRetired && !hasAlive) {
-      return { isAvailable: true, color: isActive ? "#991b1b" : "#ef4444", isActive };
+      return { isAvailable: true, color: isActive ? "#991b1b" : "#dc2626", isActive };
     } else {
-      return { isAvailable: true, color: isActive ? "#166534" : "#22c55e", isActive };
+      return { isAvailable: true, color: isActive ? "#166534" : "#16a34a", isActive };
     }
   };
 
@@ -239,17 +289,17 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
           <button
             onClick={onToggleView}
             title="Switch to retired names"
-            aria-label="Viewing active names, click to switch to retired"
-            className="cursor-pointer border-0 bg-transparent p-1 text-emerald-600 transition-colors hover:text-emerald-800"
+            aria-label="Viewing all names, click to switch to retired"
+            className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
           >
-            <Flame size={30} />
+            <Skull size={30} />
           </button>
-          <Badge count={activeFilterCount} color="#10b981" offset={[-4, 4]}>
+          <Badge count={activeFilterCount} color="#ef4444" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+              className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
             >
               <Filter size={30} />
             </button>
@@ -258,10 +308,15 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
             onClick={() => setIsSettingsOpen(true)}
             title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+            className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
           >
             <Settings size={30} />
           </button>
+        </div>
+        <div className="hidden mt-2 justify-center">
+          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+            Click the skull icon to view retired names
+          </span>
         </div>
       </div>
 
@@ -312,6 +367,20 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
         displayMode={displayMode}
         settings={settings}
         onApply={handleApplySettings}
+      />
+
+      <NameDetailsModal
+        isOpen={isNameModalOpen}
+        name={selectedName}
+        hideReplacedBy
+        onClose={() => setIsNameModalOpen(false)}
+      />
+
+      <HistoryModal
+        isOpen={isHistoryModalOpen}
+        position={historyPosition}
+        positionNames={historyPositionNames}
+        onClose={() => setIsHistoryModalOpen(false)}
       />
     </>
   );

@@ -1,5 +1,7 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { DashboardParams, Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -69,7 +71,7 @@ const positionColumns: ColumnsType<PositionRow> = [
     render: (_: unknown, row: PositionRow) => <span>{getPositionTitle(row.position)}</span>,
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -104,7 +106,7 @@ const nameColumns: ColumnsType<NameRow> = [
     render: (_: unknown, row: NameRow) => <span className="font-semibold">{row.name}</span>,
   },
   {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => a.country.localeCompare(b.country),
@@ -189,21 +191,28 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
 
     return (
-      <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
-        <Table<PositionRow>
-          key="position"
-          dataSource={data}
-          columns={positionColumns}
-          rowKey="position"
-          onRow={(row) => ({ onClick: () => onCellClick(row.position, "position") })}
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-        />
+      <div className="mx-auto max-w-2xl">
+        <TableScrollHint>
+          <Table<PositionRow>
+            key="position"
+            dataSource={data}
+            columns={positionColumns}
+            rowKey="position"
+            onRow={(row) =>
+              clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
+                onCellClick(row.position, "position"),
+              )
+            }
+            rowClassName={(_record, index) =>
+              `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+            }
+            pagination={false}
+            size="large"
+            className="typhoon-table"
+            scroll={{ x: "max-content" }}
+            sticky
+          />
+        </TableScrollHint>
       </div>
     );
   }
@@ -221,21 +230,26 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   });
 
   return (
-    <div className="mx-auto max-w-2xl overflow-x-auto pb-px">
-      <Table<NameRow>
-        key="name"
-        dataSource={data}
-        columns={nameColumns}
-        rowKey="name"
-        onRow={(row) => ({ onClick: () => onCellClick(row.name, "name") })}
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-      />
+    <div className="mx-auto max-w-2xl">
+      <TableScrollHint>
+        <Table<NameRow>
+          key="name"
+          dataSource={data}
+          columns={nameColumns}
+          rowKey="name"
+          onRow={(row) =>
+            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

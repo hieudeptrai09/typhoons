@@ -15,7 +15,16 @@ const SearchPage = async ({ searchParams }: { searchParams: Promise<{ q?: string
 
   const result = q.trim() ? await search(q.trim()) : null;
 
-  return <SearchPageContent results={result?.data ?? null} count={result?.count ?? 0} query={q} />;
+  const isError = q.trim() !== "" && result === null;
+
+  return (
+    <SearchPageContent
+      results={result?.data ?? []}
+      count={result?.count ?? 0}
+      query={q}
+      isError={isError}
+    />
+  );
 };
 
 export default SearchPage;

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { view, showName, showHistory } = slugToParams(slug);
 
-  const titleParts = getNamesTitle(view, showName ? "true" : "", showHistory ? "true" : "");
+  const titleParts = getNamesTitle(view, showHistory ? "true" : "");
   const title = titleParts ? `${titleParts} | Names` : "Names";
   const description = getNamesDescription(view, showName ? "true" : "", showHistory ? "true" : "");
 

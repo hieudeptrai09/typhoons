@@ -1,5 +1,6 @@
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { Storm } from "@/lib/types";
+import { onEnterKeyDown } from "@/lib/utils/a11y";
 import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo, useState, type ReactNode } from "react";
 import {
@@ -81,7 +82,7 @@ const StormGrid = ({
   const getHighlightColorClass = (): string => {
     switch (highlightType) {
       case "strongest":
-        return "bg-red-300";
+        return "bg-rose-300";
       case "first":
         return "bg-blue-300";
       case "last":
@@ -117,9 +118,7 @@ const StormGrid = ({
     switch (viewType) {
       case "storms":
         return {
-          content: (
-            <div className="text-center text-base font-semibold text-gray-700">{position}</div>
-          ),
+          content: <div className="text-center text-base font-semibold text-muted">{position}</div>,
           className: "",
           cellClickable: isClickable,
         };
@@ -159,14 +158,18 @@ const StormGrid = ({
       case "highlights": {
         const positionStorms = highlightedStorms.filter((s) => s.position === position);
         if (positionStorms.length === 0)
-          return { content: "", className: "", cellClickable: false };
+          return {
+            content: <span className="text-sm text-gray-300">—</span>,
+            className: "bg-gray-100",
+            cellClickable: false,
+          };
         return {
           content: (
             <div className="flex flex-col items-center gap-1">
               {positionStorms.map((storm, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <div className="text-xs font-bold text-gray-800">{storm.name}</div>
-                  <div className="text-[10px] text-gray-600">({storm.year})</div>
+                  <div className="text-xs font-bold text-muted">{storm.name}</div>
+                  <div className="text-[10px] text-muted">({storm.year})</div>
                 </div>
               ))}
             </div>
@@ -183,7 +186,7 @@ const StormGrid = ({
             names.length === 0 ? (
               <span className="text-xs text-gray-300">—</span>
             ) : (
-              <div className="flex w-full flex-col items-center justify-center gap-0.5 px-1">
+              <div className="flex w-full flex-col items-center justify-center gap-0 px-1 md:gap-0.5">
                 {names.map(({ name, color }, idx) => (
                   <button
                     key={idx}
@@ -191,7 +194,7 @@ const StormGrid = ({
                       e.stopPropagation();
                       onCellClick(name, "name");
                     }}
-                    className="cursor-pointer text-center text-xs leading-tight font-semibold hover:underline"
+                    className="flex min-h-11 w-full cursor-pointer items-center justify-center text-center text-xs leading-tight font-semibold hover:underline md:min-h-0"
                     style={{ color, background: "none", border: "none", padding: 0 }}
                   >
                     {name}
@@ -215,15 +218,19 @@ const StormGrid = ({
                 <div
                   key={`${storm.name}-${storm.year}`}
                   className="flex cursor-pointer flex-col items-center rounded px-1 transition-colors hover:bg-white/40"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details for ${storm.name} ${storm.year}`}
                   onMouseEnter={() => handleYearHover(storm.year)}
                   onMouseLeave={() => handleYearHover(null)}
                   onClick={(e) => {
                     e.stopPropagation();
                     onCellClick(storm.year, "year");
                   }}
+                  onKeyDown={onEnterKeyDown(() => onCellClick(storm.year, "year"))}
                 >
-                  <div className="text-xs font-bold text-gray-800">{storm.name}</div>
-                  <div className="text-[10px] text-gray-600">({storm.year})</div>
+                  <div className="text-xs font-bold text-muted">{storm.name}</div>
+                  <div className="text-[10px] text-muted">({storm.year})</div>
                 </div>
               ))}
             </div>

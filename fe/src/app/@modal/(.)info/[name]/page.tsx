@@ -11,5 +11,5 @@ export default async function InfoModalPage({ params }: InfoModalPageProps) {
 
   const result = await getTyphoonNameByName(decodedName);
 
-  return <InfoModal detail={result?.data ?? null} name={decodedName} />;
+  return <InfoModal detail={result?.data ?? null} name={decodedName} isError={result === null} />;
 }

@@ -39,8 +39,7 @@ const NamesSettingsModal = ({
 
   const isGrid = draftMode === "grid";
   const isList = draftMode === "list";
-  const showHistoryDisabled = !isGrid;
-  const colorfulDisabled = showHistoryDisabled || !draftSettings.showHistory;
+  const colorfulDisabled = !isGrid || !draftSettings.showHistory;
 
   return (
     <Modal
@@ -55,7 +54,7 @@ const NamesSettingsModal = ({
           setDraftSettings(settings);
         }
       }}
-      title={<span className="text-xl font-bold text-gray-700">Display Settings</span>}
+      title={<span className="text-xl font-bold text-muted">Display Settings</span>}
       styles={{
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
       }}
@@ -70,7 +69,7 @@ const NamesSettingsModal = ({
     >
       <div className="space-y-5 py-4">
         <div>
-          <div className="mb-2 text-sm font-medium text-slate-500">Display Mode</div>
+          <div className="mb-2 text-sm font-medium text-muted">Display Mode</div>
           <Radio.Group value={draftMode} onChange={(e) => setDraftMode(e.target.value)}>
             <Radio value="grid">Grid</Radio>
             <Radio value="list">List</Radio>
@@ -78,68 +77,79 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
-            Letter Navigation
-          </span>
+          <span className="text-sm font-semibold text-muted">Letter Navigation</span>
           <Switch
-            checked={isGrid && draftSettings.showLetterNav}
+            checked={draftSettings.showLetterNav}
             onChange={(v) => updateDraft({ showLetterNav: v })}
-            disabled={!isGrid}
             aria-label="Letter Navigation"
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isGrid ? "text-gray-700" : "text-gray-400"}`}>
-            Show Name
-          </span>
+          <span className="text-sm font-semibold text-muted">Show History</span>
           <Switch
-            checked={isGrid && draftSettings.showName}
-            onChange={(v) => updateDraft({ showName: v })}
-            disabled={!isGrid}
-            aria-label="Show Name"
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span
-            className={`text-sm font-semibold ${!showHistoryDisabled ? "text-gray-700" : "text-gray-400"}`}
-          >
-            Show History
-          </span>
-          <Switch
-            checked={!showHistoryDisabled && draftSettings.showHistory}
+            checked={draftSettings.showHistory}
             onChange={(v) => updateDraft({ showHistory: v })}
-            disabled={showHistoryDisabled}
             aria-label="Show History"
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <span
-            className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-gray-700" : "text-gray-400"}`}
-          >
-            <Paintbrush size={15} />
-            Colorful
-          </span>
-          <Switch
-            checked={!colorfulDisabled && draftSettings.colorfulHistory}
-            onChange={(v) => updateDraft({ colorfulHistory: v })}
-            disabled={colorfulDisabled}
-            aria-label="Colorful History"
-          />
+        <div className="space-y-5 border-t border-stone-200 pt-5">
+          <div className="text-xs font-semibold tracking-wide text-muted uppercase">
+            Grid Mode Options
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className={`text-sm font-semibold ${isGrid ? "text-muted" : "text-disabled"}`}>
+              Show Name
+            </span>
+            <Switch
+              checked={isGrid && draftSettings.showName}
+              onChange={(v) => updateDraft({ showName: v })}
+              disabled={!isGrid}
+              aria-label="Show Name"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <span
+                className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-muted" : "text-disabled"}`}
+              >
+                <Paintbrush size={15} />
+                Color by Reuse Count
+              </span>
+              <span
+                className={`block text-xs text-muted ${isGrid && !draftSettings.showHistory ? "" : "invisible"}`}
+              >
+                Requires Show History
+              </span>
+            </div>
+            <Switch
+              checked={!colorfulDisabled && draftSettings.colorfulHistory}
+              onChange={(v) => updateDraft({ colorfulHistory: v })}
+              disabled={colorfulDisabled}
+              aria-label="Color by Reuse Count"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${isList ? "text-gray-700" : "text-gray-400"}`}>
-            Show Images & Descriptions
-          </span>
-          <Switch
-            checked={isList && draftSettings.showImageAndDescription}
-            onChange={(v) => updateDraft({ showImageAndDescription: v })}
-            disabled={!isList}
-            aria-label="Show Images and Descriptions"
-          />
+        <div className="space-y-5 border-t border-stone-200 pt-5">
+          <div className="text-xs font-semibold tracking-wide text-muted uppercase">
+            List Mode Options
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className={`text-sm font-semibold ${isList ? "text-muted" : "text-disabled"}`}>
+              Show Images & Descriptions
+            </span>
+            <Switch
+              checked={isList && draftSettings.showImageAndDescription}
+              onChange={(v) => updateDraft({ showImageAndDescription: v })}
+              disabled={!isList}
+              aria-label="Show Images and Descriptions"
+            />
+          </div>
         </div>
       </div>
     </Modal>
