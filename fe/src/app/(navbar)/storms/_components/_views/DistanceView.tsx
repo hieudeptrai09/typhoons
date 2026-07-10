@@ -43,7 +43,6 @@ const DistanceCell = ({
 }) => (
   <span
     className="font-semibold"
-    // "#9ca3af" N/A-color duplicate — see SpecialButtons.tsx note.
     style={{ color: distanceNumber === 0 ? "#9ca3af" : getDistanceColor(distanceNumber) }}
   >
     {distance}

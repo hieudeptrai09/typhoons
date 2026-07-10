@@ -8,8 +8,7 @@ import { getPositionTitle } from "@/lib/utils/fns";
 import { Button, Modal } from "antd";
 import { useState } from "react";
 
-// It's used to a part of modal PositionModal (the "names" lens), but the owner
-// forced to divorce and go back to here.
+// It's used to a part of modal @modal/(.)positions/[position], but the owner forced to divorce and go back to here.
 interface HistoryModalProps extends BaseModalProps {
   position: number;
   positionNames: TyphoonName[];
@@ -122,9 +121,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           >
                             {name.name}
                           </span>
-                          {count > 0 && (
-                            <span className="ml-1 text-sm text-muted">({years})</span>
-                          )}
+                          {count > 0 && <span className="ml-1 text-sm text-muted">({years})</span>}
                           {name.language && (
                             <span className="ml-1 text-xs text-muted">· {name.language}</span>
                           )}

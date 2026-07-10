@@ -236,8 +236,6 @@ export default function PositionPageContent({
 
   const { country, names, storms } = detail;
   const positionTitle = getPositionTitle(position);
-  // "#64748b" (slate-500) fallback duplicated across 2 files — see
-  // InfoModal.tsx note.
   const titleColor =
     storms.length > 0
       ? TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))]

@@ -75,7 +75,6 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
       centered
       destroyOnHidden
       styles={{
-        // CONSOLIDATION: duplicated modal-header style, see InfoModal.tsx note.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
@@ -97,9 +96,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
           </div>
           <div>
             <div className="mb-2 text-muted">{heading(title)}</div>
-            {intensityData.length === 0 && (
-              <div className="text-sm text-muted">{empty(title)}</div>
-            )}
+            {intensityData.length === 0 && <div className="text-sm text-muted">{empty(title)}</div>}
             <div className="space-y-2">
               {intensityData.map((data, idx) => {
                 const bgColor = BACKGROUND_BADGE[data.intensity];
@@ -112,10 +109,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
                     content={
                       <div className="flex flex-col gap-1.5">
                         {data.storms.map((storm) => (
-                          <div
-                            key={`${storm.name}-${storm.year}`}
-                            className="text-sm text-muted"
-                          >
+                          <div key={`${storm.name}-${storm.year}`} className="text-sm text-muted">
                             <span className="font-semibold" style={{ color: textColor }}>
                               {storm.name}
                             </span>{" "}

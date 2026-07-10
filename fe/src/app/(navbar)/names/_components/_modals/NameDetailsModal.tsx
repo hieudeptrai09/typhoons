@@ -3,8 +3,7 @@ import type { BaseModalProps, RetiredName, TyphoonName } from "@/lib/types";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import { Modal } from "antd";
 
-// It's used to a part of modal InfoModal (the "details" lens), but the owner
-// forced to divorce and go back to here.
+// It's used to a part of modal @modal/(.)info/name, but the owner forced to divorce and go back to here.
 interface NameDetailsModalProps extends BaseModalProps {
   name: TyphoonName | RetiredName;
   hideReplacedBy?: boolean;

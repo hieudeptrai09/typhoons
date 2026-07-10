@@ -168,13 +168,6 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
       centered
       destroyOnHidden
       styles={{
-        // CONSOLIDATION: this exact `{ borderBottom: "1px solid #9ca3af",
-        // paddingBottom: "12px" }` header style is copy-pasted verbatim into
-        // 11 modal components (StormDetailModal, NamesSettingsModal,
-        // AverageModal, DashboardModal, ListFilterModal, RetiredNameDetailsModal,
-        // RetiredFilterModal, NameDetailsModal, HistoryModal, NameListModal,
-        // plus this one) — candidate for one shared `modalHeaderStyles`
-        // constant/style object.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}

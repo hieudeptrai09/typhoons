@@ -25,10 +25,7 @@ const Section = ({ label, children }: SectionProps) => {
   const sectionId = `dashboard-section-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <div className="flex flex-col gap-2">
-      <span
-        id={sectionId}
-        className="text-xs font-semibold tracking-widest text-muted uppercase"
-      >
+      <span id={sectionId} className="text-xs font-semibold tracking-widest text-muted uppercase">
         {label}
       </span>
       {children}
@@ -91,7 +88,6 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
       centered
       destroyOnHidden
       styles={{
-        // CONSOLIDATION: duplicated modal-header style, see InfoModal.tsx note.
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}

@@ -144,12 +144,6 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     router.push(`${paramsToPath("retired")}${buildQuery({ letter })}`);
   };
 
-  // DUPLICATE: same "retired" red pair (#991b1b active / #ef4444 inactive) as
-  // NamesView.tsx's getLetterConfig "all-retired" branch, but re-typed here
-  // independently — see the WCAG ratios and consolidation note there
-  // (retired-active #991b1b -> 8.31:1 PASS AAA; retired-inactive #ef4444 ->
-  // 3.76:1 FAILS normal-text AA, passes 3:1 large-text/UI only). Neither copy
-  // imports from colors.ts.
   const getLetterConfig = (letter: string) => {
     const isAvailable = availableLettersMap[letter];
     const isActive = currentLetter === letter;
@@ -183,11 +177,13 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
             </button>
           </Badge>
         </div>
-        <div className="mt-2 flex justify-center">
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-            Click the list icon to view all names
-          </span>
-        </div>
+        {false && (
+          <div className="mt-2 flex justify-center">
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+              Click the list icon to view all names
+            </span>
+          </div>
+        )}
       </div>
 
       {activeFilterCount === 0 && (

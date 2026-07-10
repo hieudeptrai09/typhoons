@@ -103,9 +103,6 @@ const StormGrid = ({
     }, {});
 
     return sortNamesByFirstYear(Object.entries(nameMap)).map(([name, nameStorms]) => {
-      // "#374151" (gray-700) "no average data yet" fallback is duplicated as a
-      // raw hex literal in SpecialButtons.tsx and SpecialNamesListDiv.tsx
-      // instead of a shared constant — consolidation candidate.
       let color = "#374151";
       if (nameAverageValues) {
         const avg = nameAverageValues[name] ?? calculateAverage(nameStorms);
@@ -145,7 +142,6 @@ const StormGrid = ({
 
       case "distance": {
         const dist = distanceValues?.[position];
-        // "#9ca3af" N/A-color duplicate — see SpecialButtons.tsx note.
         const color = dist !== undefined ? getDistanceColor(dist) : "#9ca3af";
         const label = dist === undefined ? "—" : dist === 0 ? "N/A" : `${dist.toFixed(2)}y`;
         return {
