@@ -3,21 +3,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --text-muted: #374151;
+  --text-disabled: #9ca3af;
   --navbar-height: 64px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--text-muted);
+  --color-disabled: var(--text-disabled);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -50,25 +47,23 @@ input:focus-visible,
   width: 100%;
 }
 
+.typhoon-table .ant-table-tbody td {
+  color: var(--text-muted) !important;
+}
+
 .typhoon-table .ant-table-thead th {
-  /* WCAG: white text on sky-600 -> 4.10:1. Fails 4.5:1 AA for normal-size
-     text; only passes if this header text counts as "large text" (>=18.66px
-     bold / >=24px regular) per WCAG 1.4.3 — verify actual rendered size. */
-  background-color: #0284c7 !important; /* sky-600 */
+  background-color: #0369a1 !important; /* sky-700 */
   color: #ffffff !important;
   font-weight: 600 !important;
 }
 
 .typhoon-table .ant-table-thead .ant-table-column-sorter {
-  /* WCAG: sky-200 on sky-600 -> 3.09:1, right at the 3:1 non-text/UI-component
-     minimum (WCAG 1.4.11), just barely clearing it — no margin for error if
-     either shade shifts. Not a normal-text pass (would need 4.5:1). */
-  color: #bae6fd !important; /* sky-200 — keeps arrows visible on dark header */
+  color: #ffffff !important;
 }
 
-/* Active-sort header darkens to sky-700 */
+/* Active-sort header darkens to sky-800 */
 .typhoon-table .ant-table-thead th.ant-table-column-sort {
-  background-color: #0369a1 !important; /* sky-700 */
+  background-color: #075985 !important; /* sky-800 */
   text-decoration: underline !important;
 }
 

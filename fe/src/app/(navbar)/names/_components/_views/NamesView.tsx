@@ -292,7 +292,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+              className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
             >
               <Filter size={30} />
             </button>
@@ -301,7 +301,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
             onClick={() => setIsSettingsOpen(true)}
             title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+            className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
           >
             <Settings size={30} />
           </button>

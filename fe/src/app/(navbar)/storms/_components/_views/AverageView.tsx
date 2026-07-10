@@ -238,7 +238,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return (
       <div>
         <div className="mb-6 flex flex-wrap justify-center gap-4">
-          <div className="mr-2 self-start pt-2 text-sm font-semibold text-gray-700">
+          <div className="mr-2 self-start pt-2 text-sm font-semibold text-muted">
             Other Regions:
           </div>
           {specialPositions.map(({ id, label, years }) => {
@@ -248,8 +248,8 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
                 key={id}
                 className={`cursor-default rounded border px-4 py-2 text-sm font-semibold transition-colors ${
                   isHighlighted
-                    ? "border-stone-400 bg-stone-200 text-gray-700"
-                    : "border-stone-300 text-gray-500"
+                    ? "border-stone-400 bg-stone-200 text-muted"
+                    : "border-stone-300 text-muted"
                 }`}
               >
                 {label}

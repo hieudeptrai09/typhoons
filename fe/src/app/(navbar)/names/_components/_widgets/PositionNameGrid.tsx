@@ -52,7 +52,7 @@ const TAG_COLORS: Record<string, string> = {
 
 const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
 const getHistoryCountColor = (count: number) =>
-  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-gray-600";
+  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-muted";
 
 const TagIcon = ({
   tag,
@@ -64,7 +64,7 @@ const TagIcon = ({
   colorOverride?: string;
 }) => {
   const Icon = TAG_ICONS[tag];
-  const colorClass = colorOverride || TAG_COLORS[tag] || "text-gray-400";
+  const colorClass = colorOverride || TAG_COLORS[tag] || "text-muted";
   if (!Icon) return null;
   return <Icon size={size} className={colorClass} />;
 };
@@ -229,7 +229,7 @@ const PositionNameGrid = ({
             {Object.entries(TAG_ICONS).map(([tag]) => (
               <div key={tag} className="flex items-center gap-1.5">
                 <TagIcon tag={tag} size={14} />
-                <span className="text-xs text-gray-600">{tag}</span>
+                <span className="text-xs text-muted">{tag}</span>
               </div>
             ))}
           </div>

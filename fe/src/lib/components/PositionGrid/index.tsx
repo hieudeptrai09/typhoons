@@ -15,7 +15,7 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
 
   return (
     <div>
-      <p className="mb-2 text-xs text-gray-500 md:hidden">Swipe right to see full table →</p>
+      <p className="mb-2 text-xs text-muted md:hidden">Swipe right to see full table →</p>
       <div className="relative">
         <div className="overflow-x-auto">
           <table

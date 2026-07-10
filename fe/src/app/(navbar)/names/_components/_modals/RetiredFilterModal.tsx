@@ -68,7 +68,7 @@ const RetiredFilterModal = ({
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-xl font-bold text-gray-700">Filter Options</span>}
+      title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
         <Button key="clear" onClick={() => form.resetFields()} aria-label="Clear all filters">
           Clear All

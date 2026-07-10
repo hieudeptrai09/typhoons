@@ -40,7 +40,7 @@ const ActiveStorms = () => {
           centered: true,
           okText: "Got it",
           content: (
-            <p className="text-gray-500">No storms were active on this date in past years.</p>
+            <p className="text-muted">No storms were active on this date in past years.</p>
           ),
         });
         return;
@@ -53,7 +53,7 @@ const ActiveStorms = () => {
         okText: "Got it",
         content: (
           <div>
-            <p className="mb-3 text-sm font-semibold text-gray-800">
+            <p className="mb-3 text-sm font-semibold text-muted">
               Storms that were in progress on this date in past years
             </p>
             <ul className="m-0 list-none space-y-1.5 p-0">
@@ -70,7 +70,7 @@ const ActiveStorms = () => {
                 );
 
                 return (
-                  <li key={i} className="text-sm leading-relaxed text-gray-600">
+                  <li key={i} className="text-sm leading-relaxed text-muted">
                     {label}{" "}
                     <a
                       href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
@@ -79,7 +79,7 @@ const ActiveStorms = () => {
                     >
                       {storm.name}
                     </a>
-                    {range ? <span className="text-gray-500"> ({range})</span> : null}
+                    {range ? <span className="text-muted"> ({range})</span> : null}
                   </li>
                 );
               })}
@@ -93,7 +93,7 @@ const ActiveStorms = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-gray-500">Could not load active storms.</p>,
+        content: <p className="text-muted">Could not load active storms.</p>,
       });
     } finally {
       setLoading(false);

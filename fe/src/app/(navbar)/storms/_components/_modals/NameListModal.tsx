@@ -48,34 +48,34 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <span id="namelist-country-label" className="font-semibold text-gray-700">
+                <span id="namelist-country-label" className="font-semibold text-muted">
                   Contributed by:
                 </span>
                 <CountryFlag country={storms[0].country} className="h-5 w-8" />
               </div>
               <div>
-                <span id="namelist-position-label" className="font-semibold text-gray-700">
+                <span id="namelist-position-label" className="font-semibold text-muted">
                   Position:
                 </span>
-                <span className="ml-2 text-gray-700" aria-describedby="namelist-position-label">
+                <span className="ml-2 text-muted" aria-describedby="namelist-position-label">
                   {storms[0].position}
                 </span>
               </div>
               {storms[0].correctSpelling && (
                 <div>
-                  <span className="font-semibold text-gray-700">Correct spelling:</span>
-                  <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
+                  <span className="font-semibold text-muted">Correct spelling:</span>
+                  <span className="ml-2 text-muted">{storms[0].correctSpelling}</span>
                 </div>
               )}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-gray-700">Show Map</span>
+              <span className="text-sm font-semibold text-muted">Show Map</span>
               <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
             </div>
           </div>
 
           <div>
-            <h3 id="storm-list-heading" className="mb-3 font-semibold text-gray-700">
+            <h3 id="storm-list-heading" className="mb-3 font-semibold text-muted">
               All {name} Storms ({storms.length})
             </h3>
             <div className="space-y-1" aria-describedby="storm-list-heading">
@@ -114,7 +114,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
                     <div className="text-sm font-bold" style={{ color: textColor }}>
                       {stormTitle}
                     </div>
-                    {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
+                    {dateRange && <div className="text-xs text-muted">{dateRange}</div>}
                   </div>
                 );
               })}

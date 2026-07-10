@@ -24,7 +24,7 @@ const Tabs = <T extends string = string>({
   const getTabClasses = (tab: T) => {
     const isActive = activeTab === tab;
     return `flex-1 px-4 pb-3 font-semibold transition-colors text-sm ${
-      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
+      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-muted hover:text-foreground"
     }`;
   };
 

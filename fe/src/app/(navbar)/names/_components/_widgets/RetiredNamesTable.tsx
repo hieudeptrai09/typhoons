@@ -40,7 +40,7 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "meaning",
     key: "meaning",
     render: (_: unknown, record: RetiredName) => (
-      <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
+      <span className="block max-w-[200px] wrap-break-word whitespace-normal">
         {record.meaning || "-"}
       </span>
     ),
@@ -63,7 +63,7 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "note",
     key: "note",
     render: (_: unknown, record: RetiredName) => (
-      <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+      <span className="block max-w-[300px] wrap-break-word whitespace-normal">
         {record.note || "-"}
       </span>
     ),

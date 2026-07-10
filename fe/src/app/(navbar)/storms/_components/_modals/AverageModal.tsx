@@ -79,12 +79,12 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
+      title={<span className="text-2xl font-bold text-muted">{title}</span>}
     >
       <div className="pt-3">
         <div className="space-y-3">
           <div>
-            <span id="avg-intensity-label" className="text-gray-500">
+            <span id="avg-intensity-label" className="text-muted">
               Overall Average Intensity:{" "}
             </span>
             <span
@@ -96,9 +96,9 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
             </span>
           </div>
           <div>
-            <div className="mb-2 text-gray-500">{heading(title)}</div>
+            <div className="mb-2 text-muted">{heading(title)}</div>
             {intensityData.length === 0 && (
-              <div className="text-sm text-gray-400">{empty(title)}</div>
+              <div className="text-sm text-muted">{empty(title)}</div>
             )}
             <div className="space-y-2">
               {intensityData.map((data, idx) => {
@@ -114,7 +114,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
                         {data.storms.map((storm) => (
                           <div
                             key={`${storm.name}-${storm.year}`}
-                            className="text-sm text-gray-600"
+                            className="text-sm text-muted"
                           >
                             <span className="font-semibold" style={{ color: textColor }}>
                               {storm.name}
@@ -138,9 +138,9 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
                       >
                         {INTENSITY_LABEL[data.intensity]}
                       </span>
-                      <div id={`avg-stats-${idx}`} className="text-sm text-gray-500">
+                      <div id={`avg-stats-${idx}`} className="text-sm text-muted">
                         <span>
-                          Count: <span className="font-semibold text-gray-700">{data.count}</span>
+                          Count: <span className="font-semibold text-muted">{data.count}</span>
                         </span>
                       </div>
                     </div>

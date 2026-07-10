@@ -60,7 +60,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
       <div className="text-sm font-bold" style={{ color: textColor }}>
         {label} {storm.name}
       </div>
-      {dateRange && <div className="text-xs text-gray-500">{dateRange}</div>}
+      {dateRange && <div className="text-xs text-muted">{dateRange}</div>}
     </div>
   );
 }
@@ -77,29 +77,29 @@ function StormsTab({ storms }: { storms: Storm[] }) {
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-700">Contributed by:</span>
+            <span className="font-semibold text-muted">Contributed by:</span>
             <CountryFlag country={storms[0].country} className="h-5 w-8" />
-            <span className="text-gray-700">{storms[0].country}</span>
+            <span className="text-muted">{storms[0].country}</span>
           </div>
           <div>
-            <span className="font-semibold text-gray-700">Position:</span>
-            <span className="ml-2 text-gray-700">{storms[0].position}</span>
+            <span className="font-semibold text-muted">Position:</span>
+            <span className="ml-2 text-muted">{storms[0].position}</span>
           </div>
           {storms[0].correctSpelling && (
             <div>
-              <span className="font-semibold text-gray-700">Correct spelling:</span>
-              <span className="ml-2 text-gray-700">{storms[0].correctSpelling}</span>
+              <span className="font-semibold text-muted">Correct spelling:</span>
+              <span className="ml-2 text-muted">{storms[0].correctSpelling}</span>
             </div>
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-gray-700">Show Map</span>
+          <span className="text-sm font-semibold text-muted">Show Map</span>
           <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 font-semibold text-gray-700">All Storms ({storms.length})</h3>
+        <h3 className="mb-3 font-semibold text-muted">All Storms ({storms.length})</h3>
         <div className="space-y-1">
           {storms.map((storm, idx) => (
             <StormRow key={`${storm.year}-${storm.name}-${idx}`} storm={storm} showMap={showMap} />

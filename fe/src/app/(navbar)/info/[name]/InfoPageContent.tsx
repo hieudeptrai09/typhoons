@@ -72,24 +72,24 @@ function NameDetailsSection({
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-slate-800">Name Details</h2>
+      <h2 className="mb-4 text-lg font-bold text-muted">Name Details</h2>
       <div className={`flex gap-6 ${hasImage ? "flex-col sm:flex-row" : "flex-col"}`}>
         <div className="flex-1 space-y-4">
           <div>
-            <div className="text-sm font-medium text-slate-500">Meaning</div>
+            <div className="text-sm font-medium text-muted">Meaning</div>
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>
           </div>
 
           <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-medium text-slate-500">Language</div>
-            <div className="mt-1 text-base text-slate-700">{name.language}</div>
+            <div className="text-sm font-medium text-muted">Language</div>
+            <div className="mt-1 text-base text-muted">{name.language}</div>
           </div>
 
           {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
             <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-medium text-slate-500">
+              <div className="text-sm font-medium text-muted">
                 {correctSpelling ? "Correct spelling" : "Replaced by"}
               </div>
               <div className="mt-1 text-base font-semibold text-teal-600">
@@ -100,10 +100,10 @@ function NameDetailsSection({
 
           {!hasImage && hasDescription && (
             <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+              <div className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
                 Note
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">{name.description}</p>
+              <p className="text-sm leading-relaxed text-muted">{name.description}</p>
             </div>
           )}
         </div>
@@ -123,7 +123,7 @@ function NameDetailsSection({
               />
             </div>
             {hasDescription && (
-              <p className="mt-3 text-center text-xs leading-relaxed text-slate-600 italic">
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted italic">
                 {name.description}
               </p>
             )}
@@ -137,10 +137,10 @@ function NameDetailsSection({
 function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
+      <h2 className="mb-4 text-lg font-bold text-muted">All Storms ({storms.length})</h2>
 
       {storms.length === 0 ? (
-        <p className="py-4 text-center text-gray-500">No storms found for this name.</p>
+        <p className="py-4 text-center text-muted">No storms found for this name.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {storms.map((storm, idx) => (
@@ -167,7 +167,7 @@ export default function InfoPageContent({ detail, name, isError = false }: InfoP
 
   const titleColorClass = nameData
     ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
-    : "text-slate-800";
+    : "text-muted";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
@@ -196,11 +196,11 @@ export default function InfoPageContent({ detail, name, isError = false }: InfoP
         {metaCountry && (
           <div className="flex items-center gap-2">
             {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
-            <span className="text-base font-medium text-slate-700">{metaCountry}</span>
+            <span className="text-base font-medium text-muted">{metaCountry}</span>
           </div>
         )}
         {isInPosition && metaPosition != null && (
-          <span className="text-base text-slate-500">· #{metaPosition}</span>
+          <span className="text-base text-muted">· #{metaPosition}</span>
         )}
         <StatusBadge
           isInPosition={isInPosition}

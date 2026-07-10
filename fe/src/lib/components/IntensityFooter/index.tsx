@@ -26,7 +26,7 @@ export default function IntensityFooter() {
                 </span>
                 <span className="text-xs text-slate-400">
                   {INTENSITY_LABEL[intensity]}{" "}
-                  <span className="text-slate-600">({SORTING_RANK[intensity]})</span>
+                  <span className="text-slate-400">({SORTING_RANK[intensity]})</span>
                 </span>
               </span>
             ))}

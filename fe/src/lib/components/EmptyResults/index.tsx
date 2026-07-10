@@ -16,7 +16,7 @@ const EmptyResults = ({
       <Empty
         image={<Icon size={64} strokeWidth={1.5} className="text-gray-400" />}
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-        description={<span className="text-gray-600">{description}</span>}
+        description={<span className="text-muted">{description}</span>}
       >
         {action}
       </Empty>

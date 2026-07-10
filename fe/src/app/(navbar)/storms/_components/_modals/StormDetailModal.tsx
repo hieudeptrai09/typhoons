@@ -31,7 +31,7 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-2xl font-bold text-gray-700">{title}</span>}
+      title={<span className="text-2xl font-bold text-muted">{title}</span>}
     >
       <div className="flex flex-col pt-4 pb-px">
         {nameGroups.map(([name, stormGroup], groupIndex) => (

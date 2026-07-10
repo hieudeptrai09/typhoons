@@ -63,7 +63,7 @@ const columns: ColumnsType<SeasonData> = [
     key: "average",
     sorter: (a: SeasonData, b: SeasonData) => a.avgNumber - b.avgNumber,
     render: (_: unknown, row: SeasonData) => {
-      if (row.count === 0) return <span className="text-gray-400">—</span>;
+      if (row.count === 0) return <span>—</span>;
       const textColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(row.avgNumber)];
       return (
         <span className="font-semibold" style={{ color: textColor }}>

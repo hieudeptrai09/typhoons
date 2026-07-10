@@ -121,9 +121,7 @@ const StormGrid = ({
     switch (viewType) {
       case "storms":
         return {
-          content: (
-            <div className="text-center text-base font-semibold text-gray-700">{position}</div>
-          ),
+          content: <div className="text-center text-base font-semibold text-muted">{position}</div>,
           className: "",
           cellClickable: isClickable,
         };
@@ -174,8 +172,8 @@ const StormGrid = ({
             <div className="flex flex-col items-center gap-1">
               {positionStorms.map((storm, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <div className="text-xs font-bold text-gray-800">{storm.name}</div>
-                  <div className="text-[10px] text-gray-600">({storm.year})</div>
+                  <div className="text-xs font-bold text-muted">{storm.name}</div>
+                  <div className="text-[10px] text-muted">({storm.year})</div>
                 </div>
               ))}
             </div>
@@ -235,8 +233,8 @@ const StormGrid = ({
                   }}
                   onKeyDown={onEnterKeyDown(() => onCellClick(storm.year, "year"))}
                 >
-                  <div className="text-xs font-bold text-gray-800">{storm.name}</div>
-                  <div className="text-[10px] text-gray-600">({storm.year})</div>
+                  <div className="text-xs font-bold text-muted">{storm.name}</div>
+                  <div className="text-[10px] text-muted">({storm.year})</div>
                 </div>
               ))}
             </div>

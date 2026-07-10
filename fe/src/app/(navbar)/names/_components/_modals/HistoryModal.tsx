@@ -76,7 +76,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-2xl font-bold text-gray-700">{positionTitle}</span>}
+      title={<span className="text-2xl font-bold text-muted">{positionTitle}</span>}
     >
       <div className="pt-4">
         {loading || !isStormsReady ? (
@@ -84,9 +84,9 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
             <TyphoonSpinner size="medium" />
           </div>
         ) : error ? (
-          <div className="py-4 text-center text-gray-500">Failed to load storm data.</div>
+          <div className="py-4 text-center text-muted">Failed to load storm data.</div>
         ) : positionNames.length === 0 ? (
-          <div className="py-4 text-center text-gray-500">No names at this position.</div>
+          <div className="py-4 text-center text-muted">No names at this position.</div>
         ) : (
           <div className="space-y-1">
             {sortedNames.map((name) => {
@@ -109,7 +109,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                     } ${!hasExpandable ? "!cursor-default" : ""}`}
                   >
                     <div className="flex w-full items-baseline gap-2">
-                      <span className="min-w-8 shrink-0 text-sm font-bold text-gray-400">
+                      <span className="min-w-8 shrink-0 text-sm font-bold text-muted">
                         {count > 0 ? `x${count}` : "x0"}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -121,10 +121,10 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                             {name.name}
                           </span>
                           {count > 0 && (
-                            <span className="ml-1 text-sm text-gray-500">({years})</span>
+                            <span className="ml-1 text-sm text-muted">({years})</span>
                           )}
                           {name.language && (
-                            <span className="ml-1 text-xs text-gray-400">· {name.language}</span>
+                            <span className="ml-1 text-xs text-muted">· {name.language}</span>
                           )}
                         </div>
                         {name.meaning && (
@@ -136,7 +136,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           </p>
                         )}
                         {name.description && (
-                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-gray-600">
+                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-muted">
                             {name.description}
                           </p>
                         )}

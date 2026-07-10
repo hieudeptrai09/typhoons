@@ -25,7 +25,7 @@ const VARIANT_CONFIG: Record<
 > = {
   home: {
     size: "large",
-    prefixClassName: "text-gray-500",
+    prefixClassName: "text-muted",
     prefixSize: 18,
     inputClassName: styles.homeInput,
   },
@@ -110,7 +110,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
               <TyphoonSpinner size="small" />
             </div>
           ) : filtered.length === 0 ? (
-            <div id={statusId} className="px-4 py-3 text-sm text-gray-500">
+            <div id={statusId} className="px-4 py-3 text-sm text-muted">
               No results found
             </div>
           ) : (
@@ -126,7 +126,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
                     aria-selected={false}
                     className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors hover:bg-blue-50"
                   >
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-muted">
                       <HighlightedName name={name} query={trimmed} />
                     </span>
                   </Link>

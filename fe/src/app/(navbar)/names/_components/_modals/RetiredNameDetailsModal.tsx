@@ -19,7 +19,7 @@ type TabType = "info" | "suggestions";
 const SuggestionsList = ({ suggestions }: { suggestions: Suggestion[] }) => {
   if (suggestions.length === 0) {
     return (
-      <div className="py-4 text-center text-gray-500">No suggested replacements available</div>
+      <div className="py-4 text-center text-muted">No suggested replacements available</div>
     );
   }
 
@@ -54,7 +54,7 @@ const RetiredNameDetailsModal = ({
     }
     if (suggestionsError) {
       return (
-        <div className="py-4 text-center text-gray-500">Failed to load suggested replacements.</div>
+        <div className="py-4 text-center text-muted">Failed to load suggested replacements.</div>
       );
     }
     return <SuggestionsList suggestions={suggestions} />;

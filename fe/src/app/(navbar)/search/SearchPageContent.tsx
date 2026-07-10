@@ -91,9 +91,7 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     key: "note",
     render: (note: string | null) =>
       note ? (
-        <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
-          {note}
-        </span>
+        <span className="block max-w-[300px] wrap-break-word whitespace-normal">{note}</span>
       ) : null,
   },
 ];
@@ -127,7 +125,7 @@ export default function SearchPageContent({
             <Empty
               image={<Search size={64} strokeWidth={1.5} className="text-gray-400" />}
               imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-              description={<span className="text-gray-600">Type a name to search</span>}
+              description={<span className="text-muted">Type a name to search</span>}
             />
           </div>
         ) : count === 0 ? (
@@ -137,7 +135,7 @@ export default function SearchPageContent({
           />
         ) : (
           <>
-            <div id="search-result-count" className="mb-4 text-sm text-gray-500">
+            <div id="search-result-count" className="mb-4 text-sm text-muted">
               {count} result{count !== 1 ? "s" : ""} found
             </div>
             <div aria-describedby="search-result-count">
