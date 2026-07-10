@@ -16,18 +16,18 @@ interface SuggestedNameRow {
 
 async function querySuggestedNames(nameId: number | null = null): Promise<ApiResponse<Suggestion[]>> {
   let query = `SELECT
-      "replacementName",
+      replacementname AS "replacementName",
       meaning as "replacementMeaning",
-      "isChosen",
+      ischosen AS "isChosen",
       image
     FROM suggestednames`;
 
   const params: unknown[] = [];
   if (nameId !== null) {
-    query += ` WHERE "nameId" = $${params.length + 1}`;
+    query += ` WHERE nameid = $${params.length + 1}`;
     params.push(nameId);
   }
-  query += ` ORDER BY id ASC, "nameId" DESC, "isChosen" DESC`;
+  query += ` ORDER BY id ASC, nameid DESC, ischosen DESC`;
 
   const rows = (await sql.query(query, params)) as SuggestedNameRow[];
 

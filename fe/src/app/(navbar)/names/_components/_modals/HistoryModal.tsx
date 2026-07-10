@@ -25,7 +25,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     error,
     refetch,
   } = useFetchData<StormHistoryEntry[]>(
-    isOpen && position ? `/typhoon-names?position=${position}` : "",
+    isOpen && position ? `/api/history?position=${position}` : "",
   );
 
   if (!isOpen) return null;

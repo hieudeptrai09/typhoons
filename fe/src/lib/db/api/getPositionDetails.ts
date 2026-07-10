@@ -63,20 +63,20 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
       tn.meaning,
       tn.position,
       p.country,
-      tn."isRetired",
-      tn."isReplaced",
-      tn."isLanguageProblem",
-      tn."replacementName",
+      tn.isretired AS "isRetired",
+      tn.isreplaced AS "isReplaced",
+      tn.islanguageproblem AS "isLanguageProblem",
+      tn.replacementname AS "replacementName",
       tn.note,
       tn.language,
-      tn."lastYear",
+      tn.lastyear AS "lastYear",
       tn.image,
       tn.description,
       tn.tag
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
     WHERE tn.position = $1
-    ORDER BY tn."lastYear" ASC, tn.name ASC`,
+    ORDER BY tn.lastyear ASC, tn.name ASC`,
     [position],
   )) as TyphoonNameRow[];
 
@@ -105,16 +105,16 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
       s.name,
       s.intensity,
       s.map,
-      s."correctSpelling",
+      s.correctspelling AS "correctSpelling",
       s.year,
-      s."isStrongest",
-      s."isFirst",
-      s."isLast",
-      s."dateStart",
-      s."dateEnd",
-      s."monthStart",
-      s."monthEnd",
-      s."isFromPrevYear"
+      s.isstrongest AS "isStrongest",
+      s.isfirst AS "isFirst",
+      s.islast AS "isLast",
+      s.datestart AS "dateStart",
+      s.dateend AS "dateEnd",
+      s.monthstart AS "monthStart",
+      s.monthend AS "monthEnd",
+      s.isfromprevyear AS "isFromPrevYear"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
     WHERE s.position = $1

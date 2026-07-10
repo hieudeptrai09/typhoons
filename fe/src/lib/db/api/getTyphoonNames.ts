@@ -32,13 +32,13 @@ async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiRe
       tn.meaning,
       tn.position,
       p.country,
-      tn."isRetired",
-      tn."isReplaced",
-      tn."isLanguageProblem",
-      tn."replacementName",
+      tn.isretired AS "isRetired",
+      tn.isreplaced AS "isReplaced",
+      tn.islanguageproblem AS "isLanguageProblem",
+      tn.replacementname AS "replacementName",
       tn.note,
       tn.language,
-      tn."lastYear",
+      tn.lastyear AS "lastYear",
       tn.image,
       tn.description,
       tn.tag
@@ -48,11 +48,11 @@ async function queryTyphoonNames(isRetired: number | null = null): Promise<ApiRe
   const params: unknown[] = [];
   if (isRetired !== null) {
     if (isRetired === 1) {
-      query += ` WHERE tn."isRetired" = $${params.length + 1}`;
-      params.push(isRetired);
+      query += ` WHERE tn.isretired = $${params.length + 1}`;
+      params.push(true);
     } else {
-      query += ` WHERE tn."isRetired" = $${params.length + 1} OR tn."isReplaced" = 0`;
-      params.push(isRetired);
+      query += ` WHERE tn.isretired = $${params.length + 1} OR tn.isreplaced = false`;
+      params.push(false);
     }
   }
 

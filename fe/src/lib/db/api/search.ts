@@ -28,16 +28,16 @@ async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> 
         tn.name,
         tn.position,
         p.country,
-        tn."isRetired",
-        tn."isLanguageProblem",
+        tn.isretired AS "isRetired",
+        tn.islanguageproblem AS "isLanguageProblem",
         tn.note,
-        tn."replacementName",
+        tn.replacementname AS "replacementName",
         COUNT(s.id) as "stormCount"
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
     LEFT JOIN storms s ON s.name = tn.name
     WHERE tn.name LIKE $1
-    GROUP BY tn.id, tn.name, tn.position, p.country, tn."isRetired", tn."isLanguageProblem", tn.note, tn."replacementName"
+    GROUP BY tn.id, tn.name, tn.position, p.country, tn.isretired, tn.islanguageproblem, tn.note, tn.replacementname
 
     UNION
 
@@ -46,7 +46,7 @@ async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> 
         s.name,
         s.position,
         p.country,
-        0 as "isRetired",
+        false as "isRetired",
         0 as "isLanguageProblem",
         NULL as note,
         NULL as "replacementName",

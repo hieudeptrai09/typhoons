@@ -34,14 +34,14 @@ async function queryOnThisDay(
       s.intensity,
       s.position,
       s.year,
-      s."dateStart",
-      s."monthStart",
-      s."dateEnd",
-      s."monthEnd",
-      s."isFromPrevYear"
+      s.datestart AS "dateStart",
+      s.monthstart AS "monthStart",
+      s.dateend AS "dateEnd",
+      s.monthend AS "monthEnd",
+      s.isfromprevyear AS "isFromPrevYear"
     FROM storms s
-    WHERE (s."monthStart" = $1 AND s."dateStart" = $2)
-       OR (s."monthEnd" = $3 AND s."dateEnd" = $4)
+    WHERE (s.monthstart = $1 AND s.datestart = $2)
+       OR (s.monthend = $3 AND s.dateend = $4)
     ORDER BY s.year ASC`;
 
   const rows = (await sql.query(query, [month, day, month, day])) as OnThisDayRow[];

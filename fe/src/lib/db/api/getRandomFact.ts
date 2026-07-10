@@ -124,8 +124,8 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT DISTINCT t.name, s.intensity FROM typhoonnames t
-    INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t."lastYear"
-    WHERE t."isRetired" = 1 AND t."isLanguageProblem" = 0 AND t.position <= 140
+    INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t.lastyear
+    WHERE t.isretired = true AND t.islanguageproblem = 0 AND t.position <= 140
     AND s.year >= 2000
     AND s.intensity IN ('TD', 'TS', 'STS')
     ORDER BY t.name
@@ -143,7 +143,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Strongest storms records ---
 
   rowsResult = await rows(
-    `SELECT name, COUNT(*) as cnt FROM storms WHERE "isStrongest" = 1 AND year >= 2000 GROUP BY name HAVING COUNT(*) > 1`,
+    `SELECT name, COUNT(*) as cnt FROM storms WHERE isstrongest = true AND year >= 2000 GROUP BY name HAVING COUNT(*) > 1`,
   );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
@@ -154,7 +154,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Strongest storms not Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year, intensity FROM storms WHERE "isStrongest" = 1 AND intensity != '5' AND year >= 2000 ORDER BY year`,
+    `SELECT name, year, intensity FROM storms WHERE isstrongest = true AND intensity != '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -165,7 +165,7 @@ async function generateFacts(): Promise<string[]> {
   // --- First storms that are Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE "isFirst" = 1 AND intensity = '5' AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM storms WHERE isfirst = true AND intensity = '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -176,7 +176,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Storms spanning multiple years ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE "monthStart" IS NOT NULL AND "monthEnd" IS NOT NULL AND "monthEnd" < "monthStart" AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM storms WHERE monthstart IS NOT NULL AND monthend IS NOT NULL AND monthend < monthstart AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -186,13 +186,13 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Seasons ending with Cat 5 ---
 
-  row = await one(`SELECT COUNT(*) as cnt FROM storms WHERE "isLast" = 1 AND intensity = '5' AND year >= 2000`);
+  row = await one(`SELECT COUNT(*) as cnt FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000`);
   cnt = Number(row?.cnt ?? 0);
   if (cnt > 0) {
     facts.push(`There are ${cnt} seasons that ended with a category 5 storm.`);
   }
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE "isLast" = 1 AND intensity = '5' AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -203,7 +203,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE "isStrongest" = 1 AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE isstrongest = true AND monthstart = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -219,7 +219,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [6, 7, 8]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE "isFirst" = 1 AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE isfirst = true AND monthstart = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -235,7 +235,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     row = await one(
-      `SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND "monthStart" = $1 AND year >= 2000`,
+      `SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000`,
       [month],
     );
     cnt = Number(row?.cnt ?? 0);
@@ -245,7 +245,7 @@ async function generateFacts(): Promise<string[]> {
       facts.push(`There ${label} ${cnt} category 5 storm${cnt > 1 ? "s" : ""} that formed in ${monthName}.`);
     }
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE intensity = '5' AND "monthStart" = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -260,7 +260,7 @@ async function generateFacts(): Promise<string[]> {
 
   row = await one(`
     SELECT COUNT(*) as cnt FROM typhoonnames t
-    WHERE t.position <= 140 AND t."isRetired" = 0
+    WHERE t.position <= 140 AND t.isretired = false
     AND NOT EXISTS (
         SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
         AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
@@ -275,7 +275,7 @@ async function generateFacts(): Promise<string[]> {
   }
   rowsResult = await rows(`
     SELECT t.name FROM typhoonnames t
-    WHERE t.position <= 140 AND t."isRetired" = 0
+    WHERE t.position <= 140 AND t.isretired = false
     AND NOT EXISTS (
         SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
         AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
@@ -349,7 +349,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT MAX(storm_count) as max_count FROM (
         SELECT COUNT(s.id) as storm_count FROM typhoonnames t
         INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-        WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+        WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
         GROUP BY t.name, t.position
     ) as sub
   `);
@@ -360,7 +360,7 @@ async function generateFacts(): Promise<string[]> {
       SELECT COUNT(*) as cnt FROM (
           SELECT t.name FROM typhoonnames t
           INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-          WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+          WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
           GROUP BY t.name, t.position HAVING COUNT(s.id) = $1
       ) as sub
       `,
@@ -373,7 +373,7 @@ async function generateFacts(): Promise<string[]> {
       `
       SELECT t.name FROM typhoonnames t
       INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-      WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+      WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
       GROUP BY t.name, t.position HAVING COUNT(s.id) = $1
       ORDER BY t.name
       `,
@@ -451,7 +451,7 @@ async function generateFacts(): Promise<string[]> {
     SELECT COUNT(*) as cnt FROM (
         SELECT t.name FROM typhoonnames t
         INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-        WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+        WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
         GROUP BY t.name, t.position
         HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
     ) as sub
@@ -463,7 +463,7 @@ async function generateFacts(): Promise<string[]> {
   rowsResult = await rows(`
     SELECT t.name FROM typhoonnames t
     INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-    WHERE t."isRetired" = 0 AND t.position <= 140 AND s.year >= 2000
+    WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
     GROUP BY t.name, t.position
     HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
     ORDER BY t.name
@@ -583,11 +583,11 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Language reason retirements ---
 
-  row = await one(`SELECT COUNT(*) as cnt FROM typhoonnames WHERE "isLanguageProblem" = 1 AND "isRetired" = 1`);
+  row = await one(`SELECT COUNT(*) as cnt FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true`);
   cnt = Number(row?.cnt ?? 0);
   facts.push(`There are ${cnt} names retired for language-related reasons.`);
   names = (
-    await rows(`SELECT name FROM typhoonnames WHERE "isLanguageProblem" = 1 AND "isRetired" = 1 ORDER BY name`)
+    await rows(`SELECT name FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true ORDER BY name`)
   ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(`${joinNames(names)} are the names retired for language-related reasons.`);
@@ -595,7 +595,7 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Nearest equator ---
 
-  rowsResult = await rows(`SELECT name FROM typhoonnames WHERE "isLanguageProblem" = 3`);
+  rowsResult = await rows(`SELECT name FROM typhoonnames WHERE islanguageproblem = 3`);
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label = names.length === 1 ? "is the storm" : "are the storms";
@@ -606,7 +606,7 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT name, note FROM typhoonnames
-    WHERE "isLanguageProblem" = 1 AND "isRetired" = 1 AND note IS NOT NULL AND note != ''
+    WHERE islanguageproblem = 1 AND isretired = true AND note IS NOT NULL AND note != ''
   `);
   for (const r of rowsResult) {
     const reason = String(r.note);
@@ -634,8 +634,8 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT UPPER(LEFT(name, 1)) as letter,
-           SUM(CASE WHEN "isRetired" = 0 THEN 1 ELSE 0 END) as active_cnt,
-           SUM(CASE WHEN "isRetired" = 1 THEN 1 ELSE 0 END) as retired_cnt
+           SUM(CASE WHEN isretired = false THEN 1 ELSE 0 END) as active_cnt,
+           SUM(CASE WHEN isretired = true THEN 1 ELSE 0 END) as retired_cnt
     FROM typhoonnames WHERE position <= 140
     GROUP BY letter
   `);

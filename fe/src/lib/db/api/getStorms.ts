@@ -32,16 +32,16 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
       s.name,
       s.intensity,
       s.map,
-      s."correctSpelling",
+      s.correctspelling AS "correctSpelling",
       s.year,
-      s."isStrongest",
-      s."isFirst",
-      s."isLast",
-      s."dateStart",
-      s."dateEnd",
-      s."monthStart",
-      s."monthEnd",
-      s."isFromPrevYear"
+      s.isstrongest AS "isStrongest",
+      s.isfirst AS "isFirst",
+      s.islast AS "isLast",
+      s.datestart AS "dateStart",
+      s.dateend AS "dateEnd",
+      s.monthstart AS "monthStart",
+      s.monthend AS "monthEnd",
+      s.isfromprevyear AS "isFromPrevYear"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id`;
 
