@@ -25,10 +25,7 @@ const Section = ({ label, children }: SectionProps) => {
   const sectionId = `dashboard-section-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <div className="flex flex-col gap-2">
-      <span
-        id={sectionId}
-        className="text-xs font-semibold tracking-widest text-gray-600 uppercase"
-      >
+      <span id={sectionId} className="text-xs font-semibold tracking-widest text-muted uppercase">
         {label}
       </span>
       {children}
@@ -94,7 +91,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
         header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
         body: { maxHeight: "70vh", overflowY: "auto" },
       }}
-      title={<span className="text-xl font-bold text-gray-700">Dashboard View</span>}
+      title={<span className="text-xl font-bold text-muted">Dashboard View</span>}
       footer={[
         <Button key="reset" onClick={handleReset} aria-label="Reset dashboard view settings">
           Reset

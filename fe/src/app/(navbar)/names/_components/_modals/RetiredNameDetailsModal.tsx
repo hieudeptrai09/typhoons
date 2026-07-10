@@ -1,3 +1,4 @@
+import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
@@ -12,15 +13,14 @@ export interface RetiredNameDetailsModalProps extends BaseModalProps {
   suggestions: Suggestion[];
   suggestionsLoading?: boolean;
   suggestionsError?: Error | null;
+  suggestionsRefetch?: () => void;
 }
 
 type TabType = "info" | "suggestions";
 
 const SuggestionsList = ({ suggestions }: { suggestions: Suggestion[] }) => {
   if (suggestions.length === 0) {
-    return (
-      <div className="py-4 text-center text-gray-500">No suggested replacements available</div>
-    );
+    return <div className="py-4 text-center text-muted">No suggested replacements available</div>;
   }
 
   return (
@@ -39,6 +39,7 @@ const RetiredNameDetailsModal = ({
   suggestions,
   suggestionsLoading = false,
   suggestionsError = null,
+  suggestionsRefetch,
 }: RetiredNameDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("info");
 
@@ -54,7 +55,10 @@ const RetiredNameDetailsModal = ({
     }
     if (suggestionsError) {
       return (
-        <div className="py-4 text-center text-gray-500">Failed to load suggested replacements.</div>
+        <FrownError
+          description="Failed to load suggested replacements."
+          onRetry={suggestionsRefetch}
+        />
       );
     }
     return <SuggestionsList suggestions={suggestions} />;

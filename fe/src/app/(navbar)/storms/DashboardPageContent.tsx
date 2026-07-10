@@ -1,12 +1,15 @@
 "use client";
 
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
+import IntensityFooter from "@/lib/components/IntensityFooter";
 import PageHeader from "@/lib/components/PageHeader";
 import type { DashboardParams, Storm } from "@/lib/types";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import AverageModal from "./_components/_modals/AverageModal";
+import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
+import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import AverageView from "./_components/_views/AverageView";
 import DistanceView from "./_components/_views/DistanceView";
@@ -25,7 +28,10 @@ import {
 interface SelectedData {
   title?: string;
   storms?: Storm[];
+  name?: string;
+  avgIntensity?: number;
   average?: number;
+  criteria?: AverageModalCriteria;
 }
 
 interface DashboardPageContentProps {
@@ -39,6 +45,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
+  const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
   const currentParams: DashboardParams = slugToParams(slug);
@@ -61,24 +68,29 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const handleCellClick = (data: number | string, key: string) => {
     const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
-    // Storms view — name list mode: clicking a name row opens the name's info modal
+    // Storms view — name list mode: clicking a name row
     if (view === "storms" && key === "name") {
-      router.push(`/info/${encodeURIComponent((data as string).toLowerCase())}/?origin=storms`, {
-        scroll: false,
-      });
+      const avgIntensity = calculateAverage(storms);
+      setSelectedData({ name: data as string, storms, avgIntensity });
+      setIsNameListModalOpen(true);
       return;
     }
 
-    // Any cell keyed by position: opens the position's page/modal, in the "storms"
-    // lens for storms/distance views, "average" lens everywhere else.
-    if (key === "position") {
-      const origin = view === "storms" || view === "distance" ? "storms" : "average";
-      router.push(`/positions/${Number(data)}?origin=${origin}`, { scroll: false });
+    // Storms view — any table mode (position or name grid): clicking a cell
+    if (view === "storms" && key === "position") {
+      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
+      setSelectedData({ title, storms });
+      setIsDetailModalOpen(true);
       return;
     }
 
     if (view === "average" && filter === "name") {
-      setSelectedData({ title: String(data), average: calculateAverage(storms), storms });
+      setSelectedData({
+        title: String(data),
+        average: calculateAverage(storms),
+        storms,
+        criteria: "name",
+      });
       setIsAverageModalOpen(true);
       return;
     }
@@ -91,98 +103,122 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       const monthStorms = (stormsData || []).filter(
         (s) => getEffectiveMonth(s) === (data as number),
       );
-      setSelectedData({ title: monthName, storms: monthStorms });
+      setSelectedData({
+        title: monthName,
+        storms: monthStorms,
+        average: calculateAverage(monthStorms),
+        criteria: "month",
+      });
       setIsAverageModalOpen(true);
       return;
     }
 
-    // Distance view: clicking a name opens the storm detail modal
+    // Distance view: clicking a position or name opens the storm detail modal
     if (view === "distance") {
-      setSelectedData({ title: String(data), storms });
+      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
+      setSelectedData({ title, storms });
       setIsDetailModalOpen(true);
       return;
     }
 
     const titleMap: Record<string, string> = {
+      position: getPositionTitle(Number(data)),
       country: data as string,
       year: `Year ${data}`,
     };
 
-    setSelectedData({ title: titleMap[key], average: calculateAverage(storms), storms });
+    setSelectedData({
+      title: titleMap[key],
+      average: calculateAverage(storms),
+      storms,
+      criteria: key as AverageModalCriteria,
+    });
     setIsAverageModalOpen(true);
   };
 
   if (!stormsData) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   return (
-    <PageHeader title={getDashboardTitle(view, mode, filter)}>
-      <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+    <>
+      <PageHeader title={getDashboardTitle(view, mode, filter)}>
+        <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
 
-      {(() => {
-        switch (view) {
-          case "storms":
-            return (
-              <StormsView
-                params={currentParams}
-                stormsData={stormsData}
-                averageValues={averageValues}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "highlights":
-            return (
-              <HighlightsView
-                params={currentParams}
-                stormsData={stormsData}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "average":
-            return (
-              <AverageView
-                params={currentParams}
-                stormsData={stormsData}
-                averageValues={averageValues}
-                onCellClick={handleCellClick}
-              />
-            );
-          case "distance":
-            return (
-              <DistanceView
-                params={currentParams}
-                stormsData={stormsData}
-                onCellClick={handleCellClick}
-              />
-            );
-          default:
-            return <div className="text-center text-gray-500">Select filters to view data</div>;
-        }
-      })()}
+        {(() => {
+          switch (view) {
+            case "storms":
+              return (
+                <StormsView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  averageValues={averageValues}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "highlights":
+              return (
+                <HighlightsView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "average":
+              return (
+                <AverageView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  averageValues={averageValues}
+                  onCellClick={handleCellClick}
+                />
+              );
+            case "distance":
+              return (
+                <DistanceView
+                  params={currentParams}
+                  stormsData={stormsData}
+                  onCellClick={handleCellClick}
+                />
+              );
+            default:
+              return <div className="text-center text-muted">Select filters to view data</div>;
+          }
+        })()}
 
-      <DashboardModal
-        key={JSON.stringify(currentParams)}
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        onApply={handleApplyFilter}
-        currentParams={currentParams}
-      />
+        <DashboardModal
+          key={JSON.stringify(currentParams)}
+          isOpen={isFilterModalOpen}
+          onClose={() => setIsFilterModalOpen(false)}
+          onApply={handleApplyFilter}
+          currentParams={currentParams}
+        />
 
-      <StormDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        title={selectedData?.title || ""}
-        storms={selectedData?.storms || []}
-      />
+        <StormDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          title={selectedData?.title || ""}
+          storms={selectedData?.storms || []}
+        />
 
-      <AverageModal
-        isOpen={isAverageModalOpen}
-        onClose={() => setIsAverageModalOpen(false)}
-        title={selectedData?.title || ""}
-        average={selectedData?.average || 0}
-        storms={selectedData?.storms || []}
-      />
-    </PageHeader>
+        <AverageModal
+          isOpen={isAverageModalOpen}
+          onClose={() => setIsAverageModalOpen(false)}
+          title={selectedData?.title || ""}
+          average={selectedData?.average || 0}
+          storms={selectedData?.storms || []}
+          criteria={selectedData?.criteria || "position"}
+        />
+
+        <NameListModal
+          isOpen={isNameListModalOpen}
+          onClose={() => setIsNameListModalOpen(false)}
+          name={selectedData?.name || ""}
+          storms={selectedData?.storms || []}
+          avgIntensity={selectedData?.avgIntensity || 0}
+        />
+      </PageHeader>
+      <IntensityFooter />
+    </>
   );
 }

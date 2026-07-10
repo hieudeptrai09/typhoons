@@ -24,7 +24,7 @@ const Tabs = <T extends string = string>({
   const getTabClasses = (tab: T) => {
     const isActive = activeTab === tab;
     return `flex-1 px-4 pb-3 font-semibold transition-colors text-sm ${
-      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-gray-700"
+      isActive ? "border-b-2 border-blue-500 text-blue-600" : "text-muted hover:text-foreground"
     }`;
   };
 
@@ -46,8 +46,25 @@ const Tabs = <T extends string = string>({
         ))}
       </div>
 
-      <div className="flex-1" id={`${idPrefix}-${activeTab}`} role="tabpanel">
-        {tabs.find((t) => t.key === activeTab)?.content}
+      <div className="grid">
+        {tabs.map((tab) => {
+          const isActive = tab.key === activeTab;
+          return (
+            <div
+              key={tab.key}
+              id={`${idPrefix}-${tab.key}`}
+              role="tabpanel"
+              aria-hidden={!isActive}
+              className="col-start-1 row-start-1"
+              style={{
+                visibility: isActive ? "visible" : "hidden",
+                pointerEvents: isActive ? "auto" : "none",
+              }}
+            >
+              {tab.content}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

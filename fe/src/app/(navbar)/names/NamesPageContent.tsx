@@ -1,6 +1,6 @@
 "use client";
 
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
 import type { RetiredName } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
@@ -24,16 +24,16 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
     if (viewMode === "retired") {
       router.push(paramsToPath("current", false, true));
     } else {
-      router.push(`${paramsToPath("retired")}?letter=A`);
+      router.push(paramsToPath("retired"));
     }
   };
 
   if (!allNames) {
-    return <FrownNotFound />;
+    return <FrownError />;
   }
 
   return (
-    <PageHeader title={getNamesTitle(viewMode, showName ? "true" : "", showHistory ? "true" : "")}>
+    <PageHeader title={getNamesTitle(viewMode, showHistory ? "true" : "")}>
       {viewMode === "retired" ? (
         <RetiredView retiredNames={retiredNames} onToggleView={toggleView} />
       ) : (

@@ -4,7 +4,7 @@ import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { RetiredFilterParams, RetiredName, Suggestion } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
-import { Filter, Skull } from "lucide-react";
+import { Filter, List } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
@@ -17,10 +17,14 @@ interface RetiredViewProps {
   onToggleView: () => void;
 }
 
+const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) => {
+  const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  return allLetters.find((letter) => availableLettersMap[letter]) ?? "A";
+};
+
 const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentLetter = searchParams.get("letter") || "A";
 
   const searchName = searchParams.get("name") || "";
   const selectedYear = searchParams.get("year") || "";
@@ -39,6 +43,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     data: suggestionsRaw = [],
     loading: suggestionsLoading,
     error: suggestionsError,
+    refetch: suggestionsRefetch,
   } = useFetchData<Suggestion[]>(
     selectedRetiredName.id ? `/suggested-names?nameId=${selectedRetiredName.id}` : "",
   );
@@ -58,6 +63,16 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     selectedReason,
     searchPosition,
   ].filter(Boolean).length;
+
+  const availableLettersMap = useMemo(() => {
+    const map: Record<string, boolean> = {};
+    retiredNames.forEach((n) => {
+      map[n.name.charAt(0).toUpperCase()] = true;
+    });
+    return map;
+  }, [retiredNames]);
+
+  const currentLetter = searchParams.get("letter") || getFirstAvailableLetter(availableLettersMap);
 
   const displayedNames = useMemo(() => {
     let filtered = [...retiredNames];
@@ -95,14 +110,6 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     searchPosition,
     currentLetter,
   ]);
-
-  const availableLettersMap = useMemo(() => {
-    const map: Record<string, boolean> = {};
-    retiredNames.forEach((n) => {
-      map[n.name.charAt(0).toUpperCase()] = true;
-    });
-    return map;
-  }, [retiredNames]);
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
@@ -142,7 +149,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     const isActive = currentLetter === letter;
     return {
       isAvailable,
-      color: !isAvailable ? "#d1d5db" : isActive ? "#991b1b" : "#ef4444",
+      color: !isAvailable ? "#9ca3af" : isActive ? "#991b1b" : "#dc2626",
       isActive: !!isAvailable && isActive,
     };
   };
@@ -153,22 +160,27 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
         <div className="flex items-center justify-center gap-9">
           <button
             onClick={onToggleView}
-            title="Switch to active names"
-            aria-label="Viewing retired names, click to switch to active"
-            className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
+            title="Switch to all names"
+            aria-label="Viewing retired names, click to switch to all names"
+            className="cursor-pointer border-0 bg-transparent p-1 text-blue-500 transition-colors hover:text-blue-700"
           >
-            <Skull size={30} />
+            <List size={30} />
           </button>
-          <Badge count={activeFilterCount} color="#f97316" offset={[-4, 4]}>
+          <Badge count={activeFilterCount} color="#3b82f6" offset={[-4, 4]}>
             <button
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-gray-500 transition-colors hover:text-gray-800"
+              className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
             >
               <Filter size={30} />
             </button>
           </Badge>
+        </div>
+        <div className="mt-2 hidden justify-center">
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+            Click the list icon to view all names
+          </span>
         </div>
       </div>
 
@@ -200,6 +212,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
         suggestions={suggestions}
         suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
         suggestionsError={suggestionsError}
+        suggestionsRefetch={suggestionsRefetch}
         onClose={() => setIsRetiredNameModalOpen(false)}
       />
     </>

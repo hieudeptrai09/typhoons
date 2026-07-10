@@ -13,34 +13,23 @@ export const BACKGROUND_BADGE: Record<IntensityType, string> = {
   5: "#CC00CC",
 };
 
-export const BACKGROUND_HOVER_BADGE: Record<IntensityType, string> = {
-  TD: "#00B3E6",
-  TS: "#00E600",
-  STS: "#ADEBAD",
-  1: "#EBEB00",
-  2: "#EBB800",
-  3: "#EB5C00",
-  4: "#EB0000",
-  5: "#B800B8",
-};
-
 export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
-  TD: "#FFFFFF",
+  TD: "#003D4C",
   TS: "#005500",
   STS: "#004D26",
   1: "#666600",
   2: "#663300",
-  3: "#FFFFFF",
+  3: "#3D1800",
   4: "#FFFFFF",
   5: "#FFFFFF",
 };
 
 export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
   TD: "#0099CC",
-  TS: "#00BB00",
+  TS: "#00AC00",
   STS: "#008844",
-  1: "#CC9900",
-  2: "#FF9900",
+  1: "#999900",
+  2: "#C98600",
   3: "#FF5500",
   4: "#DD0000",
   5: "#AA00AA",
@@ -49,9 +38,9 @@ export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
 // --- Distance colors ---
 
 export const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#16a34a";
-  if (years === 6.0) return "#2563eb";
-  return "#dc2626";
+  if (years < 6.0) return "#dc2626";
+  if (years === 6.0) return "#6b7280";
+  return "#2563eb";
 };
 
 // --- Name status colors ---
@@ -59,21 +48,28 @@ export const getDistanceColor = (years: number): string => {
 interface NameStatus {
   isRetired: boolean;
   isLanguageProblem: number;
+  isExternal?: boolean;
 }
 
+export const isExternalPosition = (position?: number): boolean =>
+  position !== undefined && (position < 1 || position > 140);
+
 export const getNameStatusColor = (name: NameStatus): string => {
-  if (name.isLanguageProblem === 2) return "#f59e0b";
+  if (name.isExternal) return "#475569";
+  if (name.isLanguageProblem === 2) return "#d97706";
   if (Boolean(name.isRetired)) return "#dc2626";
-  return "#16a34a";
+  return "#059669";
 };
 
 export const getNameStatusColorClass = (name: NameStatus): string => {
-  if (name.isLanguageProblem === 2) return "text-amber-500";
+  if (name.isExternal) return "text-slate-600";
+  if (name.isLanguageProblem === 2) return "text-amber-600";
   if (Boolean(name.isRetired)) return "text-red-600";
-  return "text-green-600";
+  return "text-emerald-600";
 };
 
 export const getNameStatusBgClass = (name: NameStatus): string => {
+  if (name.isExternal) return "bg-slate-100";
   if (name.isLanguageProblem === 2) return "bg-amber-100";
   if (Boolean(name.isRetired)) return "bg-red-100";
   return "bg-emerald-100";
@@ -84,11 +80,11 @@ export const getRetiredReasonColorClass = (isLanguageProblem: number): string =>
     case 0:
       return "text-red-600";
     case 1:
-      return "text-green-600";
-    case 2:
-      return "text-amber-500";
-    case 3:
       return "text-purple-600";
+    case 2:
+      return "text-amber-600";
+    case 3:
+      return "text-muted";
     default:
       return "text-red-600";
   }

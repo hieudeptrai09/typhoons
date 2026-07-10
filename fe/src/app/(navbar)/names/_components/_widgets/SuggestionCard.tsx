@@ -12,7 +12,7 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
 
   return (
     <div className={`rounded-lg p-4 ${cardClasses} w-full md:w-[400px]`}>
-      <div className="mb-4 flex items-center gap-x-2 font-semibold text-gray-700">
+      <div className="mb-4 flex items-center gap-x-2 font-semibold text-muted">
         <span
           aria-describedby={
             Boolean(suggestion.isChosen) ? `approved-desc-${suggestion.replacementName}` : undefined
@@ -32,7 +32,7 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
       </div>
 
       <div className="flex items-start gap-4 md:gap-6">
-        <div id={`meaning-${suggestion.replacementName}`} className="flex-1 text-sm text-gray-700">
+        <div id={`meaning-${suggestion.replacementName}`} className="flex-1 text-sm text-muted">
           {suggestion.replacementMeaning}
         </div>
 

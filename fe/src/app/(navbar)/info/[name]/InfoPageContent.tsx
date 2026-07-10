@@ -1,50 +1,61 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
-import FrownNotFound from "@/lib/components/FrownNotFound";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
 import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
-import { getNameStatusColorClass } from "@/lib/utils/colors";
+import {
+  getNameStatusBgClass,
+  getNameStatusColorClass,
+  isExternalPosition,
+} from "@/lib/utils/colors";
+import { SearchX } from "lucide-react";
+import Link from "next/link";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
   name: string;
+  isError?: boolean;
 }
+
+const nameNotFound = (name: string) => (
+  <EmptyResults
+    icon={SearchX}
+    description={`No typhoon with the name "${name}" was found.`}
+    action={
+      <Link
+        href="/names/"
+        className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+      >
+        Browse names
+      </Link>
+    }
+  />
+);
 
 function StatusBadge({
   isInPosition,
   isRetired,
-  isMisspelling,
+  isLanguageProblem,
 }: {
   isInPosition: boolean;
   isRetired: boolean;
-  isMisspelling: boolean;
+  isLanguageProblem: number;
 }) {
-  if (!isInPosition) {
-    return (
-      <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-500">
-        External name
-      </span>
-    );
-  }
-  if (isMisspelling) {
-    return (
-      <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-600">
-        Misspelling
-      </span>
-    );
-  }
-  if (isRetired) {
-    return (
-      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">
-        Retired
-      </span>
-    );
-  }
+  const status = { isRetired, isLanguageProblem, isExternal: !isInPosition };
+  const label = !isInPosition
+    ? "External name"
+    : isLanguageProblem === 2
+      ? "Misspelling"
+      : isRetired
+        ? "Retired"
+        : "Active";
   return (
-    <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-600">
-      Active
+    <span
+      className={`rounded-full px-3 py-1 text-sm font-semibold ${getNameStatusBgClass(status)} ${getNameStatusColorClass(status)}`}
+    >
+      {label}
     </span>
   );
 }
@@ -61,24 +72,24 @@ function NameDetailsSection({
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-slate-800">Name Details</h2>
+      <h2 className="mb-4 text-lg font-bold text-muted">Name Details</h2>
       <div className={`flex gap-6 ${hasImage ? "flex-col sm:flex-row" : "flex-col"}`}>
         <div className="flex-1 space-y-4">
           <div>
-            <div className="text-sm font-medium text-slate-500">Meaning</div>
+            <div className="text-sm font-medium text-muted">Meaning</div>
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>
           </div>
 
           <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-medium text-slate-500">Language</div>
-            <div className="mt-1 text-base text-slate-700">{name.language}</div>
+            <div className="text-sm font-medium text-muted">Language</div>
+            <div className="mt-1 text-base text-muted">{name.language}</div>
           </div>
 
           {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
             <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-medium text-slate-500">
+              <div className="text-sm font-medium text-muted">
                 {correctSpelling ? "Correct spelling" : "Replaced by"}
               </div>
               <div className="mt-1 text-base font-semibold text-teal-600">
@@ -89,10 +100,10 @@ function NameDetailsSection({
 
           {!hasImage && hasDescription && (
             <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+              <div className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
                 Note
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">{name.description}</p>
+              <p className="text-sm leading-relaxed text-muted">{name.description}</p>
             </div>
           )}
         </div>
@@ -112,7 +123,7 @@ function NameDetailsSection({
               />
             </div>
             {hasDescription && (
-              <p className="mt-3 text-center text-xs leading-relaxed text-slate-600 italic">
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted italic">
                 {name.description}
               </p>
             )}
@@ -126,10 +137,10 @@ function NameDetailsSection({
 function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-slate-800">All Storms ({storms.length})</h2>
+      <h2 className="mb-4 text-lg font-bold text-muted">All Storms ({storms.length})</h2>
 
       {storms.length === 0 ? (
-        <p className="py-4 text-center text-gray-500">No storms found for this name.</p>
+        <p className="py-4 text-center text-muted">No storms found for this name.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {storms.map((storm, idx) => (
@@ -141,29 +152,29 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoPageContent({ detail, name }: InfoPageContentProps) {
+export default function InfoPageContent({ detail, name, isError = false }: InfoPageContentProps) {
+  if (isError) {
+    return <FrownError />;
+  }
   if (!detail) {
-    return <FrownNotFound />;
+    return nameNotFound(name);
   }
 
   const nameData = detail.name ?? null;
   const storms = detail.storms ?? [];
-  const isInPosition = nameData ? nameData.position >= 1 && nameData.position <= 140 : false;
+  const isInPosition = nameData ? !isExternalPosition(nameData.position) : false;
   const displayName = nameData?.name ?? name;
 
-  const titleColorClass = !isInPosition
-    ? "text-slate-500"
-    : nameData
-      ? getNameStatusColorClass(nameData)
-      : "text-slate-800";
+  const titleColorClass = nameData
+    ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
+    : "text-muted";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   if (!nameData && storms.length === 0) {
-    return <EmptyResults description="No typhoon named this was found." />;
+    return nameNotFound(name);
   }
 
   const correctSpelling = storms[0]?.correctSpelling;
-  const isMisspelling = nameData?.isLanguageProblem === 2;
   const metaCountry = nameData?.country ?? storms[0]?.country;
   const metaPosition = nameData?.position ?? storms[0]?.position;
 
@@ -185,16 +196,16 @@ export default function InfoPageContent({ detail, name }: InfoPageContentProps) 
         {metaCountry && (
           <div className="flex items-center gap-2">
             {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
-            <span className="text-base font-medium text-slate-700">{metaCountry}</span>
+            <span className="text-base font-medium text-muted">{metaCountry}</span>
           </div>
         )}
         {isInPosition && metaPosition != null && (
-          <span className="text-base text-slate-500">· #{metaPosition}</span>
+          <span className="text-base text-muted">· #{metaPosition}</span>
         )}
         <StatusBadge
           isInPosition={isInPosition}
           isRetired={isRetired}
-          isMisspelling={isMisspelling}
+          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
         />
       </div>
 

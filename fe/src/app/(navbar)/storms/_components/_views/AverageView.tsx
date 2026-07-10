@@ -1,5 +1,7 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { DashboardParams, Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -98,7 +100,7 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
   };
 
   const countryCol: ColumnsType<AverageData>[number] = {
-    title: "Country",
+    title: "Contributed By",
     dataIndex: "country",
     key: "country",
     sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
@@ -125,10 +127,10 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
       return [
         orderCol,
         {
-          title: "Country",
+          title: "Contributed By",
           dataIndex: "country",
           key: "country",
-          width: 120,
+          width: 150,
           fixed: "left" as const,
           sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
           render: (_: unknown, row: AverageData) => <CountryFlag country={row.country ?? ""} />,
@@ -236,7 +238,7 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     return (
       <div>
         <div className="mb-6 flex flex-wrap justify-center gap-4">
-          <div className="mr-2 self-start pt-2 text-sm font-semibold text-gray-700">
+          <div className="mr-2 self-start pt-2 text-sm font-semibold text-muted">
             Other Regions:
           </div>
           {specialPositions.map(({ id, label, years }) => {
@@ -246,8 +248,8 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
                 key={id}
                 className={`cursor-default rounded border px-4 py-2 text-sm font-semibold transition-colors ${
                   isHighlighted
-                    ? "border-stone-400 bg-stone-200 text-gray-700"
-                    : "border-stone-300 text-gray-500"
+                    ? "border-stone-400 bg-stone-200 text-muted"
+                    : "border-stone-300 text-muted"
                 }`}
               >
                 {label}
@@ -297,39 +299,43 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   };
 
   return (
-    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"} overflow-x-auto pb-px`}>
-      <Table<AverageData>
-        key={params.filter}
-        dataSource={data}
-        columns={makeColumns(params.filter)}
-        rowKey={(row) => {
-          switch (params.filter) {
-            case "year":
-              return String(row.year);
-            case "country":
-              return row.country ?? "";
-            case "name":
-              return `${row.name}-${row.country}`;
-            case "position":
-              return String(row.position);
-            default:
-              return String(Math.random());
-          }
-        }}
-        onRow={(row) => ({
-          onClick: () => {
+    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"}`}>
+      <TableScrollHint>
+        <Table<AverageData>
+          key={params.filter}
+          dataSource={data}
+          columns={makeColumns(params.filter)}
+          rowKey={(row) => {
+            switch (params.filter) {
+              case "year":
+                return String(row.year);
+              case "country":
+                return row.country ?? "";
+              case "name":
+                return `${row.name}-${row.country}`;
+              case "position":
+                return String(row.position);
+              default:
+                return String(Math.random());
+            }
+          }}
+          onRow={(row) => {
             const value = row[params.filter as keyof AverageData];
-            if (value !== undefined) onCellClick(value as number | string, params.filter);
-          },
-        })}
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-      />
+            if (value === undefined) return {};
+            return clickableRowProps(`View details for ${value}`, () =>
+              onCellClick(value as number | string, params.filter),
+            );
+          }}
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

@@ -33,5 +33,7 @@ export default async function InfoPage({ params }: InfoPageProps) {
   const result = await fetchServerData<SearchDetail>(
     `/typhoon-names?name=${encodeURIComponent(decodedName)}`,
   );
-  return <InfoPageContent detail={result?.data ?? null} name={decodedName} />;
+  return (
+    <InfoPageContent detail={result?.data ?? null} name={decodedName} isError={result === null} />
+  );
 }

@@ -1,7 +1,9 @@
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { TyphoonName } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Table } from "antd";
@@ -55,7 +57,7 @@ const FilteredNamesTable = ({
         ),
       },
       {
-        title: "Country",
+        title: "Contributed By",
         dataIndex: "country",
         key: "country",
         sorter: (a, b) => a.country.localeCompare(b.country),
@@ -80,7 +82,7 @@ const FilteredNamesTable = ({
         dataIndex: "meaning",
         key: "meaning",
         render: (_: unknown, record: TyphoonName) => (
-          <span className="block max-w-[200px] wrap-break-word whitespace-normal text-gray-700">
+          <span className="block max-w-[200px] wrap-break-word whitespace-normal">
             {record.meaning || "-"}
           </span>
         ),
@@ -105,7 +107,7 @@ const FilteredNamesTable = ({
                 />
               </div>
             ) : (
-              <span className="text-gray-700">-</span>
+              <span>-</span>
             ),
         },
         {
@@ -113,7 +115,7 @@ const FilteredNamesTable = ({
           dataIndex: "description",
           key: "description",
           render: (_: unknown, record: TyphoonName) => (
-            <span className="block max-w-[300px] wrap-break-word whitespace-normal text-gray-700">
+            <span className="block max-w-[300px] wrap-break-word whitespace-normal">
               {record.description || "-"}
             </span>
           ),
@@ -129,27 +131,25 @@ const FilteredNamesTable = ({
   }
 
   return (
-    <div
-      className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"} overflow-x-auto pb-px`}
-    >
-      <Table<TyphoonName>
-        dataSource={filteredNames}
-        columns={tableColumns}
-        rowKey="id"
-        onRow={(record) => ({
-          onClick: () => onNameClick(record),
-          "aria-label": `View details for ${record.name}`,
-          role: "button",
-          tabIndex: 0,
-        })}
-        rowClassName={(_record, index) =>
-          `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-        }
-        pagination={false}
-        size="large"
-        className="typhoon-table"
-        scroll={{ x: "max-content" }}
-      />
+    <div className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}`}>
+      <TableScrollHint>
+        <Table<TyphoonName>
+          dataSource={filteredNames}
+          columns={tableColumns}
+          rowKey="id"
+          onRow={(record) =>
+            clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+          }
+          rowClassName={(_record, index) =>
+            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
+          }
+          pagination={false}
+          size="large"
+          className="typhoon-table"
+          scroll={{ x: "max-content" }}
+          sticky
+        />
+      </TableScrollHint>
     </div>
   );
 };

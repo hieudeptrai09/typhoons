@@ -156,23 +156,16 @@ export const getDashboardTitle = (
   filter: string | string[] | undefined,
 ): string => {
   const viewStr = normalizeParam(view) || "storms";
-  const modeStr = normalizeParam(mode) || "table";
   const filterStr = normalizeParam(filter);
 
   const viewTitles: Record<string, string> = {
-    storms:
-      modeStr === "list"
-        ? "All Typhoon Names"
-        : filterStr === "name"
-          ? "All Typhoon Names (Grid)"
-          : "All Storms",
+    storms: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filterStr)}`,
     distance: `Average Gap Between Storms by ${capitalize(filterStr)}`,
   };
 
-  const title = viewTitles[viewStr];
-  return modeStr === "list" && viewStr !== "storms" ? `${title} (List View)` : title;
+  return viewTitles[viewStr];
 };
 
 export const getDashboardDescription = (

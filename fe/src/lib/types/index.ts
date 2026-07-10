@@ -103,9 +103,20 @@ export interface SearchDetail {
   storms: Storm[];
 }
 
+export interface StormHistoryEntry {
+  name: string;
+  position: number;
+  year: number;
+}
+
 export interface PositionDetail {
   position: number;
   country: string;
   names: TyphoonName[];
   storms: Storm[];
+}
+
+export interface FooterHighlight {
+  name: string;
+  position: number;
 }

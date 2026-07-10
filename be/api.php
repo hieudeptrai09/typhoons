@@ -34,15 +34,16 @@ if (empty($request)) {
         'message' => 'Typhoon Database API',
         'endpoints' => [
             'GET /storms' => 'Get all storms',
-            'GET /storms?position={id}' => 'Get storms by position',
             'GET /typhoon-names' => 'Get all typhoon names',
             'GET /typhoon-names?isRetired={0|1}' => 'Get typhoon names by retirement status',
+            'GET /typhoon-names?position={id}' => 'Get storm history (name, position, year) for a naming position',
             'GET /suggested-names' => 'Get all suggested names',
             'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
             'GET /search/names' => 'Get all typhoon name strings (for autocomplete and static params)',
             'GET /search?q={query}' => 'Search typhoon names with storm counts',
             'GET /typhoon-names?name={name}' => 'Get full details for a typhoon name (name info + storms)',
-            'GET /positions?position={id}' => 'Get full details for a naming position (country + names roster + storms)'
+            'GET /positions?position={id}' => 'Get full details for a naming position (country + names roster + storms)',
+            'GET /footer-highlight' => 'Get a random ongoing storm (or latest concluded storm) for footer links'
         ]
     ]);
 }
@@ -54,8 +55,7 @@ try {
         case 'storms':
             $controller = new StormController($db);
             if ($method === 'GET') {
-                $position = isset($_GET['position']) ? intval($_GET['position']) : null;
-                $result = $controller->getStorms($position);
+                $result = $controller->getStorms();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
@@ -67,6 +67,8 @@ try {
             if ($method === 'GET') {
                 if (isset($_GET['name'])) {
                     $result = $controller->getByName(trim($_GET['name']));
+                } elseif (isset($_GET['position'])) {
+                    $result = $controller->getStormHistory(intval($_GET['position']));
                 } else {
                     $isRetired = isset($_GET['isRetired']) ? intval($_GET['isRetired']) : null;
                     $result = $controller->getTyphoonNames($isRetired);
@@ -94,6 +96,28 @@ try {
                 $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
                 $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
                 $result = $controller->getOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'active-on-this-day':
+            $controller = new StormController($db);
+            if ($method === 'GET') {
+                $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
+                $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
+                $result = $controller->getActiveOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'footer-highlight':
+            $controller = new StormController($db);
+            if ($method === 'GET') {
+                $result = $controller->getFooterHighlight();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
