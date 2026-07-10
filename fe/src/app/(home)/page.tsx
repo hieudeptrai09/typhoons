@@ -1,5 +1,5 @@
+import { getFooterHighlight } from "@/lib/db/api/getFooterHighlight";
 import type { FooterHighlight } from "@/lib/types";
-import { fetchServerData } from "@/lib/utils/fetchServerData";
 import Image from "next/image";
 import Link from "next/link";
 import Menu from "./_components/Menu";
@@ -8,7 +8,7 @@ import QuickActionsMenu from "./_components/QuickActionsMenu";
 const FALLBACK_HIGHLIGHT: FooterHighlight = { name: "damrey", position: 1 };
 
 const HomePage = async () => {
-  const result = await fetchServerData<FooterHighlight>("/footer-highlight");
+  const result = await getFooterHighlight();
   const highlight = result?.data ?? FALLBACK_HIGHLIGHT;
 
   return (

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
-
 interface ApiResponse<T> {
   data: T;
   count: number;
@@ -16,7 +14,7 @@ interface UseFetchDataResult<T> {
 
 const fetchData = async <T>(endpoint: string): Promise<ApiResponse<T> | null> => {
   try {
-    const response = await fetch(`${API_BASE}${endpoint}`);
+    const response = await fetch(endpoint);
     return await response.json();
   } catch {
     return null;

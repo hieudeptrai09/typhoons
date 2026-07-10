@@ -5,15 +5,13 @@ import { Button, Modal } from "antd";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
-
 const FunFacts = () => {
   const [loading, setLoading] = useState(false);
 
   const showFact = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/facts`);
+      const res = await fetch("/api/facts");
       const json = await res.json();
       const fact: string | null = json.data ?? null;
 

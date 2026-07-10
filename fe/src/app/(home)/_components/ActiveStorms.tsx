@@ -21,8 +21,6 @@ interface ActiveStorm {
   isFromPrevYear: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
-
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const hasEndDate = (storm: ActiveStorm) => storm.monthEnd > 0 && storm.dateEnd > 0;
@@ -62,7 +60,7 @@ const ActiveStorms = () => {
   const fetchStorms = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/active-on-this-day`);
+      const res = await fetch("/api/active-on-this-day");
       const json = await res.json();
       const storms: ActiveStorm[] = json.data ?? [];
 
