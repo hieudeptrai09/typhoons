@@ -42,16 +42,6 @@ const MONTH_NAMES = [
 const getReasonIcon = (
   storm: OnThisDayStorm,
 ): { Icon: typeof Play; color: string; label: string } => {
-  // DUPLICATE + SEMANTIC NOTE: #16a34a/#dc2626/#d97706 are the exact same
-  // hexes as colors.ts's getNameStatusColor (green-600, red-600, and
-  // amber-600 respectively — getNameStatusColor's "language problem" color
-  // is this same #d97706 amber-600), but hardcoded independently here rather
-  // than imported. #dc2626 is also getDistanceColor's "faster than normal"
-  // hot color (a deliberate reuse, not a fresh hue, per owner's call) —
-  // three unrelated meanings for the same red now. The meaning here is a
-  // 4th unrelated concept: "storm formed/entered"
-  // (green) vs "dissipated/exited" (red) vs "both on the same day" (amber)
-  // — nothing to do with name status or distance.
   const isExternal = EXTERNAL_POSITIONS.includes(storm.position);
   if (isExternal) {
     if (storm.reason === "both") {

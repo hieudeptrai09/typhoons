@@ -42,7 +42,8 @@ if (empty($request)) {
             'GET /search/names' => 'Get all typhoon name strings (for autocomplete and static params)',
             'GET /search?q={query}' => 'Search typhoon names with storm counts',
             'GET /typhoon-names?name={name}' => 'Get full details for a typhoon name (name info + storms)',
-            'GET /positions?position={id}' => 'Get full details for a naming position (country + names roster + storms)'
+            'GET /positions?position={id}' => 'Get full details for a naming position (country + names roster + storms)',
+            'GET /footer-highlight' => 'Get a random ongoing storm (or latest concluded storm) for footer links'
         ]
     ]);
 }
@@ -107,6 +108,16 @@ try {
                 $day = isset($_GET['day']) ? intval($_GET['day']) : intval(date('j'));
                 $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('n'));
                 $result = $controller->getActiveOnThisDay($day, $month);
+                sendResponse(200, $result);
+            } else {
+                sendResponse(405, ['error' => 'Method not allowed']);
+            }
+            break;
+
+        case 'footer-highlight':
+            $controller = new StormController($db);
+            if ($method === 'GET') {
+                $result = $controller->getFooterHighlight();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);

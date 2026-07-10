@@ -110,6 +110,35 @@ class StormController
         ];
     }
 
+    public function getFooterHighlight()
+    {
+        $stmt = $this->conn->query(
+            "SELECT name, position FROM storms
+             WHERE position BETWEEN 1 AND 140
+               AND (monthEnd IS NULL OR monthEnd = 0 OR dateEnd IS NULL OR dateEnd = 0)"
+        );
+        $ongoing = $stmt->fetchAll();
+
+        if (!empty($ongoing)) {
+            $pick = $ongoing[array_rand($ongoing)];
+            return ['data' => ['name' => $pick['name'], 'position' => (int)$pick['position']]];
+        }
+
+        $stmt = $this->conn->query(
+            "SELECT name, position FROM storms
+             WHERE position BETWEEN 1 AND 140
+             ORDER BY year DESC, monthEnd DESC, dateEnd DESC, id DESC
+             LIMIT 1"
+        );
+        $latest = $stmt->fetch();
+
+        if (!$latest) {
+            return ['data' => null];
+        }
+
+        return ['data' => ['name' => $latest['name'], 'position' => (int)$latest['position']]];
+    }
+
     public function getStorms()
     {
         $query = "SELECT

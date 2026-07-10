@@ -36,7 +36,8 @@ export const formatStormDateRange = (
   dateEnd?: number,
   isFromPrevYear?: number,
 ): string | null => {
-  if (!year || !monthStart || !dateStart || !monthEnd || !dateEnd) return null;
+  if (!year || !monthStart || !dateStart) return null;
+  if (!monthEnd || !dateEnd) return `${dateStart}/${monthStart} - now`;
   const startYear = isFromPrevYear ? year - 1 : year;
   const endYear = monthEnd < monthStart ? startYear + 1 : startYear;
   if (startYear === endYear) {

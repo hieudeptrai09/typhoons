@@ -35,7 +35,7 @@ const QuickActionsMenu = () => {
         aria-controls="home-quick-actions-panel"
         aria-label={isOpen ? "Close quick actions menu" : "Open quick actions menu"}
         icon={isOpen ? <X size={20} /> : <Menu size={20} />}
-        className="h-10! w-10! shrink-0! rounded-lg! border! border-amber-600/40! text-amber-700! hover:bg-amber-50!"
+        className="h-10! w-10! shrink-0! rounded-lg! border! border-amber-600/70! text-amber-700! hover:bg-amber-50!"
       />
 
       {isOpen && (
@@ -46,8 +46,8 @@ const QuickActionsMenu = () => {
         >
           <div className="flex flex-col items-stretch gap-1">
             <OnThisDay />
-            <FunFacts />
             <ActiveStorms />
+            <FunFacts />
           </div>
         </div>
       )}

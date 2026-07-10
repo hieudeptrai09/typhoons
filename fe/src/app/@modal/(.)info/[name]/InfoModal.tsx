@@ -2,6 +2,7 @@
 
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
@@ -23,6 +24,7 @@ import { useState } from "react";
 interface InfoModalProps {
   detail: SearchDetail | null;
   name: string;
+  isError?: boolean;
 }
 
 type TabType = "details" | "storms";
@@ -110,7 +112,7 @@ function StormsTab({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoModal({ detail, name }: InfoModalProps) {
+export default function InfoModal({ detail, name, isError = false }: InfoModalProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -122,6 +124,14 @@ export default function InfoModal({ detail, name }: InfoModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>(
     searchParams.get("tab") === "storms" ? "storms" : "details",
   );
+
+  if (isError) {
+    return (
+      <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
+        <FrownError />
+      </Modal>
+    );
+  }
 
   if (!nameData && storms.length === 0) {
     return (

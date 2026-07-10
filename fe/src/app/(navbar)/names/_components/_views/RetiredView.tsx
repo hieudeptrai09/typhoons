@@ -43,6 +43,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     data: suggestionsRaw = [],
     loading: suggestionsLoading,
     error: suggestionsError,
+    refetch: suggestionsRefetch,
   } = useFetchData<Suggestion[]>(
     selectedRetiredName.id ? `/suggested-names?nameId=${selectedRetiredName.id}` : "",
   );
@@ -217,6 +218,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
         suggestions={suggestions}
         suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
         suggestionsError={suggestionsError}
+        suggestionsRefetch={suggestionsRefetch}
         onClose={() => setIsRetiredNameModalOpen(false)}
       />
     </>

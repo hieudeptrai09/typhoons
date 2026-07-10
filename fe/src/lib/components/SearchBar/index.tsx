@@ -1,5 +1,6 @@
 "use client";
 
+import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { useFetchData } from "@/lib/hooks/useFetchData";
@@ -25,7 +26,7 @@ const VARIANT_CONFIG: Record<
 > = {
   home: {
     size: "large",
-    prefixClassName: "text-muted",
+    prefixClassName: "text-gray-500",
     prefixSize: 18,
     inputClassName: styles.homeInput,
   },
@@ -45,7 +46,12 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: allNames, loading } = useFetchData<string[]>("/search/names");
+  const {
+    data: allNames,
+    loading,
+    error,
+    refetch,
+  } = useFetchData<string[]>("/search/names");
 
   const trimmed = query.trim();
   const filtered =
@@ -108,6 +114,10 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
           {loading ? (
             <div id={statusId} className="flex justify-center py-4">
               <TyphoonSpinner size="small" />
+            </div>
+          ) : error ? (
+            <div id={statusId}>
+              <FrownError description="Failed to load search results." onRetry={refetch} />
             </div>
           ) : filtered.length === 0 ? (
             <div id={statusId} className="px-4 py-3 text-sm text-muted">

@@ -115,3 +115,8 @@ export interface PositionDetail {
   names: TyphoonName[];
   storms: Storm[];
 }
+
+export interface FooterHighlight {
+  name: string;
+  position: number;
+}

@@ -1,3 +1,4 @@
+import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { useFetchData } from "@/lib/hooks/useFetchData";
@@ -23,6 +24,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     data: stormsRaw,
     loading,
     error,
+    refetch,
   } = useFetchData<StormHistoryEntry[]>(
     isOpen && position ? `/typhoon-names?position=${position}` : "",
   );
@@ -84,7 +86,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
             <TyphoonSpinner size="medium" />
           </div>
         ) : error ? (
-          <div className="py-4 text-center text-muted">Failed to load storm data.</div>
+          <FrownError description="Failed to load storm data." onRetry={refetch} />
         ) : positionNames.length === 0 ? (
           <div className="py-4 text-center text-muted">No names at this position.</div>
         ) : (
