@@ -1,7 +1,7 @@
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { useFetchData } from "@/lib/hooks/useFetchData";
-import type { BaseModalProps, Storm, TyphoonName } from "@/lib/types";
+import type { BaseModalProps, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { Button, Modal } from "antd";
@@ -23,7 +23,9 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
     data: stormsRaw,
     loading,
     error,
-  } = useFetchData<Storm[]>(isOpen && position ? `/storms?position=${position}` : "");
+  } = useFetchData<StormHistoryEntry[]>(
+    isOpen && position ? `/typhoon-names?position=${position}` : "",
+  );
 
   if (!isOpen) return null;
 
@@ -37,7 +39,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
 
   const storms = isStormsReady ? (stormsRaw ?? []) : [];
 
-  const stormsByName: Record<string, Storm[]> = {};
+  const stormsByName: Record<string, StormHistoryEntry[]> = {};
   storms.forEach((storm) => {
     if (!stormsByName[storm.name]) stormsByName[storm.name] = [];
     stormsByName[storm.name].push(storm);
@@ -120,6 +122,9 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           </span>
                           {count > 0 && (
                             <span className="ml-1 text-sm text-gray-500">({years})</span>
+                          )}
+                          {name.language && (
+                            <span className="ml-1 text-xs text-gray-400">· {name.language}</span>
                           )}
                         </div>
                         {name.meaning && (

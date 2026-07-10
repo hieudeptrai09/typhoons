@@ -34,9 +34,9 @@ if (empty($request)) {
         'message' => 'Typhoon Database API',
         'endpoints' => [
             'GET /storms' => 'Get all storms',
-            'GET /storms?position={id}' => 'Get storms by position',
             'GET /typhoon-names' => 'Get all typhoon names',
             'GET /typhoon-names?isRetired={0|1}' => 'Get typhoon names by retirement status',
+            'GET /typhoon-names?position={id}' => 'Get storm history (name, position, year) for a naming position',
             'GET /suggested-names' => 'Get all suggested names',
             'GET /suggested-names?nameId={id}' => 'Get suggested names by nameId',
             'GET /search/names' => 'Get all typhoon name strings (for autocomplete and static params)',
@@ -54,8 +54,7 @@ try {
         case 'storms':
             $controller = new StormController($db);
             if ($method === 'GET') {
-                $position = isset($_GET['position']) ? intval($_GET['position']) : null;
-                $result = $controller->getStorms($position);
+                $result = $controller->getStorms();
                 sendResponse(200, $result);
             } else {
                 sendResponse(405, ['error' => 'Method not allowed']);
@@ -67,6 +66,8 @@ try {
             if ($method === 'GET') {
                 if (isset($_GET['name'])) {
                     $result = $controller->getByName(trim($_GET['name']));
+                } elseif (isset($_GET['position'])) {
+                    $result = $controller->getStormHistory(intval($_GET['position']));
                 } else {
                     $isRetired = isset($_GET['isRetired']) ? intval($_GET['isRetired']) : null;
                     $result = $controller->getTyphoonNames($isRetired);

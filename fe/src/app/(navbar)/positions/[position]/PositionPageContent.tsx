@@ -74,6 +74,7 @@ function NameRosterCard({ name, storms }: { name: TyphoonName; storms: Storm[] }
                 {storms.length} storm{storms.length > 1 ? "s" : ""} · {years}
               </span>
             )}
+            {name.language && <span className="text-xs text-slate-400">· {name.language}</span>}
           </div>
           {name.meaning && (
             <p className="mt-1 text-sm leading-relaxed text-teal-600 italic">{name.meaning}</p>

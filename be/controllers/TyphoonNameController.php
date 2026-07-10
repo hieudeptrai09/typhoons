@@ -12,21 +12,16 @@ class TyphoonNameController
     {
         $nameStmt = $this->conn->prepare(
             "SELECT
-                tn.id,
                 tn.name,
                 tn.meaning,
                 tn.position,
                 p.country,
                 tn.isRetired,
-                tn.isReplaced,
                 tn.isLanguageProblem,
                 tn.replacementName,
-                tn.note,
                 tn.language,
-                tn.lastYear,
                 tn.image,
-                tn.description,
-                tn.tag
+                tn.description
             FROM typhoonnames tn
             INNER JOIN positions p ON tn.position = p.id
             WHERE LOWER(tn.name) = LOWER(:name)
@@ -37,17 +32,13 @@ class TyphoonNameController
         $nameRow = $nameStmt->fetch();
 
         if ($nameRow) {
-            $nameRow['id'] = (int)$nameRow['id'];
             $nameRow['position'] = (int)$nameRow['position'];
             $nameRow['isRetired'] = (int)$nameRow['isRetired'];
-            $nameRow['isReplaced'] = (int)$nameRow['isReplaced'];
             $nameRow['isLanguageProblem'] = (int)$nameRow['isLanguageProblem'];
-            $nameRow['lastYear'] = (int)$nameRow['lastYear'];
         }
 
         $stormStmt = $this->conn->prepare(
             "SELECT
-                s.id,
                 s.position,
                 p.country,
                 s.name,
@@ -55,9 +46,6 @@ class TyphoonNameController
                 s.map,
                 s.correctSpelling,
                 s.year,
-                s.isStrongest,
-                s.isFirst,
-                s.isLast,
                 s.dateStart,
                 s.dateEnd,
                 s.monthStart,
@@ -73,12 +61,8 @@ class TyphoonNameController
         $storms = $stormStmt->fetchAll();
 
         $storms = array_map(function ($row) {
-            $row['id'] = (int)$row['id'];
             $row['position'] = (int)$row['position'];
             $row['year'] = (int)$row['year'];
-            $row['isStrongest'] = (int)$row['isStrongest'];
-            $row['isFirst'] = (int)$row['isFirst'];
-            $row['isLast'] = (int)$row['isLast'];
             $row['dateStart'] = (int)$row['dateStart'];
             $row['dateEnd'] = (int)$row['dateEnd'];
             $row['monthStart'] = (int)$row['monthStart'];
@@ -140,6 +124,33 @@ class TyphoonNameController
             $row['isReplaced'] = (int)$row['isReplaced'];
             $row['isLanguageProblem'] = (int)$row['isLanguageProblem'];
             $row['lastYear'] = (int)$row['lastYear'];
+            return $row;
+        }, $results);
+
+        return [
+            'count' => count($results),
+            'data' => $results
+        ];
+    }
+
+    public function getStormHistory($position)
+    {
+        $query = "SELECT
+                    s.name,
+                    s.position,
+                    s.year
+                  FROM storms s
+                  WHERE s.position = :position
+                  ORDER BY s.year ASC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':position', $position, PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        $results = array_map(function ($row) {
+            $row['position'] = (int)$row['position'];
+            $row['year'] = (int)$row['year'];
             return $row;
         }, $results);
 

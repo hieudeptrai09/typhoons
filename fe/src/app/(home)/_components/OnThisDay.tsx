@@ -16,8 +16,6 @@ interface OnThisDayStorm {
   monthStart: number;
   monthEnd: number;
   isFromPrevYear: number;
-  country: string;
-  meaning: string | null;
   reason: "started" | "ended" | "both";
 }
 

@@ -10,17 +10,12 @@ class SuggestedNameController
 
     public function getSuggestedNames($nameId = null)
     {
-        $query = "SELECT 
-                    sn.id,
-                    sn.nameId,
-                    tn.name as originalName,
-                    tn.meaning as originalMeaning,
+        $query = "SELECT
                     sn.replacementName,
                     sn.meaning as replacementMeaning,
                     sn.isChosen,
                     sn.image
-                  FROM suggestednames sn
-                  INNER JOIN typhoonnames tn ON sn.nameId = tn.id";
+                  FROM suggestednames sn";
 
         if ($nameId !== null) {
             $query .= " WHERE sn.nameId = :nameId";
@@ -38,8 +33,6 @@ class SuggestedNameController
         $results = $stmt->fetchAll();
 
         $results = array_map(function ($row) {
-            $row['id'] = (int)$row['id'];
-            $row['nameId'] = (int)$row['nameId'];
             $row['isChosen'] = (int)$row['isChosen'];
             return $row;
         }, $results);

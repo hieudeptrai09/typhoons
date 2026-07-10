@@ -19,8 +19,6 @@ interface ActiveStorm {
   monthEnd: number;
   dateEnd: number;
   isFromPrevYear: number;
-  country: string;
-  meaning: string | null;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
