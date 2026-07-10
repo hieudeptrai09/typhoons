@@ -149,7 +149,7 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
     const isActive = currentLetter === letter;
     return {
       isAvailable,
-      color: !isAvailable ? "#d1d5db" : isActive ? "#991b1b" : "#ef4444",
+      color: !isAvailable ? "#9ca3af" : isActive ? "#991b1b" : "#dc2626",
       isActive: !!isAvailable && isActive,
     };
   };
@@ -177,13 +177,11 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
             </button>
           </Badge>
         </div>
-        {false && (
-          <div className="mt-2 flex justify-center">
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-              Click the list icon to view all names
-            </span>
-          </div>
-        )}
+        <div className="mt-2 hidden justify-center">
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+            Click the list icon to view all names
+          </span>
+        </div>
       </div>
 
       {activeFilterCount === 0 && (

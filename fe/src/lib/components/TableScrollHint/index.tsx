@@ -6,7 +6,7 @@ interface TableScrollHintProps {
 
 const TableScrollHint = ({ children }: TableScrollHintProps) => (
   <>
-    <p className="mb-2 text-xs text-muted md:hidden">Swipe right to see full table →</p>
+    <p className="mb-2 text-xs text-muted hidden">Swipe right to see full table →</p>
     <div className="relative">
       {children}
       <div
