@@ -5,29 +5,17 @@ import type { TableProps } from "antd";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-interface DataTableProps<T> {
+interface DefTableProps<T> {
   columns: ColumnsType<T>;
   dataSource: T[];
   rowKey: TableProps<T>["rowKey"];
   onRow?: TableProps<T>["onRow"];
-  /**
-   * Whether a given row is clickable, controlling its cursor. Defaults to
-   * "clickable when an `onRow` handler is provided". Pass a predicate to make
-   * clickability depend on the row (e.g. only months that contain storms).
-   */
   rowClickable?: (record: T, index: number) => boolean;
-  /** Tailwind max-width applied to the centered wrapper (e.g. "max-w-2xl"). */
   maxWidth: string;
-  /** Forwarded to the antd table `key` to force a remount (e.g. on filter change). */
   tableKey?: React.Key;
 }
 
-/**
- * Shared antd table wrapper: applies the project's table styling, zebra
- * striping, sticky header, horizontal-scroll fade, and centered max-width
- * layout so call sites only supply their columns, data, and row behavior.
- */
-const DataTable = <T extends object>({
+const DefTable = <T extends object>({
   columns,
   dataSource,
   rowKey,
@@ -35,7 +23,7 @@ const DataTable = <T extends object>({
   rowClickable,
   maxWidth,
   tableKey,
-}: DataTableProps<T>) => {
+}: DefTableProps<T>) => {
   const { wrapperRef, showEndFade } = useScrollEndFade();
 
   const isRowClickable = rowClickable ?? (() => Boolean(onRow));
@@ -71,4 +59,4 @@ const DataTable = <T extends object>({
   );
 };
 
-export default DataTable;
+export default DefTable;

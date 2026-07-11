@@ -11,11 +11,8 @@ export interface CellRender {
 
 interface PositionCellGridProps {
   stormsData: Storm[];
-  /** Which styling variant to use (the storm-name overlay is hidden for "highlights"). */
   gridCellViewType: "storms" | "average" | "highlights";
-  /** Produces the content, background class, and clickability for a position's cell. */
   renderCell: (position: number) => CellRender;
-  /** Called when a clickable cell is activated. Omit for variants with non-clickable cells. */
   onPositionClick?: (position: number) => void;
 }
 
@@ -25,11 +22,6 @@ const getStormNamesForPosition = (stormsData: Storm[], position: number): string
   return [...new Set(storms.map((storm) => storm.name))];
 };
 
-/**
- * Thin grid shell shared by every storms/average/distance/name/highlight grid.
- * It wires PositionGrid to the per-cell `<td>` (a11y, hover, storm-name overlay);
- * each variant supplies only its cell content via `renderCell`.
- */
 const PositionCellGrid = ({
   stormsData,
   gridCellViewType,

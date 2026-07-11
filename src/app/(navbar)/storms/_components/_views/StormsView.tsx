@@ -1,14 +1,14 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
-import SpecialButtons from "../_widgets/SpecialButtons";
-import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import NamesGrid from "../_widgets/grids/NamesGrid";
 import StormsGrid from "../_widgets/grids/StormsGrid";
+import SpecialButtons from "../_widgets/SpecialButtons";
+import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 interface StormsViewProps {
@@ -123,7 +123,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <DataTable<NameData>
+    <DefTable<NameData>
       maxWidth="max-w-2xl"
       dataSource={nameData}
       columns={makeNameColumns()}

@@ -1,4 +1,4 @@
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
@@ -103,7 +103,7 @@ const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
   }));
 
   return (
-    <DataTable<HighlightRow>
+    <DefTable<HighlightRow>
       maxWidth="max-w-xl"
       tableKey={params.filter}
       dataSource={highlightData}

@@ -1,4 +1,4 @@
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
@@ -130,7 +130,7 @@ const FilteredNamesTable = ({
   }
 
   return (
-    <DataTable<TyphoonName>
+    <DefTable<TyphoonName>
       maxWidth={showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}
       dataSource={filteredNames}
       columns={tableColumns}

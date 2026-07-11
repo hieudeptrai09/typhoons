@@ -1,4 +1,4 @@
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import type { RetiredName } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
@@ -81,7 +81,7 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <DataTable<RetiredName>
+    <DefTable<RetiredName>
       maxWidth="max-w-5xl"
       dataSource={paginatedData}
       columns={columns}

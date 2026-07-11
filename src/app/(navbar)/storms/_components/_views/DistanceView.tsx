@@ -1,13 +1,13 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
-import SpecialButtons from "../_widgets/SpecialButtons";
 import DistanceGrid from "../_widgets/grids/DistanceGrid";
+import SpecialButtons from "../_widgets/SpecialButtons";
 import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
 
 interface DistanceViewProps {
@@ -189,7 +189,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
 
     return (
-      <DataTable<PositionRow>
+      <DefTable<PositionRow>
         maxWidth="max-w-2xl"
         tableKey="position"
         dataSource={data}
@@ -217,7 +217,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   });
 
   return (
-    <DataTable<NameRow>
+    <DefTable<NameRow>
       maxWidth="max-w-2xl"
       tableKey="name"
       dataSource={data}

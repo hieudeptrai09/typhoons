@@ -1,5 +1,5 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import type { Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -249,7 +249,7 @@ const AverageListTable = ({ filter, stormsData, onCellClick }: AverageListTableP
   if (filter === "month") data.sort((a, b) => (a.month ?? 0) - (b.month ?? 0));
 
   return (
-    <DataTable<AverageData>
+    <DefTable<AverageData>
       maxWidth={WIDTH_CLASS[filter] ?? "max-w-2xl"}
       tableKey={filter}
       dataSource={data}

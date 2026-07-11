@@ -1,7 +1,7 @@
 "use client";
 
 import CountryFlag from "@/lib/components/CountryFlag";
-import DataTable from "@/lib/components/DataTable";
+import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
@@ -139,7 +139,7 @@ export default function SearchPageContent({
               {count} result{count !== 1 ? "s" : ""} found
             </div>
             <div aria-describedby="search-result-count">
-              <DataTable<SearchResult>
+              <DefTable<SearchResult>
                 maxWidth="max-w-4xl"
                 dataSource={results}
                 columns={columns}

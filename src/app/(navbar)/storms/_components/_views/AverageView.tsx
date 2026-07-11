@@ -14,8 +14,6 @@ interface AverageViewProps {
 const AverageView = ({ params, stormsData, averageValues, onCellClick }: AverageViewProps) => {
   const { filter, mode } = params;
 
-  // Table mode renders a position grid, with name and year getting bespoke grids.
-  // (country and month are list-only, so they fall through to the list table.)
   if (mode === "table") {
     if (filter === "name") {
       return <AverageNameGrid stormsData={stormsData} onCellClick={onCellClick} />;
@@ -32,7 +30,6 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
     );
   }
 
-  // List mode (position / name / country / year / month) → sortable average table.
   return <AverageListTable filter={filter} stormsData={stormsData} onCellClick={onCellClick} />;
 };
 
