@@ -13,9 +13,7 @@ const StormsGrid = ({ stormsData, onCellClick, isClickable = true }: StormsGridP
     gridCellViewType="storms"
     onPositionClick={(position) => onCellClick(position, "position")}
     renderCell={(position) => ({
-      content: (
-        <div className="text-center text-base font-semibold text-muted">{position}</div>
-      ),
+      content: <div className="text-center text-base font-semibold text-muted">{position}</div>,
       className: "",
       clickable: isClickable,
     })}

@@ -45,9 +45,9 @@ async function generateFacts(): Promise<string[]> {
   facts.push(
     `There are ${cnt} names given in Hawaiian by CPHC and crossed into the West Pacific basin.`,
   );
-  let names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name")).map(
-    (r) => String(r.name),
-  );
+  let names = (
+    await rows("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name")
+  ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(
       `${joinNames(names)} are the names given in Hawaiian by CPHC and crossed into the West Pacific basin.`,
@@ -57,8 +57,8 @@ async function generateFacts(): Promise<string[]> {
   row = await one("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
   cnt = Number(row?.cnt ?? 0);
   facts.push(`There are ${cnt} names assigned by NHC that cross 3 Pacific basins.`);
-  names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name")).map((r) =>
-    String(r.name),
+  names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name")).map(
+    (r) => String(r.name),
   );
   if (names.length > 0) {
     facts.push(`${joinNames(names)} are the names assigned by NHC that cross 3 Pacific basins.`);
@@ -91,7 +91,9 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Category 5 from external basins ---
 
-  rowsResult = await rows("SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5'");
+  rowsResult = await rows(
+    "SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5'",
+  );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label =
@@ -101,7 +103,9 @@ async function generateFacts(): Promise<string[]> {
     facts.push(`${joinNames(names)} ${label}.`);
   }
 
-  rowsResult = await rows("SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5'");
+  rowsResult = await rows(
+    "SELECT DISTINCT name FROM storms WHERE position = 141 AND intensity = '5'",
+  );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label =
@@ -117,7 +121,9 @@ async function generateFacts(): Promise<string[]> {
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label = names.length === 1 ? "is the only storm" : "are the only storms";
-    facts.push(`${joinNames(names)} ${label} that crossed from the Indian Ocean to the Pacific Ocean.`);
+    facts.push(
+      `${joinNames(names)} ${label} that crossed from the Indian Ocean to the Pacific Ocean.`,
+    );
   }
 
   // --- Weak storms retired for destructive reason ---
@@ -137,7 +143,9 @@ async function generateFacts(): Promise<string[]> {
   };
   for (const r of rowsResult) {
     const label = intensityLabels[String(r.intensity)] ?? "a tropical storm";
-    facts.push(`Although ${r.name} was only ${label}, it was retired due to the destruction it caused.`);
+    facts.push(
+      `Although ${r.name} was only ${label}, it was retired due to the destruction it caused.`,
+    );
   }
 
   // --- Strongest storms records ---
@@ -158,7 +166,10 @@ async function generateFacts(): Promise<string[]> {
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
-    const label = items.length === 1 ? "is the only record-strength storm" : "are the only record-strength storms";
+    const label =
+      items.length === 1
+        ? "is the only record-strength storm"
+        : "are the only record-strength storms";
     facts.push(`${joinNames(items)} ${label} that did not reach category 5.`);
   }
 
@@ -169,7 +180,10 @@ async function generateFacts(): Promise<string[]> {
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
-    const label = items.length === 1 ? "is the only season-opening storm" : "are the only season-opening storms";
+    const label =
+      items.length === 1
+        ? "is the only season-opening storm"
+        : "are the only season-opening storms";
     facts.push(`${joinNames(items)} ${label} to reach category 5.`);
   }
 
@@ -186,7 +200,9 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Seasons ending with Cat 5 ---
 
-  row = await one(`SELECT COUNT(*) as cnt FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000`);
+  row = await one(
+    `SELECT COUNT(*) as cnt FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000`,
+  );
   cnt = Number(row?.cnt ?? 0);
   if (cnt > 0) {
     facts.push(`There are ${cnt} seasons that ended with a category 5 storm.`);
@@ -210,7 +226,9 @@ async function generateFacts(): Promise<string[]> {
       const items = rowsResult.map((r) => `${r.name} (${r.year})`);
       const monthName = MONTH_NAMES[month];
       const label =
-        items.length === 1 ? "is the only record-strength storm" : "are the only record-strength storms";
+        items.length === 1
+          ? "is the only record-strength storm"
+          : "are the only record-strength storms";
       facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
     }
   }
@@ -226,7 +244,9 @@ async function generateFacts(): Promise<string[]> {
       const items = rowsResult.map((r) => `${r.name} (${r.year})`);
       const monthName = MONTH_NAMES[month];
       const label =
-        items.length === 1 ? "is the only season-opening storm" : "are the only season-opening storms";
+        items.length === 1
+          ? "is the only season-opening storm"
+          : "are the only season-opening storms";
       facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
     }
   }
@@ -242,7 +262,9 @@ async function generateFacts(): Promise<string[]> {
     if (cnt > 0) {
       const monthName = MONTH_NAMES[month];
       const label = cnt === 1 ? "is" : "are";
-      facts.push(`There ${label} ${cnt} category 5 storm${cnt > 1 ? "s" : ""} that formed in ${monthName}.`);
+      facts.push(
+        `There ${label} ${cnt} category 5 storm${cnt > 1 ? "s" : ""} that formed in ${monthName}.`,
+      );
     }
     rowsResult = await rows(
       `SELECT name, year FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000 ORDER BY year`,
@@ -251,7 +273,8 @@ async function generateFacts(): Promise<string[]> {
     if (rowsResult.length > 0) {
       const items = rowsResult.map((r) => `${r.name} (${r.year})`);
       const monthName = MONTH_NAMES[month];
-      const label = items.length === 1 ? "is the only category 5 storm" : "are the category 5 storms";
+      const label =
+        items.length === 1 ? "is the only category 5 storm" : "are the category 5 storms";
       facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
     }
   }
@@ -367,7 +390,9 @@ async function generateFacts(): Promise<string[]> {
       [maxCount],
     );
     const namesWithMax = Number(row?.cnt ?? 0);
-    facts.push(`${namesWithMax} names have been used ${maxCount} times since 2000 without being retired.`);
+    facts.push(
+      `${namesWithMax} names have been used ${maxCount} times since 2000 without being retired.`,
+    );
 
     rowsResult = await rows(
       `
@@ -380,7 +405,9 @@ async function generateFacts(): Promise<string[]> {
       [maxCount],
     );
     for (const r of rowsResult) {
-      facts.push(`${r.name} is a name that has been used ${maxCount} times since 2000 without being retired.`);
+      facts.push(
+        `${r.name} is a name that has been used ${maxCount} times since 2000 without being retired.`,
+      );
     }
   }
 
@@ -416,7 +443,9 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Year records ---
 
-  row = await one("SELECT year, COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1");
+  row = await one(
+    "SELECT year, COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1",
+  );
   if (row) {
     facts.push(`${row.year} had the most storms of any season, with ${row.cnt}.`);
   }
@@ -469,17 +498,23 @@ async function generateFacts(): Promise<string[]> {
     ORDER BY t.name
   `);
   for (const r of rowsResult) {
-    facts.push(`${r.name} is a name that comes back on the list exactly every 6 years without being retired.`);
+    facts.push(
+      `${r.name} is a name that comes back on the list exactly every 6 years without being retired.`,
+    );
   }
 
   // --- Tag records ---
 
-  row = await one("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt DESC LIMIT 1");
+  row = await one(
+    "SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt DESC LIMIT 1",
+  );
   if (row) {
     facts.push(`${row.tag} is the category with the most names (${row.cnt}).`);
   }
 
-  row = await one("SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt ASC LIMIT 1");
+  row = await one(
+    "SELECT tag, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY tag ORDER BY cnt ASC LIMIT 1",
+  );
   if (row) {
     facts.push(`${row.tag} is the category with the fewest names (${row.cnt}).`);
   }
@@ -497,9 +532,10 @@ async function generateFacts(): Promise<string[]> {
       facts.push(`There are only ${rCnt} names from the ${r.language} language.`);
     }
     const langNames = (
-      await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 ORDER BY name", [
-        String(r.language),
-      ])
+      await rows(
+        "SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 ORDER BY name",
+        [String(r.language)],
+      )
     ).map((nr) => String(nr.name));
     if (langNames.length > 0) {
       const nl = langNames.length === 1 ? "is the only name" : "are the only names";
@@ -517,9 +553,10 @@ async function generateFacts(): Promise<string[]> {
     facts.push(`There are ${rCnt} names in the category ${r.tag}.`);
     if (rCnt <= 3 && rCnt > 0) {
       const tagNames = (
-        await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name", [
-          String(r.tag),
-        ])
+        await rows(
+          "SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name",
+          [String(r.tag)],
+        )
       ).map((nr) => String(nr.name));
       if (tagNames.length > 0) {
         const nl = tagNames.length === 1 ? "is the only name" : "are the only names";
@@ -539,7 +576,9 @@ async function generateFacts(): Promise<string[]> {
     if (rCnt === 1) {
       facts.push(`There is only 1 name from the ${r.language} language in the category ${r.tag}.`);
     } else {
-      facts.push(`There are only ${rCnt} names from the ${r.language} language in the category ${r.tag}.`);
+      facts.push(
+        `There are only ${rCnt} names from the ${r.language} language in the category ${r.tag}.`,
+      );
     }
     const combNames = (
       await rows(
@@ -549,7 +588,9 @@ async function generateFacts(): Promise<string[]> {
     ).map((nr) => String(nr.name));
     if (combNames.length > 0) {
       const nl = combNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(`${joinNames(combNames)} ${nl} from the ${r.language} language in the category ${r.tag}.`);
+      facts.push(
+        `${joinNames(combNames)} ${nl} from the ${r.language} language in the category ${r.tag}.`,
+      );
     }
   }
 
@@ -565,7 +606,9 @@ async function generateFacts(): Promise<string[]> {
     if (rCnt === 1) {
       facts.push(`There is only 1 name contributed by ${r.country} in the category ${r.tag}.`);
     } else {
-      facts.push(`There are only ${rCnt} names contributed by ${r.country} in the category ${r.tag}.`);
+      facts.push(
+        `There are only ${rCnt} names contributed by ${r.country} in the category ${r.tag}.`,
+      );
     }
     const countryTagNames = (
       await rows(
@@ -579,17 +622,23 @@ async function generateFacts(): Promise<string[]> {
     ).map((nr) => String(nr.name));
     if (countryTagNames.length > 0) {
       const nl = countryTagNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(`${joinNames(countryTagNames)} ${nl} contributed by ${r.country} in the category ${r.tag}.`);
+      facts.push(
+        `${joinNames(countryTagNames)} ${nl} contributed by ${r.country} in the category ${r.tag}.`,
+      );
     }
   }
 
   // --- Language reason retirements ---
 
-  row = await one(`SELECT COUNT(*) as cnt FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true`);
+  row = await one(
+    `SELECT COUNT(*) as cnt FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true`,
+  );
   cnt = Number(row?.cnt ?? 0);
   facts.push(`There are ${cnt} names retired for language-related reasons.`);
   names = (
-    await rows(`SELECT name FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true ORDER BY name`)
+    await rows(
+      `SELECT name FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true ORDER BY name`,
+    )
   ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(`${joinNames(names)} are the names retired for language-related reasons.`);
@@ -624,7 +673,9 @@ async function generateFacts(): Promise<string[]> {
   // --- Missing letters ---
 
   const existing = (
-    await rows("SELECT DISTINCT UPPER(LEFT(name, 1)) as letter FROM typhoonnames WHERE position <= 140")
+    await rows(
+      "SELECT DISTINCT UPPER(LEFT(name, 1)) as letter FROM typhoonnames WHERE position <= 140",
+    )
   ).map((r) => String(r.letter));
   const allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
   const missing = allLetters.filter((l) => !existing.includes(l));
@@ -657,12 +708,16 @@ async function generateFacts(): Promise<string[]> {
   if (onlyActive.length > 0) {
     const label = onlyActive.length === 1 ? "letter" : "letters";
     const verb = onlyActive.length === 1 ? "has" : "have";
-    facts.push(`The ${label} ${joinNames(onlyActive)} ${verb} only active names (no retired names).`);
+    facts.push(
+      `The ${label} ${joinNames(onlyActive)} ${verb} only active names (no retired names).`,
+    );
   }
   if (onlyRetired.length > 0) {
     const label = onlyRetired.length === 1 ? "letter" : "letters";
     const verb = onlyRetired.length === 1 ? "has" : "have";
-    facts.push(`The ${label} ${joinNames(onlyRetired)} ${verb} only retired names (no active names).`);
+    facts.push(
+      `The ${label} ${joinNames(onlyRetired)} ${verb} only retired names (no active names).`,
+    );
   }
 
   // --- Rare starting letters ---

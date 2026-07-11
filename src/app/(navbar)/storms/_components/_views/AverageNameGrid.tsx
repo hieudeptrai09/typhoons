@@ -1,7 +1,7 @@
 import type { Storm } from "@/lib/types";
 import { useMemo } from "react";
-import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import NamesGrid from "../_widgets/grids/NamesGrid";
+import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import { calculateAverage, getGroupedStorms } from "../../_utils/fns";
 
 interface AverageNameGridProps {

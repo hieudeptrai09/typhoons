@@ -1,9 +1,9 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import DefModal from "@/lib/components/DefModal";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import DefModal from "@/lib/components/DefModal";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Switch } from "antd";
 import { useState } from "react";

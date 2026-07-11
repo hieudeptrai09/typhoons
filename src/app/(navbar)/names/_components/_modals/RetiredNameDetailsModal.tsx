@@ -1,8 +1,8 @@
+import DefModal from "@/lib/components/DefModal";
 import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredName, Suggestion } from "@/lib/types";
 import { getRetiredReasonColorClass } from "@/lib/utils/colors";
 import { useState } from "react";

@@ -1,7 +1,11 @@
 import type { Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo } from "react";
-import { calculateAverage, getIntensityFromNumber, sortNamesByFirstYear } from "../../../_utils/fns";
+import {
+  calculateAverage,
+  getIntensityFromNumber,
+  sortNamesByFirstYear,
+} from "../../../_utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface NamesGridProps {
