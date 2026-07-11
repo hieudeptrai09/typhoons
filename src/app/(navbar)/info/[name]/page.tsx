@@ -30,8 +30,21 @@ export default async function InfoPage({ params }: InfoPageProps) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name);
 
-  const result = await getTyphoonNameByName(decodedName);
+  const [result, nameListResult] = await Promise.all([
+    getTyphoonNameByName(decodedName),
+    getNameList(),
+  ]);
+
+  const allNames = [...(nameListResult?.data ?? [])].sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: "base" }),
+  );
+
   return (
-    <InfoPageContent detail={result?.data ?? null} name={decodedName} isError={result === null} />
+    <InfoPageContent
+      detail={result?.data ?? null}
+      name={decodedName}
+      isError={result === null}
+      allNames={allNames}
+    />
   );
 }

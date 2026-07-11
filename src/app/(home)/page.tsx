@@ -1,4 +1,5 @@
 import { getFooterHighlight } from "@/lib/db/api/getFooterHighlight";
+import { TITLE_COMMON } from "@/lib/constants";
 import type { FooterHighlight } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,8 +39,8 @@ const HomePage = async () => {
       <footer className="bg-slate-900" aria-label="Site footer">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-2 px-6 py-4 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-slate-500">
-            <span className="font-semibold text-slate-200">Typhoon Tracker</span> ©{" "}
-            {new Date().getFullYear()} JEBI.SE Malakas • Cá Tra
+            © {new Date().getFullYear()}{" "}
+            <span className="font-semibold text-slate-200">{TITLE_COMMON}</span>
           </p>
 
           <nav

@@ -10,13 +10,14 @@ import {
   getNameStatusColorClass,
   isExternalPosition,
 } from "@/lib/utils/colors";
-import { SearchX } from "lucide-react";
+import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import Link from "next/link";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
   name: string;
   isError?: boolean;
+  allNames?: string[];
 }
 
 const nameNotFound = (name: string) => (
@@ -134,6 +135,35 @@ function NameDetailsSection({
   );
 }
 
+function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex: number }) {
+  if (names.length === 0 || currentIndex === -1) return null;
+
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === names.length - 1;
+  const prevName = names[isFirst ? names.length - 1 : currentIndex - 1];
+  const nextName = names[isLast ? 0 : currentIndex + 1];
+
+  const linkClass =
+    "flex items-center gap-1 rounded-lg border border-sky-600 bg-sky-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-sky-700 hover:bg-sky-700";
+
+  return (
+    <nav
+      className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
+      aria-label="Name pagination"
+    >
+      <a href={`/info/${prevName.toLowerCase()}`} className={linkClass}>
+        <ChevronLeft className="h-4 w-4" />
+        <span className="capitalize">{prevName.toLowerCase()}</span>
+      </a>
+      <span className="text-sm text-muted">{names[currentIndex]}</span>
+      <a href={`/info/${nextName.toLowerCase()}`} className={linkClass}>
+        <span className="capitalize">{nextName.toLowerCase()}</span>
+        <ChevronRight className="h-4 w-4" />
+      </a>
+    </nav>
+  );
+}
+
 function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -152,7 +182,12 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   );
 }
 
-export default function InfoPageContent({ detail, name, isError = false }: InfoPageContentProps) {
+export default function InfoPageContent({
+  detail,
+  name,
+  isError = false,
+  allNames = [],
+}: InfoPageContentProps) {
   if (isError) {
     return <FrownError />;
   }
@@ -177,6 +212,7 @@ export default function InfoPageContent({ detail, name, isError = false }: InfoP
   const correctSpelling = storms[0]?.correctSpelling;
   const metaCountry = nameData?.country ?? storms[0]?.country;
   const metaPosition = nameData?.position ?? storms[0]?.position;
+  const currentIndex = allNames.findIndex((n) => n.toLowerCase() === displayName.toLowerCase());
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
@@ -215,6 +251,8 @@ export default function InfoPageContent({ detail, name, isError = false }: InfoP
         )}
         <StormsSection storms={storms} />
       </div>
+
+      <InfoPagination names={allNames} currentIndex={currentIndex} />
     </div>
   );
 }
