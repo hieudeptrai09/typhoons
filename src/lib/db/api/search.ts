@@ -36,7 +36,7 @@ async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> 
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
     LEFT JOIN storms s ON s.name = tn.name
-    WHERE tn.name LIKE $1
+    WHERE tn.name ILIKE $1
     GROUP BY tn.id, tn.name, tn.position, p.country, tn.isretired, tn.islanguageproblem, tn.note, tn.replacementname
 
     UNION
@@ -53,7 +53,7 @@ async function querySearch(query: string): Promise<ApiResponse<SearchResult[]>> 
         COUNT(s.id) as "stormCount"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
-    WHERE s.name LIKE $2
+    WHERE s.name ILIKE $2
       AND s.name NOT IN (SELECT tn2.name FROM typhoonnames tn2)
     GROUP BY s.name, s.position, p.country
 
