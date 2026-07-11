@@ -6,7 +6,27 @@ import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
-import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
+import {
+  calculateAverage,
+  getEffectiveMonth,
+  getGroupedStorms,
+  getIntensityFromNumber,
+} from "../../_utils/fns";
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 interface AverageListTableProps {
   filter: string;
@@ -19,6 +39,8 @@ interface AverageData {
   country?: string;
   name?: string;
   position?: number;
+  month?: number;
+  monthName?: string;
   count: number;
   average: string;
   avgNumber: number;
@@ -32,6 +54,8 @@ const transformData = (dataMap: Record<string, Storm[]>, filterType: string): Av
     switch (filterType) {
       case "year":
         return { year: parseInt(key), ...base };
+      case "month":
+        return { month: parseInt(key), monthName: MONTH_NAMES[parseInt(key) - 1], ...base };
       case "country":
         return { country: key, ...base };
       case "name":
@@ -112,6 +136,21 @@ const makeColumns = (filterType: string): ColumnsType<AverageData> => {
         avgCol,
       ];
 
+    case "month":
+      return [
+        orderCol,
+        {
+          title: "Month",
+          dataIndex: "monthName",
+          key: "month",
+          width: 120,
+          fixed: "left" as const,
+          sorter: (a, b) => (a.month ?? 0) - (b.month ?? 0),
+        },
+        countCol,
+        avgCol,
+      ];
+
     case "country":
       return [
         orderCol,
@@ -183,10 +222,22 @@ const WIDTH_CLASS: Record<string, string> = {
   name: "max-w-2xl",
   country: "max-w-lg",
   year: "max-w-lg",
+  month: "max-w-lg",
+};
+
+const groupByEffectiveMonth = (stormsData: Storm[]): Record<string, Storm[]> => {
+  const grouped: Record<string, Storm[]> = {};
+  stormsData.forEach((storm) => {
+    const month = getEffectiveMonth(storm);
+    if (month === null) return;
+    (grouped[String(month)] ??= []).push(storm);
+  });
+  return grouped;
 };
 
 const AverageListTable = ({ filter, stormsData, onCellClick }: AverageListTableProps) => {
   const groupedStorms = useMemo(() => {
+    if (filter === "month") return groupByEffectiveMonth(stormsData);
     const filtered =
       filter === "year"
         ? stormsData.filter((s) => parseInt(s.year.toString()) >= 2000)
@@ -195,6 +246,7 @@ const AverageListTable = ({ filter, stormsData, onCellClick }: AverageListTableP
   }, [stormsData, filter]);
 
   const data = transformData(groupedStorms, filter);
+  if (filter === "month") data.sort((a, b) => (a.month ?? 0) - (b.month ?? 0));
 
   return (
     <DataTable<AverageData>
@@ -206,6 +258,8 @@ const AverageListTable = ({ filter, stormsData, onCellClick }: AverageListTableP
         switch (filter) {
           case "year":
             return String(row.year);
+          case "month":
+            return String(row.month);
           case "country":
             return row.country ?? "";
           case "name":
