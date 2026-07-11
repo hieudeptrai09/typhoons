@@ -47,9 +47,10 @@ interface StormRow {
 }
 
 async function queryPositionDetails(position: number): Promise<ApiResponse<PositionDetail | null>> {
-  const posRows = await sql.query<PositionRow[]>("SELECT country FROM positions WHERE id = $1 LIMIT 1", [
-    position,
-  ]);
+  const posRows = await sql.query<PositionRow[]>(
+    "SELECT country FROM positions WHERE id = $1 LIMIT 1",
+    [position],
+  );
 
   const posRow = posRows[0];
   if (!posRow) {

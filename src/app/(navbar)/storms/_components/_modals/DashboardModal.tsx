@@ -1,5 +1,6 @@
+import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, DashboardParams } from "@/lib/types";
-import { Button, Modal, Segmented } from "antd";
+import { Button, Segmented } from "antd";
 import { useState } from "react";
 import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../_utils/dashboardOptions";
 import { isListOnly } from "../../_utils/fns";
@@ -81,16 +82,10 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
   if (!isOpen) return null;
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={480}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
       title={<span className="text-xl font-bold text-muted">Dashboard View</span>}
       footer={[
         <Button key="reset" onClick={handleReset} aria-label="Reset dashboard view settings">
@@ -145,7 +140,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
           />
         </Section>
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

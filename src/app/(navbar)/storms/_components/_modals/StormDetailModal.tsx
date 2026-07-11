@@ -1,7 +1,7 @@
+import DefModal from "@/lib/components/DefModal";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { Modal } from "antd";
 
 export interface StormDetailModalProps extends BaseModalProps {
   title: string;
@@ -20,17 +20,10 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
   const hasMultipleNames = nameGroups.length > 1;
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={448}
-      footer={null}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
       title={<span className="text-2xl font-bold text-muted">{title}</span>}
     >
       <div className="flex flex-col pt-4 pb-px">
@@ -54,7 +47,7 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
           </div>
         ))}
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

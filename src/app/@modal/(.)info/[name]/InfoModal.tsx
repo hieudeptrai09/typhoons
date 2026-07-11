@@ -1,6 +1,7 @@
 "use client";
 
 import CountryFlag from "@/lib/components/CountryFlag";
+import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
@@ -16,10 +17,10 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
-import { Modal, Switch } from "antd";
+import { Switch } from "antd";
 import { Inbox, SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 interface InfoModalProps {
   detail: SearchDetail | null;
@@ -125,66 +126,48 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
     searchParams.get("tab") === "storms" ? "storms" : "details",
   );
 
+  const notFound = !nameData && storms.length === 0;
+
+  let title: ReactNode;
+  let content: ReactNode;
+
   if (isError) {
-    return (
-      <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
-        <FrownError />
-      </Modal>
+    content = <FrownError />;
+  } else if (notFound) {
+    content = <EmptyResults icon={SearchX} description="No typhoon with that name was found." />;
+  } else {
+    const nameStatusColor = getNameStatusColor({
+      isRetired,
+      isLanguageProblem: nameData?.isLanguageProblem ?? 0,
+      isExternal: isExternalPosition(nameData?.position),
+    });
+
+    const detailsContent = nameData ? (
+      <NameDetailsContent name={nameData} />
+    ) : (
+      <EmptyResults icon={Inbox} description="No name details available for this external name." />
     );
-  }
 
-  if (!nameData && storms.length === 0) {
-    return (
-      <Modal open onCancel={() => router.back()} footer={null} width={560} centered destroyOnHidden>
-        <EmptyResults icon={SearchX} description="No typhoon with that name was found." />
-      </Modal>
+    const tabs: Tab<TabType>[] = [
+      { key: "storms", label: `Storms (${storms.length})`, content: <StormsTab storms={storms} /> },
+      { key: "details", label: "Name Details", content: detailsContent },
+    ];
+
+    title = (
+      <div className="flex items-center gap-2">
+        <NameStatusIcon
+          isRetired={isRetired}
+          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+          position={nameData?.position ?? 0}
+          size={24}
+        />
+        <span className="text-2xl font-bold capitalize" style={{ color: nameStatusColor }}>
+          {displayName.toLowerCase()}
+        </span>
+      </div>
     );
-  }
 
-  const nameStatusColor = getNameStatusColor({
-    isRetired,
-    isLanguageProblem: nameData?.isLanguageProblem ?? 0,
-    isExternal: isExternalPosition(nameData?.position),
-  });
-
-  const detailsContent = nameData ? (
-    <NameDetailsContent name={nameData} />
-  ) : (
-    <EmptyResults icon={Inbox} description="No name details available for this external name." />
-  );
-  const stormsContent = <StormsTab storms={storms} />;
-
-  const tabs: Tab<TabType>[] = [
-    { key: "storms", label: `Storms (${storms.length})`, content: stormsContent },
-    { key: "details", label: "Name Details", content: detailsContent },
-  ];
-
-  return (
-    <Modal
-      open
-      onCancel={() => router.back()}
-      footer={null}
-      width={560}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
-      title={
-        <div className="flex items-center gap-2">
-          <NameStatusIcon
-            isRetired={isRetired}
-            isLanguageProblem={nameData?.isLanguageProblem ?? 0}
-            position={nameData?.position ?? 0}
-            size={24}
-          />
-          <span className="text-2xl font-bold capitalize" style={{ color: nameStatusColor }}>
-            {displayName.toLowerCase()}
-          </span>
-        </div>
-      }
-    >
+    content = (
       <div className="pt-4">
         <Tabs
           tabs={tabs}
@@ -194,6 +177,12 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
           idPrefix="info-modal-tab"
         />
       </div>
-    </Modal>
+    );
+  }
+
+  return (
+    <DefModal onClose={() => router.back()} width={560} title={title}>
+      {content}
+    </DefModal>
   );
 }

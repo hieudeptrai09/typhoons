@@ -1,10 +1,9 @@
+import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
-import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { RetiredName } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getRetiredReasonColorClass } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 interface RetiredNamesTableProps {
@@ -82,26 +81,15 @@ const RetiredNamesTable = ({ paginatedData, onNameClick }: RetiredNamesTableProp
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <TableScrollHint>
-        <Table<RetiredName>
-          dataSource={paginatedData}
-          columns={columns}
-          rowKey="id"
-          onRow={(record) =>
-            clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DefTable<RetiredName>
+      maxWidth="max-w-5xl"
+      dataSource={paginatedData}
+      columns={columns}
+      rowKey="id"
+      onRow={(record) =>
+        clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+      }
+    />
   );
 };
 

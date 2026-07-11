@@ -1,5 +1,5 @@
-import { getFooterHighlight } from "@/lib/db/api/getFooterHighlight";
 import { TITLE_COMMON } from "@/lib/constants";
+import { getFooterHighlight } from "@/lib/db/api/getFooterHighlight";
 import type { FooterHighlight } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";

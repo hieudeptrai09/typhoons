@@ -1,14 +1,14 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import TableScrollHint from "@/lib/components/TableScrollHint";
+import DefTable from "@/lib/components/DefTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import NamesGrid from "../_widgets/grids/NamesGrid";
+import StormsGrid from "../_widgets/grids/StormsGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import StormGrid from "../_widgets/StormGrid";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 interface StormsViewProps {
@@ -93,13 +93,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
           isAverageView={false}
           averageValues={averageValues}
         />
-        <StormGrid
-          viewType="storms"
-          onCellClick={onCellClick}
-          stormsData={stormsData}
-          averageValues={null}
-          isClickable
-        />
+        <StormsGrid onCellClick={onCellClick} stormsData={stormsData} isClickable />
       </div>
     );
   }
@@ -108,7 +102,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   if (params.mode === "table") {
     return (
       <div className="flex flex-col gap-6">
-        <StormGrid viewType="names" stormsData={stormsData} onCellClick={onCellClick} />
+        <NamesGrid stormsData={stormsData} onCellClick={onCellClick} />
         <SpecialNamesListDiv
           stormsData={stormsData}
           onNameClick={(name) => onCellClick(name, "name")}
@@ -129,26 +123,15 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <TableScrollHint>
-        <Table<NameData>
-          dataSource={nameData}
-          columns={makeNameColumns()}
-          rowKey="name"
-          onRow={(row) =>
-            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DefTable<NameData>
+      maxWidth="max-w-2xl"
+      dataSource={nameData}
+      columns={makeNameColumns()}
+      rowKey="name"
+      onRow={(row) =>
+        clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+      }
+    />
   );
 };
 

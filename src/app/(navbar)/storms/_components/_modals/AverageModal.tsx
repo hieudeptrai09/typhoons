@@ -1,7 +1,8 @@
+import DefModal from "@/lib/components/DefModal";
 import { INTENSITY_LABEL, SORTING_RANK } from "@/lib/constants";
 import type { BaseModalProps, IntensityType, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { Modal, Popover } from "antd";
+import { Popover } from "antd";
 import { getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 export type AverageModalCriteria = "position" | "country" | "year" | "month" | "name";
@@ -66,17 +67,10 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
     .sort((a, b) => SORTING_RANK[b.intensity] - SORTING_RANK[a.intensity]);
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={448}
-      footer={null}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
       title={<span className="text-2xl font-bold text-muted">{title}</span>}
     >
       <div className="pt-3">
@@ -144,7 +138,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
           </div>
         </div>
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

@@ -1,17 +1,15 @@
+import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
-import TableScrollHint from "@/lib/components/TableScrollHint";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import StormGrid from "../_widgets/StormGrid";
+import HighlightsGrid from "../_widgets/grids/HighlightsGrid";
 import { getHighlights } from "../../_utils/fns";
 
 interface HighlightsViewProps {
   params: DashboardParams;
   stormsData: Storm[];
-  onCellClick: (data: number | string, key: string) => void;
 }
 
 interface HighlightRow {
@@ -82,18 +80,15 @@ const columns: ColumnsType<HighlightRow> = [
   },
 ];
 
-const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps) => {
+const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
   const highlights = getHighlights(stormsData, params.filter);
 
   if (params.mode === "table") {
     return (
-      <StormGrid
-        viewType="highlights"
-        onCellClick={onCellClick}
+      <HighlightsGrid
         stormsData={stormsData}
         highlightedStorms={highlights}
         highlightType={params.filter}
-        isClickable={false}
       />
     );
   }
@@ -108,22 +103,13 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-xl">
-      <TableScrollHint>
-        <Table<HighlightRow>
-          key={params.filter}
-          dataSource={highlightData}
-          columns={columns}
-          rowKey={(r) => `${r.name}-${r.year}`}
-          rowClassName={(_record, index) => (index % 2 === 0 ? "bg-white" : "bg-sky-100")}
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DefTable<HighlightRow>
+      maxWidth="max-w-xl"
+      tableKey={params.filter}
+      dataSource={highlightData}
+      columns={columns}
+      rowKey={(r) => `${r.name}-${r.year}`}
+    />
   );
 };
 

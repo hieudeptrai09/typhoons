@@ -1,10 +1,11 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import DefModal from "@/lib/components/DefModal";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
-import { Modal, Switch } from "antd";
+import { Switch } from "antd";
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { getIntensityFromNumber } from "../../_utils/fns";
@@ -25,17 +26,10 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
   if (!storms || storms.length === 0) return null;
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={512}
-      footer={null}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
       title={
         <span className="text-2xl font-bold" style={titleStyle}>
           {name}
@@ -121,7 +115,7 @@ const NameListModal = ({ isOpen, onClose, name, storms, avgIntensity = 0 }: Name
           </div>
         </div>
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 
