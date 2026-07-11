@@ -2,7 +2,7 @@ import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, DashboardParams } from "@/lib/types";
 import { Button, Segmented } from "antd";
 import { useState } from "react";
-import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../_utils/dashboardOptions";
+import { FILTER_OPTIONS, MODE_OPTIONS, VIEW_OPTIONS } from "../../_utils/dashboardOptions";
 import { isListOnly } from "../../_utils/fns";
 
 interface DashboardModalProps extends BaseModalProps {

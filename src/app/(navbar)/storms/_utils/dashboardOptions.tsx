@@ -54,7 +54,7 @@ export const VIEW_OPTIONS = [
 ];
 
 export const MODE_OPTIONS = [
-  { label: icon(Grid3x3, "Table"), value: "table" },
+  { label: icon(Grid3x3, "Grid"), value: "table" },
   { label: icon(List, "List"), value: "list" },
 ];
 
