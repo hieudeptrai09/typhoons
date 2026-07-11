@@ -1,8 +1,7 @@
-import TableScrollHint from "@/lib/components/TableScrollHint";
+import DataTable from "@/lib/components/DataTable";
 import type { Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import { calculateAverage, getEffectiveMonth, getIntensityFromNumber } from "../../_utils/fns";
@@ -91,30 +90,20 @@ const SeasonView = ({ stormsData, onCellClick }: SeasonViewProps) => {
   );
 
   return (
-    <div className="mx-auto max-w-lg">
-      <TableScrollHint>
-        <Table<SeasonData>
-          dataSource={data}
-          columns={columns}
-          rowKey="month"
-          onRow={(row) =>
-            row.count > 0
-              ? clickableRowProps(`View storms in ${row.monthName}`, () =>
-                  onCellClick(row.month, "monthStart"),
-                )
-              : {}
-          }
-          rowClassName={(record, index) =>
-            `${record.count > 0 ? "cursor-pointer" : "cursor-default"} ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<SeasonData>
+      maxWidth="max-w-lg"
+      dataSource={data}
+      columns={columns}
+      rowKey="month"
+      rowClickable={(row) => row.count > 0}
+      onRow={(row) =>
+        row.count > 0
+          ? clickableRowProps(`View storms in ${row.monthName}`, () =>
+              onCellClick(row.month, "monthStart"),
+            )
+          : {}
+      }
+    />
   );
 };
 

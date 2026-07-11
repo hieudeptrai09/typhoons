@@ -1,10 +1,9 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import TableScrollHint from "@/lib/components/TableScrollHint";
+import DataTable from "@/lib/components/DataTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
@@ -129,26 +128,15 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   }));
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <TableScrollHint>
-        <Table<NameData>
-          dataSource={nameData}
-          columns={makeNameColumns()}
-          rowKey="name"
-          onRow={(row) =>
-            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<NameData>
+      maxWidth="max-w-2xl"
+      dataSource={nameData}
+      columns={makeNameColumns()}
+      rowKey="name"
+      onRow={(row) =>
+        clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+      }
+    />
   );
 };
 

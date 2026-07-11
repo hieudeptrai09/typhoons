@@ -1,9 +1,8 @@
+import DataTable from "@/lib/components/DataTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
-import TableScrollHint from "@/lib/components/TableScrollHint";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import StormGrid from "../_widgets/StormGrid";
 import { getHighlights } from "../../_utils/fns";
@@ -108,22 +107,13 @@ const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps
   }));
 
   return (
-    <div className="mx-auto max-w-xl">
-      <TableScrollHint>
-        <Table<HighlightRow>
-          key={params.filter}
-          dataSource={highlightData}
-          columns={columns}
-          rowKey={(r) => `${r.name}-${r.year}`}
-          rowClassName={(_record, index) => (index % 2 === 0 ? "bg-white" : "bg-sky-100")}
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<HighlightRow>
+      maxWidth="max-w-xl"
+      tableKey={params.filter}
+      dataSource={highlightData}
+      columns={columns}
+      rowKey={(r) => `${r.name}-${r.year}`}
+    />
   );
 };
 

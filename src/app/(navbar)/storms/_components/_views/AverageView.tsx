@@ -1,10 +1,9 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import TableScrollHint from "@/lib/components/TableScrollHint";
+import DataTable from "@/lib/components/DataTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo, useState } from "react";
 import SpecialButtons from "../_widgets/SpecialButtons";
@@ -299,44 +298,33 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   };
 
   return (
-    <div className={`mx-auto ${widthClass[params.filter] ?? "max-w-2xl"}`}>
-      <TableScrollHint>
-        <Table<AverageData>
-          key={params.filter}
-          dataSource={data}
-          columns={makeColumns(params.filter)}
-          rowKey={(row) => {
-            switch (params.filter) {
-              case "year":
-                return String(row.year);
-              case "country":
-                return row.country ?? "";
-              case "name":
-                return `${row.name}-${row.country}`;
-              case "position":
-                return String(row.position);
-              default:
-                return String(Math.random());
-            }
-          }}
-          onRow={(row) => {
-            const value = row[params.filter as keyof AverageData];
-            if (value === undefined) return {};
-            return clickableRowProps(`View details for ${value}`, () =>
-              onCellClick(value as number | string, params.filter),
-            );
-          }}
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<AverageData>
+      maxWidth={widthClass[params.filter] ?? "max-w-2xl"}
+      tableKey={params.filter}
+      dataSource={data}
+      columns={makeColumns(params.filter)}
+      rowKey={(row) => {
+        switch (params.filter) {
+          case "year":
+            return String(row.year);
+          case "country":
+            return row.country ?? "";
+          case "name":
+            return `${row.name}-${row.country}`;
+          case "position":
+            return String(row.position);
+          default:
+            return String(Math.random());
+        }
+      }}
+      onRow={(row) => {
+        const value = row[params.filter as keyof AverageData];
+        if (value === undefined) return {};
+        return clickableRowProps(`View details for ${value}`, () =>
+          onCellClick(value as number | string, params.filter),
+        );
+      }}
+    />
   );
 };
 

@@ -1,16 +1,16 @@
 "use client";
 
 import CountryFlag from "@/lib/components/CountryFlag";
+import DataTable from "@/lib/components/DataTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
-import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { SearchResult } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
-import { Empty, Table } from "antd";
+import { Empty } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, SearchX } from "lucide-react";
 import Link from "next/link";
@@ -139,30 +139,21 @@ export default function SearchPageContent({
               {count} result{count !== 1 ? "s" : ""} found
             </div>
             <div aria-describedby="search-result-count">
-              <TableScrollHint>
-                <Table<SearchResult>
-                  dataSource={results}
-                  columns={columns}
-                  rowKey={(record) =>
-                    record.id !== null ? String(record.id) : `storm-${record.name}`
-                  }
-                  onRow={(record) =>
-                    clickableRowProps(`View details for ${record.name}`, () =>
-                      router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
-                        scroll: false,
-                      }),
-                    )
-                  }
-                  rowClassName={(_record, index) =>
-                    `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-                  }
-                  pagination={false}
-                  size="large"
-                  className="typhoon-table"
-                  scroll={{ x: "max-content" }}
-                  sticky
-                />
-              </TableScrollHint>
+              <DataTable<SearchResult>
+                maxWidth="max-w-4xl"
+                dataSource={results}
+                columns={columns}
+                rowKey={(record) =>
+                  record.id !== null ? String(record.id) : `storm-${record.name}`
+                }
+                onRow={(record) =>
+                  clickableRowProps(`View details for ${record.name}`, () =>
+                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
+                      scroll: false,
+                    }),
+                  )
+                }
+              />
             </div>
           </>
         )}

@@ -1,12 +1,11 @@
+import DataTable from "@/lib/components/DataTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
-import TableScrollHint from "@/lib/components/TableScrollHint";
 import type { TyphoonName } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
@@ -131,26 +130,15 @@ const FilteredNamesTable = ({
   }
 
   return (
-    <div className={`mx-auto ${showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}`}>
-      <TableScrollHint>
-        <Table<TyphoonName>
-          dataSource={filteredNames}
-          columns={tableColumns}
-          rowKey="id"
-          onRow={(record) =>
-            clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<TyphoonName>
+      maxWidth={showImageAndDescription ? "max-w-8xl" : "max-w-4xl"}
+      dataSource={filteredNames}
+      columns={tableColumns}
+      rowKey="id"
+      onRow={(record) =>
+        clickableRowProps(`View details for ${record.name}`, () => onNameClick(record))
+      }
+    />
   );
 };
 

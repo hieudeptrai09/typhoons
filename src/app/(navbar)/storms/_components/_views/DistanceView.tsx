@@ -1,10 +1,9 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import TableScrollHint from "@/lib/components/TableScrollHint";
+import DataTable from "@/lib/components/DataTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import SpecialButtons from "../_widgets/SpecialButtons";
@@ -191,29 +190,18 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
 
     return (
-      <div className="mx-auto max-w-2xl">
-        <TableScrollHint>
-          <Table<PositionRow>
-            key="position"
-            dataSource={data}
-            columns={positionColumns}
-            rowKey="position"
-            onRow={(row) =>
-              clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
-                onCellClick(row.position, "position"),
-              )
-            }
-            rowClassName={(_record, index) =>
-              `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-            }
-            pagination={false}
-            size="large"
-            className="typhoon-table"
-            scroll={{ x: "max-content" }}
-            sticky
-          />
-        </TableScrollHint>
-      </div>
+      <DataTable<PositionRow>
+        maxWidth="max-w-2xl"
+        tableKey="position"
+        dataSource={data}
+        columns={positionColumns}
+        rowKey="position"
+        onRow={(row) =>
+          clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
+            onCellClick(row.position, "position"),
+          )
+        }
+      />
     );
   }
 
@@ -230,27 +218,16 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   });
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <TableScrollHint>
-        <Table<NameRow>
-          key="name"
-          dataSource={data}
-          columns={nameColumns}
-          rowKey="name"
-          onRow={(row) =>
-            clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
-          }
-          rowClassName={(_record, index) =>
-            `cursor-pointer ${index % 2 === 0 ? "bg-white" : "bg-sky-100"}`
-          }
-          pagination={false}
-          size="large"
-          className="typhoon-table"
-          scroll={{ x: "max-content" }}
-          sticky
-        />
-      </TableScrollHint>
-    </div>
+    <DataTable<NameRow>
+      maxWidth="max-w-2xl"
+      tableKey="name"
+      dataSource={data}
+      columns={nameColumns}
+      rowKey="name"
+      onRow={(row) =>
+        clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+      }
+    />
   );
 };
 
