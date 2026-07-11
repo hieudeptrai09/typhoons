@@ -16,18 +16,10 @@ interface DistanceViewProps {
   onCellClick: (data: number | string, key: string) => void;
 }
 
-interface PositionRow {
+interface DistanceRow {
   position: number;
+  name?: string;
   country: string;
-  count: number;
-  distanceNumber: number;
-  distance: string;
-}
-
-interface NameRow {
-  name: string;
-  country: string;
-  position: number;
   count: number;
   distanceNumber: number;
   distance: string;
@@ -48,92 +40,95 @@ const DistanceCell = ({
   </span>
 );
 
-const orderCol = <T,>(): ColumnsType<T>[number] => ({
-  title: "#",
-  key: "order",
-  width: 52,
-  fixed: "left" as const,
-  render: (_: unknown, __: T, index: number) => (
-    <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
-  ),
-});
-
-const positionColumns: ColumnsType<PositionRow> = [
-  orderCol<PositionRow>(),
-  {
-    title: "Position",
-    dataIndex: "position",
-    key: "position",
-    width: 100,
+const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceRow> => {
+  const orderCol: ColumnsType<DistanceRow>[number] = {
+    title: "#",
+    key: "order",
+    width: 52,
     fixed: "left" as const,
-    sorter: (a, b) => a.position - b.position,
-    render: (_: unknown, row: PositionRow) => <span>{getPositionTitle(row.position)}</span>,
-  },
-  {
-    title: "Contributed By",
-    dataIndex: "country",
-    key: "country",
-    sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: PositionRow) => <CountryFlag country={row.country} />,
-  },
-  {
-    title: "Storm Count",
-    dataIndex: "count",
-    key: "count",
-    sorter: (a, b) => a.count - b.count,
-  },
-  {
-    title: "Avg Gap (years)",
-    dataIndex: "distance",
-    key: "distance",
-    sorter: (a, b) => a.distanceNumber - b.distanceNumber,
-    render: (_: unknown, row: PositionRow) => (
-      <DistanceCell distanceNumber={row.distanceNumber} distance={row.distance} />
+    render: (_: unknown, __: DistanceRow, index: number) => (
+      <span className="text-sm font-semibold text-sky-700">{index + 1}</span>
     ),
-  },
-];
+  };
 
-const nameColumns: ColumnsType<NameRow> = [
-  orderCol<NameRow>(),
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    width: 100,
-    fixed: "left" as const,
-    sorter: (a, b) => a.name.localeCompare(b.name),
-    render: (_: unknown, row: NameRow) => <span className="font-semibold">{row.name}</span>,
-  },
-  {
-    title: "Contributed By",
-    dataIndex: "country",
-    key: "country",
-    sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: NameRow) => <CountryFlag country={row.country} />,
-  },
-  {
+  const positionCol: ColumnsType<DistanceRow>[number] = {
     title: "Position",
     dataIndex: "position",
     key: "position",
     sorter: (a, b) => a.position - b.position,
-    render: (_: unknown, row: NameRow) => <span>{getPositionTitle(row.position)}</span>,
-  },
-  {
+    render: (_: unknown, row: DistanceRow) => <span>{getPositionTitle(row.position)}</span>,
+  };
+
+  const countryCol: ColumnsType<DistanceRow>[number] = {
+    title: "Contributed By",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => a.country.localeCompare(b.country),
+    render: (_: unknown, row: DistanceRow) => <CountryFlag country={row.country} />,
+  };
+
+  const countCol: ColumnsType<DistanceRow>[number] = {
     title: "Storm Count",
     dataIndex: "count",
     key: "count",
     sorter: (a, b) => a.count - b.count,
-  },
-  {
+  };
+
+  const distanceCol: ColumnsType<DistanceRow>[number] = {
     title: "Avg Gap (years)",
     dataIndex: "distance",
     key: "distance",
     sorter: (a, b) => a.distanceNumber - b.distanceNumber,
-    render: (_: unknown, row: NameRow) => (
+    render: (_: unknown, row: DistanceRow) => (
       <DistanceCell distanceNumber={row.distanceNumber} distance={row.distance} />
     ),
-  },
-];
+  };
+
+  if (filterType === "name") {
+    return [
+      orderCol,
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        width: 100,
+        fixed: "left" as const,
+        sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
+        render: (_: unknown, row: DistanceRow) => <span className="font-semibold">{row.name}</span>,
+      },
+      countryCol,
+      positionCol,
+      countCol,
+      distanceCol,
+    ];
+  }
+
+  return [
+    orderCol,
+    { ...positionCol, width: 100, fixed: "left" as const },
+    countryCol,
+    countCol,
+    distanceCol,
+  ];
+};
+
+const buildRows = (
+  filterType: "position" | "name",
+  distanceMap: Record<string, number>,
+  groupedStorms: Record<string, Storm[]>,
+): DistanceRow[] =>
+  Object.entries(distanceMap).map(([key, dist]) => {
+    const storms = groupedStorms[key] || [];
+    const base = {
+      country: storms[0]?.country ?? "",
+      count: storms.length,
+      distanceNumber: dist,
+      distance: formatDistance(dist),
+    };
+    return filterType === "name"
+      ? { name: key, position: storms[0]?.position ?? 0, ...base }
+      : { position: parseInt(key), ...base };
+  });
 
 const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) => {
   const filterType = (params.filter || "position") as "position" | "name";
@@ -157,6 +152,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     return result;
   }, [distanceMap, filterType]);
 
+  // position + table → special buttons + distance grid
   if (params.mode === "table" && filterType === "position") {
     return (
       <div>
@@ -176,55 +172,24 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     );
   }
 
-  if (filterType === "position") {
-    const data: PositionRow[] = Object.entries(distanceMap).map(([key, dist]) => {
-      const storms = groupedStorms[key] || [];
-      return {
-        position: parseInt(key),
-        country: storms[0]?.country ?? "",
-        count: storms.length,
-        distanceNumber: dist,
-        distance: formatDistance(dist),
-      };
-    });
-
-    return (
-      <DefTable<PositionRow>
-        maxWidth="max-w-2xl"
-        tableKey="position"
-        dataSource={data}
-        columns={positionColumns}
-        rowKey="position"
-        onRow={(row) =>
-          clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
-            onCellClick(row.position, "position"),
-          )
-        }
-      />
-    );
-  }
-
-  const data: NameRow[] = Object.entries(distanceMap).map(([key, dist]) => {
-    const storms = groupedStorms[key] || [];
-    return {
-      name: key,
-      country: storms[0]?.country ?? "",
-      position: storms[0]?.position ?? 0,
-      count: storms.length,
-      distanceNumber: dist,
-      distance: formatDistance(dist),
-    };
-  });
+  // position / name list → sortable distance table
+  const data = buildRows(filterType, distanceMap, groupedStorms);
 
   return (
-    <DefTable<NameRow>
+    <DefTable<DistanceRow>
       maxWidth="max-w-2xl"
-      tableKey="name"
+      tableKey={filterType}
       dataSource={data}
-      columns={nameColumns}
-      rowKey="name"
+      columns={makeColumns(filterType)}
+      rowKey={(row) => (filterType === "name" ? (row.name ?? "") : String(row.position))}
       onRow={(row) =>
-        clickableRowProps(`View details for ${row.name}`, () => onCellClick(row.name, "name"))
+        filterType === "name"
+          ? clickableRowProps(`View details for ${row.name}`, () =>
+              onCellClick(row.name ?? "", "name"),
+            )
+          : clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
+              onCellClick(row.position, "position"),
+            )
       }
     />
   );
