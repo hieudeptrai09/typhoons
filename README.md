@@ -47,4 +47,4 @@ Other scripts: `npm run build`, `npm run start`, `npm run lint`, `npm run format
 
 ## Author
 
-Made with 🌀 by **To Ngoc Hieu** ([@hieudeptrai09](https://github.com/hieudeptrai09)).
+Made with 🌀 by **Cá Tra** ([@hieudeptrai09](https://github.com/hieudeptrai09)).
