@@ -13,7 +13,6 @@ interface DefModalProps {
   footer?: ReactNode;
   /** antd Modal lifecycle callback, e.g. to reset form state when the modal opens. */
   afterOpenChange?: (open: boolean) => void;
-  ariaLabel?: string;
   children: ReactNode;
 }
 
@@ -29,7 +28,6 @@ const DefModal = ({
   width = 480,
   footer = null,
   afterOpenChange,
-  ariaLabel,
   children,
 }: DefModalProps) => (
   <Modal
@@ -40,7 +38,6 @@ const DefModal = ({
     centered
     destroyOnHidden
     afterOpenChange={afterOpenChange}
-    aria-label={ariaLabel}
     styles={{
       header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
       body: { maxHeight: "70vh", overflowY: "auto" },

@@ -17,7 +17,6 @@ const NameDetailsModal = ({ isOpen, onClose, name, hideReplacedBy }: NameDetails
       open={isOpen}
       onClose={onClose}
       width={560}
-      ariaLabel={`Details for ${name.name}`}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
       <div className="pt-4">
