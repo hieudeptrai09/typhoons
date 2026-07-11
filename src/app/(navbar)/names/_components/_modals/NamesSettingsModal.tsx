@@ -1,5 +1,6 @@
+import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps } from "@/lib/types";
-import { Button, Modal, Radio, Switch } from "antd";
+import { Button, Radio, Switch } from "antd";
 import { Paintbrush } from "lucide-react";
 import { useState } from "react";
 
@@ -42,12 +43,11 @@ const NamesSettingsModal = ({
   const colorfulDisabled = !isGrid || !draftSettings.showHistory;
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={400}
-      centered
-      destroyOnHidden
+      bodyStyle={{}}
       afterOpenChange={(open) => {
         if (open) {
           setDraftMode(displayMode);
@@ -55,9 +55,6 @@ const NamesSettingsModal = ({
         }
       }}
       title={<span className="text-xl font-bold text-muted">Display Settings</span>}
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-      }}
       footer={[
         <Button key="cancel" onClick={onClose}>
           Cancel
@@ -152,7 +149,7 @@ const NamesSettingsModal = ({
           </div>
         </div>
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

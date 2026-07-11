@@ -1,7 +1,7 @@
+import DefModal from "@/lib/components/DefModal";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import type { BaseModalProps, RetiredName, TyphoonName } from "@/lib/types";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
-import { Modal } from "antd";
 
 // It's used to a part of modal @modal/(.)info/name, but the owner forced to divorce and go back to here.
 interface NameDetailsModalProps extends BaseModalProps {
@@ -13,24 +13,17 @@ const NameDetailsModal = ({ isOpen, onClose, name, hideReplacedBy }: NameDetails
   const titleColorClass = getNameStatusColorClass(name);
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={560}
-      footer={null}
-      centered
-      destroyOnHidden
-      aria-label={`Details for ${name.name}`}
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
+      ariaLabel={`Details for ${name.name}`}
       title={<span className={`text-2xl font-bold ${titleColorClass}`}>{name.name}</span>}
     >
       <div className="pt-4">
         <NameDetailsContent name={name} hideReplacedBy={hideReplacedBy} />
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

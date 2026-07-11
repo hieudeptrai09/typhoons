@@ -1,6 +1,7 @@
+import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, FilterParams } from "@/lib/types";
 import { toArr, toOpts, toStr } from "@/lib/utils/fns";
-import { Button, Form, Input, InputNumber, Modal, Radio, Select } from "antd";
+import { Button, Form, Input, InputNumber, Radio, Select } from "antd";
 
 export interface ListFilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;
@@ -45,12 +46,10 @@ const ListFilterModal = ({
   };
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={480}
-      centered
-      destroyOnHidden
       afterOpenChange={(open) => {
         if (open) {
           form.setFieldsValue({
@@ -62,10 +61,6 @@ const ListFilterModal = ({
             status: showHistory ? initialFilters.status || "" : "current",
           });
         }
-      }}
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
       }}
       title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
@@ -130,7 +125,7 @@ const ListFilterModal = ({
           </Form.Item>
         )}
       </Form>
-    </Modal>
+    </DefModal>
   );
 };
 

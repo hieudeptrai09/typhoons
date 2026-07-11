@@ -1,3 +1,4 @@
+import DefModal from "@/lib/components/DefModal";
 import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
@@ -5,7 +6,7 @@ import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { BaseModalProps, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
-import { Button, Modal } from "antd";
+import { Button } from "antd";
 import { useState } from "react";
 
 // It's used to a part of modal @modal/(.)positions/[position], but the owner forced to divorce and go back to here.
@@ -63,20 +64,13 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
   };
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={() => {
+      onClose={() => {
         setExpandedState(null);
         onClose();
       }}
       width={480}
-      footer={null}
-      centered
-      destroyOnHidden
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
-      }}
       title={<span className="text-2xl font-bold text-muted">{positionTitle}</span>}
     >
       <div className="pt-4">
@@ -165,7 +159,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
           </div>
         )}
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 

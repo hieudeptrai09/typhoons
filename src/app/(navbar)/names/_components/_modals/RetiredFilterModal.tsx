@@ -1,6 +1,7 @@
+import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredFilterParams } from "@/lib/types";
 import { toArr, toOpts, toStr } from "@/lib/utils/fns";
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 
@@ -46,12 +47,10 @@ const RetiredFilterModal = ({
   };
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={480}
-      centered
-      destroyOnHidden
       afterOpenChange={(open) => {
         if (open) {
           form.setFieldsValue({
@@ -62,10 +61,6 @@ const RetiredFilterModal = ({
             position: initialFilters.position ? Number(initialFilters.position) : undefined,
           });
         }
-      }}
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { maxHeight: "70vh", overflowY: "auto" },
       }}
       title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
@@ -121,7 +116,7 @@ const RetiredFilterModal = ({
           <Select mode="multiple" placeholder="All Reasons" options={REASON_OPTIONS} allowClear />
         </Form.Item>
       </Form>
-    </Modal>
+    </DefModal>
   );
 };
 

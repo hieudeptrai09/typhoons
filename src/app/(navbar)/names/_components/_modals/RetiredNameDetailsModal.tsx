@@ -2,9 +2,9 @@ import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredName, Suggestion } from "@/lib/types";
 import { getRetiredReasonColorClass } from "@/lib/utils/colors";
-import { Modal } from "antd";
 import { useState } from "react";
 import SuggestionCard from "../_widgets/SuggestionCard";
 
@@ -70,13 +70,11 @@ const RetiredNameDetailsModal = ({
   ];
 
   return (
-    <Modal
+    <DefModal
       open={isOpen}
-      onCancel={onClose}
+      onClose={onClose}
       width={600}
-      footer={null}
-      centered
-      destroyOnHidden
+      bodyStyle={{ height: "70vh", overflowY: "auto" }}
       title={
         <span
           className={`text-2xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
@@ -84,10 +82,6 @@ const RetiredNameDetailsModal = ({
           {selectedName.name}
         </span>
       }
-      styles={{
-        header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-        body: { height: "70vh", overflowY: "auto" },
-      }}
     >
       <div className="pt-4">
         <Tabs
@@ -98,7 +92,7 @@ const RetiredNameDetailsModal = ({
           idPrefix="tabpanel"
         />
       </div>
-    </Modal>
+    </DefModal>
   );
 };
 
