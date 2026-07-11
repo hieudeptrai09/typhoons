@@ -47,7 +47,6 @@ const NamesSettingsModal = ({
       open={isOpen}
       onClose={onClose}
       width={400}
-      bodyStyle={{}}
       afterOpenChange={(open) => {
         if (open) {
           setDraftMode(displayMode);

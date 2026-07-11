@@ -74,7 +74,6 @@ const RetiredNameDetailsModal = ({
       open={isOpen}
       onClose={onClose}
       width={600}
-      bodyStyle={{ height: "70vh", overflowY: "auto" }}
       title={
         <span
           className={`text-2xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
