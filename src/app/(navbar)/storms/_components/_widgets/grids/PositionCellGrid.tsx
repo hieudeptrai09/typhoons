@@ -1,7 +1,7 @@
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { Storm } from "@/lib/types";
+import { onEnterKeyDown } from "@/lib/utils/a11y";
 import type { ReactNode } from "react";
-import GridCell from "./GridCell";
 
 export interface CellRender {
   content: ReactNode;
@@ -11,7 +11,7 @@ export interface CellRender {
 
 interface PositionCellGridProps {
   stormsData: Storm[];
-  /** Which GridCell styling variant to use (drives the storm-name overlay). */
+  /** Which styling variant to use (the storm-name overlay is hidden for "highlights"). */
   gridCellViewType: "storms" | "average" | "highlights";
   /** Produces the content, background class, and clickability for a position's cell. */
   renderCell: (position: number) => CellRender;
@@ -27,8 +27,8 @@ const getStormNamesForPosition = (stormsData: Storm[], position: number): string
 
 /**
  * Thin grid shell shared by every storms/average/distance/name/highlight grid.
- * It wires PositionGrid to GridCell and the storm-name overlay; each variant
- * supplies only its per-cell content via `renderCell`.
+ * It wires PositionGrid to the per-cell `<td>` (a11y, hover, storm-name overlay);
+ * each variant supplies only its cell content via `renderCell`.
  */
 const PositionCellGrid = ({
   stormsData,
@@ -41,17 +41,37 @@ const PositionCellGrid = ({
     renderCell={(position, _row, col) => {
       const { content, className, clickable } = renderCell(position);
       const stormNames = getStormNamesForPosition(stormsData, position);
+      const showOverlay = gridCellViewType !== "highlights" && stormNames.length > 0;
+
+      const handleClick = () => {
+        if (clickable) onPositionClick?.(position);
+      };
 
       return (
-        <GridCell
+        <td
           key={col}
-          onClick={() => onPositionClick?.(position)}
-          content={content}
-          className={className}
-          isClickable={clickable}
-          stormNames={stormNames}
-          viewType={gridCellViewType}
-        />
+          className={`group relative border-2 border-stone-200 p-2 ${
+            clickable ? "cursor-pointer hover:bg-stone-200" : "cursor-default"
+          } ${className}`}
+          onClick={handleClick}
+          onKeyDown={clickable ? onEnterKeyDown(handleClick) : undefined}
+          role={clickable ? "button" : undefined}
+          tabIndex={clickable ? 0 : undefined}
+          aria-label={stormNames.length > 0 ? `View storms: ${stormNames.join(", ")}` : undefined}
+          title={showOverlay ? stormNames.join(", ") : ""}
+        >
+          {showOverlay && (
+            <div
+              className="absolute top-0 text-[7px] text-transparent select-none pointer-events-none"
+              aria-hidden="true"
+            >
+              {stormNames.join(", ")}
+            </div>
+          )}
+          <div className="relative z-2 flex min-h-16 w-full items-center justify-center">
+            {content}
+          </div>
+        </td>
       );
     }}
   />
