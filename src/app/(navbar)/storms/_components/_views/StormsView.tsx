@@ -7,7 +7,8 @@ import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import StormGrid from "../_widgets/StormGrid";
+import NamesGrid from "../_widgets/grids/NamesGrid";
+import StormsGrid from "../_widgets/grids/StormsGrid";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 interface StormsViewProps {
@@ -92,13 +93,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
           isAverageView={false}
           averageValues={averageValues}
         />
-        <StormGrid
-          viewType="storms"
-          onCellClick={onCellClick}
-          stormsData={stormsData}
-          averageValues={null}
-          isClickable
-        />
+        <StormsGrid onCellClick={onCellClick} stormsData={stormsData} isClickable />
       </div>
     );
   }
@@ -107,7 +102,7 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
   if (params.mode === "table") {
     return (
       <div className="flex flex-col gap-6">
-        <StormGrid viewType="names" stormsData={stormsData} onCellClick={onCellClick} />
+        <NamesGrid stormsData={stormsData} onCellClick={onCellClick} />
         <SpecialNamesListDiv
           stormsData={stormsData}
           onNameClick={(name) => onCellClick(name, "name")}

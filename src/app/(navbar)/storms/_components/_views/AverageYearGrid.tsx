@@ -1,6 +1,6 @@
 import type { Storm } from "@/lib/types";
 import { useState } from "react";
-import StormGrid from "../_widgets/StormGrid";
+import YearHighlightsGrid from "../_widgets/grids/YearHighlightsGrid";
 import { SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface AverageYearGridProps {
@@ -36,8 +36,7 @@ const AverageYearGrid = ({ stormsData, onCellClick }: AverageYearGridProps) => {
           );
         })}
       </div>
-      <StormGrid
-        viewType="yearHighlights"
+      <YearHighlightsGrid
         stormsData={stormsData}
         onCellClick={onCellClick}
         onYearHover={setHoveredYear}

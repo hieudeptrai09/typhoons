@@ -156,13 +156,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
               />
             );
           case "highlights":
-            return (
-              <HighlightsView
-                params={currentParams}
-                stormsData={stormsData}
-                onCellClick={handleCellClick}
-              />
-            );
+            return <HighlightsView params={currentParams} stormsData={stormsData} />;
           case "average":
             return (
               <AverageView

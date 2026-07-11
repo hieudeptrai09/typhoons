@@ -7,7 +7,7 @@ import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import SpecialButtons from "../_widgets/SpecialButtons";
-import StormGrid from "../_widgets/StormGrid";
+import DistanceGrid from "../_widgets/grids/DistanceGrid";
 import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
 
 interface DistanceViewProps {
@@ -166,8 +166,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           averageValues={null}
           distanceValues={distanceValuesForGrid}
         />
-        <StormGrid
-          viewType="distance"
+        <DistanceGrid
           onCellClick={onCellClick}
           stormsData={stormsData}
           distanceValues={distanceValuesForGrid}

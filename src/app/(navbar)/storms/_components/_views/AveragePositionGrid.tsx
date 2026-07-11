@@ -1,6 +1,6 @@
 import type { Storm } from "@/lib/types";
 import SpecialButtons from "../_widgets/SpecialButtons";
-import StormGrid from "../_widgets/StormGrid";
+import AverageGrid from "../_widgets/grids/AverageGrid";
 
 interface AveragePositionGridProps {
   stormsData: Storm[];
@@ -15,8 +15,7 @@ const AveragePositionGrid = ({
 }: AveragePositionGridProps) => (
   <div>
     <SpecialButtons onCellClick={onCellClick} isAverageView averageValues={averageValues} />
-    <StormGrid
-      viewType="average"
+    <AverageGrid
       onCellClick={onCellClick}
       stormsData={stormsData}
       averageValues={averageValues}

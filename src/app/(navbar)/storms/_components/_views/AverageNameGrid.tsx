@@ -1,7 +1,7 @@
 import type { Storm } from "@/lib/types";
 import { useMemo } from "react";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import StormGrid from "../_widgets/StormGrid";
+import NamesGrid from "../_widgets/grids/NamesGrid";
 import { calculateAverage, getGroupedStorms } from "../../_utils/fns";
 
 interface AverageNameGridProps {
@@ -20,8 +20,7 @@ const AverageNameGrid = ({ stormsData, onCellClick }: AverageNameGridProps) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <StormGrid
-        viewType="names"
+      <NamesGrid
         stormsData={stormsData}
         onCellClick={onCellClick}
         nameAverageValues={nameAverageValues}

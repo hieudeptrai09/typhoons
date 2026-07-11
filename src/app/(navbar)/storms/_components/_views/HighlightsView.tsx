@@ -4,13 +4,12 @@ import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
-import StormGrid from "../_widgets/StormGrid";
+import HighlightsGrid from "../_widgets/grids/HighlightsGrid";
 import { getHighlights } from "../../_utils/fns";
 
 interface HighlightsViewProps {
   params: DashboardParams;
   stormsData: Storm[];
-  onCellClick: (data: number | string, key: string) => void;
 }
 
 interface HighlightRow {
@@ -81,18 +80,15 @@ const columns: ColumnsType<HighlightRow> = [
   },
 ];
 
-const HighlightsView = ({ params, stormsData, onCellClick }: HighlightsViewProps) => {
+const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
   const highlights = getHighlights(stormsData, params.filter);
 
   if (params.mode === "table") {
     return (
-      <StormGrid
-        viewType="highlights"
-        onCellClick={onCellClick}
+      <HighlightsGrid
         stormsData={stormsData}
         highlightedStorms={highlights}
         highlightType={params.filter}
-        isClickable={false}
       />
     );
   }
