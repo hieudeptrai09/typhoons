@@ -1,3 +1,4 @@
+import CountryFlag from "@/lib/components/CountryFlag";
 import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
@@ -17,6 +18,7 @@ interface HighlightRow {
   year: number;
   intensity: IntensityType;
   position: number;
+  country: string;
   monthStart?: number;
   isFromPrevYear?: number;
 }
@@ -72,6 +74,13 @@ const columns: ColumnsType<HighlightRow> = [
     render: (_: unknown, record: HighlightRow) => <IntensityBadge intensity={record.intensity} />,
   },
   {
+    title: "Contributed By",
+    dataIndex: "country",
+    key: "country",
+    sorter: (a, b) => a.country.localeCompare(b.country),
+    render: (_: unknown, row: HighlightRow) => <CountryFlag country={row.country} />,
+  },
+  {
     title: "Position",
     dataIndex: "position",
     key: "position",
@@ -98,13 +107,14 @@ const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
     year: s.year,
     intensity: s.intensity,
     position: s.position,
+    country: s.country,
     monthStart: s.monthStart,
     isFromPrevYear: s.isFromPrevYear,
   }));
 
   return (
     <DefTable<HighlightRow>
-      maxWidth="max-w-xl"
+      maxWidth="max-w-3xl"
       tableKey={params.filter}
       dataSource={highlightData}
       columns={columns}
