@@ -1,5 +1,5 @@
 const CACHE_NAME = "typhoons-v1";
-const PRECACHE_URLS = ["/", "/favicon-96x96.png", "/favicon.svg", "/logo.png"];
+const PRECACHE_URLS = ["/", "/icon.png", "/logo.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
