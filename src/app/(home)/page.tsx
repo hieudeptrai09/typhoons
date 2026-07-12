@@ -13,7 +13,6 @@ const HomePage = async () => {
   const result = await getFooterHighlight();
   const highlight = result?.data ?? FALLBACK_HIGHLIGHT;
   const isActive = highlight.status === "active";
-  // Positions run 1–140; an active storm can sit outside that range, so hide it there.
   const showPosition = highlight.position >= 1 && highlight.position <= 140;
 
   return (
@@ -34,7 +33,7 @@ const HomePage = async () => {
 
         <div className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 font-medium shadow-sm ${
+            className={`inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 shadow-sm ${
               isActive ? "text-red-600" : "text-blue-600"
             }`}
           >
@@ -48,7 +47,7 @@ const HomePage = async () => {
           {/* Plain <a> forces a hard navigation, bypassing the @modal/(.)info interceptor */}
           <a
             href={`/info/${encodeURIComponent(highlight.name.toLowerCase())}`}
-            className="font-semibold text-blue-700 transition-colors hover:text-blue-900"
+            className="font-semibold text-purple-700 transition-colors hover:text-purple-800"
           >
             {capitalize(highlight.name.toLowerCase())}
           </a>
@@ -56,7 +55,7 @@ const HomePage = async () => {
           {showPosition && (
             <Link
               href={`/positions/${highlight.position}`}
-              className="text-teal-700 transition-colors hover:text-teal-900"
+              className="text-teal-700 transition-colors hover:text-teal-800"
             >
               #{highlight.position}
             </Link>
