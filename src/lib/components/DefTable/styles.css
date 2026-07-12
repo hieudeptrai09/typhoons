@@ -1,0 +1,59 @@
+.typhoon-table .ant-table-tbody td {
+  color: var(--text-muted) !important;
+}
+
+.typhoon-table .ant-table-thead th {
+  background-color: #0369a1 !important; /* sky-700 */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.typhoon-table .ant-table-thead .ant-table-column-sorter {
+  color: #ffffff !important;
+}
+
+/* Active-sort header darkens to sky-800 */
+.typhoon-table .ant-table-thead th.ant-table-column-sort {
+  background-color: #075985 !important; /* sky-800 */
+  text-decoration: underline !important;
+}
+
+/* Sorted column: white rows → sky-50, sky-100 rows → sky-200 */
+.typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
+  background-color: #f0f9ff !important; /* sky-50 — subtle on white rows */
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
+  background-color: #bae6fd !important; /* sky-200 */
+}
+
+/* Hover: zinc-200 for all cells on the hovered row */
+.typhoon-table .ant-table-tbody tr:hover td,
+.typhoon-table .ant-table-tbody tr:hover td.ant-table-column-sort {
+  background-color: #e4e4e7 !important; /* zinc-200 */
+}
+
+/* Keep fixed columns below the navbar (z-50) when scrolling */
+.typhoon-table .ant-table-cell-fix-left,
+.typhoon-table .ant-table-cell-fix-right {
+  z-index: 2 !important;
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(odd) .ant-table-cell-fix {
+  background-color: #e0f2fe !important; /* sky-100 */
+}
+
+.typhoon-table .ant-table-tbody tr:nth-child(even) .ant-table-cell-fix {
+  background-color: #ffffff !important;
+}
+
+.typhoon-table .ant-table-tbody tr:hover .ant-table-cell-fix {
+  background-color: #e4e4e7 !important; /* zinc-200 */
+}
+
+/* Stick the table header below the sticky navbar (var(--navbar-height)) */
+.typhoon-table .ant-table-sticky-holder {
+  top: var(--navbar-height) !important;
+  z-index: 20 !important;
+  padding-top: 2px;
+}
