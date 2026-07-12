@@ -1,3 +1,4 @@
+import AntdConfig from "@/lib/AntdConfig";
 import { TITLE_COMMON } from "@/lib/constants";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
@@ -135,8 +136,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        {modal}
+        <AntdConfig>
+          {children}
+          {modal}
+        </AntdConfig>
         <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,

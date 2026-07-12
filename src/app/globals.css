@@ -13,14 +13,14 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--text-muted);
   --color-disabled: var(--text-disabled);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial,
+    sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: inherit;
+  font-family: var(--font-sans);
 }
 
 a:hover {
