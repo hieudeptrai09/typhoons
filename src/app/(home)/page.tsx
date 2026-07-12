@@ -33,9 +33,13 @@ const HomePage = async () => {
         </p>
 
         <div className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 font-medium text-slate-600 shadow-sm">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 font-medium shadow-sm ${
+              isActive ? "text-red-600" : "text-blue-600"
+            }`}
+          >
             <span
-              className={`h-2 w-2 rounded-full ${isActive ? "animate-pulse bg-red-500" : "bg-blue-500"}`}
+              className={`h-2 w-2 rounded-full ${isActive ? "bg-red-500" : "bg-blue-500"}`}
               aria-hidden="true"
             />
             {isActive ? "Active now" : "Up next"}
