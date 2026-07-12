@@ -3,7 +3,7 @@ import { TITLE_COMMON } from "@/lib/constants";
 const Footer = () => {
   return (
     <footer className="bg-slate-900" aria-label="Site footer">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-6 py-4 text-xs">
+      <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-6 py-4 text-xs">
         <p className="text-xs text-slate-500">
           © {new Date().getFullYear()}{" "}
           <span className="font-semibold text-slate-200">{TITLE_COMMON}</span>
