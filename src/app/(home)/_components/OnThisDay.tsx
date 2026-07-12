@@ -186,7 +186,7 @@ const OnThisDay = () => {
       disabled={loading}
       className="w-full! justify-start! text-sm! font-semibold! text-amber-700! hover:text-amber-800!"
     >
-      On This Day
+      On this day
     </Button>
   );
 };
