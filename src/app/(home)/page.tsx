@@ -47,7 +47,7 @@ const HomePage = async () => {
           {/* Plain <a> forces a hard navigation, bypassing the @modal/(.)info interceptor */}
           <a
             href={`/info/${encodeURIComponent(highlight.name.toLowerCase())}`}
-            className="font-semibold text-purple-700"
+            className="font-semibold text-purple-700 transition-colors hover:text-purple-800"
           >
             {capitalize(highlight.name.toLowerCase())}
           </a>
@@ -55,7 +55,7 @@ const HomePage = async () => {
           {showPosition && (
             <Link
               href={`/positions/${highlight.position}`}
-              className="text-teal-700"
+              className="text-teal-700 transition-colors hover:text-teal-800"
             >
               #{highlight.position}
             </Link>

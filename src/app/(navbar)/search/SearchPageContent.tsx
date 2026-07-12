@@ -9,11 +9,9 @@ import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
 import type { SearchResult } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
-import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
 import { Empty } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, SearchX } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -34,23 +32,11 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     width: 100,
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
-    render: (_: unknown, record: SearchResult) => {
-      const color = getNameStatusColorClass({
-        isRetired: Boolean(record.isRetired),
-        isLanguageProblem: record.isLanguageProblem,
-        isExternal: isExternalPosition(record.position),
-      });
-      return (
-        <Link
-          href={`/info/${encodeURIComponent(record.name.toLowerCase())}/`}
-          className={`font-semibold ${color}`}
-          onClick={(e) => e.stopPropagation()}
-          scroll={false}
-        >
-          <HighlightedName name={record.name} query={query} />
-        </Link>
-      );
-    },
+    render: (_: unknown, record: SearchResult) => (
+      <span className="font-semibold text-blue-500">
+        <HighlightedName name={record.name} query={query} />
+      </span>
+    ),
   },
   {
     title: "Contributed By",

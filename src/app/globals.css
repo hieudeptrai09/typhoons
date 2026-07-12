@@ -28,6 +28,13 @@ a:hover {
   text-underline-offset: 4px !important;
 }
 
+/* Opt-in: pin a link to its base Ant Design link color on hover,
+   suppressing Ant's lighter hover tint. Add `no-hover-tint` to any
+   link that inherits Ant's default color. */
+.no-hover-tint:hover {
+  color: var(--ant-color-link) !important;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
