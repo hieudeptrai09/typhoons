@@ -17,13 +17,12 @@ interface NameRow {
 export async function getFooterHighlight(): Promise<ApiResponse<FooterHighlight | null>> {
   const ongoing = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
-     WHERE position BETWEEN 1 AND 140
-       AND (monthend IS NULL OR monthend = 0 OR dateend IS NULL OR dateend = 0)`,
+     WHERE monthend IS NULL OR monthend = 0 OR dateend IS NULL OR dateend = 0`,
   );
 
   if (ongoing.length > 0) {
     const pick = ongoing[Math.floor(Math.random() * ongoing.length)];
-    return { data: { name: pick.name, position: Number(pick.position) } };
+    return { data: { name: pick.name, position: Number(pick.position), status: "active" } };
   }
 
   const latestRows = await sql.query<StormPositionRow[]>(
@@ -49,8 +48,8 @@ export async function getFooterHighlight(): Promise<ApiResponse<FooterHighlight 
   const nextName = nextNameRows[0];
 
   if (!nextName) {
-    return { data: { name: latest.name, position: Number(latest.position) } };
+    return { data: { name: latest.name, position: Number(latest.position), status: "next" } };
   }
 
-  return { data: { name: nextName.name, position: nextPosition } };
+  return { data: { name: nextName.name, position: nextPosition, status: "next" } };
 }
