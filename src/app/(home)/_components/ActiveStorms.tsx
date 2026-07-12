@@ -156,7 +156,7 @@ const ActiveStorms = () => {
       disabled={loading}
       className="w-full! justify-start! text-sm! font-semibold! text-amber-700! hover:text-amber-800!"
     >
-      Active On This Day
+      Active on this day
     </Button>
   );
 };
