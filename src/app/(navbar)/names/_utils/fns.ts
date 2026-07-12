@@ -75,7 +75,7 @@ export const getNamesDescription = (
     return "Browse retired typhoon names that have been permanently removed from the Western Pacific naming rotation due to the severity of their associated storms.";
   }
   if (viewStr === "list") {
-    return "View all all typhoon names in list format with detailed information including country of origin, language, and naming history.";
+    return "View all typhoon names in list format with detailed information including country of origin, language, and naming history.";
   }
 
   const nameOn = normalizeParam(showName) === "true";

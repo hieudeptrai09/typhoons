@@ -165,7 +165,7 @@ const OnThisDay = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-muted">No storms formed or dissipated on this day.</p>,
+        content: <p className="text-muted">Could not load storms for this day.</p>,
       });
     } finally {
       setLoading(false);

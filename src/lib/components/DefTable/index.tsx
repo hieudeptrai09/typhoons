@@ -4,6 +4,7 @@ import { useScrollEndFade } from "@/lib/hooks/useScrollEndFade";
 import type { TableProps } from "antd";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import "./styles.css";
 
 interface DefTableProps<T> {
   columns: ColumnsType<T>;
