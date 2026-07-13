@@ -45,13 +45,12 @@ const StormHighlightBadge = ({ fallback }: StormHighlightBadgeProps) => {
         {isActive ? "Active now" : "Up next"}
       </span>
 
-      {/* Plain <a> forces a hard navigation, bypassing the @modal/(.)info interceptor */}
-      <a
+      <Link
         href={`/info/${encodeURIComponent(highlight.name.toLowerCase())}`}
         className="font-semibold text-purple-700 transition-colors hover:text-purple-800"
       >
         {capitalize(highlight.name.toLowerCase())}
-      </a>
+      </Link>
 
       <Link
         href={`/positions/${highlight.position}`}
