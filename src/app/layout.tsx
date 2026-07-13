@@ -133,13 +133,6 @@ export default function RootLayout({
       <body>
         {children}
         {modal}
-        {process.env.NODE_ENV === "production" && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,
-            }}
-          />
-        )}
       </body>
     </html>
   );
