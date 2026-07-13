@@ -119,16 +119,14 @@ function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
   const hasMap = !!storm.map && storm.map.trim() !== "";
 
   const caption = (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      <span className="text-sm font-bold text-muted">
+    <div className="space-y-0.5">
+      <div className="text-sm font-bold text-muted">
         {label} {storm.name}
-      </span>
-      {dateRange && (
-        <span className="flex items-center gap-1 text-xs text-muted">
-          <Calendar size={12} />
-          {dateRange}
-        </span>
-      )}
+      </div>
+      <div className="flex items-center gap-1 text-xs text-muted">
+        <Calendar size={12} />
+        {dateRange || "Date unknown"}
+      </div>
     </div>
   );
 
