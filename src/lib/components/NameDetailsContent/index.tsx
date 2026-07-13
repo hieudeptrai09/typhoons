@@ -1,13 +1,21 @@
 import CountryFlag from "@/lib/components/CountryFlag";
+import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { RetiredName, TyphoonName } from "@/lib/types";
+import { Inbox } from "lucide-react";
 
 export interface NameDetailsContentProps {
-  name: TyphoonName | RetiredName;
+  name: TyphoonName | RetiredName | null;
   hideReplacedBy?: boolean;
 }
 
 const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContentProps) => {
+  if (!name) {
+    return (
+      <EmptyResults icon={Inbox} description="No name details available for this external name." />
+    );
+  }
+
   const hasImage = !!name.image;
   const hasDescription = !!name.description;
 

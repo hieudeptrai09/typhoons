@@ -1,24 +1,15 @@
 "use client";
 
-import CountryFlag from "@/lib/components/CountryFlag";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
-import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import StormListContent from "@/lib/components/StormListContent";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
-import { INTENSITY_LABEL } from "@/lib/constants";
-import type { SearchDetail, Storm } from "@/lib/types";
-import {
-  BACKGROUND_BADGE,
-  getNameStatusColor,
-  isExternalPosition,
-  TEXT_COLOR_WHITE_BACKGROUND,
-} from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/fns";
-import { Switch } from "antd";
-import { Inbox, SearchX } from "lucide-react";
+import type { SearchDetail } from "@/lib/types";
+import { getNameStatusColor, isExternalPosition } from "@/lib/utils/colors";
+import { SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
@@ -29,89 +20,6 @@ interface InfoModalProps {
 }
 
 type TabType = "details" | "storms";
-
-function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
-  const borderColor = BACKGROUND_BADGE[storm.intensity];
-  const textColor = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
-  const label = INTENSITY_LABEL[storm.intensity];
-  const hasMap = storm.map && storm.map.trim() !== "";
-  const dateRange = formatStormDateRange(
-    storm.year,
-    storm.monthStart,
-    storm.dateStart,
-    storm.monthEnd,
-    storm.dateEnd,
-    storm.isFromPrevYear,
-  );
-
-  return (
-    <div
-      className="rounded-md px-3 py-2 transition-colors hover:bg-gray-50"
-      style={{ borderLeft: `4px solid ${borderColor}` }}
-    >
-      {showMap && hasMap && (
-        <div className="relative mb-2 h-48 w-full">
-          <ImageWithLoader
-            src={storm.map}
-            alt={`${storm.name} ${storm.year} track`}
-            fill
-            className="rounded border border-gray-200 object-contain"
-            unoptimized
-          />
-        </div>
-      )}
-      <div className="text-sm font-bold" style={{ color: textColor }}>
-        {label} {storm.name}
-      </div>
-      {dateRange && <div className="text-xs text-muted">{dateRange}</div>}
-    </div>
-  );
-}
-
-function StormsTab({ storms }: { storms: Storm[] }) {
-  const [showMap, setShowMap] = useState(false);
-
-  if (storms.length === 0) {
-    return <EmptyResults icon={Inbox} description="No storms found for this name." />;
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-muted">Contributed by:</span>
-            <CountryFlag country={storms[0].country} className="h-5 w-8" />
-            <span className="text-muted">{storms[0].country}</span>
-          </div>
-          <div>
-            <span className="font-semibold text-muted">Position:</span>
-            <span className="ml-2 text-muted">{storms[0].position}</span>
-          </div>
-          {storms[0].correctSpelling && (
-            <div>
-              <span className="font-semibold text-muted">Correct spelling:</span>
-              <span className="ml-2 text-muted">{storms[0].correctSpelling}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-muted">Show Map</span>
-          <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
-        </div>
-      </div>
-
-      <div>
-        <h3 className="mb-3 font-semibold text-muted">All Storms ({storms.length})</h3>
-        <div className="space-y-1">
-          {storms.map((storm, idx) => (
-            <StormRow key={`${storm.year}-${storm.name}-${idx}`} storm={storm} showMap={showMap} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function InfoModal({ detail, name, isError = false }: InfoModalProps) {
   const router = useRouter();
@@ -142,15 +50,13 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
       isExternal: isExternalPosition(nameData?.position),
     });
 
-    const detailsContent = nameData ? (
-      <NameDetailsContent name={nameData} />
-    ) : (
-      <EmptyResults icon={Inbox} description="No name details available for this external name." />
-    );
-
     const tabs: Tab<TabType>[] = [
-      { key: "storms", label: `Storms (${storms.length})`, content: <StormsTab storms={storms} /> },
-      { key: "details", label: "Name Details", content: detailsContent },
+      {
+        key: "storms",
+        label: `Storms (${storms.length})`,
+        content: <StormListContent storms={storms} />,
+      },
+      { key: "details", label: "Name Details", content: <NameDetailsContent name={nameData} /> },
     ];
 
     title = (
