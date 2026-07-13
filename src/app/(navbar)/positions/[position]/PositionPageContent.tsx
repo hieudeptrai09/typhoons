@@ -17,7 +17,6 @@ import {
 } from "@/lib/utils/colors";
 import { getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
 import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
-import Link from "next/link";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
@@ -45,35 +44,28 @@ function PositionPagination({ position }: { position: number }) {
       className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
       aria-label="Position pagination"
     >
-      <Link href={`/positions/${getPositionSlug(prevPosition)}`} className={linkClass(isFirst)}>
+      <a href={`/positions/${getPositionSlug(prevPosition)}`} className={linkClass(isFirst)}>
         <ChevronLeft className="h-4 w-4" />
         {getPositionTitle(prevPosition)}
-      </Link>
+      </a>
       <span className="text-sm text-muted">
         {position} / {TOTAL_POSITIONS}
       </span>
-      <Link href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
+      <a href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
         {getPositionTitle(nextPosition)}
         <ChevronRight className="h-4 w-4" />
-      </Link>
+      </a>
     </nav>
   );
 }
 
-function NameRosterCard({ name, storms }: { name: TyphoonName; storms: Storm[] }) {
-  const years = storms.map((s) => s.year).join(", ");
-
+function NameRosterCard({ name }: { name: TyphoonName }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className={`flex gap-4 ${name.image ? "flex-col sm:flex-row" : "flex-col"}`}>
         <div className="flex-1">
           <div className="flex items-baseline gap-2">
             <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
-            {storms.length > 0 && (
-              <span className="text-xs text-muted">
-                {storms.length} storm{storms.length > 1 ? "s" : ""} · {years}
-              </span>
-            )}
             {name.language && <span className="text-xs text-muted">· {name.language}</span>}
           </div>
           {name.meaning && (
@@ -123,11 +115,7 @@ function NamesSection({ names, storms }: { names: TyphoonName[]; storms: Storm[]
       ) : (
         <div className="space-y-3">
           {sortedNames.map((name) => (
-            <NameRosterCard
-              key={name.id}
-              name={name}
-              storms={[...(stormsByName[name.name] || [])].sort((a, b) => a.year - b.year)}
-            />
+            <NameRosterCard key={name.id} name={name} />
           ))}
         </div>
       )}
