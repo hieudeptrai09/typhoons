@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
 
   if (!isValidStormsSlug(slug)) {
-    return { title: "Not Found" };
+    return {};
   }
 
   const dashboardParams = slugToParams(slug);

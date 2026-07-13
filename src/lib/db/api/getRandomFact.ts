@@ -56,26 +56,16 @@ async function generateFacts(): Promise<string[]> {
 
   row = await one("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
   cnt = Number(row?.cnt ?? 0);
-  facts.push(`There are ${cnt} names assigned by NHC that cross 3 Pacific basins.`);
+  facts.push(
+    `Besides Li (1994), there are ${cnt} names assigned by NHC that cross 3 Pacific basins.`,
+  );
   names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name")).map(
     (r) => String(r.name),
   );
   if (names.length > 0) {
-    facts.push(`${joinNames(names)} are the names assigned by NHC that cross 3 Pacific basins.`);
-  }
-
-  row = await one(
-    "SELECT COUNT(*) as cnt FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994)",
-  );
-  cnt = Number(row?.cnt ?? 0);
-  facts.push(`Besides Li (1994), there are ${cnt} names that cross 3 Pacific basins.`);
-  names = (
-    await rows(
-      "SELECT DISTINCT name FROM storms WHERE position = 142 AND NOT (name = 'Li' AND year = 1994) ORDER BY name",
-    )
-  ).map((r) => String(r.name));
-  if (names.length > 0) {
-    facts.push(`Besides Li (1994), ${joinNames(names)} are the names that cross 3 Pacific basins.`);
+    facts.push(
+      `Besides Li (1994), ${joinNames(names)} are the names assigned by NHC that cross 3 Pacific basins.`,
+    );
   }
 
   let rowsResult = await rows(

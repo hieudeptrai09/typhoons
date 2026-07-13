@@ -15,7 +15,7 @@ import {
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
 import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import Link from "next/link";
 
@@ -25,7 +25,7 @@ interface PositionPageContentProps {
   isError?: boolean;
 }
 
-const TOTAL_POSITIONS = 140;
+const TOTAL_POSITIONS = 143;
 
 function PositionPagination({ position }: { position: number }) {
   const isFirst = position === 1;
@@ -45,14 +45,14 @@ function PositionPagination({ position }: { position: number }) {
       className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
       aria-label="Position pagination"
     >
-      <Link href={`/positions/${prevPosition}`} className={linkClass(isFirst)}>
+      <Link href={`/positions/${getPositionSlug(prevPosition)}`} className={linkClass(isFirst)}>
         <ChevronLeft className="h-4 w-4" />
         {getPositionTitle(prevPosition)}
       </Link>
       <span className="text-sm text-muted">
         {position} / {TOTAL_POSITIONS}
       </span>
-      <Link href={`/positions/${nextPosition}`} className={linkClass(isLast)}>
+      <Link href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
         {getPositionTitle(nextPosition)}
         <ChevronRight className="h-4 w-4" />
       </Link>
@@ -214,24 +214,7 @@ export default function PositionPageContent({
     return <FrownError />;
   }
   if (!detail || (detail.names.length === 0 && detail.storms.length === 0)) {
-    return (
-      <EmptyResults
-        icon={SearchX}
-        description={
-          Number.isFinite(position)
-            ? `Position #${position} doesn't exist — naming positions run 1–140.`
-            : "That naming position doesn't exist — positions run 1–140."
-        }
-        action={
-          <Link
-            href="/storms/positions/"
-            className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-          >
-            Browse all positions
-          </Link>
-        }
-      />
-    );
+    return <EmptyResults icon={SearchX} description="No data recorded for this position yet." />;
   }
 
   const { country, names, storms } = detail;
@@ -244,15 +227,15 @@ export default function PositionPageContent({
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
       <div className="mb-8 flex items-baseline gap-3">
-        {country && <CountryFlag country={country} className="h-6 w-9" />}
+        {position <= 140 && <CountryFlag country={country} className="h-6 w-9" />}
         <h1 className="text-3xl font-bold" style={{ color: titleColor }}>
           {positionTitle}
         </h1>
-        {country && <span className="text-base text-muted">{country}</span>}
+        {position <= 140 && <span className="text-base text-muted">{country}</span>}
       </div>
 
       <div className="space-y-6">
-        <NamesSection names={names} storms={storms} />
+        {position <= 140 && <NamesSection names={names} storms={storms} />}
         <StormsSection storms={storms} />
       </div>
 

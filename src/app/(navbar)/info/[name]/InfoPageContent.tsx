@@ -1,5 +1,4 @@
 import CountryFlag from "@/lib/components/CountryFlag";
-import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
@@ -10,8 +9,7 @@ import {
   getNameStatusColorClass,
   isExternalPosition,
 } from "@/lib/utils/colors";
-import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
@@ -19,21 +17,6 @@ interface InfoPageContentProps {
   isError?: boolean;
   allNames?: string[];
 }
-
-const nameNotFound = (name: string) => (
-  <EmptyResults
-    icon={SearchX}
-    description={`No typhoon with the name "${name}" was found.`}
-    action={
-      <Link
-        href="/names/"
-        className="mt-4 inline-block rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-      >
-        Browse names
-      </Link>
-    }
-  />
-);
 
 function StatusBadge({
   isInPosition,
@@ -191,12 +174,9 @@ export default function InfoPageContent({
   if (isError) {
     return <FrownError />;
   }
-  if (!detail) {
-    return nameNotFound(name);
-  }
 
-  const nameData = detail.name ?? null;
-  const storms = detail.storms ?? [];
+  const nameData = detail?.name ?? null;
+  const storms = detail?.storms ?? [];
   const isInPosition = nameData ? !isExternalPosition(nameData.position) : false;
   const displayName = nameData?.name ?? name;
 
@@ -204,10 +184,6 @@ export default function InfoPageContent({
     ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
     : "text-muted";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
-
-  if (!nameData && storms.length === 0) {
-    return nameNotFound(name);
-  }
 
   const correctSpelling = storms[0]?.correctSpelling;
   const metaCountry = nameData?.country ?? storms[0]?.country;

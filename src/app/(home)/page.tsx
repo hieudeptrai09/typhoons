@@ -1,20 +1,13 @@
-import { getFooterHighlight } from "@/lib/db/api/getFooterHighlight";
 import Footer from "@/lib/layout/Footer";
-import type { FooterHighlight } from "@/lib/types";
-import { capitalize } from "@/lib/utils/fns";
+import type { StormHighlight } from "@/lib/types";
 import Image from "next/image";
-import Link from "next/link";
 import Menu from "./_components/Menu";
 import QuickActionsMenu from "./_components/QuickActionsMenu";
+import StormHighlightBadge from "./_components/StormHighlightBadge";
 
-const FALLBACK_HIGHLIGHT: FooterHighlight = { name: "damrey", position: 1, status: "next" };
+const FALLBACK_HIGHLIGHT: StormHighlight = { name: "damrey", position: 1, status: "next" };
 
-const HomePage = async () => {
-  const result = await getFooterHighlight();
-  const highlight = result?.data ?? FALLBACK_HIGHLIGHT;
-  const isActive = highlight.status === "active";
-  const showPosition = highlight.position >= 1 && highlight.position <= 140;
-
+const HomePage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-sky-100">
       <div className="flex flex-1 flex-col items-center justify-center p-8">
@@ -31,36 +24,7 @@ const HomePage = async () => {
           Track typhoons and explore their names
         </p>
 
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 shadow-sm ${
-              isActive ? "text-red-600" : "text-blue-600"
-            }`}
-          >
-            <span
-              className={`h-2 w-2 rounded-full ${isActive ? "bg-red-500" : "bg-blue-500"}`}
-              aria-hidden="true"
-            />
-            {isActive ? "Active now" : "Up next"}
-          </span>
-
-          {/* Plain <a> forces a hard navigation, bypassing the @modal/(.)info interceptor */}
-          <a
-            href={`/info/${encodeURIComponent(highlight.name.toLowerCase())}`}
-            className="font-semibold text-purple-700 transition-colors hover:text-purple-800"
-          >
-            {capitalize(highlight.name.toLowerCase())}
-          </a>
-
-          {showPosition && (
-            <Link
-              href={`/positions/${highlight.position}`}
-              className="text-teal-700 transition-colors hover:text-teal-800"
-            >
-              #{highlight.position}
-            </Link>
-          )}
-        </div>
+        <StormHighlightBadge fallback={FALLBACK_HIGHLIGHT} />
 
         <QuickActionsMenu />
 

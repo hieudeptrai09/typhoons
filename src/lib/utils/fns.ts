@@ -1,8 +1,25 @@
+const POSITION_SLUGS: Record<number, string> = {
+  141: "cphc",
+  142: "nhc",
+  143: "imd",
+};
+
+const SLUG_POSITIONS: Record<string, number> = Object.fromEntries(
+  Object.entries(POSITION_SLUGS).map(([id, slug]) => [slug, Number(id)]),
+);
+
 export const getPositionTitle = (position: number): string => {
-  if (position === 141) return "CPHC";
-  if (position === 142) return "NHC";
-  if (position === 143) return "IMD";
-  return `#${position}`;
+  const slug = POSITION_SLUGS[position];
+  return slug ? slug.toUpperCase() : `#${position}`;
+};
+
+export const getPositionSlug = (position: number): string =>
+  POSITION_SLUGS[position] ?? String(position);
+
+export const getPositionFromSlug = (slug: string): number | null => {
+  if (slug in SLUG_POSITIONS) return SLUG_POSITIONS[slug];
+  const position = Number(slug);
+  return Number.isInteger(position) ? position : null;
 };
 
 export const normalizeParam = (param: string | string[] | undefined): string => {

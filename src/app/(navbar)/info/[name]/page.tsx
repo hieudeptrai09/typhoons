@@ -1,11 +1,15 @@
 import { getNameList } from "@/lib/db/api/getNameList";
 import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import InfoPageContent from "./InfoPageContent";
 
 interface InfoPageProps {
   params: Promise<{ name: string }>;
 }
+
+const isNameNotFound = (result: Awaited<ReturnType<typeof getTyphoonNameByName>> | null) =>
+  result !== null && !result.data.name && result.data.storms.length === 0;
 
 export async function generateStaticParams() {
   const result = await getNameList();
@@ -15,13 +19,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: InfoPageProps): Promise<Metadata> {
   const { name } = await params;
-  const raw = decodeURIComponent(name);
-  const decodedName = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+  const decodedName = decodeURIComponent(name);
+  const result = await getTyphoonNameByName(decodedName);
+
+  if (isNameNotFound(result)) {
+    return {};
+  }
+
+  const displayName = decodedName.charAt(0).toUpperCase() + decodedName.slice(1).toLowerCase();
+
   return {
-    title: `${decodedName} — Typhoon Info`,
-    description: `Details and storm history for typhoon name ${decodedName}.`,
+    title: `${displayName} — Typhoon Info`,
+    description: `Details and storm history for typhoon name ${displayName}.`,
     alternates: {
-      canonical: `/info/${decodedName.toLowerCase()}/`,
+      canonical: `/info/${displayName.toLowerCase()}/`,
     },
   };
 }
@@ -34,6 +45,10 @@ export default async function InfoPage({ params }: InfoPageProps) {
     getTyphoonNameByName(decodedName),
     getNameList(),
   ]);
+
+  if (isNameNotFound(result)) {
+    notFound();
+  }
 
   const allNames = [...(nameListResult?.data ?? [])].sort((a, b) =>
     a.localeCompare(b, undefined, { sensitivity: "base" }),

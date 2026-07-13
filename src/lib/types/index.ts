@@ -114,10 +114,10 @@ export interface PositionDetail {
   storms: Storm[];
 }
 
-export type FooterHighlightStatus = "active" | "next";
+export type StormHighlightStatus = "active" | "next";
 
-export interface FooterHighlight {
+export interface StormHighlight {
   name: string;
   position: number;
-  status: FooterHighlightStatus;
+  status: StormHighlightStatus;
 }

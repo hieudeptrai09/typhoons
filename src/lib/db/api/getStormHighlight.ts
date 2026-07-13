@@ -1,5 +1,5 @@
 import sql from "@/lib/db";
-import type { FooterHighlight } from "@/lib/types";
+import type { StormHighlight } from "@/lib/types";
 
 interface ApiResponse<T> {
   data: T;
@@ -14,7 +14,7 @@ interface NameRow {
   name: string;
 }
 
-export async function getFooterHighlight(): Promise<ApiResponse<FooterHighlight | null>> {
+export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | null>> {
   const ongoing = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
      WHERE monthend IS NULL OR monthend = 0 OR dateend IS NULL OR dateend = 0`,
