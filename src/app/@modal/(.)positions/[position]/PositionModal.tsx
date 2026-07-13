@@ -20,8 +20,7 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { formatStormDateRange, getPositionTitle } from "@/lib/utils/fns";
-import { Switch } from "antd";
-import { Calendar, ImageIcon, SearchX } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
@@ -33,79 +32,105 @@ interface PositionModalProps {
 
 type TabType = "names" | "storms";
 
-/** Header row shared by both tabs: flag + label, with a switch to reveal images. */
-function SectionHeader({
-  country,
-  label,
-  showImages,
-  onToggle,
-  extra,
-}: {
-  country?: string;
-  label: string;
-  showImages: boolean;
-  onToggle: (value: boolean) => void;
-  extra?: ReactNode;
-}) {
+/** Shows one slide at a time with prev/next arrows and a dot for each slide. */
+function Carousel({ slides, ariaLabel }: { slides: ReactNode[]; ariaLabel: string }) {
+  const [index, setIndex] = useState(0);
+  const count = slides.length;
+
+  if (count === 0) return null;
+
+  const active = Math.min(index, count - 1);
+  const go = (delta: number) =>
+    setIndex((prev) => (Math.min(prev, count - 1) + delta + count) % count);
+
   return (
-    <div className="mb-4 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        {country && <CountryFlag country={country} className="h-5 w-8" />}
-        <span className="text-sm font-semibold text-muted">{label}</span>
-        {extra}
-      </div>
-      <label className="flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-muted">
-        <ImageIcon className="h-3.5 w-3.5" />
-        Images
-        <Switch size="small" checked={showImages} onChange={onToggle} />
-      </label>
+    <div aria-label={ariaLabel} aria-roledescription="carousel">
+      <div>{slides[active]}</div>
+      {count > 1 && (
+        <div className="mt-3 flex items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Previous"
+            className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <div className="flex items-center gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === active}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === active ? "w-4 bg-slate-700" : "w-1.5 bg-slate-300 hover:bg-slate-400"
+                }`}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="Next"
+            className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-/** A single name in the roster: name + language + meaning, image revealed by the switch. */
-function NameCard({ name, showImage }: { name: TyphoonName; showImage: boolean }) {
-  const withImage = showImage && !!name.image;
-
+/** Section heading: flag + label, with optional trailing content (e.g. an average). */
+function SectionHeader({
+  country,
+  label,
+  extra,
+}: {
+  country?: string;
+  label: string;
+  extra?: ReactNode;
+}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className={`flex gap-4 ${withImage ? "flex-col sm:flex-row" : "flex-col"}`}>
-        <div className="flex-1">
-          <div className="flex items-baseline gap-2">
-            <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
-            {name.language && <span className="text-xs text-muted">· {name.language}</span>}
-          </div>
-          {name.meaning && (
-            <p className="mt-1 text-sm leading-relaxed text-teal-600 italic">{name.meaning}</p>
-          )}
-          {name.description && (
-            <p className="mt-1 text-xs leading-relaxed text-muted">{name.description}</p>
-          )}
-        </div>
-        {showImage && name.image && (
-          <div
-            className="relative shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 sm:w-32"
-            style={{ aspectRatio: "4/3" }}
-          >
-            <ImageWithLoader
-              src={name.image}
-              alt={name.name}
-              fill
-              className="object-contain"
-              unoptimized
-            />
-          </div>
+    <div className="mb-4 flex items-center gap-2">
+      {country && <CountryFlag country={country} className="h-5 w-8" />}
+      <span className="text-sm font-semibold text-muted">{label}</span>
+      {extra}
+    </div>
+  );
+}
+
+/** One name slide: "Name (country): meaning" above its image. */
+function NameSlide({ name }: { name: TyphoonName }) {
+  return (
+    <div className="px-2">
+      <p className="mb-3 text-center leading-relaxed">
+        <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
+        {name.country && <span className="text-sm text-muted"> ({name.country})</span>}
+        {name.meaning && <span className="text-sm text-teal-600 italic">: {name.meaning}</span>}
+      </p>
+      <div className="relative mx-auto aspect-[4/3] w-full max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+        {name.image ? (
+          <ImageWithLoader
+            src={name.image}
+            alt={name.name}
+            fill
+            className="object-contain"
+            unoptimized
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-xs text-muted">No image</div>
         )}
       </div>
     </div>
   );
 }
 
-/**
- * A single storm with a left accent border for its intensity. When the switch is
- * on, the track map is shown and the storm's label/date becomes its caption.
- */
-function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
+/** One storm slide: track map with the intensity label and date as its caption. */
+function StormSlide({ storm }: { storm: Storm }) {
   const accent = BACKGROUND_BADGE[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const dateRange = formatStormDateRange(
@@ -118,43 +143,35 @@ function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
   );
   const hasMap = !!storm.map && storm.map.trim() !== "";
 
-  const caption = (
-    <div className="space-y-0.5">
-      <div className="text-sm font-bold text-muted">{label}</div>
-      <div className="flex items-center gap-1 text-xs text-muted">
-        <Calendar size={12} />
-        {dateRange || "Date unknown"}
-      </div>
-    </div>
-  );
-
   return (
     <div
       className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
       style={{ borderLeftWidth: 4, borderLeftColor: accent }}
     >
-      {showImage ? (
-        <div className="p-3">
-          <div className="relative h-44 w-full overflow-hidden rounded-md bg-slate-50">
-            {hasMap ? (
-              <ImageWithLoader
-                src={storm.map}
-                alt={`${storm.name} ${storm.year} track`}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-xs text-muted">
-                No track map
-              </div>
-            )}
-          </div>
-          <div className="mt-2">{caption}</div>
+      <div className="p-3">
+        <div className="relative h-56 w-full overflow-hidden rounded-md bg-slate-50">
+          {hasMap ? (
+            <ImageWithLoader
+              src={storm.map}
+              alt={`${storm.name} ${storm.year} track`}
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-muted">
+              No track map
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="px-4 py-3">{caption}</div>
-      )}
+        <div className="mt-2 space-y-0.5">
+          <div className="text-sm font-bold text-muted">{label}</div>
+          <div className="flex items-center gap-1 text-xs text-muted">
+            <Calendar size={12} />
+            {dateRange || "Date unknown"}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -162,8 +179,6 @@ function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
 export default function PositionModal({ detail, position, isError = false }: PositionModalProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("names");
-  const [showNameImages, setShowNameImages] = useState(false);
-  const [showStormImages, setShowStormImages] = useState(false);
 
   const isInternal = position <= 140;
   const positionTitle = getPositionTitle(position);
@@ -189,8 +204,6 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       <SectionHeader
         country={isInternal ? country : undefined}
         label={`Storms (${storms.length})`}
-        showImages={showStormImages}
-        onToggle={setShowStormImages}
         extra={
           storms.length > 0 ? (
             <span className="text-xs text-muted">
@@ -211,7 +224,7 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       {storms.length === 0 ? (
         <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
             ([name, group]) => {
               const sorted = [...group].sort((a, b) => a.year - b.year);
@@ -233,11 +246,12 @@ export default function PositionModal({ detail, position, isError = false }: Pos
                       </span>
                     </span>
                   </div>
-                  <div className={showStormImages ? "grid gap-3 sm:grid-cols-2" : "space-y-2"}>
-                    {sorted.map((storm, idx) => (
-                      <StormItem key={idx} storm={storm} showImage={showStormImages} />
+                  <Carousel
+                    ariaLabel={`${name} storms`}
+                    slides={sorted.map((storm, idx) => (
+                      <StormSlide key={idx} storm={storm} />
                     ))}
-                  </div>
+                  />
                 </div>
               );
             },
@@ -260,22 +274,18 @@ export default function PositionModal({ detail, position, isError = false }: Pos
         label: `Names (${names.length})`,
         content: (
           <div>
-            <SectionHeader
-              country={country}
-              label={`Names (${names.length})`}
-              showImages={showNameImages}
-              onToggle={setShowNameImages}
-            />
+            <SectionHeader country={country} label={`Names (${names.length})`} />
             {names.length === 0 ? (
               <p className="py-4 text-center text-muted">
                 No names have been assigned to this slot.
               </p>
             ) : (
-              <div className="space-y-3">
-                {names.map((name) => (
-                  <NameCard key={name.id} name={name} showImage={showNameImages} />
+              <Carousel
+                ariaLabel="Names"
+                slides={names.map((name) => (
+                  <NameSlide key={name.id} name={name} />
                 ))}
-              </div>
+              />
             )}
           </div>
         ),
