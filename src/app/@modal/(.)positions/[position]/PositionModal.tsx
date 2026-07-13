@@ -1,6 +1,11 @@
 "use client";
 
-import { calculateAverage, getIntensityFromNumber } from "@/app/(navbar)/storms/_utils/fns";
+import {
+  calculateAverage,
+  getGroupedStorms,
+  getIntensityFromNumber,
+  sortNamesByFirstYear,
+} from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
@@ -210,10 +215,37 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       {storms.length === 0 ? (
         <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
       ) : (
-        <div className={showStormImages ? "grid gap-3 sm:grid-cols-2" : "space-y-2"}>
-          {storms.map((storm, idx) => (
-            <StormItem key={idx} storm={storm} showImage={showStormImages} />
-          ))}
+        <div className="space-y-5">
+          {sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
+            ([name, group]) => {
+              const sorted = [...group].sort((a, b) => a.year - b.year);
+              const average = calculateAverage(sorted);
+              const groupColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)];
+              return (
+                <div key={name}>
+                  <div className="mb-2 flex items-baseline justify-between gap-2">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-semibold" style={{ color: groupColor }}>
+                        {name}
+                      </span>
+                      <span className="text-xs text-muted">{sorted.length}</span>
+                    </div>
+                    <span className="text-sm text-muted">
+                      avg:{" "}
+                      <span className="font-bold" style={{ color: groupColor }}>
+                        {average.toFixed(2)}
+                      </span>
+                    </span>
+                  </div>
+                  <div className={showStormImages ? "grid gap-3 sm:grid-cols-2" : "space-y-2"}>
+                    {sorted.map((storm, idx) => (
+                      <StormItem key={idx} storm={storm} showImage={showStormImages} />
+                    ))}
+                  </div>
+                </div>
+              );
+            },
+          )}
         </div>
       )}
     </div>
