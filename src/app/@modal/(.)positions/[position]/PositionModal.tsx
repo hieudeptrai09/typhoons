@@ -120,9 +120,7 @@ function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
 
   const caption = (
     <div className="space-y-0.5">
-      <div className="text-sm font-bold text-muted">
-        {label} {storm.name}
-      </div>
+      <div className="text-sm font-bold text-muted">{label}</div>
       <div className="flex items-center gap-1 text-xs text-muted">
         <Calendar size={12} />
         {dateRange || "Date unknown"}
