@@ -5,13 +5,18 @@ import CountryFlag from "@/lib/components/CountryFlag";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
-import { PositionNamesList, PositionStormsList } from "@/lib/components/PositionContent";
+import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
-import type { PositionDetail } from "@/lib/types";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
-import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
-import Link from "next/link";
+import { INTENSITY_LABEL } from "@/lib/constants";
+import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
+import {
+  BACKGROUND_BADGE,
+  getNameStatusColorClass,
+  TEXT_COLOR_WHITE_BACKGROUND,
+} from "@/lib/utils/colors";
+import { formatStormDateRange, getPositionTitle } from "@/lib/utils/fns";
+import { Switch } from "antd";
+import { Calendar, ImageIcon, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
@@ -21,55 +26,134 @@ interface PositionModalProps {
   isError?: boolean;
 }
 
-const TOTAL_POSITIONS = 143;
-
 type TabType = "names" | "storms";
 
-function ModalPagination({ position }: { position: number }) {
-  const isFirst = position === 1;
-  const isLast = position === TOTAL_POSITIONS;
-  const prevPosition = isFirst ? TOTAL_POSITIONS : position - 1;
-  const nextPosition = isLast ? 1 : position + 1;
-
-  const linkClass = (isWrap: boolean) =>
-    `flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm font-medium text-white transition-colors ${
-      isWrap
-        ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
-        : "border-sky-600 bg-sky-600 hover:border-sky-700 hover:bg-sky-700"
-    }`;
-
+/** Header row shared by both tabs: flag + label, with a switch to reveal images. */
+function SectionHeader({
+  country,
+  label,
+  showImages,
+  onToggle,
+  extra,
+}: {
+  country?: string;
+  label: string;
+  showImages: boolean;
+  onToggle: (value: boolean) => void;
+  extra?: ReactNode;
+}) {
   return (
-    <nav
-      className="mt-2 flex items-center justify-between border-t border-slate-200 pt-4"
-      aria-label="Position pagination"
-    >
-      <Link href={`/positions/${getPositionSlug(prevPosition)}`} className={linkClass(isFirst)}>
-        <ChevronLeft className="h-4 w-4" />
-        {getPositionTitle(prevPosition)}
-      </Link>
-      <span className="text-sm text-muted">
-        {position} / {TOTAL_POSITIONS}
-      </span>
-      <Link href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
-        {getPositionTitle(nextPosition)}
-        <ChevronRight className="h-4 w-4" />
-      </Link>
-    </nav>
+    <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
+        {country && <CountryFlag country={country} className="h-5 w-8" />}
+        <span className="text-sm font-semibold text-muted">{label}</span>
+        {extra}
+      </div>
+      <label className="flex shrink-0 cursor-pointer items-center gap-1.5 text-xs text-muted">
+        <ImageIcon className="h-3.5 w-3.5" />
+        Images
+        <Switch size="small" checked={showImages} onChange={onToggle} />
+      </label>
+    </div>
   );
 }
 
-function OverallAverageBadge({ storms }: { storms: PositionDetail["storms"] }) {
-  if (storms.length === 0) return null;
-  const overallAverage = calculateAverage(storms);
+/** A single name in the roster: name + language + meaning, image revealed by the switch. */
+function NameCard({ name, showImage }: { name: TyphoonName; showImage: boolean }) {
+  const withImage = showImage && !!name.image;
+
   return (
-    <div className="mb-4 flex items-center justify-end">
-      <span className="text-sm font-medium text-muted">Overall Avg: </span>
-      <span
-        className="ml-1 text-lg font-bold"
-        style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(overallAverage)] }}
-      >
-        {overallAverage.toFixed(2)}
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className={`flex gap-4 ${withImage ? "flex-col sm:flex-row" : "flex-col"}`}>
+        <div className="flex-1">
+          <div className="flex items-baseline gap-2">
+            <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
+            {name.language && <span className="text-xs text-muted">· {name.language}</span>}
+          </div>
+          {name.meaning && (
+            <p className="mt-1 text-sm leading-relaxed text-teal-600 italic">{name.meaning}</p>
+          )}
+          {name.description && (
+            <p className="mt-1 text-xs leading-relaxed text-muted">{name.description}</p>
+          )}
+        </div>
+        {showImage && name.image && (
+          <div
+            className="relative shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 sm:w-32"
+            style={{ aspectRatio: "4/3" }}
+          >
+            <ImageWithLoader
+              src={name.image}
+              alt={name.name}
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A single storm with a left accent border for its intensity. When the switch is
+ * on, the track map is shown and the storm's label/date becomes its caption.
+ */
+function StormItem({ storm, showImage }: { storm: Storm; showImage: boolean }) {
+  const accent = BACKGROUND_BADGE[storm.intensity];
+  const label = INTENSITY_LABEL[storm.intensity];
+  const dateRange = formatStormDateRange(
+    storm.year,
+    storm.monthStart,
+    storm.dateStart,
+    storm.monthEnd,
+    storm.dateEnd,
+    storm.isFromPrevYear,
+  );
+  const hasMap = !!storm.map && storm.map.trim() !== "";
+
+  const caption = (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+      <span className="text-sm font-bold text-muted">
+        {label} {storm.name}
       </span>
+      {dateRange && (
+        <span className="flex items-center gap-1 text-xs text-muted">
+          <Calendar size={12} />
+          {dateRange}
+        </span>
+      )}
+    </div>
+  );
+
+  return (
+    <div
+      className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
+      style={{ borderLeftWidth: 4, borderLeftColor: accent }}
+    >
+      {showImage ? (
+        <div className="p-3">
+          <div className="relative h-44 w-full overflow-hidden rounded-md bg-slate-50">
+            {hasMap ? (
+              <ImageWithLoader
+                src={storm.map}
+                alt={`${storm.name} ${storm.year} track`}
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-xs text-muted">
+                No track map
+              </div>
+            )}
+          </div>
+          <div className="mt-2">{caption}</div>
+        </div>
+      ) : (
+        <div className="px-4 py-3">{caption}</div>
+      )}
     </div>
   );
 }
@@ -77,6 +161,8 @@ function OverallAverageBadge({ storms }: { storms: PositionDetail["storms"] }) {
 export default function PositionModal({ detail, position, isError = false }: PositionModalProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("names");
+  const [showNameImages, setShowNameImages] = useState(false);
+  const [showStormImages, setShowStormImages] = useState(false);
 
   const isInternal = position <= 140;
   const positionTitle = getPositionTitle(position);
@@ -92,12 +178,44 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       : "#64748b";
 
   const title: ReactNode = (
-    <div className="flex items-center gap-2">
-      {isInternal && country && <CountryFlag country={country} className="h-5 w-8" />}
-      <span className="text-2xl font-bold" style={{ color: titleColor }}>
-        {positionTitle}
-      </span>
-      {isInternal && country && <span className="text-sm text-muted">{country}</span>}
+    <span className="text-2xl font-bold" style={{ color: titleColor }}>
+      {positionTitle}
+    </span>
+  );
+
+  const stormsPanel = (
+    <div>
+      <SectionHeader
+        country={isInternal ? country : undefined}
+        label={`Storms (${storms.length})`}
+        showImages={showStormImages}
+        onToggle={setShowStormImages}
+        extra={
+          storms.length > 0 ? (
+            <span className="text-xs text-muted">
+              Avg{" "}
+              <span
+                className="font-bold"
+                style={{
+                  color:
+                    TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))],
+                }}
+              >
+                {calculateAverage(storms).toFixed(2)}
+              </span>
+            </span>
+          ) : undefined
+        }
+      />
+      {storms.length === 0 ? (
+        <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
+      ) : (
+        <div className={showStormImages ? "grid gap-3 sm:grid-cols-2" : "space-y-2"}>
+          {storms.map((storm, idx) => (
+            <StormItem key={idx} storm={storm} showImage={showStormImages} />
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -112,18 +230,29 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       {
         key: "names",
         label: `Names (${names.length})`,
-        content: <PositionNamesList names={names} storms={storms} />,
-      },
-      {
-        key: "storms",
-        label: `Storms (${storms.length})`,
         content: (
-          <>
-            <OverallAverageBadge storms={storms} />
-            <PositionStormsList storms={storms} />
-          </>
+          <div>
+            <SectionHeader
+              country={country}
+              label={`Names (${names.length})`}
+              showImages={showNameImages}
+              onToggle={setShowNameImages}
+            />
+            {names.length === 0 ? (
+              <p className="py-4 text-center text-muted">
+                No names have been assigned to this slot.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {names.map((name) => (
+                  <NameCard key={name.id} name={name} showImage={showNameImages} />
+                ))}
+              </div>
+            )}
+          </div>
         ),
       },
+      { key: "storms", label: `Storms (${storms.length})`, content: stormsPanel },
     ];
 
     content = (
@@ -139,21 +268,11 @@ export default function PositionModal({ detail, position, isError = false }: Pos
     );
   } else {
     // External positions (CPHC / NHC / IMD) have no naming roster — storms only.
-    content = (
-      <div className="pt-4">
-        <OverallAverageBadge storms={storms} />
-        <PositionStormsList storms={storms} />
-      </div>
-    );
+    content = <div className="pt-4">{stormsPanel}</div>;
   }
 
   return (
-    <DefModal
-      onClose={() => router.back()}
-      width={720}
-      title={title}
-      footer={<ModalPagination position={position} />}
-    >
+    <DefModal onClose={() => router.back()} width={720} title={title}>
       {content}
     </DefModal>
   );
