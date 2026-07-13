@@ -20,9 +20,10 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { formatStormDateRange, getPositionTitle } from "@/lib/utils/fns";
+import { Carousel as AntCarousel } from "antd";
 import { Calendar, ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ComponentRef, type ReactNode } from "react";
 
 interface PositionModalProps {
   detail: PositionDetail | null;
@@ -32,25 +33,23 @@ interface PositionModalProps {
 
 type TabType = "names" | "storms";
 
-/** Shows one slide at a time with prev/next arrows and a dot for each slide. */
-function Carousel({ slides, ariaLabel }: { slides: ReactNode[]; ariaLabel: string }) {
-  const [index, setIndex] = useState(0);
+function Carousel({ slides }: { slides: ReactNode[] }) {
+  const ref = useRef<ComponentRef<typeof AntCarousel>>(null);
+  const [active, setActive] = useState(0);
   const count = slides.length;
 
   if (count === 0) return null;
 
-  const active = Math.min(index, count - 1);
-  const go = (delta: number) =>
-    setIndex((prev) => (Math.min(prev, count - 1) + delta + count) % count);
-
   return (
-    <div aria-label={ariaLabel} aria-roledescription="carousel">
-      <div>{slides[active]}</div>
+    <div>
+      <AntCarousel ref={ref} dots={false} afterChange={setActive}>
+        {slides}
+      </AntCarousel>
       {count > 1 && (
         <div className="mt-3 flex items-center justify-center gap-4">
           <button
             type="button"
-            onClick={() => go(-1)}
+            onClick={() => ref.current?.prev()}
             aria-label="Previous"
             className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
           >
@@ -61,7 +60,7 @@ function Carousel({ slides, ariaLabel }: { slides: ReactNode[]; ariaLabel: strin
               <button
                 key={i}
                 type="button"
-                onClick={() => setIndex(i)}
+                onClick={() => ref.current?.goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === active}
                 className={`h-1.5 rounded-full transition-all ${
@@ -72,7 +71,7 @@ function Carousel({ slides, ariaLabel }: { slides: ReactNode[]; ariaLabel: strin
           </div>
           <button
             type="button"
-            onClick={() => go(1)}
+            onClick={() => ref.current?.next()}
             aria-label="Next"
             className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
           >
@@ -84,36 +83,17 @@ function Carousel({ slides, ariaLabel }: { slides: ReactNode[]; ariaLabel: strin
   );
 }
 
-/** Section heading: flag + label, with optional trailing content (e.g. an average). */
-function SectionHeader({
-  country,
-  label,
-  extra,
-}: {
-  country?: string;
-  label: string;
-  extra?: ReactNode;
-}) {
-  return (
-    <div className="mb-4 flex items-center gap-2">
-      {country && <CountryFlag country={country} className="h-5 w-8" />}
-      <span className="text-sm font-semibold text-muted">{label}</span>
-      {extra}
-    </div>
-  );
-}
-
 /** One name slide: "Name (country): meaning" above its image. */
 function NameSlide({ name }: { name: TyphoonName }) {
   return (
     <div className="px-2">
-      <p className="mb-3 text-center leading-relaxed">
+      <p className="text-sm mb-3 text-center leading-relaxed">
         <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
-        {name.country && <span className="text-sm text-muted"> ({name.country})</span>}
-        {name.meaning && <span className="text-sm text-teal-600 italic">: {name.meaning}</span>}
+        {name.country && <span className="text-muted"> ({name.language}): </span>}
+        {name.meaning && <span className="text-muted italic">{name.meaning}</span>}
       </p>
-      <div className="relative mx-auto aspect-[4/3] w-full max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-        {name.image ? (
+      {name.image && (
+        <div className="relative mx-auto aspect-4/3 w-full max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
           <ImageWithLoader
             src={name.image}
             alt={name.name}
@@ -121,17 +101,14 @@ function NameSlide({ name }: { name: TyphoonName }) {
             className="object-contain"
             unoptimized
           />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-muted">No image</div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-/** One storm slide: track map with the intensity label and date as its caption. */
 function StormSlide({ storm }: { storm: Storm }) {
-  const accent = BACKGROUND_BADGE[storm.intensity];
+  const accent = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const dateRange = formatStormDateRange(
     storm.year,
@@ -144,13 +121,10 @@ function StormSlide({ storm }: { storm: Storm }) {
   const hasMap = !!storm.map && storm.map.trim() !== "";
 
   return (
-    <div
-      className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
-      style={{ borderLeftWidth: 4, borderLeftColor: accent }}
-    >
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div className="p-3">
-        <div className="relative h-56 w-full overflow-hidden rounded-md bg-slate-50">
-          {hasMap ? (
+        <div className="relative aspect-4/3 w-full overflow-hidden rounded-md bg-slate-50">
+          {hasMap && (
             <ImageWithLoader
               src={storm.map}
               alt={`${storm.name} ${storm.year} track`}
@@ -158,15 +132,13 @@ function StormSlide({ storm }: { storm: Storm }) {
               className="object-contain"
               unoptimized
             />
-          ) : (
-            <div className="flex h-full items-center justify-center text-xs text-muted">
-              No track map
-            </div>
           )}
         </div>
         <div className="mt-2 space-y-0.5">
-          <div className="text-sm font-bold text-muted">{label}</div>
-          <div className="flex items-center gap-1 text-xs text-muted">
+          <div className="text-sm font-bold" style={{ color: accent }}>
+            {label}
+          </div>
+          <div className="flex items-center gap-1 text-sm text-muted">
             <Calendar size={12} />
             {dateRange || "Date unknown"}
           </div>
@@ -194,33 +166,33 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       : "#64748b";
 
   const title: ReactNode = (
-    <span className="text-2xl font-bold" style={{ color: titleColor }}>
-      {positionTitle}
-    </span>
+    <div className="flex items-center gap-3">
+      {isInternal && country && <CountryFlag country={country} className="h-6 w-9" />}
+      <span className="text-2xl font-bold" style={{ color: titleColor }}>
+        {positionTitle}
+      </span>
+    </div>
   );
 
   const stormsPanel = (
     <div>
-      <SectionHeader
-        country={isInternal ? country : undefined}
-        label={`Storms (${storms.length})`}
-        extra={
-          storms.length > 0 ? (
-            <span className="text-xs text-muted">
-              Avg{" "}
-              <span
-                className="font-bold"
-                style={{
-                  color:
-                    TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))],
-                }}
-              >
-                {calculateAverage(storms).toFixed(2)}
-              </span>
+      {storms.length > 0 && (
+        <div className="mb-4 flex items-baseline justify-between gap-2">
+          <span className="text-lg font-bold text-muted">All Storms ({storms.length})</span>
+          <span className="text-sm text-muted">
+            Overall Avg:{" "}
+            <span
+              className="font-bold"
+              style={{
+                color:
+                  TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))],
+              }}
+            >
+              {calculateAverage(storms).toFixed(2)}
             </span>
-          ) : undefined
-        }
-      />
+          </span>
+        </div>
+      )}
       {storms.length === 0 ? (
         <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
       ) : (
@@ -230,24 +202,27 @@ export default function PositionModal({ detail, position, isError = false }: Pos
               const sorted = [...group].sort((a, b) => a.year - b.year);
               const average = calculateAverage(sorted);
               const groupColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)];
+              const groupAccent = BACKGROUND_BADGE[getIntensityFromNumber(average)];
               return (
                 <div key={name}>
-                  <div className="mb-2 flex items-baseline justify-between gap-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-semibold" style={{ color: groupColor }}>
-                        {name}
+                  <div
+                    className="mb-2 flex items-center justify-between gap-2 rounded-md bg-slate-50 py-2 pr-4 pl-3"
+                    style={{ borderLeftWidth: 4, borderLeftColor: groupAccent }}
+                  >
+                    <span className="font-semibold text-muted">{name}</span>
+                    <span className="flex items-center gap-4 text-sm text-muted">
+                      <span>
+                        Count: <span className="font-medium text-muted">{sorted.length}</span>
                       </span>
-                      <span className="text-xs text-muted">{sorted.length}</span>
-                    </div>
-                    <span className="text-sm text-muted">
-                      avg:{" "}
-                      <span className="font-bold" style={{ color: groupColor }}>
-                        {average.toFixed(2)}
+                      <span>
+                        Avg:{" "}
+                        <span className="font-bold" style={{ color: groupColor }}>
+                          {average.toFixed(2)}
+                        </span>
                       </span>
                     </span>
                   </div>
                   <Carousel
-                    ariaLabel={`${name} storms`}
                     slides={sorted.map((storm, idx) => (
                       <StormSlide key={idx} storm={storm} />
                     ))}
@@ -267,21 +242,19 @@ export default function PositionModal({ detail, position, isError = false }: Pos
     content = <FrownError />;
   } else if (isEmpty) {
     content = <EmptyResults icon={SearchX} description="No data recorded for this position yet." />;
-  } else if (isInternal) {
+  } else {
     const tabs: Tab<TabType>[] = [
       {
         key: "names",
         label: `Names (${names.length})`,
         content: (
           <div>
-            <SectionHeader country={country} label={`Names (${names.length})`} />
             {names.length === 0 ? (
               <p className="py-4 text-center text-muted">
                 No names have been assigned to this slot.
               </p>
             ) : (
               <Carousel
-                ariaLabel="Names"
                 slides={names.map((name) => (
                   <NameSlide key={name.id} name={name} />
                 ))}
@@ -304,13 +277,10 @@ export default function PositionModal({ detail, position, isError = false }: Pos
         />
       </div>
     );
-  } else {
-    // External positions (CPHC / NHC / IMD) have no naming roster — storms only.
-    content = <div className="pt-4">{stormsPanel}</div>;
   }
 
   return (
-    <DefModal onClose={() => router.back()} width={720} title={title}>
+    <DefModal onClose={() => router.back()} title={title}>
       {content}
     </DefModal>
   );
