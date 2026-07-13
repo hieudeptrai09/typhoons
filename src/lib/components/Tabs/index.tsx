@@ -46,7 +46,7 @@ const Tabs = <T extends string = string>({
         ))}
       </div>
 
-      <div className="grid">
+      <div className="grid grid-cols-1">
         {tabs.map((tab) => {
           const isActive = tab.key === activeTab;
           return (

@@ -7,6 +7,7 @@ import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Button, Modal } from "antd";
 import { Waves } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 interface ActiveStorm {
@@ -102,13 +103,13 @@ const ActiveStorms = () => {
                 return (
                   <li key={i} className="text-sm leading-relaxed text-muted">
                     {label}{" "}
-                    <a
+                    <Link
                       href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
                       className="font-bold"
                       style={{ color }}
                     >
                       {storm.name}
-                    </a>
+                    </Link>
                     {range ? (
                       <>
                         <span className="text-muted"> ({range})</span>

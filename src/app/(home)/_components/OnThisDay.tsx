@@ -6,6 +6,7 @@ import type { IntensityType } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button, Modal } from "antd";
 import { Calendar, LogIn, LogOut, Play, RefreshCw, Square } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 interface OnThisDayStorm {
@@ -143,13 +144,13 @@ const OnThisDay = () => {
                     </Icon>
                     <span>
                       {eventYear}: {label}{" "}
-                      <a
+                      <Link
                         href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
                         className="font-bold"
                         style={{ color }}
                       >
                         {storm.name}
-                      </a>{" "}
+                      </Link>{" "}
                       {verb}
                     </span>
                   </li>
