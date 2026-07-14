@@ -33,7 +33,7 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: SearchResult) => (
-      <span className="font-semibold text-blue-600">
+      <span className="text-blue-600">
         <HighlightedName name={record.name} query={query} />
       </span>
     ),

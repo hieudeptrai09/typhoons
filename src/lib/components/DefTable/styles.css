@@ -18,13 +18,14 @@
   text-decoration: underline !important;
 }
 
-/* Sorted column: white rows → sky-50, sky-100 rows → sky-200 */
+/* Neutralize the sorted column: match the zebra striping so sorted looks
+   identical to unsorted (overrides antd's default sorted-column tint) */
 .typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
-  background-color: #f0f9ff !important; /* sky-50 — subtle on white rows */
+  background-color: #ffffff !important; /* white rows */
 }
 
 .typhoon-table .ant-table-tbody tr:nth-child(odd) td.ant-table-column-sort {
-  background-color: #bae6fd !important; /* sky-200 */
+  background-color: #e0f2fe !important; /* sky-100 rows */
 }
 
 /* Hover: zinc-200 for all cells on the hovered row */

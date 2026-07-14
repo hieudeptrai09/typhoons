@@ -11,9 +11,9 @@ const HighlightedName = ({
   if (idx === -1) return <span className={className}>{name}</span>;
   return (
     <span className={className}>
-      {name.slice(0, idx)}
-      <span className="bg-yellow-300">{name.slice(idx, idx + query.length)}</span>
-      {name.slice(idx + query.length)}
+      <span className="font-normal">{name.slice(0, idx)}</span>
+      <span className="font-bold">{name.slice(idx, idx + query.length)}</span>
+      <span className="font-normal">{name.slice(idx + query.length)}</span>
     </span>
   );
 };
