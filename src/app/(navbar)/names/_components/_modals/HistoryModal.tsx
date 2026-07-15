@@ -1,8 +1,5 @@
 import DefModal from "@/lib/components/DefModal";
-import FrownError from "@/lib/components/FrownError";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
-import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { useFetchData } from "@/lib/hooks/useFetchData";
 import type { BaseModalProps, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
@@ -13,33 +10,17 @@ import { useState } from "react";
 interface HistoryModalProps extends BaseModalProps {
   position: number;
   positionNames: TyphoonName[];
+  storms: StormHistoryEntry[];
 }
 
-const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModalProps) => {
+const HistoryModal = ({ isOpen, onClose, position, positionNames, storms }: HistoryModalProps) => {
   const [expandedState, setExpandedState] = useState<{ position: number; nameId: number } | null>(
     null,
-  );
-
-  const {
-    data: stormsRaw,
-    loading,
-    error,
-    refetch,
-  } = useFetchData<StormHistoryEntry[]>(
-    isOpen && position ? `/api/history?position=${position}` : "",
   );
 
   if (!isOpen) return null;
 
   const expandedNameId = expandedState?.position === position ? expandedState.nameId : null;
-
-  const isStormsReady =
-    !loading &&
-    (stormsRaw == null ||
-      stormsRaw.length === 0 ||
-      stormsRaw.every((s) => s.position === position));
-
-  const storms = isStormsReady ? (stormsRaw ?? []) : [];
 
   const stormsByName: Record<string, StormHistoryEntry[]> = {};
   storms.forEach((storm) => {
@@ -74,13 +55,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
       title={<span className="text-2xl font-bold text-foreground">{positionTitle}</span>}
     >
       <div className="pt-4">
-        {loading || !isStormsReady ? (
-          <div className="flex justify-center py-8">
-            <TyphoonSpinner size="medium" />
-          </div>
-        ) : error ? (
-          <FrownError description="Failed to load storm data." onRetry={refetch} />
-        ) : positionNames.length === 0 ? (
+        {positionNames.length === 0 ? (
           <div className="py-4 text-center text-foreground">No names at this position.</div>
         ) : (
           <div className="space-y-1">

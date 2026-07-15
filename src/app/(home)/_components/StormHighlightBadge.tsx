@@ -1,58 +1,37 @@
-"use client";
-
-import type { StormHighlight } from "@/lib/types";
+import { getStormHighlight } from "@/lib/db/api/getStormHighlight";
 import { capitalize, getPositionTitle } from "@/lib/utils/fns";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const CONTAINER_CLASS = "mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm";
 const PILL_CLASS =
   "inline-flex min-w-26 items-center justify-center gap-1.5 rounded-full bg-white/70 px-3 py-1 shadow-sm";
 
-const StormHighlightBadge = () => {
-  const [highlight, setHighlight] = useState<StormHighlight | null>(null);
-  const [failed, setFailed] = useState(false);
+export const StormHighlightBadgeSkeleton = () => (
+  <div
+    className={`${CONTAINER_CLASS} animate-pulse`}
+    role="status"
+    aria-label="Loading storm highlight"
+  >
+    <span className={`${PILL_CLASS} text-slate-400`} aria-hidden="true">
+      <span className="h-2 w-2 rounded-full bg-slate-300" />…
+    </span>
+    <span className="text-slate-400" aria-hidden="true">
+      …
+    </span>
+    <span className="text-slate-400" aria-hidden="true">
+      …
+    </span>
+  </div>
+);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetch("/api/storm-highlight")
-      .then((res) => res.json())
-      .then((json: { data: StormHighlight | null }) => {
-        if (cancelled) return;
-        if (json.data) {
-          setHighlight(json.data);
-        } else {
-          setFailed(true);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setFailed(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (failed) {
-    return null;
-  }
+const StormHighlightBadge = async () => {
+  // The badge is decorative: a database hiccup should hide it, not fail the homepage.
+  const highlight = await getStormHighlight()
+    .then((res) => res.data)
+    .catch(() => null);
 
   if (!highlight) {
-    return (
-      <div className={CONTAINER_CLASS} role="status" aria-label="Loading storm highlight">
-        <span className={`${PILL_CLASS} text-slate-400`} aria-hidden="true">
-          <span className="h-2 w-2 rounded-full bg-slate-300" />…
-        </span>
-        <span className="text-slate-400" aria-hidden="true">
-          …
-        </span>
-        <span className="text-slate-400" aria-hidden="true">
-          …
-        </span>
-      </div>
-    );
+    return null;
   }
 
   const isActive = highlight.status === "active";

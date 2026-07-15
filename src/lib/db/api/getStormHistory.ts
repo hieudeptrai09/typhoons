@@ -13,16 +13,14 @@ interface StormHistoryRow {
   year: number;
 }
 
-async function queryStormHistory(position: number): Promise<ApiResponse<StormHistoryEntry[]>> {
+async function queryAllStormHistory(): Promise<ApiResponse<StormHistoryEntry[]>> {
   const rows = await sql.query<StormHistoryRow[]>(
     `SELECT
       s.name,
       s.position,
       s.year
     FROM storms s
-    WHERE s.position = $1
     ORDER BY s.year ASC`,
-    [position],
   );
 
   const data: StormHistoryEntry[] = rows.map((row) => ({
@@ -34,6 +32,6 @@ async function queryStormHistory(position: number): Promise<ApiResponse<StormHis
   return { data, count: data.length };
 }
 
-export const getStormHistory = unstable_cache(queryStormHistory, ["getStormHistory"], {
+export const getAllStormHistory = unstable_cache(queryAllStormHistory, ["getAllStormHistory"], {
   revalidate: 3600,
 });

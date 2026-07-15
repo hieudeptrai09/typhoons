@@ -2,7 +2,7 @@
 
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
-import type { RetiredName } from "@/lib/types";
+import type { RetiredName, StormHistoryEntry, SuggestionWithNameId } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
@@ -12,10 +12,17 @@ import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;
+  stormHistory: StormHistoryEntry[];
+  suggestedNames: SuggestionWithNameId[];
   displayPrefs: NamesDisplayPrefs;
 }
 
-const NamesPageContent = ({ allNames, displayPrefs }: NamesPageContentProps) => {
+const NamesPageContent = ({
+  allNames,
+  stormHistory,
+  suggestedNames,
+  displayPrefs,
+}: NamesPageContentProps) => {
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
   const { view: viewMode, showName, showHistory } = slugToParams(slug);
@@ -37,10 +44,15 @@ const NamesPageContent = ({ allNames, displayPrefs }: NamesPageContentProps) => 
   return (
     <PageHeader title={getNamesTitle(viewMode, showHistory ? "true" : "")}>
       {viewMode === "retired" ? (
-        <RetiredView retiredNames={retiredNames} onToggleView={toggleView} />
+        <RetiredView
+          retiredNames={retiredNames}
+          suggestedNames={suggestedNames}
+          onToggleView={toggleView}
+        />
       ) : (
         <NamesView
           allNames={allNames}
+          stormHistory={stormHistory}
           viewMode={viewMode}
           showName={showName}
           showHistory={showHistory}

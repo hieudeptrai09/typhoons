@@ -4,6 +4,7 @@ import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { Button, Modal } from "antd";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
+import { fetchRandomFact } from "../_actions";
 
 const FunFacts = () => {
   const [loading, setLoading] = useState(false);
@@ -11,9 +12,7 @@ const FunFacts = () => {
   const showFact = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/facts");
-      const json = await res.json();
-      const fact: string | null = json.data ?? null;
+      const fact = await fetchRandomFact();
 
       Modal.info({
         title: "Did you know?",

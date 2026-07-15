@@ -1,9 +1,6 @@
 "use client";
 
-import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
-import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { useFetchData } from "@/lib/hooks/useFetchData";
 import { Input } from "antd";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -37,7 +34,12 @@ const VARIANT_CONFIG: Record<
   },
 };
 
-const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
+interface SearchBarProps {
+  variant: SearchBarVariant;
+  allNames: string[];
+}
+
+const SearchBar = ({ variant, allNames }: SearchBarProps) => {
   const config = VARIANT_CONFIG[variant];
   const statusId = `${variant}-search-status`;
 
@@ -46,13 +48,10 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: allNames, loading, error, refetch } = useFetchData<string[]>("/api/search/names");
-
   const trimmed = query.trim();
-  const filtered =
-    trimmed && allNames
-      ? allNames.filter((name) => name.toLowerCase().includes(trimmed.toLowerCase()))
-      : [];
+  const filtered = trimmed
+    ? allNames.filter((name) => name.toLowerCase().includes(trimmed.toLowerCase()))
+    : [];
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -106,15 +105,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
           role="listbox"
           aria-label="Search results"
         >
-          {loading ? (
-            <div id={statusId} className="flex justify-center py-4">
-              <TyphoonSpinner size="small" />
-            </div>
-          ) : error ? (
-            <div id={statusId}>
-              <FrownError description="Failed to load search results." onRetry={refetch} />
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div id={statusId} className="px-4 py-3 text-sm text-foreground">
               No results found
             </div>

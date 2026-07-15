@@ -1,6 +1,6 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultTyphoonName } from "@/lib/constants";
-import type { FilterParams, TyphoonName } from "@/lib/types";
+import type { FilterParams, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, Settings, Skull } from "lucide-react";
@@ -28,6 +28,7 @@ interface NameFilterValues {
 
 interface NamesViewProps {
   allNames: TyphoonName[];
+  stormHistory: StormHistoryEntry[];
   viewMode: string;
   showName: boolean;
   showHistory: boolean;
@@ -90,6 +91,7 @@ const getFirstAvailableLetter = (letterStatusMap: Record<string, [boolean, boole
 
 const NamesView = ({
   allNames,
+  stormHistory,
   viewMode,
   showName,
   showHistory,
@@ -124,6 +126,16 @@ const NamesView = ({
   const settings: DisplaySettings = { ...prefs, showName, showHistory };
 
   const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
+
+  const stormsByPosition = useMemo(
+    () =>
+      stormHistory.reduce<Record<number, StormHistoryEntry[]>>((acc, storm) => {
+        if (!acc[storm.position]) acc[storm.position] = [];
+        acc[storm.position].push(storm);
+        return acc;
+      }, {}),
+    [stormHistory],
+  );
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -370,6 +382,7 @@ const NamesView = ({
         isOpen={isHistoryModalOpen}
         position={historyPosition}
         positionNames={historyPositionNames}
+        storms={stormsByPosition[historyPosition] ?? []}
         onClose={() => setIsHistoryModalOpen(false)}
       />
     </>

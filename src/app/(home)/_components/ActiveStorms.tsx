@@ -2,25 +2,16 @@
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
-import type { IntensityType } from "@/lib/types";
+import type { ActiveOnThisDayStorm } from "@/lib/db/api/getActiveOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
 import { Button, Modal } from "antd";
 import { Waves } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { fetchActiveOnThisDay } from "../_actions";
 
-interface ActiveStorm {
-  name: string;
-  intensity: IntensityType;
-  position: number;
-  year: number;
-  monthStart: number;
-  dateStart: number;
-  monthEnd: number;
-  dateEnd: number;
-  isFromPrevYear: number;
-}
+type ActiveStorm = ActiveOnThisDayStorm;
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -61,9 +52,8 @@ const ActiveStorms = () => {
   const fetchStorms = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/active-on-this-day");
-      const json = await res.json();
-      const storms: ActiveStorm[] = json.data ?? [];
+      const today = new Date();
+      const storms = await fetchActiveOnThisDay(today.getDate(), today.getMonth() + 1);
 
       if (storms.length === 0) {
         Modal.info({

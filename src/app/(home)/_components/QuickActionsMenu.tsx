@@ -8,7 +8,7 @@ import ActiveStorms from "./ActiveStorms";
 import FunFacts from "./FunFacts";
 import OnThisDay from "./OnThisDay";
 
-const QuickActionsMenu = () => {
+const QuickActionsMenu = ({ allNames }: { allNames: string[] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +25,7 @@ const QuickActionsMenu = () => {
   return (
     <div ref={containerRef} className="relative mb-4 flex w-full max-w-sm items-center gap-2">
       <div className="min-w-0 flex-1">
-        <SearchBar variant="home" />
+        <SearchBar variant="home" allNames={allNames} />
       </div>
 
       <Button

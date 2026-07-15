@@ -1,7 +1,6 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultRetiredName } from "@/lib/constants";
-import { useFetchData } from "@/lib/hooks/useFetchData";
-import type { RetiredFilterParams, RetiredName, Suggestion } from "@/lib/types";
+import type { RetiredFilterParams, RetiredName, SuggestionWithNameId } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, List } from "lucide-react";
@@ -14,6 +13,7 @@ import { paramsToPath } from "../../_utils/fns";
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];
+  suggestedNames: SuggestionWithNameId[];
   onToggleView: () => void;
 }
 
@@ -22,7 +22,7 @@ const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) =
   return allLetters.find((letter) => availableLettersMap[letter]) ?? "A";
 };
 
-const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
+const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -39,17 +39,17 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
   const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
   const [isRetiredNameModalOpen, setIsRetiredNameModalOpen] = useState(false);
 
-  const {
-    data: suggestionsRaw = [],
-    loading: suggestionsLoading,
-    error: suggestionsError,
-    refetch: suggestionsRefetch,
-  } = useFetchData<Suggestion[]>(
-    selectedRetiredName.id ? `/api/suggested-names?nameId=${selectedRetiredName.id}` : "",
+  const suggestionsByNameId = useMemo(
+    () =>
+      suggestedNames.reduce<Record<number, SuggestionWithNameId[]>>((acc, suggestion) => {
+        if (!acc[suggestion.nameId]) acc[suggestion.nameId] = [];
+        acc[suggestion.nameId].push(suggestion);
+        return acc;
+      }, {}),
+    [suggestedNames],
   );
 
-  const isSuggestionsReady = !suggestionsLoading;
-  const suggestions = isSuggestionsReady ? (suggestionsRaw ?? []) : [];
+  const suggestions = suggestionsByNameId[selectedRetiredName.id] ?? [];
 
   const countries = useMemo(
     () => [...new Set(retiredNames.map((n) => n.country))].sort(),
@@ -210,9 +210,6 @@ const RetiredView = ({ retiredNames, onToggleView }: RetiredViewProps) => {
         isOpen={isRetiredNameModalOpen}
         selectedName={selectedRetiredName}
         suggestions={suggestions}
-        suggestionsLoading={suggestionsLoading || !isSuggestionsReady}
-        suggestionsError={suggestionsError}
-        suggestionsRefetch={suggestionsRefetch}
         onClose={() => setIsRetiredNameModalOpen(false)}
       />
     </>

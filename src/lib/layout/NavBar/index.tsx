@@ -9,7 +9,7 @@ import MenuToggle from "./MenuToggle";
 import MobileNav from "./MobileNav";
 import NavLink from "./NavLink";
 
-const Navbar = () => {
+const Navbar = ({ allNames }: { allNames: string[] }) => {
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -43,7 +43,7 @@ const Navbar = () => {
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />
 
           <div className="mx-2 min-w-0 flex-1 md:mx-4 md:max-w-md">
-            <SearchBar variant="navbar" />
+            <SearchBar variant="navbar" allNames={allNames} />
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">

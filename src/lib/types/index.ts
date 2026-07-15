@@ -26,6 +26,10 @@ export interface Suggestion {
   image?: string;
 }
 
+export interface SuggestionWithNameId extends Suggestion {
+  nameId: number;
+}
+
 export interface Storm {
   name: string;
   year: number;

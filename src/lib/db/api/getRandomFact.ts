@@ -1,4 +1,5 @@
 import sql, { type QueryParam } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 
 type Row = Record<string, unknown>;
 
@@ -731,8 +732,12 @@ async function generateFacts(): Promise<string[]> {
   return facts;
 }
 
+// The fact list costs dozens of queries to build but only changes with the data, so it is cached
+// and the random pick happens per call — every click still gets a fresh fact.
+const getFacts = unstable_cache(generateFacts, ["generateFacts"], { revalidate: 3600 });
+
 export async function getRandomFact(): Promise<{ data: string | null }> {
-  const facts = await generateFacts();
+  const facts = await getFacts();
   if (facts.length === 0) {
     return { data: null };
   }

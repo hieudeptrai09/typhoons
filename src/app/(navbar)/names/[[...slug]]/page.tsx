@@ -1,3 +1,5 @@
+import { getAllStormHistory } from "@/lib/db/api/getStormHistory";
+import { getAllSuggestedNames } from "@/lib/db/api/getSuggestedNames";
 import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -45,10 +47,25 @@ const NamesPage = async ({ params }: PageProps) => {
     notFound();
   }
 
-  const [result, cookieStore] = await Promise.all([getTyphoonNames(), cookies()]);
+  // Only the history grid and the retired view consume these, and the slug already says which is active.
+  const { view, showHistory } = slugToParams(slug);
+
+  const [result, cookieStore, historyResult, suggestedResult] = await Promise.all([
+    getTyphoonNames(),
+    cookies(),
+    showHistory ? getAllStormHistory() : null,
+    view === "retired" ? getAllSuggestedNames() : null,
+  ]);
   const displayPrefs = parseDisplayPrefs(cookieStore.get(NAMES_DISPLAY_COOKIE)?.value);
 
-  return <NamesPageContent allNames={result?.data ?? null} displayPrefs={displayPrefs} />;
+  return (
+    <NamesPageContent
+      allNames={result?.data ?? null}
+      stormHistory={historyResult?.data ?? []}
+      suggestedNames={suggestedResult?.data ?? []}
+      displayPrefs={displayPrefs}
+    />
+  );
 };
 
 export default NamesPage;

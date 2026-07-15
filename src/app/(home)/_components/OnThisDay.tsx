@@ -2,23 +2,13 @@
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
-import type { IntensityType } from "@/lib/types";
+import type { OnThisDayStorm } from "@/lib/db/api/getOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button, Modal } from "antd";
 import { Calendar, LogIn, LogOut, Play, RefreshCw, Square } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-
-interface OnThisDayStorm {
-  name: string;
-  intensity: IntensityType;
-  position: number;
-  year: number;
-  monthStart: number;
-  monthEnd: number;
-  isFromPrevYear: number;
-  reason: "started" | "ended" | "both";
-}
+import { fetchOnThisDay } from "../_actions";
 
 const EXTERNAL_POSITIONS = [141, 142, 143];
 
@@ -95,9 +85,8 @@ const OnThisDay = () => {
   const fetchStorms = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/on-this-day");
-      const json = await res.json();
-      const storms: OnThisDayStorm[] = json.data ?? [];
+      const today = new Date();
+      const storms = await fetchOnThisDay(today.getDate(), today.getMonth() + 1);
 
       if (storms.length === 0) {
         Modal.info({
@@ -110,7 +99,6 @@ const OnThisDay = () => {
         return;
       }
 
-      const today = new Date();
       const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${today.getDate()}`;
 
       Modal.info({
