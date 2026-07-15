@@ -28,14 +28,6 @@ export const metadata: Metadata = {
     },
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    images: [
-      {
-        url: "/logo.png",
-        width: 400,
-        height: 134,
-        alt: TITLE_COMMON,
-      },
-    ],
     locale: "en_US",
   },
   twitter: {
@@ -45,7 +37,6 @@ export const metadata: Metadata = {
       default: TITLE_COMMON,
     },
     description: SITE_DESCRIPTION,
-    images: ["/logo.png"],
   },
   alternates: {
     canonical: "./",
