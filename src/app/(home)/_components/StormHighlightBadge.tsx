@@ -5,12 +5,13 @@ import { capitalize, getPositionTitle } from "@/lib/utils/fns";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-interface StormHighlightBadgeProps {
-  fallback: StormHighlight;
-}
+const CONTAINER_CLASS = "mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm";
+const PILL_CLASS =
+  "inline-flex min-w-26 items-center justify-center gap-1.5 rounded-full bg-white/70 px-3 py-1 shadow-sm";
 
-const StormHighlightBadge = ({ fallback }: StormHighlightBadgeProps) => {
-  const [highlight, setHighlight] = useState<StormHighlight>(fallback);
+const StormHighlightBadge = () => {
+  const [highlight, setHighlight] = useState<StormHighlight | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,26 +19,47 @@ const StormHighlightBadge = ({ fallback }: StormHighlightBadgeProps) => {
     fetch("/api/storm-highlight")
       .then((res) => res.json())
       .then((json: { data: StormHighlight | null }) => {
-        if (!cancelled && json.data) {
+        if (cancelled) return;
+        if (json.data) {
           setHighlight(json.data);
+        } else {
+          setFailed(true);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
 
     return () => {
       cancelled = true;
     };
   }, []);
 
+  if (failed) {
+    return null;
+  }
+
+  if (!highlight) {
+    return (
+      <div className={CONTAINER_CLASS} role="status" aria-label="Loading storm highlight">
+        <span className={`${PILL_CLASS} text-slate-400`} aria-hidden="true">
+          <span className="h-2 w-2 rounded-full bg-slate-300" />…
+        </span>
+        <span className="text-slate-400" aria-hidden="true">
+          …
+        </span>
+        <span className="text-slate-400" aria-hidden="true">
+          …
+        </span>
+      </div>
+    );
+  }
+
   const isActive = highlight.status === "active";
 
   return (
-    <div className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
-      <span
-        className={`inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 shadow-sm ${
-          isActive ? "text-red-600" : "text-blue-600"
-        }`}
-      >
+    <div className={CONTAINER_CLASS}>
+      <span className={`${PILL_CLASS} ${isActive ? "text-red-600" : "text-blue-600"}`}>
         <span
           className={`h-2 w-2 rounded-full ${isActive ? "bg-red-500" : "bg-blue-500"}`}
           aria-hidden="true"

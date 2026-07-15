@@ -1,11 +1,8 @@
 import Footer from "@/lib/layout/Footer";
-import type { StormHighlight } from "@/lib/types";
 import Image from "next/image";
 import Menu from "./_components/Menu";
 import QuickActionsMenu from "./_components/QuickActionsMenu";
 import StormHighlightBadge from "./_components/StormHighlightBadge";
-
-const FALLBACK_HIGHLIGHT: StormHighlight = { name: "damrey", position: 1, status: "next" };
 
 const HomePage = () => {
   return (
@@ -24,7 +21,7 @@ const HomePage = () => {
           Track typhoons and explore their names
         </p>
 
-        <StormHighlightBadge fallback={FALLBACK_HIGHLIGHT} />
+        <StormHighlightBadge />
 
         <QuickActionsMenu />
 
