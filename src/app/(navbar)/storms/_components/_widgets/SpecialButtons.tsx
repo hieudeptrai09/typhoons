@@ -19,8 +19,8 @@ const SpecialButtons = ({
     if (distanceValues && distanceValues[buttonId] !== undefined) {
       const dist = distanceValues[buttonId];
       return {
-        color: dist === 0 ? "#9ca3af" : getDistanceColor(dist),
-        suffix: dist === 0 ? "" : ` · ${dist.toFixed(2)}y`,
+        color: getDistanceColor(dist),
+        suffix: dist < 0 ? "" : ` · ${dist.toFixed(2)}y`,
       };
     }
     if (isAverageView && averageValues && averageValues[buttonId]) {

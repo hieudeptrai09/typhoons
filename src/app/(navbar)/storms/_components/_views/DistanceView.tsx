@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import DistanceGrid from "../_widgets/grids/DistanceGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
+import DistanceNameGrid from "./DistanceNameGrid";
 
 interface DistanceViewProps {
   params: DashboardParams;
@@ -32,10 +33,7 @@ const DistanceCell = ({
   distanceNumber: number;
   distance: string;
 }) => (
-  <span
-    className="font-semibold"
-    style={{ color: distanceNumber === 0 ? "#9ca3af" : getDistanceColor(distanceNumber) }}
-  >
+  <span className="font-semibold" style={{ color: getDistanceColor(distanceNumber) }}>
     {distance}
   </span>
 );
@@ -151,6 +149,10 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     });
     return result;
   }, [distanceMap, filterType]);
+
+  if (params.mode === "table" && filterType === "name") {
+    return <DistanceNameGrid stormsData={stormsData} onCellClick={onCellClick} />;
+  }
 
   // position + table → special buttons + distance grid
   if (params.mode === "table" && filterType === "position") {

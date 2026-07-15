@@ -37,10 +37,17 @@ export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
 
 // --- Distance colors ---
 
+export const DISTANCE_NA_COLOR = "#6b7280";
+export const DISTANCE_SHORT_COLOR = "#dc2626";
+export const DISTANCE_STANDARD_COLOR = "#4d7c0f";
+export const DISTANCE_LONG_COLOR = "#2563eb";
+
+// A negative gap means there is nothing to measure against, so 0 stays free to mean a real same-year gap.
 export const getDistanceColor = (years: number): string => {
-  if (years < 6.0) return "#dc2626";
-  if (years === 6.0) return "#6b7280";
-  return "#2563eb";
+  if (years < 0) return DISTANCE_NA_COLOR;
+  if (years < 6.0) return DISTANCE_SHORT_COLOR;
+  if (years === 6.0) return DISTANCE_STANDARD_COLOR;
+  return DISTANCE_LONG_COLOR;
 };
 
 // --- Name status colors ---

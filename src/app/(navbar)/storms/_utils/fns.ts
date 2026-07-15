@@ -40,9 +40,7 @@ export const isValidStormsSlug = (slug: string[] = []): boolean => {
 };
 
 export const isListOnly = (view: string, filter: string): boolean =>
-  (view === "average" && filter === "country") ||
-  (view === "average" && filter === "month") ||
-  (view === "distance" && filter === "name");
+  (view === "average" && filter === "country") || (view === "average" && filter === "month");
 
 export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
@@ -108,6 +106,17 @@ export const calculateAverage = (storms: Storm[]): number => {
   return sum / storms.length;
 };
 
+export const calculateGapAverage = (storms: Storm[]): number => {
+  const years = storms.map((s) => s.year).sort((a, b) => a - b);
+  if (years.length <= 1) return -1;
+
+  const gaps: number[] = [];
+  for (let i = 1; i < years.length; i++) {
+    gaps.push(years[i] - years[i - 1]);
+  }
+  return gaps.reduce((a, b) => a + b, 0) / gaps.length;
+};
+
 export const calculateDistances = (
   stormsData: Storm[],
   groupBy: "position" | "name",
@@ -116,22 +125,13 @@ export const calculateDistances = (
   const result: Record<string, number> = {};
 
   Object.entries(grouped).forEach(([key, groupStorms]) => {
-    const years = groupStorms.map((s) => s.year).sort((a, b) => a - b);
-    if (years.length <= 1) {
-      result[key] = 0;
-      return;
-    }
-    const gaps: number[] = [];
-    for (let i = 1; i < years.length; i++) {
-      gaps.push(years[i] - years[i - 1]);
-    }
-    result[key] = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+    result[key] = calculateGapAverage(groupStorms);
   });
 
   return result;
 };
 
-export const formatDistance = (dist: number): string => (dist === 0 ? "N/A" : dist.toFixed(2));
+export const formatDistance = (dist: number): string => (dist < 0 ? "N/A" : dist.toFixed(2));
 
 export const sortNamesByFirstYear = (entries: [string, Storm[]][]): [string, Storm[]][] =>
   [...entries].sort(

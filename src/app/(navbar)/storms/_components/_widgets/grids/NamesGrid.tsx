@@ -1,20 +1,15 @@
 import type { Storm } from "@/lib/types";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo } from "react";
-import {
-  calculateAverage,
-  getIntensityFromNumber,
-  sortNamesByFirstYear,
-} from "../../../_utils/fns";
+import { sortNamesByFirstYear } from "../../../_utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface NamesGridProps {
   stormsData: Storm[];
   onCellClick: (data: number | string, key: string) => void;
-  nameAverageValues?: Record<string, number>;
+  nameColors?: Record<string, string>;
 }
 
-const NamesGrid = ({ stormsData, onCellClick, nameAverageValues }: NamesGridProps) => {
+const NamesGrid = ({ stormsData, onCellClick, nameColors }: NamesGridProps) => {
   const stormsByPosition = useMemo<Record<number, Storm[]>>(
     () =>
       stormsData.reduce<Record<number, Storm[]>>((acc, storm) => {
@@ -35,14 +30,10 @@ const NamesGrid = ({ stormsData, onCellClick, nameAverageValues }: NamesGridProp
       return acc;
     }, {});
 
-    return sortNamesByFirstYear(Object.entries(nameMap)).map(([name, nameStorms]) => {
-      let color = "#374151";
-      if (nameAverageValues) {
-        const avg = nameAverageValues[name] ?? calculateAverage(nameStorms);
-        color = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(avg)];
-      }
-      return { name, color };
-    });
+    return sortNamesByFirstYear(Object.entries(nameMap)).map(([name]) => ({
+      name,
+      color: nameColors?.[name] ?? "#374151",
+    }));
   };
 
   return (

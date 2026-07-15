@@ -1,7 +1,6 @@
 "use client";
 
 import FrownError from "@/lib/components/FrownError";
-import IntensityLegend from "@/lib/components/IntensityLegend";
 import PageHeader from "@/lib/components/PageHeader";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
@@ -9,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import DashboardModal from "./_components/_modals/DashboardModal";
+import DistanceModal from "./_components/_modals/DistanceModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import AverageView from "./_components/_views/AverageView";
@@ -16,8 +16,11 @@ import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
 import DashboardViewButton from "./_components/_widgets/DashboardViewButton";
+import GapLegend from "./_components/_widgets/GapLegend";
+import IntensityLegend from "./_components/_widgets/IntensityLegend";
 import {
   calculateAverage,
+  calculateGapAverage,
   getDashboardTitle,
   getEffectiveMonth,
   getGroupedStorms,
@@ -46,6 +49,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
+  const [isDistanceModalOpen, setIsDistanceModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
   const currentParams: DashboardParams = slugToParams(slug);
@@ -113,11 +117,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Distance view: clicking a position or name opens the storm detail modal
+    // Distance view: clicking a position or name opens the gap timeline
     if (view === "distance") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
-      setSelectedData({ title, storms });
-      setIsDetailModalOpen(true);
+      setSelectedData({ title, storms, average: calculateGapAverage(storms) });
+      setIsDistanceModalOpen(true);
       return;
     }
 
@@ -211,7 +215,15 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         avgIntensity={selectedData?.avgIntensity || 0}
       />
 
-      <IntensityLegend />
+      <DistanceModal
+        isOpen={isDistanceModalOpen}
+        onClose={() => setIsDistanceModalOpen(false)}
+        title={selectedData?.title || ""}
+        storms={selectedData?.storms || []}
+        average={selectedData?.average ?? -1}
+      />
+
+      {view === "distance" ? <GapLegend /> : <IntensityLegend />}
     </PageHeader>
   );
 }

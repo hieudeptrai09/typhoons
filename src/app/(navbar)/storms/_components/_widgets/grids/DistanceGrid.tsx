@@ -22,7 +22,7 @@ const DistanceGrid = ({
     renderCell={(position) => {
       const dist = distanceValues?.[position];
       const color = dist !== undefined ? getDistanceColor(dist) : "#9ca3af";
-      const label = dist === undefined ? "—" : dist === 0 ? "N/A" : `${dist.toFixed(2)}y`;
+      const label = dist === undefined ? "—" : dist < 0 ? "N/A" : `${dist.toFixed(2)}y`;
       return {
         content: (
           <div className="text-center text-sm font-bold" style={{ color }}>

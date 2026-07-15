@@ -54,9 +54,7 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
     setView(newView);
     setFilter(defaultFilter);
 
-    if (newView === "distance" && defaultFilter === "name") {
-      setMode("list");
-    } else if (newView === "average" && defaultFilter === "country") {
+    if (newView === "average" && defaultFilter === "country") {
       setMode("list");
     } else {
       setMode("table");
@@ -68,8 +66,6 @@ const DashboardModal = ({ isOpen, onClose, onApply, currentParams }: DashboardMo
     if (view === "storms" && newFilter === "position") {
       setMode("table");
     } else if (view === "average" && (newFilter === "country" || newFilter === "month")) {
-      setMode("list");
-    } else if (view === "distance" && newFilter === "name") {
       setMode("list");
     } else if (view === "distance" && newFilter === "position") {
       setMode("table");

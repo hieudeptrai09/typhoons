@@ -1,24 +1,14 @@
 import type { Storm } from "@/lib/types";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button } from "antd";
-import {
-  calculateAverage,
-  getIntensityFromNumber,
-  sortNamesByFirstYear,
-  SPECIAL_POSITIONS,
-} from "../../_utils/fns";
+import { sortNamesByFirstYear, SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface SpecialNamesListDivProps {
   stormsData: Storm[];
   onNameClick: (name: string, storms: Storm[]) => void;
-  nameAverageValues?: Record<string, number>;
+  nameColors?: Record<string, string>;
 }
 
-const SpecialNamesListDiv = ({
-  stormsData,
-  onNameClick,
-  nameAverageValues,
-}: SpecialNamesListDivProps) => {
+const SpecialNamesListDiv = ({ stormsData, onNameClick, nameColors }: SpecialNamesListDivProps) => {
   const stormsByPosition = SPECIAL_POSITIONS.map(({ id, label }) => {
     const positionStorms = stormsData.filter((s) => s.position === id);
 
@@ -28,14 +18,11 @@ const SpecialNamesListDiv = ({
       return acc;
     }, {});
 
-    const names = sortNamesByFirstYear(Object.entries(nameMap)).map(([name, nameStorms]) => {
-      const color = nameAverageValues
-        ? TEXT_COLOR_WHITE_BACKGROUND[
-            getIntensityFromNumber(nameAverageValues[name] ?? calculateAverage(nameStorms))
-          ]
-        : "#374151";
-      return { name, color, storms: nameStorms };
-    });
+    const names = sortNamesByFirstYear(Object.entries(nameMap)).map(([name, nameStorms]) => ({
+      name,
+      color: nameColors?.[name] ?? "#374151",
+      storms: nameStorms,
+    }));
 
     return { id, label, names };
   });

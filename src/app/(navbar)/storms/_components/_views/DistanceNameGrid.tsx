@@ -1,20 +1,20 @@
 import type { Storm } from "@/lib/types";
-import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { getDistanceColor } from "@/lib/utils/colors";
 import { useMemo } from "react";
 import NamesGrid from "../_widgets/grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
+import { calculateDistances } from "../../_utils/fns";
 
-interface AverageNameGridProps {
+interface DistanceNameGridProps {
   stormsData: Storm[];
   onCellClick: (data: number | string, key: string) => void;
 }
 
-const AverageNameGrid = ({ stormsData, onCellClick }: AverageNameGridProps) => {
+const DistanceNameGrid = ({ stormsData, onCellClick }: DistanceNameGridProps) => {
   const nameColors = useMemo<Record<string, string>>(() => {
     const result: Record<string, string> = {};
-    Object.entries(getGroupedStorms(stormsData, "name")).forEach(([name, storms]) => {
-      result[name] = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))];
+    Object.entries(calculateDistances(stormsData, "name")).forEach(([name, dist]) => {
+      result[name] = getDistanceColor(dist);
     });
     return result;
   }, [stormsData]);
@@ -31,4 +31,4 @@ const AverageNameGrid = ({ stormsData, onCellClick }: AverageNameGridProps) => {
   );
 };
 
-export default AverageNameGrid;
+export default DistanceNameGrid;
