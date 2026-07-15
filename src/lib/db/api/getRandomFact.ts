@@ -17,6 +17,8 @@ const MONTH_NAMES: Record<number, string> = {
   12: "December",
 };
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 function joinNames(items: (string | number)[], joiner = "and"): string {
   const arr = items.map(String);
   if (arr.length === 0) return "";
@@ -25,6 +27,12 @@ function joinNames(items: (string | number)[], joiner = "and"): string {
   const last = arr[arr.length - 1];
   const rest = arr.slice(0, -1);
   return `${rest.join(", ")} ${joiner} ${last}`;
+}
+
+// Builds "<clause>, which is/are <names>." so a count and its name list stay one fact.
+function withNames(clause: string, items: (string | number)[]): string {
+  const verb = items.length === 1 ? "which is" : "which are";
+  return `${clause}, ${verb} ${joinNames(items)}.`;
 }
 
 async function rows(query: string, params: QueryParam[] = []): Promise<Row[]> {
@@ -40,31 +48,27 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Cross-basin facts ---
 
-  let row = await one("SELECT COUNT(*) as cnt FROM storms WHERE position = 141");
-  let cnt = Number(row?.cnt ?? 0);
-  facts.push(
-    `There are ${cnt} names given in Hawaiian by CPHC and crossed into the West Pacific basin.`,
-  );
   let names = (
     await rows("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name")
   ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(
-      `${joinNames(names)} are the names given in Hawaiian by CPHC and crossed into the West Pacific basin.`,
+      withNames(
+        `There are ${names.length} names given in Hawaiian by CPHC that crossed into the West Pacific basin`,
+        names,
+      ),
     );
   }
 
-  row = await one("SELECT COUNT(*) as cnt FROM storms WHERE position = 142");
-  cnt = Number(row?.cnt ?? 0);
-  facts.push(
-    `Besides Li (1994), there are ${cnt} names assigned by NHC that cross 3 Pacific basins.`,
-  );
   names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name")).map(
     (r) => String(r.name),
   );
   if (names.length > 0) {
     facts.push(
-      `Besides Li (1994), ${joinNames(names)} are the names assigned by NHC that cross 3 Pacific basins.`,
+      withNames(
+        `Besides Li (1994), there are ${names.length} names assigned by NHC that cross 3 Pacific basins`,
+        names,
+      ),
     );
   }
 
@@ -73,10 +77,9 @@ async function generateFacts(): Promise<string[]> {
   );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
-    const label = names.length === 1 ? "is the only name" : "are the only names";
-    facts.push(
-      `${joinNames(names)} ${label} that were given to 2 storms crossing 3 Pacific basins.`,
-    );
+    const label =
+      names.length === 1 ? "is the only name that was given" : "are the only names that were given";
+    facts.push(`${joinNames(names)} ${label} to 2 storms crossing 3 Pacific basins.`);
   }
 
   // --- Category 5 from external basins ---
@@ -160,7 +163,7 @@ async function generateFacts(): Promise<string[]> {
       items.length === 1
         ? "is the only record-strength storm"
         : "are the only record-strength storms";
-    facts.push(`${joinNames(items)} ${label} that did not reach category 5.`);
+    facts.push(`Since 2000, ${joinNames(items)} ${label} that did not reach category 5.`);
   }
 
   // --- First storms that are Cat 5 ---
@@ -174,35 +177,62 @@ async function generateFacts(): Promise<string[]> {
       items.length === 1
         ? "is the only season-opening storm"
         : "are the only season-opening storms";
-    facts.push(`${joinNames(items)} ${label} to reach category 5.`);
+    facts.push(`Since 2000, ${joinNames(items)} ${label} to reach category 5.`);
   }
 
   // --- Storms spanning multiple years ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE monthstart IS NOT NULL AND monthend IS NOT NULL AND monthend < monthstart AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM storms WHERE monthstart > 0 AND monthend > 0 AND dateend > 0 AND monthend < monthstart AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
     const label = items.length === 1 ? "is the only storm" : "are the only storms";
-    facts.push(`${joinNames(items)} ${label} that span multiple years.`);
+    facts.push(`Since 2000, ${joinNames(items)} ${label} that span multiple years.`);
+  }
+
+  // --- Longest-lived storm ---
+
+  rowsResult = await rows(`
+    SELECT name, year, datestart, monthstart, dateend, monthend, isfromprevyear
+    FROM storms
+    WHERE position <= 140
+    AND monthstart > 0 AND datestart > 0 AND monthend > 0 AND dateend > 0
+  `);
+  if (rowsResult.length > 0) {
+    // Same start/end convention as getStormRange in ActiveStorms: isfromprevyear shifts the
+    // start back a year, and an end month before the start month means it ran into the next.
+    const durations = rowsResult.map((r) => {
+      const year = Number(r.year);
+      const monthStart = Number(r.monthstart);
+      const startYear = r.isfromprevyear ? year - 1 : year;
+      const startDate = new Date(startYear, monthStart - 1, Number(r.datestart));
+      const endYear = Number(r.monthend) < monthStart ? startYear + 1 : startYear;
+      const endDate = new Date(endYear, Number(r.monthend) - 1, Number(r.dateend));
+      const days = Math.round((endDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
+      return { label: `${r.name} (${year})`, days };
+    });
+    const maxDays = Math.max(...durations.map((d) => d.days));
+    const longest = durations.filter((d) => d.days === maxDays).map((d) => d.label);
+    const label =
+      longest.length === 1
+        ? "is the longest-lived storm, lasting"
+        : "are the longest-lived storms, each lasting";
+    facts.push(`Since 2000, ${joinNames(longest)} ${label} ${maxDays} days.`);
   }
 
   // --- Seasons ending with Cat 5 ---
 
-  row = await one(
-    `SELECT COUNT(*) as cnt FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000`,
-  );
-  cnt = Number(row?.cnt ?? 0);
-  if (cnt > 0) {
-    facts.push(`There are ${cnt} seasons that ended with a category 5 storm.`);
-  }
   rowsResult = await rows(
     `SELECT name, year FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
-    facts.push(`${joinNames(items)} are the season-closing storms that reached category 5.`);
+    facts.push(
+      `Since 2000, there ${items.length === 1 ? "is" : "are"} ${items.length} season${
+        items.length === 1 ? "" : "s"
+      } that ended with a category 5 storm, which ended with ${joinNames(items)}.`,
+    );
   }
 
   // --- Strongest storms in off-season months (per month) ---
@@ -219,7 +249,7 @@ async function generateFacts(): Promise<string[]> {
         items.length === 1
           ? "is the only record-strength storm"
           : "are the only record-strength storms";
-      facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
+      facts.push(`Since 2000, ${joinNames(items)} ${label} to form in ${monthName}.`);
     }
   }
 
@@ -237,25 +267,13 @@ async function generateFacts(): Promise<string[]> {
         items.length === 1
           ? "is the only season-opening storm"
           : "are the only season-opening storms";
-      facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
+      facts.push(`Since 2000, ${joinNames(items)} ${label} to form in ${monthName}.`);
     }
   }
 
   // --- Cat 5 in off-season months (per month) ---
 
   for (const month of [1, 2, 3, 4, 12]) {
-    row = await one(
-      `SELECT COUNT(*) as cnt FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000`,
-      [month],
-    );
-    cnt = Number(row?.cnt ?? 0);
-    if (cnt > 0) {
-      const monthName = MONTH_NAMES[month];
-      const label = cnt === 1 ? "is" : "are";
-      facts.push(
-        `There ${label} ${cnt} category 5 storm${cnt > 1 ? "s" : ""} that formed in ${monthName}.`,
-      );
-    }
     rowsResult = await rows(
       `SELECT name, year FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000 ORDER BY year`,
       [month],
@@ -263,29 +281,19 @@ async function generateFacts(): Promise<string[]> {
     if (rowsResult.length > 0) {
       const items = rowsResult.map((r) => `${r.name} (${r.year})`);
       const monthName = MONTH_NAMES[month];
-      const label =
-        items.length === 1 ? "is the only category 5 storm" : "are the category 5 storms";
-      facts.push(`${joinNames(items)} ${label} to form in ${monthName}.`);
+      facts.push(
+        withNames(
+          `Since 2000, there ${items.length === 1 ? "is" : "are"} only ${
+            items.length
+          } category 5 storm${items.length === 1 ? "" : "s"} that formed in ${monthName}`,
+          items,
+        ),
+      );
     }
   }
 
   // --- Names never reaching typhoon intensity ---
 
-  row = await one(`
-    SELECT COUNT(*) as cnt FROM typhoonnames t
-    WHERE t.position <= 140 AND t.isretired = false
-    AND NOT EXISTS (
-        SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position
-        AND s.year >= 2000 AND s.intensity IN ('1','2','3','4','5')
-    )
-    AND EXISTS (
-        SELECT 1 FROM storms s WHERE s.name = t.name AND s.position = t.position AND s.year >= 2000
-    )
-  `);
-  cnt = Number(row?.cnt ?? 0);
-  if (cnt > 0) {
-    facts.push(`There are ${cnt} storm names that never reached typhoon intensity.`);
-  }
   rowsResult = await rows(`
     SELECT t.name FROM typhoonnames t
     WHERE t.position <= 140 AND t.isretired = false
@@ -298,8 +306,16 @@ async function generateFacts(): Promise<string[]> {
     )
     ORDER BY t.name
   `);
-  for (const r of rowsResult) {
-    facts.push(`${r.name} is a storm name that never reached typhoon intensity.`);
+  if (rowsResult.length > 0) {
+    names = rowsResult.map((r) => String(r.name));
+    facts.push(
+      withNames(
+        `There ${names.length === 1 ? "is" : "are"} ${names.length} storm name${
+          names.length === 1 ? "" : "s"
+        } that never reached typhoon intensity`,
+        names,
+      ),
+    );
   }
 
   // --- Names where ALL appearances are Cat 5 (times >= 2) ---
@@ -346,7 +362,7 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Total names and countries in WPAC ---
 
-  row = await one("SELECT COUNT(*) as cnt FROM typhoonnames WHERE position <= 140");
+  let row = await one("SELECT COUNT(*) as cnt FROM typhoonnames WHERE position <= 140");
   const total = Number(row?.cnt ?? 0);
   row = await one(
     "SELECT COUNT(DISTINCT p.country) as cnt FROM typhoonnames t INNER JOIN positions p ON t.position = p.id WHERE t.position <= 140",
@@ -368,22 +384,6 @@ async function generateFacts(): Promise<string[]> {
   `);
   const maxCount = Number(row?.max_count ?? 0);
   if (maxCount > 0) {
-    row = await one(
-      `
-      SELECT COUNT(*) as cnt FROM (
-          SELECT t.name FROM typhoonnames t
-          INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-          WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
-          GROUP BY t.name, t.position HAVING COUNT(s.id) = $1
-      ) as sub
-      `,
-      [maxCount],
-    );
-    const namesWithMax = Number(row?.cnt ?? 0);
-    facts.push(
-      `${namesWithMax} names have been used ${maxCount} times since 2000 without being retired.`,
-    );
-
     rowsResult = await rows(
       `
       SELECT t.name FROM typhoonnames t
@@ -394,9 +394,13 @@ async function generateFacts(): Promise<string[]> {
       `,
       [maxCount],
     );
-    for (const r of rowsResult) {
+    if (rowsResult.length > 0) {
+      names = rowsResult.map((r) => String(r.name));
       facts.push(
-        `${r.name} is a name that has been used ${maxCount} times since 2000 without being retired.`,
+        withNames(
+          `${names.length} name${names.length === 1 ? " has" : "s have"} been used ${maxCount} times since 2000 without being retired`,
+          names,
+        ),
       );
     }
   }
@@ -437,60 +441,38 @@ async function generateFacts(): Promise<string[]> {
     "SELECT year, COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1",
   );
   if (row) {
-    facts.push(`${row.year} had the most storms of any season, with ${row.cnt}.`);
+    facts.push(`Since 2000, ${row.year} had the most storms of any season, with ${row.cnt}.`);
   }
 
-  row = await one(`
+  // Only compare seasons up to last year.
+  const lastCompleteYear = new Date().getFullYear() - 1;
+  row = await one(
+    `
     SELECT MIN(cnt) as min_cnt FROM (
-        SELECT COUNT(*) as cnt FROM storms WHERE year >= 2000 GROUP BY year
+        SELECT COUNT(*) as cnt FROM storms WHERE year >= 2000 AND year <= $1 GROUP BY year
     ) as sub
-  `);
+  `,
+    [lastCompleteYear],
+  );
   const minYearCnt = Number(row?.min_cnt ?? 0);
   rowsResult = await rows(
-    "SELECT year FROM storms WHERE year >= 2000 GROUP BY year HAVING COUNT(*) = $1 ORDER BY year",
-    [minYearCnt],
+    "SELECT year FROM storms WHERE year >= 2000 AND year <= $1 GROUP BY year HAVING COUNT(*) = $2 ORDER BY year",
+    [lastCompleteYear, minYearCnt],
   );
   const years = rowsResult.map((r) => Number(r.year));
-  {
-    const label = years.length === 1 ? "The year" : "The years";
+  if (years.length > 0) {
+    const label = years.length === 1 ? "the year" : "the years";
     const verb = years.length === 1 ? "is" : "are";
-    facts.push(`${label} with the fewest storms (${minYearCnt}) ${verb} ${joinNames(years)}.`);
+    facts.push(
+      `Between 2000 and ${lastCompleteYear}, ${label} with the fewest storms (${minYearCnt}) ${verb} ${joinNames(years)}.`,
+    );
   }
 
   row = await one(
     "SELECT year, COUNT(*) as cnt FROM storms WHERE intensity = '5' AND year >= 2000 GROUP BY year ORDER BY cnt DESC LIMIT 1",
   );
   if (row) {
-    facts.push(`${row.year} had the most category 5 storms of any season.`);
-  }
-
-  // --- 6-year cycling names ---
-
-  row = await one(`
-    SELECT COUNT(*) as cnt FROM (
-        SELECT t.name FROM typhoonnames t
-        INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-        WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
-        GROUP BY t.name, t.position
-        HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
-    ) as sub
-  `);
-  cnt = Number(row?.cnt ?? 0);
-  if (cnt > 0) {
-    facts.push(`${cnt} names come back on the list exactly every 6 years without being retired.`);
-  }
-  rowsResult = await rows(`
-    SELECT t.name FROM typhoonnames t
-    INNER JOIN storms s ON t.name = s.name AND t.position = s.position
-    WHERE t.isretired = false AND t.position <= 140 AND s.year >= 2000
-    GROUP BY t.name, t.position
-    HAVING COUNT(s.id) >= 4 AND MAX(s.year) - MIN(s.year) = (COUNT(s.id) - 1) * 6
-    ORDER BY t.name
-  `);
-  for (const r of rowsResult) {
-    facts.push(
-      `${r.name} is a name that comes back on the list exactly every 6 years without being retired.`,
-    );
+    facts.push(`Since 2000, ${row.year} had the most category 5 storms of any season.`);
   }
 
   // --- Tag records ---
@@ -515,12 +497,6 @@ async function generateFacts(): Promise<string[]> {
     "SELECT language, COUNT(*) as cnt FROM typhoonnames WHERE position <= 140 GROUP BY language HAVING COUNT(*) <= 3 ORDER BY cnt",
   );
   for (const r of rowsResult) {
-    const rCnt = Number(r.cnt);
-    if (rCnt === 1) {
-      facts.push(`There is only 1 name from the ${r.language} language.`);
-    } else {
-      facts.push(`There are only ${rCnt} names from the ${r.language} language.`);
-    }
     const langNames = (
       await rows(
         "SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 ORDER BY name",
@@ -528,8 +504,14 @@ async function generateFacts(): Promise<string[]> {
       )
     ).map((nr) => String(nr.name));
     if (langNames.length > 0) {
-      const nl = langNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(`${joinNames(langNames)} ${nl} from the ${r.language} language.`);
+      facts.push(
+        withNames(
+          `There ${langNames.length === 1 ? "is" : "are"} only ${langNames.length} name${
+            langNames.length === 1 ? "" : "s"
+          } from the ${r.language} language`,
+          langNames,
+        ),
+      );
     }
   }
 
@@ -540,98 +522,78 @@ async function generateFacts(): Promise<string[]> {
   );
   for (const r of rowsResult) {
     const rCnt = Number(r.cnt);
-    facts.push(`There are ${rCnt} names in the category ${r.tag}.`);
-    if (rCnt <= 3 && rCnt > 0) {
-      const tagNames = (
-        await rows(
-          "SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name",
-          [String(r.tag)],
-        )
-      ).map((nr) => String(nr.name));
-      if (tagNames.length > 0) {
-        const nl = tagNames.length === 1 ? "is the only name" : "are the only names";
-        facts.push(`${joinNames(tagNames)} ${nl} in the category ${r.tag}.`);
-      }
+    if (rCnt > 3) {
+      facts.push(`There are ${rCnt} names in the category ${r.tag}.`);
+      continue;
+    }
+    const tagNames = (
+      await rows("SELECT name FROM typhoonnames WHERE position <= 140 AND tag = $1 ORDER BY name", [
+        String(r.tag),
+      ])
+    ).map((nr) => String(nr.name));
+    if (tagNames.length > 0) {
+      facts.push(
+        withNames(
+          `There ${tagNames.length === 1 ? "is" : "are"} only ${tagNames.length} name${
+            tagNames.length === 1 ? "" : "s"
+          } in the category ${r.tag}`,
+          tagNames,
+        ),
+      );
     }
   }
 
-  // --- Language-tag rare combinations ---
+  // --- Category breakdown per language ---
 
   rowsResult = await rows(`
     SELECT language, tag, COUNT(*) as cnt FROM typhoonnames
-    WHERE position <= 140 GROUP BY language, tag HAVING COUNT(*) <= 3 ORDER BY cnt, tag
+    WHERE position <= 140 GROUP BY language, tag ORDER BY language, cnt DESC, tag
   `);
+  const tagsByLanguage = new Map<string, string[]>();
   for (const r of rowsResult) {
-    const rCnt = Number(r.cnt);
-    if (rCnt === 1) {
-      facts.push(`There is only 1 name from the ${r.language} language in the category ${r.tag}.`);
-    } else {
-      facts.push(
-        `There are only ${rCnt} names from the ${r.language} language in the category ${r.tag}.`,
-      );
-    }
-    const combNames = (
-      await rows(
-        "SELECT name FROM typhoonnames WHERE position <= 140 AND language = $1 AND tag = $2 ORDER BY name",
-        [String(r.language), String(r.tag)],
-      )
-    ).map((nr) => String(nr.name));
-    if (combNames.length > 0) {
-      const nl = combNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(
-        `${joinNames(combNames)} ${nl} from the ${r.language} language in the category ${r.tag}.`,
-      );
-    }
+    const language = String(r.language);
+    if (!tagsByLanguage.has(language)) tagsByLanguage.set(language, []);
+    tagsByLanguage.get(language)!.push(`${r.tag} (${r.cnt})`);
+  }
+  for (const [language, parts] of tagsByLanguage) {
+    const label = parts.length === 1 ? "category" : "categories";
+    facts.push(`The ${language} language has names in the ${label} ${joinNames(parts)}.`);
   }
 
-  // --- Country-tag rare combinations ---
+  // --- Category breakdown per country ---
 
   rowsResult = await rows(`
     SELECT p.country, t.tag, COUNT(*) as cnt FROM typhoonnames t
     INNER JOIN positions p ON t.position = p.id
-    WHERE t.position <= 140 GROUP BY p.country, t.tag HAVING COUNT(*) <= 3 ORDER BY cnt, t.tag
+    WHERE t.position <= 140 GROUP BY p.country, t.tag ORDER BY p.country, cnt DESC, t.tag
   `);
+  const tagsByCountry = new Map<string, string[]>();
   for (const r of rowsResult) {
-    const rCnt = Number(r.cnt);
-    if (rCnt === 1) {
-      facts.push(`There is only 1 name contributed by ${r.country} in the category ${r.tag}.`);
-    } else {
-      facts.push(
-        `There are only ${rCnt} names contributed by ${r.country} in the category ${r.tag}.`,
-      );
-    }
-    const countryTagNames = (
-      await rows(
-        `
-        SELECT t.name FROM typhoonnames t
-        INNER JOIN positions p ON t.position = p.id
-        WHERE t.position <= 140 AND p.country = $1 AND t.tag = $2 ORDER BY t.name
-        `,
-        [String(r.country), String(r.tag)],
-      )
-    ).map((nr) => String(nr.name));
-    if (countryTagNames.length > 0) {
-      const nl = countryTagNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(
-        `${joinNames(countryTagNames)} ${nl} contributed by ${r.country} in the category ${r.tag}.`,
-      );
-    }
+    const country = String(r.country);
+    if (!tagsByCountry.has(country)) tagsByCountry.set(country, []);
+    tagsByCountry.get(country)!.push(`${r.tag} (${r.cnt})`);
+  }
+  for (const [country, parts] of tagsByCountry) {
+    const label = parts.length === 1 ? "category" : "categories";
+    facts.push(`${country} has contributed names in the ${label} ${joinNames(parts)}.`);
   }
 
   // --- Language reason retirements ---
 
-  row = await one(
-    `SELECT COUNT(*) as cnt FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true`,
-  );
-  cnt = Number(row?.cnt ?? 0);
-  facts.push(`There are ${cnt} names retired for language-related reasons.`);
   names = (
     await rows(
       `SELECT name FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true ORDER BY name`,
     )
   ).map((r) => String(r.name));
   if (names.length > 0) {
-    facts.push(`${joinNames(names)} are the names retired for language-related reasons.`);
+    facts.push(
+      withNames(
+        `There ${names.length === 1 ? "is" : "are"} ${names.length} name${
+          names.length === 1 ? "" : "s"
+        } retired for language-related reasons`,
+        names,
+      ),
+    );
   }
 
   // --- Nearest equator ---
@@ -662,15 +624,25 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Missing letters ---
 
-  const existing = (
-    await rows(
-      "SELECT DISTINCT UPPER(LEFT(name, 1)) as letter FROM typhoonnames WHERE position <= 140",
-    )
-  ).map((r) => String(r.letter));
+  const allNames = (await rows("SELECT name FROM typhoonnames WHERE position <= 140")).map((r) =>
+    String(r.name).toUpperCase(),
+  );
   const allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-  const missing = allLetters.filter((l) => !existing.includes(l));
-  if (missing.length > 0) {
-    facts.push(`No names start with the letter ${joinNames(missing)}.`);
+
+  const firstLetters = new Set(allNames.map((n) => n[0]));
+  const missingFirst = allLetters.filter((l) => !firstLetters.has(l));
+  if (missingFirst.length > 0) {
+    const label = missingFirst.length === 1 ? "letter" : "letters";
+    facts.push(`No names start with the ${label} ${joinNames(missingFirst, "or")}.`);
+  }
+
+  const usedLetters = new Set(allNames.join("").split(""));
+  const missingAnywhere = allLetters.filter((l) => !usedLetters.has(l));
+  if (missingAnywhere.length > 0) {
+    const label = missingAnywhere.length === 1 ? "letter" : "letters";
+    facts.push(
+      `No western Pacific names contain the ${label} ${joinNames(missingAnywhere, "or")} at all.`,
+    );
   }
 
   // --- Letters with only active or only retired names ---
@@ -718,12 +690,6 @@ async function generateFacts(): Promise<string[]> {
     GROUP BY letter HAVING COUNT(*) <= 3 ORDER BY cnt, letter
   `);
   for (const r of rowsResult) {
-    const rCnt = Number(r.cnt);
-    if (rCnt === 1) {
-      facts.push(`There is only 1 name starting with the letter ${r.letter}.`);
-    } else {
-      facts.push(`There are only ${rCnt} names starting with the letter ${r.letter}.`);
-    }
     const letterNames = (
       await rows(
         "SELECT name FROM typhoonnames WHERE position <= 140 AND UPPER(LEFT(name, 1)) = $1 ORDER BY name",
@@ -731,8 +697,14 @@ async function generateFacts(): Promise<string[]> {
       )
     ).map((nr) => String(nr.name));
     if (letterNames.length > 0) {
-      const nl = letterNames.length === 1 ? "is the only name" : "are the only names";
-      facts.push(`${joinNames(letterNames)} ${nl} starting with the letter ${r.letter}.`);
+      facts.push(
+        withNames(
+          `There ${letterNames.length === 1 ? "is" : "are"} only ${letterNames.length} name${
+            letterNames.length === 1 ? "" : "s"
+          } starting with the letter ${r.letter}`,
+          letterNames,
+        ),
+      );
     }
   }
 
