@@ -33,6 +33,24 @@ const ListFilterModal = ({
 }: ListFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
+  const openValues: FormValues = {
+    name: initialFilters.name,
+    country: toArr(initialFilters.country),
+    language: toArr(initialFilters.language),
+    tag: toArr(initialFilters.tag),
+    position: initialFilters.position ? Number(initialFilters.position) : undefined,
+    status: showHistory ? initialFilters.status || "" : "current",
+  };
+
+  const clearedValues: FormValues = {
+    name: "",
+    country: [],
+    language: [],
+    tag: [],
+    position: undefined,
+    status: showHistory ? "" : "current",
+  };
+
   const handleApply = (values: FormValues) => {
     onApply({
       name: values.name ?? "",
@@ -50,21 +68,13 @@ const ListFilterModal = ({
       open={isOpen}
       onClose={onClose}
       width={480}
-      afterOpenChange={(open) => {
-        if (open) {
-          form.setFieldsValue({
-            name: initialFilters.name,
-            country: toArr(initialFilters.country),
-            language: toArr(initialFilters.language),
-            tag: toArr(initialFilters.tag),
-            position: initialFilters.position ? Number(initialFilters.position) : undefined,
-            status: showHistory ? initialFilters.status || "" : "current",
-          });
-        }
-      }}
       title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
-        <Button key="clear" onClick={() => form.resetFields()} aria-label="Clear all filters">
+        <Button
+          key="clear"
+          onClick={() => form.setFieldsValue(clearedValues)}
+          aria-label="Clear all filters"
+        >
           Clear All
         </Button>,
         <Button key="apply" type="primary" onClick={() => form.submit()} aria-label="Apply filters">
@@ -72,7 +82,13 @@ const ListFilterModal = ({
         </Button>,
       ]}
     >
-      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleApply}
+        className="py-4"
+        initialValues={openValues}
+      >
         <Form.Item label="Name" name="name">
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>

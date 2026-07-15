@@ -9,7 +9,6 @@ interface DefModalProps {
   title?: ReactNode;
   width?: number;
   footer?: ReactNode;
-  afterOpenChange?: (open: boolean) => void;
   children: ReactNode;
 }
 
@@ -19,7 +18,6 @@ const DefModal = ({
   title,
   width = 480,
   footer = null,
-  afterOpenChange,
   children,
 }: DefModalProps) => (
   <Modal
@@ -29,7 +27,6 @@ const DefModal = ({
     footer={footer}
     centered
     destroyOnHidden
-    afterOpenChange={afterOpenChange}
     styles={{
       header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
       body: { maxHeight: "70vh", overflowY: "auto" },

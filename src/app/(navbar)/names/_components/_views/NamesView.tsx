@@ -5,7 +5,7 @@ import { toArr } from "@/lib/utils/fns";
 import { Badge } from "antd";
 import { Filter, Settings, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NameDetailsModal from "../_modals/NameDetailsModal";
@@ -13,6 +13,8 @@ import NamesSettingsModal from "../_modals/NamesSettingsModal";
 import type { DisplaySettings } from "../_modals/NamesSettingsModal";
 import FilteredNamesTable from "../_widgets/FilteredNamesTable";
 import PositionNameGrid from "../_widgets/PositionNameGrid";
+import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
+import { writeDisplayPrefs } from "../../_utils/displayPrefs";
 import { paramsToPath } from "../../_utils/fns";
 
 interface NameFilterValues {
@@ -29,6 +31,7 @@ interface NamesViewProps {
   viewMode: string;
   showName: boolean;
   showHistory: boolean;
+  displayPrefs: NamesDisplayPrefs;
   onToggleView: () => void;
 }
 
@@ -85,13 +88,14 @@ const getFirstAvailableLetter = (letterStatusMap: Record<string, [boolean, boole
   return allLetters.find((letter) => letterStatusMap[letter]?.[0]) ?? "A";
 };
 
-const STORAGE_KEYS = {
-  showLetterNav: "namesShowLetterNav",
-  colorfulHistory: "namesColorfulHistory",
-  showImageAndDescription: "namesShowImageAndDescription",
-} as const;
-
-const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: NamesViewProps) => {
+const NamesView = ({
+  allNames,
+  viewMode,
+  showName,
+  showHistory,
+  displayPrefs,
+  onToggleView,
+}: NamesViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -108,13 +112,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   const languageArr = toArr(selectedLanguage);
   const tagArr = toArr(selectedTag);
 
-  const [settings, setSettings] = useState<DisplaySettings>({
-    showLetterNav: false,
-    showName,
-    showHistory,
-    colorfulHistory: false,
-    showImageAndDescription: false,
-  });
+  const [prefs, setPrefs] = useState<NamesDisplayPrefs>(displayPrefs);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
@@ -123,19 +121,9 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
-  useEffect(() => {
-    setSettings((prev) => ({
-      ...prev,
-      showLetterNav: localStorage.getItem(STORAGE_KEYS.showLetterNav) === "1" || prev.showLetterNav,
-      colorfulHistory:
-        localStorage.getItem(STORAGE_KEYS.colorfulHistory) === "1" || prev.colorfulHistory,
-      showImageAndDescription:
-        localStorage.getItem(STORAGE_KEYS.showImageAndDescription) === "1" ||
-        prev.showImageAndDescription,
-    }));
-  }, []);
+  const settings: DisplaySettings = { ...prefs, showName, showHistory };
 
-  const selectedStatus = settings.showHistory ? searchParams.get("status") || "" : "current";
+  const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -153,7 +141,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
     selectedLanguage,
     searchPosition,
     selectedTag,
-    settings.showHistory ? selectedStatus : "",
+    showHistory ? selectedStatus : "",
   ].filter(Boolean).length;
 
   const hasActiveFilters = activeFilterCount > 0;
@@ -193,11 +181,11 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
 
   const filteredAllNames = useMemo(() => {
     if (hasActiveFilters) return applyNameFilters(statusFilteredNames, filterValues);
-    if (!settings.showLetterNav) return statusFilteredNames;
+    if (!prefs.showLetterNav) return statusFilteredNames;
     return statusFilteredNames.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
-  }, [statusFilteredNames, hasActiveFilters, filterValues, settings.showLetterNav, currentLetter]);
+  }, [statusFilteredNames, hasActiveFilters, filterValues, prefs.showLetterNav, currentLetter]);
 
-  const showLetterNav = !hasActiveFilters && settings.showLetterNav;
+  const showLetterNav = !hasActiveFilters && prefs.showLetterNav;
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
@@ -234,14 +222,17 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   };
 
   const handleApplySettings = (mode: "grid" | "list", newSettings: DisplaySettings) => {
-    setSettings(newSettings);
+    const newPrefs: NamesDisplayPrefs = {
+      showLetterNav: newSettings.showLetterNav,
+      colorfulHistory: newSettings.colorfulHistory,
+      showImageAndDescription: newSettings.showImageAndDescription,
+    };
+
+    setPrefs(newPrefs);
     setIsSettingsOpen(false);
-    localStorage.setItem(STORAGE_KEYS.showLetterNav, newSettings.showLetterNav ? "1" : "0");
-    localStorage.setItem(STORAGE_KEYS.colorfulHistory, newSettings.colorfulHistory ? "1" : "0");
-    localStorage.setItem(
-      STORAGE_KEYS.showImageAndDescription,
-      newSettings.showImageAndDescription ? "1" : "0",
-    );
+    // Written before navigating so the next server render sees the new value.
+    writeDisplayPrefs(newPrefs);
+
     if (mode === "list") {
       router.push(paramsToPath("list", newSettings.showHistory));
     } else {
@@ -255,7 +246,7 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
   };
 
   const handleCellClick = (position: number, names: TyphoonName[]) => {
-    if (settings.showHistory) {
+    if (showHistory) {
       setHistoryPosition(position);
       setHistoryPositionNames(names);
       setIsHistoryModalOpen(true);
@@ -327,29 +318,28 @@ const NamesView = ({ allNames, viewMode, showName, showHistory, onToggleView }: 
       {displayMode === "grid" ? (
         <PositionNameGrid
           names={filteredAllNames}
-          showName={settings.showName}
-          showHistory={settings.showHistory}
-          colorfulHistory={settings.colorfulHistory}
+          showName={showName}
+          showHistory={showHistory}
+          colorfulHistory={prefs.colorfulHistory}
           onNameClick={handleNameClick}
           onCellClick={handleCellClick}
         />
       ) : (
         <FilteredNamesTable
           filteredNames={filteredAllNames}
-          showImageAndDescription={settings.showImageAndDescription}
+          showImageAndDescription={prefs.showImageAndDescription}
           onNameClick={handleNameClick}
         />
       )}
 
       <ListFilterModal
-        key={`${displayMode}-${searchName}-${selectedCountry}-${selectedLanguage}-${searchPosition}-${selectedTag}`}
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilters}
         countries={countries}
         languages={languages}
         tags={tags}
-        showHistory={settings.showHistory}
+        showHistory={showHistory}
         initialFilters={{
           name: searchName,
           country: selectedCountry,

@@ -7,13 +7,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
 import RetiredView from "./_components/_views/RetiredView";
+import type { NamesDisplayPrefs } from "./_utils/displayPrefs";
 import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;
+  displayPrefs: NamesDisplayPrefs;
 }
 
-const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
+const NamesPageContent = ({ allNames, displayPrefs }: NamesPageContentProps) => {
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
   const { view: viewMode, showName, showHistory } = slugToParams(slug);
@@ -42,6 +44,7 @@ const NamesPageContent = ({ allNames }: NamesPageContentProps) => {
           viewMode={viewMode}
           showName={showName}
           showHistory={showHistory}
+          displayPrefs={displayPrefs}
           onToggleView={toggleView}
         />
       )}

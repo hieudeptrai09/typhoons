@@ -35,6 +35,22 @@ const RetiredFilterModal = ({
 }: RetiredFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
+  const openValues: FormValues = {
+    name: initialFilters.name,
+    year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
+    country: toArr(initialFilters.country),
+    reason: toArr(initialFilters.reason),
+    position: initialFilters.position ? Number(initialFilters.position) : undefined,
+  };
+
+  const clearedValues: FormValues = {
+    name: "",
+    year: undefined,
+    country: [],
+    reason: [],
+    position: undefined,
+  };
+
   const handleApply = (values: FormValues) => {
     onApply({
       name: values.name ?? "",
@@ -51,20 +67,13 @@ const RetiredFilterModal = ({
       open={isOpen}
       onClose={onClose}
       width={480}
-      afterOpenChange={(open) => {
-        if (open) {
-          form.setFieldsValue({
-            name: initialFilters.name,
-            year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
-            country: toArr(initialFilters.country),
-            reason: toArr(initialFilters.reason),
-            position: initialFilters.position ? Number(initialFilters.position) : undefined,
-          });
-        }
-      }}
       title={<span className="text-xl font-bold text-muted">Filter Options</span>}
       footer={[
-        <Button key="clear" onClick={() => form.resetFields()} aria-label="Clear all filters">
+        <Button
+          key="clear"
+          onClick={() => form.setFieldsValue(clearedValues)}
+          aria-label="Clear all filters"
+        >
           Clear All
         </Button>,
         <Button key="apply" type="primary" onClick={() => form.submit()} aria-label="Apply filters">
@@ -72,7 +81,13 @@ const RetiredFilterModal = ({
         </Button>,
       ]}
     >
-      <Form form={form} layout="vertical" onFinish={handleApply} className="py-4">
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleApply}
+        className="py-4"
+        initialValues={openValues}
+      >
         <Form.Item label="Name" name="name">
           <Input placeholder="Enter typhoon name..." allowClear />
         </Form.Item>

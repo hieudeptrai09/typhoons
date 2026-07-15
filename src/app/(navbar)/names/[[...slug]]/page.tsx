@@ -1,6 +1,8 @@
 import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { NAMES_DISPLAY_COOKIE, parseDisplayPrefs } from "../_utils/displayPrefs";
 import {
   canonicalPath,
   getNamesDescription,
@@ -43,8 +45,10 @@ const NamesPage = async ({ params }: PageProps) => {
     notFound();
   }
 
-  const result = await getTyphoonNames();
-  return <NamesPageContent allNames={result?.data ?? null} />;
+  const [result, cookieStore] = await Promise.all([getTyphoonNames(), cookies()]);
+  const displayPrefs = parseDisplayPrefs(cookieStore.get(NAMES_DISPLAY_COOKIE)?.value);
+
+  return <NamesPageContent allNames={result?.data ?? null} displayPrefs={displayPrefs} />;
 };
 
 export default NamesPage;

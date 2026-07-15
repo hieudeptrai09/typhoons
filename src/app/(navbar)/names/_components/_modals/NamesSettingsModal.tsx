@@ -29,6 +29,15 @@ const NamesSettingsModal = ({
 }: NamesSettingsModalProps) => {
   const [draftMode, setDraftMode] = useState<DisplayMode>(displayMode);
   const [draftSettings, setDraftSettings] = useState<DisplaySettings>(settings);
+  const [wasOpen, setWasOpen] = useState(isOpen);
+
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (isOpen) {
+      setDraftMode(displayMode);
+      setDraftSettings(settings);
+    }
+  }
 
   const updateDraft = (partial: Partial<DisplaySettings>) => {
     setDraftSettings((prev) => ({ ...prev, ...partial }));
@@ -47,12 +56,6 @@ const NamesSettingsModal = ({
       open={isOpen}
       onClose={onClose}
       width={400}
-      afterOpenChange={(open) => {
-        if (open) {
-          setDraftMode(displayMode);
-          setDraftSettings(settings);
-        }
-      }}
       title={<span className="text-xl font-bold text-muted">Display Settings</span>}
       footer={[
         <Button key="cancel" onClick={onClose}>
