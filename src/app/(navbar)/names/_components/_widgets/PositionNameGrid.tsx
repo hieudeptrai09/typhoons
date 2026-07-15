@@ -1,54 +1,10 @@
 "use client";
 
 import PositionGrid from "@/lib/components/PositionGrid";
+import { TAG_COLORS, TAG_ICONS } from "@/lib/constants/tags";
 import type { TyphoonName } from "@/lib/types";
 import { onEnterKeyDown } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
-import {
-  Gem,
-  Ham,
-  Hammer,
-  Leaf,
-  LibraryBig,
-  MapPin,
-  Moon,
-  PawPrint,
-  Swords,
-  Tag,
-  User,
-  Wind,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
-const TAG_ICONS: Record<string, LucideIcon> = {
-  Animal: PawPrint,
-  "Celestial body": Moon,
-  Concept: LibraryBig,
-  Deity: Swords,
-  Descriptive: Tag,
-  "Food and beverage": Ham,
-  Mineral: Gem,
-  Nature: Wind,
-  "People's name": User,
-  Place: MapPin,
-  Plant: Leaf,
-  Thing: Hammer,
-};
-
-const TAG_COLORS: Record<string, string> = {
-  Animal: "text-emerald-700",
-  "Celestial body": "text-indigo-800",
-  Concept: "text-violet-700",
-  Deity: "text-amber-700",
-  Descriptive: "text-rose-700",
-  "Food and beverage": "text-red-500",
-  Mineral: "text-slate-500",
-  Nature: "text-cyan-600",
-  "People's name": "text-pink-600",
-  Place: "text-blue-600",
-  Plant: "text-green-600",
-  Thing: "text-amber-800",
-};
 
 const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
 const getHistoryCountColor = (count: number) =>
