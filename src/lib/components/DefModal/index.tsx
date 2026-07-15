@@ -29,7 +29,7 @@ const DefModal = ({
     destroyOnHidden
     styles={{
       header: { borderBottom: "1px solid #9ca3af", paddingBottom: "12px" },
-      body: { maxHeight: "70vh", overflowY: "auto" },
+      body: { maxHeight: "65vh", overflowY: "auto" },
     }}
     title={title}
   >
