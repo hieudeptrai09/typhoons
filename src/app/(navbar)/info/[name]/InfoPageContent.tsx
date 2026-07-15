@@ -56,24 +56,24 @@ function NameDetailsSection({
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-muted">Name Details</h2>
+      <h2 className="mb-4 text-lg font-bold text-foreground">Name Details</h2>
       <div className={`flex gap-6 ${hasImage ? "flex-col sm:flex-row" : "flex-col"}`}>
         <div className="flex-1 space-y-4">
           <div>
-            <div className="text-sm font-medium text-muted">Meaning</div>
+            <div className="text-sm font-medium text-foreground">Meaning</div>
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>
           </div>
 
           <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-medium text-muted">Language</div>
-            <div className="mt-1 text-base text-muted">{name.language}</div>
+            <div className="text-sm font-medium text-foreground">Language</div>
+            <div className="mt-1 text-base text-foreground">{name.language}</div>
           </div>
 
           {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
             <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-medium text-muted">
+              <div className="text-sm font-medium text-foreground">
                 {correctSpelling ? "Correct spelling" : "Replaced by"}
               </div>
               <div className="mt-1 text-base font-semibold text-teal-600">
@@ -84,10 +84,10 @@ function NameDetailsSection({
 
           {!hasImage && hasDescription && (
             <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
+              <div className="mb-2 text-xs font-semibold tracking-wide text-foreground uppercase">
                 Note
               </div>
-              <p className="text-sm leading-relaxed text-muted">{name.description}</p>
+              <p className="text-sm leading-relaxed text-foreground">{name.description}</p>
             </div>
           )}
         </div>
@@ -107,7 +107,7 @@ function NameDetailsSection({
               />
             </div>
             {hasDescription && (
-              <p className="mt-3 text-center text-xs leading-relaxed text-muted italic">
+              <p className="mt-3 text-center text-xs leading-relaxed text-foreground italic">
                 {name.description}
               </p>
             )}
@@ -138,7 +138,7 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
         <ChevronLeft className="h-4 w-4" />
         <span className="capitalize">{prevName.toLowerCase()}</span>
       </a>
-      <span className="text-sm text-muted">{names[currentIndex]}</span>
+      <span className="text-sm text-foreground">{names[currentIndex]}</span>
       <a href={`/info/${nextName.toLowerCase()}`} className={linkClass}>
         <span className="capitalize">{nextName.toLowerCase()}</span>
         <ChevronRight className="h-4 w-4" />
@@ -150,10 +150,10 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
 function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-muted">All Storms ({storms.length})</h2>
+      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
 
       {storms.length === 0 ? (
-        <p className="py-4 text-center text-muted">No storms found for this name.</p>
+        <p className="py-4 text-center text-foreground">No storms found for this name.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {storms.map((storm, idx) => (
@@ -182,7 +182,7 @@ export default function InfoPageContent({
 
   const titleColorClass = nameData
     ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
-    : "text-muted";
+    : "text-foreground";
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
   const correctSpelling = storms[0]?.correctSpelling;
@@ -208,11 +208,11 @@ export default function InfoPageContent({
         {metaCountry && (
           <div className="flex items-center gap-2">
             {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
-            <span className="text-base font-medium text-muted">{metaCountry}</span>
+            <span className="text-base font-medium text-foreground">{metaCountry}</span>
           </div>
         )}
         {isInPosition && metaPosition != null && (
-          <span className="text-base text-muted">· #{metaPosition}</span>
+          <span className="text-base text-foreground">· #{metaPosition}</span>
         )}
         <StatusBadge
           isInPosition={isInPosition}

@@ -51,7 +51,7 @@ function Carousel({ slides }: { slides: ReactNode[] }) {
             type="button"
             onClick={() => ref.current?.prev()}
             aria-label="Previous"
-            className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
+            className="rounded-full border border-slate-200 p-1.5 text-foreground transition-colors hover:bg-slate-100"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -73,7 +73,7 @@ function Carousel({ slides }: { slides: ReactNode[] }) {
             type="button"
             onClick={() => ref.current?.next()}
             aria-label="Next"
-            className="rounded-full border border-slate-200 p-1.5 text-muted transition-colors hover:bg-slate-100"
+            className="rounded-full border border-slate-200 p-1.5 text-foreground transition-colors hover:bg-slate-100"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -89,8 +89,8 @@ function NameSlide({ name }: { name: TyphoonName }) {
     <div className="px-2">
       <p className="text-sm mb-3 text-center leading-relaxed">
         <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
-        {name.country && <span className="text-muted"> ({name.language}): </span>}
-        {name.meaning && <span className="text-muted italic">{name.meaning}</span>}
+        {name.country && <span className="text-foreground"> ({name.language}): </span>}
+        {name.meaning && <span className="text-foreground italic">{name.meaning}</span>}
       </p>
       {name.image && (
         <div className="relative mx-auto aspect-4/3 w-full max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
@@ -138,7 +138,7 @@ function StormSlide({ storm }: { storm: Storm }) {
           <div className="text-sm font-bold" style={{ color: accent }}>
             {label}
           </div>
-          <div className="flex items-center gap-1 text-sm text-muted">
+          <div className="flex items-center gap-1 text-sm text-foreground">
             <Calendar size={12} />
             {dateRange || "Date unknown"}
           </div>
@@ -178,8 +178,8 @@ export default function PositionModal({ detail, position, isError = false }: Pos
     <div>
       {storms.length > 0 && (
         <div className="mb-4 flex items-baseline justify-between gap-2">
-          <span className="text-lg font-bold text-muted">All Storms ({storms.length})</span>
-          <span className="text-sm text-muted">
+          <span className="text-lg font-bold text-foreground">All Storms ({storms.length})</span>
+          <span className="text-sm text-foreground">
             Overall Avg:{" "}
             <span
               className="font-bold"
@@ -194,7 +194,7 @@ export default function PositionModal({ detail, position, isError = false }: Pos
         </div>
       )}
       {storms.length === 0 ? (
-        <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
+        <p className="py-4 text-center text-foreground">No storms recorded at this position.</p>
       ) : (
         <div className="space-y-6">
           {sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
@@ -209,10 +209,10 @@ export default function PositionModal({ detail, position, isError = false }: Pos
                     className="mb-2 flex items-center justify-between gap-2 rounded-md bg-slate-50 py-2 pr-4 pl-3"
                     style={{ borderLeftWidth: 4, borderLeftColor: groupAccent }}
                   >
-                    <span className="font-semibold text-muted">{name}</span>
-                    <span className="flex items-center gap-4 text-sm text-muted">
+                    <span className="font-semibold text-foreground">{name}</span>
+                    <span className="flex items-center gap-4 text-sm text-foreground">
                       <span>
-                        Count: <span className="font-medium text-muted">{sorted.length}</span>
+                        Count: <span className="font-medium text-foreground">{sorted.length}</span>
                       </span>
                       <span>
                         Avg:{" "}
@@ -250,7 +250,7 @@ export default function PositionModal({ detail, position, isError = false }: Pos
         content: (
           <div>
             {names.length === 0 ? (
-              <p className="py-4 text-center text-muted">
+              <p className="py-4 text-center text-foreground">
                 No names have been assigned to this slot.
               </p>
             ) : (

@@ -8,7 +8,7 @@ import { getNameStatusColorClass } from "@/lib/utils/colors";
 
 const HISTORY_COUNT_COLORS = ["", "text-green-600", "text-blue-600", "text-amber-600"];
 const getHistoryCountColor = (count: number) =>
-  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-muted";
+  count >= 4 ? "text-red-600" : HISTORY_COUNT_COLORS[count] || "text-foreground";
 
 const TagIcon = ({
   tag,
@@ -20,7 +20,7 @@ const TagIcon = ({
   colorOverride?: string;
 }) => {
   const Icon = TAG_ICONS[tag];
-  const colorClass = colorOverride || TAG_COLORS[tag] || "text-muted";
+  const colorClass = colorOverride || TAG_COLORS[tag] || "text-foreground";
   if (!Icon) return null;
   return <Icon size={size} className={colorClass} />;
 };
@@ -185,7 +185,7 @@ const PositionNameGrid = ({
             {Object.entries(TAG_ICONS).map(([tag]) => (
               <div key={tag} className="flex items-center gap-1.5">
                 <TagIcon tag={tag} size={14} />
-                <span className="text-xs text-muted">{tag}</span>
+                <span className="text-xs text-foreground">{tag}</span>
               </div>
             ))}
           </div>

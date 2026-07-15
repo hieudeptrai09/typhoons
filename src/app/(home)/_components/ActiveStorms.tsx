@@ -71,7 +71,9 @@ const ActiveStorms = () => {
           icon: null,
           centered: true,
           okText: "Got it",
-          content: <p className="text-muted">No storms were active on this date in past years.</p>,
+          content: (
+            <p className="text-foreground">No storms were active on this date in past years.</p>
+          ),
         });
         return;
       }
@@ -83,7 +85,7 @@ const ActiveStorms = () => {
         okText: "Got it",
         content: (
           <div className="max-h-[70vh] overflow-y-auto">
-            <p className="mb-3 text-sm font-semibold text-muted">
+            <p className="mb-3 text-sm font-semibold text-foreground">
               Storms that were in progress on this date in past years
             </p>
             <ol className="m-0 list-decimal list-outside space-y-1.5 pl-5">
@@ -101,7 +103,7 @@ const ActiveStorms = () => {
                 const { dayOfStorm, totalDays } = getDayProgress(storm);
 
                 return (
-                  <li key={i} className="text-sm leading-relaxed text-muted">
+                  <li key={i} className="text-sm leading-relaxed text-foreground">
                     {label}{" "}
                     <Link
                       href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
@@ -112,9 +114,9 @@ const ActiveStorms = () => {
                     </Link>
                     {range ? (
                       <>
-                        <span className="text-muted"> ({range})</span>
+                        <span className="text-foreground"> ({range})</span>
                         <br />
-                        <span className="text-sm text-muted">
+                        <span className="text-sm text-foreground">
                           Day{" "}
                           {totalDays !== null ? (
                             <>
@@ -140,7 +142,7 @@ const ActiveStorms = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-muted">Could not load active storms.</p>,
+        content: <p className="text-foreground">Could not load active storms.</p>,
       });
     } finally {
       setLoading(false);

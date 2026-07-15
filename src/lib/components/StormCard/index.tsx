@@ -44,7 +44,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-muted">
+          <div className="flex h-full items-center justify-center text-xs text-foreground">
             No track map
           </div>
         )}

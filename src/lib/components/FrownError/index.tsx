@@ -13,7 +13,7 @@ const FrownError = ({
       <Empty
         image={<Frown size={64} strokeWidth={1.5} className="text-gray-400" />}
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-        description={<span className="text-muted">{description}</span>}
+        description={<span className="text-foreground">{description}</span>}
       >
         {onRetry && (
           <Button type="primary" onClick={onRetry}>

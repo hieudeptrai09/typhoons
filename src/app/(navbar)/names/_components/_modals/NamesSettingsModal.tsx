@@ -56,7 +56,7 @@ const NamesSettingsModal = ({
       open={isOpen}
       onClose={onClose}
       width={400}
-      title={<span className="text-xl font-bold text-muted">Display Settings</span>}
+      title={<span className="text-xl font-bold text-foreground">Display Settings</span>}
       footer={[
         <Button key="cancel" onClick={onClose}>
           Cancel
@@ -68,7 +68,7 @@ const NamesSettingsModal = ({
     >
       <div className="space-y-5 py-4">
         <div>
-          <div className="mb-2 text-sm font-medium text-muted">Display Mode</div>
+          <div className="mb-2 text-sm font-medium text-foreground">Display Mode</div>
           <Radio.Group value={draftMode} onChange={(e) => setDraftMode(e.target.value)}>
             <Radio value="grid">Grid</Radio>
             <Radio value="list">List</Radio>
@@ -76,7 +76,7 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-muted">Letter Navigation</span>
+          <span className="text-sm font-semibold text-foreground">Letter Navigation</span>
           <Switch
             checked={draftSettings.showLetterNav}
             onChange={(v) => updateDraft({ showLetterNav: v })}
@@ -85,7 +85,7 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-muted">Show History</span>
+          <span className="text-sm font-semibold text-foreground">Show History</span>
           <Switch
             checked={draftSettings.showHistory}
             onChange={(v) => updateDraft({ showHistory: v })}
@@ -94,12 +94,14 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="space-y-5 border-t border-stone-200 pt-5">
-          <div className="text-xs font-semibold tracking-wide text-muted uppercase">
+          <div className="text-xs font-semibold tracking-wide text-foreground uppercase">
             Grid Mode Options
           </div>
 
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-semibold ${isGrid ? "text-muted" : "text-disabled"}`}>
+            <span
+              className={`text-sm font-semibold ${isGrid ? "text-foreground" : "text-disabled"}`}
+            >
               Show Name
             </span>
             <Switch
@@ -113,13 +115,13 @@ const NamesSettingsModal = ({
           <div className="flex items-center justify-between">
             <div>
               <span
-                className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-muted" : "text-disabled"}`}
+                className={`flex items-center gap-1.5 text-sm font-semibold ${!colorfulDisabled ? "text-foreground" : "text-disabled"}`}
               >
                 <Paintbrush size={15} />
                 Color by Reuse Count
               </span>
               <span
-                className={`block text-xs text-muted ${isGrid && !draftSettings.showHistory ? "" : "invisible"}`}
+                className={`block text-xs text-foreground ${isGrid && !draftSettings.showHistory ? "" : "invisible"}`}
               >
                 Requires Show History
               </span>
@@ -134,12 +136,14 @@ const NamesSettingsModal = ({
         </div>
 
         <div className="space-y-5 border-t border-stone-200 pt-5">
-          <div className="text-xs font-semibold tracking-wide text-muted uppercase">
+          <div className="text-xs font-semibold tracking-wide text-foreground uppercase">
             List Mode Options
           </div>
 
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-semibold ${isList ? "text-muted" : "text-disabled"}`}>
+            <span
+              className={`text-sm font-semibold ${isList ? "text-foreground" : "text-disabled"}`}
+            >
               Show Images & Descriptions
             </span>
             <Switch

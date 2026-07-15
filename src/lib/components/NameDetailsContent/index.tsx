@@ -23,7 +23,7 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
     <div className={`flex gap-6 ${hasImage ? "flex-row" : "flex-col"}`}>
       <div className="flex-1 space-y-4">
         <div>
-          <div id="name-meaning-label" className="text-sm font-medium text-muted">
+          <div id="name-meaning-label" className="text-sm font-medium text-foreground">
             Meaning
           </div>
           <p
@@ -35,37 +35,37 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
         </div>
 
         <div className="border-t border-slate-200 pt-3">
-          <div id="name-origin-label" className="mb-2 text-sm font-medium text-muted">
+          <div id="name-origin-label" className="mb-2 text-sm font-medium text-foreground">
             Contributed by
           </div>
           <div className="flex items-center gap-3" aria-describedby="name-origin-label">
             <CountryFlag country={name.country} className="h-8 w-12" />
-            <div className="text-base font-semibold text-muted">{name.country}</div>
+            <div className="text-base font-semibold text-foreground">{name.country}</div>
           </div>
         </div>
 
         <div className="border-t border-slate-200 pt-3">
-          <div id="name-language-label" className="text-sm font-medium text-muted">
+          <div id="name-language-label" className="text-sm font-medium text-foreground">
             Language
           </div>
-          <div className="mt-1 text-base text-muted" aria-describedby="name-language-label">
+          <div className="mt-1 text-base text-foreground" aria-describedby="name-language-label">
             {name.language}
           </div>
         </div>
 
         {!hideReplacedBy && "replacementName" in name && name.replacementName && (
           <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-medium text-muted">Replaced by</div>
+            <div className="text-sm font-medium text-foreground">Replaced by</div>
             <div className="mt-1 text-base font-semibold text-teal-600">{name.replacementName}</div>
           </div>
         )}
 
         {!hasImage && hasDescription && (
           <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-            <div className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
+            <div className="mb-2 text-xs font-semibold tracking-wide text-foreground uppercase">
               Note
             </div>
-            <p className="text-sm leading-relaxed text-muted">{name.description}</p>
+            <p className="text-sm leading-relaxed text-foreground">{name.description}</p>
           </div>
         )}
       </div>
@@ -86,7 +86,7 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
               />
             </div>
             {hasDescription && (
-              <p className="mt-3 text-center text-xs leading-relaxed text-muted italic">
+              <p className="mt-3 text-center text-xs leading-relaxed text-foreground italic">
                 {name.description}
               </p>
             )}

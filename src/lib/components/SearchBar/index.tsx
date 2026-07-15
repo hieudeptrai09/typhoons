@@ -115,7 +115,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
               <FrownError description="Failed to load search results." onRetry={refetch} />
             </div>
           ) : filtered.length === 0 ? (
-            <div id={statusId} className="px-4 py-3 text-sm text-muted">
+            <div id={statusId} className="px-4 py-3 text-sm text-foreground">
               No results found
             </div>
           ) : (
@@ -131,7 +131,7 @@ const SearchBar = ({ variant }: { variant: SearchBarVariant }) => {
                     aria-selected={false}
                     className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors hover:bg-blue-50"
                   >
-                    <span className="text-sm text-muted">
+                    <span className="text-sm text-foreground">
                       <HighlightedName name={name} query={trimmed} />
                     </span>
                   </Link>

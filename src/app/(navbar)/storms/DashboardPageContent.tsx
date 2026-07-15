@@ -175,7 +175,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
               />
             );
           default:
-            return <div className="text-center text-muted">Select filters to view data</div>;
+            return <div className="text-center text-foreground">Select filters to view data</div>;
         }
       })()}
 

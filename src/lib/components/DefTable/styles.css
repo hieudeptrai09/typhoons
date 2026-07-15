@@ -1,5 +1,5 @@
 .typhoon-table .ant-table-tbody td {
-  color: var(--text-muted) !important;
+  color: var(--text-foreground) !important;
 }
 
 .typhoon-table .ant-table-thead th {

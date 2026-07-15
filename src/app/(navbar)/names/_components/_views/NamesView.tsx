@@ -290,7 +290,7 @@ const NamesView = ({
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
+              className="cursor-pointer border-0 bg-transparent p-1 text-foreground transition-colors hover:text-highlight"
             >
               <Filter size={30} />
             </button>
@@ -299,7 +299,7 @@ const NamesView = ({
             onClick={() => setIsSettingsOpen(true)}
             title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer border-0 bg-transparent p-1 text-muted transition-colors hover:text-foreground"
+            className="cursor-pointer border-0 bg-transparent p-1 text-foreground transition-colors hover:text-highlight"
           >
             <Settings size={30} />
           </button>

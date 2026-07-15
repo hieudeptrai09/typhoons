@@ -19,7 +19,9 @@ const AverageYearGrid = ({ stormsData, onCellClick }: AverageYearGridProps) => {
   return (
     <div>
       <div className="mb-6 flex flex-wrap justify-center gap-4">
-        <div className="mr-2 self-start pt-2 text-sm font-semibold text-muted">Other Regions:</div>
+        <div className="mr-2 self-start pt-2 text-sm font-semibold text-foreground">
+          Other Regions:
+        </div>
         {specialPositions.map(({ id, label, years }) => {
           const isHighlighted = hoveredYear !== null && years.has(hoveredYear);
           return (
@@ -27,8 +29,8 @@ const AverageYearGrid = ({ stormsData, onCellClick }: AverageYearGridProps) => {
               key={id}
               className={`cursor-default rounded border px-4 py-2 text-sm font-semibold transition-colors ${
                 isHighlighted
-                  ? "border-stone-400 bg-stone-200 text-muted"
-                  : "border-stone-300 text-muted"
+                  ? "border-stone-400 bg-stone-200 text-foreground"
+                  : "border-stone-300 text-foreground"
               }`}
             >
               {label}

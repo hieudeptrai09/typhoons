@@ -71,12 +71,12 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
       open={isOpen}
       onClose={onClose}
       width={448}
-      title={<span className="text-2xl font-bold text-muted">{title}</span>}
+      title={<span className="text-2xl font-bold text-foreground">{title}</span>}
     >
       <div className="pt-3">
         <div className="space-y-3">
           <div>
-            <span id="avg-intensity-label" className="text-muted">
+            <span id="avg-intensity-label" className="text-foreground">
               Overall Average Intensity:{" "}
             </span>
             <span
@@ -88,8 +88,10 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
             </span>
           </div>
           <div>
-            <div className="mb-2 text-muted">{heading(title)}</div>
-            {intensityData.length === 0 && <div className="text-sm text-muted">{empty(title)}</div>}
+            <div className="mb-2 text-foreground">{heading(title)}</div>
+            {intensityData.length === 0 && (
+              <div className="text-sm text-foreground">{empty(title)}</div>
+            )}
             <div className="space-y-2">
               {intensityData.map((data, idx) => {
                 const bgColor = BACKGROUND_BADGE[data.intensity];
@@ -102,7 +104,10 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
                     content={
                       <div className="flex flex-col gap-1.5">
                         {data.storms.map((storm) => (
-                          <div key={`${storm.name}-${storm.year}`} className="text-sm text-muted">
+                          <div
+                            key={`${storm.name}-${storm.year}`}
+                            className="text-sm text-foreground"
+                          >
                             <span className="font-semibold" style={{ color: textColor }}>
                               {storm.name}
                             </span>{" "}
@@ -125,9 +130,9 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
                       >
                         {INTENSITY_LABEL[data.intensity]}
                       </span>
-                      <div id={`avg-stats-${idx}`} className="text-sm text-muted">
+                      <div id={`avg-stats-${idx}`} className="text-sm text-foreground">
                         <span>
-                          Count: <span className="font-semibold text-muted">{data.count}</span>
+                          Count: <span className="font-semibold text-foreground">{data.count}</span>
                         </span>
                       </div>
                     </div>

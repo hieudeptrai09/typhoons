@@ -38,8 +38,8 @@ const HighlightsGrid = ({ stormsData, highlightedStorms, highlightType }: Highli
           <div className="flex flex-col items-center gap-1">
             {positionStorms.map((storm, idx) => (
               <div key={idx} className="flex flex-col items-center">
-                <div className="text-xs font-bold text-muted">{storm.name}</div>
-                <div className="text-[10px] text-muted">({storm.year})</div>
+                <div className="text-xs font-bold text-foreground">{storm.name}</div>
+                <div className="text-[10px] text-foreground">({storm.year})</div>
               </div>
             ))}
           </div>

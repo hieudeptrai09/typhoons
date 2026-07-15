@@ -42,7 +42,7 @@ interface CountryFlagProps {
 
 const CountryFlag = ({ country, className = "h-7 w-10" }: CountryFlagProps) => {
   const FlagComponent = COUNTRY_FLAG_COMPONENTS[country];
-  if (!FlagComponent) return <span className="text-muted">{country}</span>;
+  if (!FlagComponent) return <span className="text-foreground">{country}</span>;
 
   return (
     <div

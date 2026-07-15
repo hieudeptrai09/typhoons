@@ -20,7 +20,7 @@ const FunFacts = () => {
         icon: null,
         centered: true,
         okText: "Got it",
-        content: <p className="leading-relaxed text-muted">{fact ?? "No facts available."}</p>,
+        content: <p className="leading-relaxed text-foreground">{fact ?? "No facts available."}</p>,
       });
     } catch {
       Modal.info({
@@ -28,7 +28,7 @@ const FunFacts = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-muted">Could not load fact.</p>,
+        content: <p className="text-foreground">Could not load fact.</p>,
       });
     } finally {
       setLoading(false);

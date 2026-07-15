@@ -111,7 +111,7 @@ export default function SearchPageContent({
             <Empty
               image={<Search size={64} strokeWidth={1.5} className="text-gray-400" />}
               imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
-              description={<span className="text-muted">Type a name to search</span>}
+              description={<span className="text-foreground">Type a name to search</span>}
             />
           </div>
         ) : count === 0 ? (
@@ -121,7 +121,7 @@ export default function SearchPageContent({
           />
         ) : (
           <>
-            <div id="search-result-count" className="mb-4 text-sm text-muted">
+            <div id="search-result-count" className="mb-4 text-sm text-foreground">
               {count} result{count !== 1 ? "s" : ""} found
             </div>
             <div aria-describedby="search-result-count">

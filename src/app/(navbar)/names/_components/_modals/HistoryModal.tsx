@@ -71,7 +71,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
         onClose();
       }}
       width={480}
-      title={<span className="text-2xl font-bold text-muted">{positionTitle}</span>}
+      title={<span className="text-2xl font-bold text-foreground">{positionTitle}</span>}
     >
       <div className="pt-4">
         {loading || !isStormsReady ? (
@@ -81,7 +81,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
         ) : error ? (
           <FrownError description="Failed to load storm data." onRetry={refetch} />
         ) : positionNames.length === 0 ? (
-          <div className="py-4 text-center text-muted">No names at this position.</div>
+          <div className="py-4 text-center text-foreground">No names at this position.</div>
         ) : (
           <div className="space-y-1">
             {sortedNames.map((name) => {
@@ -104,7 +104,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                     } ${!hasExpandable ? "!cursor-default" : ""}`}
                   >
                     <div className="flex w-full items-baseline gap-2">
-                      <span className="min-w-8 shrink-0 text-sm font-bold text-muted">
+                      <span className="min-w-8 shrink-0 text-sm font-bold text-foreground">
                         {count > 0 ? `x${count}` : "x0"}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -115,9 +115,11 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           >
                             {name.name}
                           </span>
-                          {count > 0 && <span className="ml-1 text-sm text-muted">({years})</span>}
+                          {count > 0 && (
+                            <span className="ml-1 text-sm text-foreground">({years})</span>
+                          )}
                           {name.language && (
-                            <span className="ml-1 text-xs text-muted">· {name.language}</span>
+                            <span className="ml-1 text-xs text-foreground">· {name.language}</span>
                           )}
                         </div>
                         {name.meaning && (
@@ -129,7 +131,7 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames }: HistoryModal
                           </p>
                         )}
                         {name.description && (
-                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-muted">
+                          <p className="mt-0.5 text-xs leading-relaxed whitespace-pre-line text-foreground">
                             {name.description}
                           </p>
                         )}

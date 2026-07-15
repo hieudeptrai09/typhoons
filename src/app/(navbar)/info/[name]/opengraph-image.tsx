@@ -1,4 +1,4 @@
-import { SORTING_RANK, TITLE_COMMON } from "@/lib/constants";
+import { TITLE_COMMON } from "@/lib/constants";
 import { TAG_HEX, TAG_ICONS } from "@/lib/constants/tags";
 import { getNameList } from "@/lib/db/api/getNameList";
 import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";

@@ -68,7 +68,7 @@ const ListFilterModal = ({
       open={isOpen}
       onClose={onClose}
       width={480}
-      title={<span className="text-xl font-bold text-muted">Filter Options</span>}
+      title={<span className="text-xl font-bold text-foreground">Filter Options</span>}
       footer={[
         <Button
           key="clear"

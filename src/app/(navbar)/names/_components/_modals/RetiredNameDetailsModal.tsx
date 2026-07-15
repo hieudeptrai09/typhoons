@@ -20,7 +20,9 @@ type TabType = "info" | "suggestions";
 
 const SuggestionsList = ({ suggestions }: { suggestions: Suggestion[] }) => {
   if (suggestions.length === 0) {
-    return <div className="py-4 text-center text-muted">No suggested replacements available</div>;
+    return (
+      <div className="py-4 text-center text-foreground">No suggested replacements available</div>
+    );
   }
 
   return (

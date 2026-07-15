@@ -19,7 +19,7 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
 
   return (
     <div>
-      <p className="mb-2 text-xs text-muted hidden">Swipe right to see full table →</p>
+      <p className="mb-2 text-xs text-foreground hidden">Swipe right to see full table →</p>
       <div ref={wrapperRef} className="relative">
         <div className="overflow-x-auto" data-scroll-container>
           <table

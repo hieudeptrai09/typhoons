@@ -105,7 +105,7 @@ const OnThisDay = () => {
           icon: null,
           centered: true,
           okText: "Got it",
-          content: <p className="text-muted">No storms formed or dissipated on this day.</p>,
+          content: <p className="text-foreground">No storms formed or dissipated on this day.</p>,
         });
         return;
       }
@@ -120,7 +120,7 @@ const OnThisDay = () => {
         okText: "Got it",
         content: (
           <div>
-            <p className="mb-3 text-sm font-semibold text-muted">{dateStr}</p>
+            <p className="mb-3 text-sm font-semibold text-foreground">{dateStr}</p>
             <ul className="m-0 list-none space-y-1.5 p-0">
               {storms.map((storm, i) => {
                 const eventYear = getEventYear(storm);
@@ -132,7 +132,7 @@ const OnThisDay = () => {
                 return (
                   <li
                     key={i}
-                    className="flex items-baseline gap-1.5 text-sm leading-relaxed text-muted"
+                    className="flex items-baseline gap-1.5 text-sm leading-relaxed text-foreground"
                   >
                     <Icon
                       size={14}
@@ -166,7 +166,7 @@ const OnThisDay = () => {
         icon: null,
         centered: true,
         okText: "Close",
-        content: <p className="text-muted">Could not load storms for this day.</p>,
+        content: <p className="text-foreground">Could not load storms for this day.</p>,
       });
     } finally {
       setLoading(false);

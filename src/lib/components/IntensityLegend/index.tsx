@@ -6,7 +6,7 @@ export default function IntensityLegend() {
   return (
     <section className="mt-6 border-t border-slate-200 pt-6" aria-label="Intensity scale legend">
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 sm:justify-start">
-        <span className="text-xs font-semibold text-muted">Intensity Scale:</span>
+        <span className="text-xs font-semibold text-foreground">Intensity Scale:</span>
         {(Object.keys(INTENSITY_LABEL) as IntensityType[])
           .sort((a, b) => SORTING_RANK[a] - SORTING_RANK[b])
           .map((intensity) => (
@@ -20,9 +20,9 @@ export default function IntensityLegend() {
               >
                 {intensity}
               </span>
-              <span className="text-xs text-muted">
+              <span className="text-xs text-foreground">
                 {INTENSITY_LABEL[intensity]}{" "}
-                <span className="text-muted">({INTENSITY_RANK[intensity]})</span>
+                <span className="text-foreground">({INTENSITY_RANK[intensity]})</span>
               </span>
             </span>
           ))}

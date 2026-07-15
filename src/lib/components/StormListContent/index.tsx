@@ -48,7 +48,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
       <div className="text-sm font-bold" style={{ color: textColor }}>
         {label} {storm.name}
       </div>
-      {dateRange && <div className="text-xs text-muted">{dateRange}</div>}
+      {dateRange && <div className="text-xs text-foreground">{dateRange}</div>}
     </div>
   );
 }
@@ -65,37 +65,37 @@ const StormListContent = ({ storms }: StormListContentProps) => {
       <div className="flex flex-col gap-2 border-b border-gray-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span id="storm-list-country-label" className="font-semibold text-muted">
+            <span id="storm-list-country-label" className="font-semibold text-foreground">
               Contributed by:
             </span>
             {storms[0].position <= 140 && (
               <CountryFlag country={storms[0].country} className="h-5 w-8" />
             )}
-            <span className="text-muted">{storms[0].country}</span>
+            <span className="text-foreground">{storms[0].country}</span>
           </div>
           <div>
-            <span id="storm-list-position-label" className="font-semibold text-muted">
+            <span id="storm-list-position-label" className="font-semibold text-foreground">
               Position:
             </span>
-            <span className="ml-2 text-muted" aria-describedby="storm-list-position-label">
+            <span className="ml-2 text-foreground" aria-describedby="storm-list-position-label">
               {storms[0].position}
             </span>
           </div>
           {storms[0].correctSpelling && (
             <div>
-              <span className="font-semibold text-muted">Correct spelling:</span>
-              <span className="ml-2 text-muted">{storms[0].correctSpelling}</span>
+              <span className="font-semibold text-foreground">Correct spelling:</span>
+              <span className="ml-2 text-foreground">{storms[0].correctSpelling}</span>
             </div>
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-muted">Show Map</span>
+          <span className="text-sm font-semibold text-foreground">Show Map</span>
           <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
         </div>
       </div>
 
       <div>
-        <h3 id="storm-list-heading" className="mb-3 font-semibold text-muted">
+        <h3 id="storm-list-heading" className="mb-3 font-semibold text-foreground">
           All Storms ({storms.length})
         </h3>
         <div className="space-y-1" aria-describedby="storm-list-heading">

@@ -63,8 +63,8 @@ const YearHighlightsGrid = ({ stormsData, onCellClick, onYearHover }: YearHighli
                   }}
                   onKeyDown={onEnterKeyDown(() => onCellClick(storm.year, "year"))}
                 >
-                  <div className="text-xs font-bold text-muted">{storm.name}</div>
-                  <div className="text-[10px] text-muted">({storm.year})</div>
+                  <div className="text-xs font-bold text-foreground">{storm.name}</div>
+                  <div className="text-[10px] text-foreground">({storm.year})</div>
                 </div>
               ))}
             </div>

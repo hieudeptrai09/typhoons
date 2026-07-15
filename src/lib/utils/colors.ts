@@ -84,7 +84,7 @@ export const getRetiredReasonColorClass = (isLanguageProblem: number): string =>
     case 2:
       return "text-amber-600";
     case 3:
-      return "text-muted";
+      return "text-foreground";
     default:
       return "text-red-600";
   }

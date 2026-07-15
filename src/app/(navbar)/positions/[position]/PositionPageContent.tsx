@@ -48,7 +48,7 @@ function PositionPagination({ position }: { position: number }) {
         <ChevronLeft className="h-4 w-4" />
         {getPositionTitle(prevPosition)}
       </a>
-      <span className="text-sm text-muted">
+      <span className="text-sm text-foreground">
         {position} / {TOTAL_POSITIONS}
       </span>
       <a href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
@@ -66,13 +66,13 @@ function NameRosterCard({ name }: { name: TyphoonName }) {
         <div className="flex-1">
           <div className="flex items-baseline gap-2">
             <span className={`font-bold ${getNameStatusColorClass(name)}`}>{name.name}</span>
-            {name.language && <span className="text-xs text-muted">· {name.language}</span>}
+            {name.language && <span className="text-xs text-foreground">· {name.language}</span>}
           </div>
           {name.meaning && (
             <p className="mt-1 text-sm leading-relaxed text-teal-600 italic">{name.meaning}</p>
           )}
           {name.description && (
-            <p className="mt-1 text-xs leading-relaxed text-muted">{name.description}</p>
+            <p className="mt-1 text-xs leading-relaxed text-foreground">{name.description}</p>
           )}
         </div>
         {name.image && (
@@ -109,9 +109,11 @@ function NamesSection({ names, storms }: { names: TyphoonName[]; storms: Storm[]
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-muted">Names Used ({names.length})</h2>
+      <h2 className="mb-4 text-lg font-bold text-foreground">Names Used ({names.length})</h2>
       {names.length === 0 ? (
-        <p className="py-4 text-center text-muted">No names have been assigned to this slot.</p>
+        <p className="py-4 text-center text-foreground">
+          No names have been assigned to this slot.
+        </p>
       ) : (
         <div className="space-y-3">
           {sortedNames.map((name) => (
@@ -127,8 +129,8 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   if (storms.length === 0) {
     return (
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-bold text-muted">All Storms (0)</h2>
-        <p className="py-4 text-center text-muted">No storms recorded at this position.</p>
+        <h2 className="mb-4 text-lg font-bold text-foreground">All Storms (0)</h2>
+        <p className="py-4 text-center text-foreground">No storms recorded at this position.</p>
       </section>
     );
   }
@@ -144,9 +146,9 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-muted">All Storms ({storms.length})</h2>
+        <h2 className="text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
         <div>
-          <span className="text-sm font-medium text-muted">Overall Avg: </span>
+          <span className="text-sm font-medium text-foreground">Overall Avg: </span>
           <span
             className="text-lg font-bold"
             style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(overallAverage)] }}
@@ -164,10 +166,10 @@ function StormsSection({ storms }: { storms: Storm[] }) {
                 className="mb-3 flex items-center justify-between rounded-md bg-slate-50 px-3 py-2"
                 style={{ borderLeft: `4px solid ${BACKGROUND_BADGE[intensityLabel]}` }}
               >
-                <span className="font-semibold text-muted">{group.name}</span>
-                <div className="flex gap-3 text-sm text-muted">
+                <span className="font-semibold text-foreground">{group.name}</span>
+                <div className="flex gap-3 text-sm text-foreground">
                   <span>
-                    Count: <span className="font-semibold text-muted">{group.count}</span>
+                    Count: <span className="font-semibold text-foreground">{group.count}</span>
                   </span>
                   <span>
                     Avg:{" "}
@@ -219,7 +221,7 @@ export default function PositionPageContent({
         <h1 className="text-3xl font-bold" style={{ color: titleColor }}>
           {positionTitle}
         </h1>
-        {position <= 140 && <span className="text-base text-muted">{country}</span>}
+        {position <= 140 && <span className="text-base text-foreground">{country}</span>}
       </div>
 
       <div className="space-y-6">
