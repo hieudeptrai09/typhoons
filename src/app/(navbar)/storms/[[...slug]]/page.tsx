@@ -2,17 +2,23 @@ import { getStorms } from "@/lib/db/api/getStorms";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
+  getCanonicalStormsSlugs,
   getDashboardDescription,
   getDashboardTitle,
   isValidStormsSlug,
   paramsToPath,
   slugToParams,
+  slugToPath,
 } from "../_utils/fns";
 import DashboardPageContent from "../DashboardPageContent";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
+
+export function generateStaticParams() {
+  return getCanonicalStormsSlugs().map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -46,8 +52,7 @@ const Dashboard = async ({ params }: PageProps) => {
 
   const dashboardParams = slugToParams(slug);
   const canonicalPath = paramsToPath(dashboardParams);
-  const currentPath = `/storms/${(slug || []).join("/")}/`.replace(/\/+/g, "/");
-  if (currentPath !== canonicalPath) {
+  if (slugToPath(slug) !== canonicalPath) {
     redirect(canonicalPath);
   }
 

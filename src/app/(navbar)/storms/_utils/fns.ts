@@ -68,6 +68,30 @@ export const paramsToPath = (params: DashboardParams): string => {
   return base;
 };
 
+export const slugToPath = (slug: string[] = []): string =>
+  `/storms/${slug.join("/")}/`.replace(/\/+/g, "/");
+
+const ALL_SLUGS: string[][] = [
+  [],
+  ["list"],
+  ["names"],
+  ["positions"],
+  ["storms"],
+  ["highlights"],
+  ["average"],
+  ["distance"],
+  ...Object.entries(VALID_FILTERS).flatMap(([view, filters]) =>
+    filters.flatMap((filter) => [
+      [view, filter],
+      [view, filter, "list"],
+    ]),
+  ),
+];
+
+// Non-canonical slugs redirect, so prerendering them would only cache the redirect.
+export const getCanonicalStormsSlugs = (): string[][] =>
+  ALL_SLUGS.filter((slug) => paramsToPath(slugToParams(slug)) === slugToPath(slug));
+
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
   if (rounded >= 5) return "5";
