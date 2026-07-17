@@ -20,6 +20,16 @@ interface NamesSettingsModalProps extends BaseModalProps {
   onApply: (mode: DisplayMode, settings: DisplaySettings) => void;
 }
 
+const DEFAULT_MODE: DisplayMode = "grid";
+
+const DEFAULT_SETTINGS: DisplaySettings = {
+  showLetterNav: false,
+  showName: true,
+  showHistory: false,
+  colorfulHistory: false,
+  showImageAndDescription: false,
+};
+
 const NamesSettingsModal = ({
   isOpen,
   onClose,
@@ -47,6 +57,11 @@ const NamesSettingsModal = ({
     onApply(draftMode, draftSettings);
   };
 
+  const handleClear = () => {
+    setDraftMode(DEFAULT_MODE);
+    setDraftSettings(DEFAULT_SETTINGS);
+  };
+
   const isGrid = draftMode === "grid";
   const isList = draftMode === "list";
   const colorfulDisabled = !isGrid || !draftSettings.showHistory;
@@ -58,8 +73,8 @@ const NamesSettingsModal = ({
       width={400}
       title={<span className="text-xl font-bold text-foreground">Display Settings</span>}
       footer={[
-        <Button key="cancel" onClick={onClose}>
-          Cancel
+        <Button key="clear" onClick={handleClear}>
+          Clear
         </Button>,
         <Button key="apply" type="primary" onClick={handleApply}>
           Apply

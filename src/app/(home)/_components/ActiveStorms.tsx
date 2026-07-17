@@ -78,7 +78,7 @@ const ActiveStorms = () => {
             <p className="mb-3 text-sm font-semibold text-foreground">
               Storms that were in progress on this date in past years
             </p>
-            <ol className="m-0 list-decimal list-outside space-y-1.5 pl-5">
+            <ol className="m-0 list-decimal list-outside space-y-1.5 pl-8">
               {storms.map((storm, i) => {
                 const label = INTENSITY_LABEL[storm.intensity];
                 const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];

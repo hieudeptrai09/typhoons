@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
 import RetiredView from "./_components/_views/RetiredView";
 import type { NamesDisplayPrefs } from "./_utils/displayPrefs";
+import { defaultDisplayPrefs, writeDisplayPrefs } from "./_utils/displayPrefs";
 import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
 
 interface NamesPageContentProps {
@@ -31,7 +32,8 @@ const NamesPageContent = ({
 
   const toggleView = () => {
     if (viewMode === "retired") {
-      router.push(paramsToPath("current", false, true));
+      writeDisplayPrefs(defaultDisplayPrefs);
+      router.push("/names/");
     } else {
       router.push(paramsToPath("retired"));
     }
