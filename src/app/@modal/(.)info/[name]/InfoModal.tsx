@@ -10,7 +10,7 @@ import Tabs, { type Tab } from "@/lib/components/Tabs";
 import type { SearchDetail } from "@/lib/types";
 import { getNameStatusColor, isExternalPosition } from "@/lib/utils/colors";
 import { SearchX } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
 interface InfoModalProps {
@@ -23,16 +23,13 @@ type TabType = "details" | "storms";
 
 export default function InfoModal({ detail, name, isError = false }: InfoModalProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const nameData = detail?.name ?? null;
   const storms = detail?.storms ?? [];
   const displayName = nameData?.name ?? name;
   const isRetired = nameData ? Boolean(nameData.isRetired) : false;
 
-  const [activeTab, setActiveTab] = useState<TabType>(
-    searchParams.get("tab") === "storms" ? "storms" : "details",
-  );
+  const [activeTab, setActiveTab] = useState<TabType>("details");
 
   const notFound = !nameData && storms.length === 0;
 
