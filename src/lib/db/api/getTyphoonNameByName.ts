@@ -1,6 +1,8 @@
 import sql from "@/lib/db";
 import type { RetiredName, SearchDetail, Storm } from "@/lib/types";
+import { markSeasonExtremes } from "@/lib/utils/seasonExtremes";
 import { unstable_cache } from "next/cache";
+import { getStorms } from "./getStorms";
 
 interface ApiResponse<T> {
   data: T;
@@ -33,13 +35,13 @@ interface StormRow {
   correctSpelling: string | null;
   year: number;
   isStrongest: number;
-  isFirst: number;
-  isLast: number;
   dateStart: number | null;
   dateEnd: number | null;
   monthStart: number | null;
   monthEnd: number | null;
   isFromPrevYear: number;
+  jtwcDesignation: string | null;
+  isJtwcForecasted: boolean;
 }
 
 async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchDetail>> {
@@ -98,13 +100,13 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       s.correctspelling AS "correctSpelling",
       s.year,
       s.isstrongest AS "isStrongest",
-      s.isfirst AS "isFirst",
-      s.islast AS "isLast",
       s.datestart AS "dateStart",
       s.dateend AS "dateEnd",
       s.monthstart AS "monthStart",
       s.monthend AS "monthEnd",
-      s.isfromprevyear AS "isFromPrevYear"
+      s.isfromprevyear AS "isFromPrevYear",
+      LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
+      s.isjtwcforecasted AS "isJtwcForecasted"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
     WHERE LOWER(s.name) = LOWER($1)
@@ -121,19 +123,21 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
     correctSpelling: row.correctSpelling ?? undefined,
     year: Number(row.year),
     isStrongest: Number(row.isStrongest) as unknown as Storm["isStrongest"],
-    isFirst: Number(row.isFirst) as unknown as Storm["isFirst"],
-    isLast: Number(row.isLast) as unknown as Storm["isLast"],
     dateStart: row.dateStart !== null ? Number(row.dateStart) : undefined,
     dateEnd: row.dateEnd !== null ? Number(row.dateEnd) : undefined,
     monthStart: row.monthStart !== null ? Number(row.monthStart) : undefined,
     monthEnd: row.monthEnd !== null ? Number(row.monthEnd) : undefined,
     isFromPrevYear: Number(row.isFromPrevYear),
+    jtwcDesignation: row.jtwcDesignation ?? undefined,
+    isJtwcForecasted: Boolean(row.isJtwcForecasted),
   }));
+
+  const { data: allStorms } = await getStorms();
 
   return {
     data: {
       name: nameDetail as SearchDetail["name"],
-      storms,
+      storms: markSeasonExtremes(storms, allStorms),
     },
   };
 }

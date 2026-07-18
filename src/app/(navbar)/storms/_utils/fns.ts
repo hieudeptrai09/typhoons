@@ -1,10 +1,11 @@
 import { INTENSITY_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { capitalize, normalizeParam } from "@/lib/utils/fns";
+import { getSeasonExtremes } from "@/lib/utils/seasonExtremes";
 
 const VALID_FILTERS: Record<string, string[]> = {
   storms: ["position", "name"],
-  highlights: ["strongest", "first", "last"],
+  highlights: ["strongest", "first", "last", "untracked"],
   average: ["position", "name", "country", "year", "month"],
   distance: ["position", "name"],
 };
@@ -107,10 +108,10 @@ export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   if (type === "strongest") {
     return stormsData.filter((storm) => Boolean(storm.isStrongest));
-  } else if (type === "first") {
-    return stormsData.filter((storm) => Boolean(storm.isFirst));
-  } else if (type === "last") {
-    return stormsData.filter((storm) => Boolean(storm.isLast));
+  } else if (type === "first" || type === "last") {
+    return getSeasonExtremes(stormsData, type);
+  } else if (type === "untracked") {
+    return stormsData.filter((storm) => storm.isJtwcForecasted === false);
   }
   return [];
 };
@@ -215,6 +216,8 @@ export const getDashboardDescription = (
       first:
         "View the first typhoons of each season by position - track the earliest storms to receive each name in the typhoon naming sequence.",
       last: "Browse the last typhoons of each season by position - see which storms closed out their respective seasons for each name position.",
+      untracked:
+        "Discover typhoons not tracked by the JTWC, organized by position - storms that were named but fell outside the Joint Typhoon Warning Center's official monitoring.",
     };
     return (
       highlightDescriptions[filterStr] ||

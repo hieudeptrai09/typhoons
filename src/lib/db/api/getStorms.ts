@@ -1,5 +1,6 @@
 import sql, { type QueryParam } from "@/lib/db";
 import type { Storm } from "@/lib/types";
+import { markSeasonExtremes } from "@/lib/utils/seasonExtremes";
 import { unstable_cache } from "next/cache";
 
 interface ApiResponse<T> {
@@ -16,13 +17,13 @@ interface StormRow {
   correctSpelling: string | null;
   year: number;
   isStrongest: number;
-  isFirst: number;
-  isLast: number;
   dateStart: number | null;
   dateEnd: number | null;
   monthStart: number | null;
   monthEnd: number | null;
   isFromPrevYear: number;
+  jtwcDesignation: string | null;
+  isJtwcForecasted: boolean;
 }
 
 async function queryStorms(position: number | null = null): Promise<ApiResponse<Storm[]>> {
@@ -35,13 +36,13 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
       s.correctspelling AS "correctSpelling",
       s.year,
       s.isstrongest AS "isStrongest",
-      s.isfirst AS "isFirst",
-      s.islast AS "isLast",
       s.datestart AS "dateStart",
       s.dateend AS "dateEnd",
       s.monthstart AS "monthStart",
       s.monthend AS "monthEnd",
-      s.isfromprevyear AS "isFromPrevYear"
+      s.isfromprevyear AS "isFromPrevYear",
+      LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
+      s.isjtwcforecasted AS "isJtwcForecasted"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id`;
 
@@ -54,7 +55,7 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
 
   const rows = await sql.query<StormRow[]>(query, params);
 
-  const data: Storm[] = rows.map((row) => ({
+  const mapped: Storm[] = rows.map((row) => ({
     position: Number(row.position),
     country: row.country,
     name: row.name,
@@ -63,14 +64,17 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
     correctSpelling: row.correctSpelling ?? undefined,
     year: Number(row.year),
     isStrongest: Number(row.isStrongest) as unknown as Storm["isStrongest"],
-    isFirst: Number(row.isFirst) as unknown as Storm["isFirst"],
-    isLast: Number(row.isLast) as unknown as Storm["isLast"],
     dateStart: row.dateStart !== null ? Number(row.dateStart) : undefined,
     dateEnd: row.dateEnd !== null ? Number(row.dateEnd) : undefined,
     monthStart: row.monthStart !== null ? Number(row.monthStart) : undefined,
     monthEnd: row.monthEnd !== null ? Number(row.monthEnd) : undefined,
     isFromPrevYear: Number(row.isFromPrevYear),
+    jtwcDesignation: row.jtwcDesignation ?? undefined,
+    isJtwcForecasted: Boolean(row.isJtwcForecasted),
   }));
+
+  // Season extremes require the full basin per year, so only stamp on the unfiltered set.
+  const data = position === null ? markSeasonExtremes(mapped, mapped) : mapped;
 
   return { data, count: data.length };
 }

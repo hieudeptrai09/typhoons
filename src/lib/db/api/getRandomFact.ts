@@ -20,6 +20,27 @@ const MONTH_NAMES: Record<number, string> = {
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
+const SEASON_RANK =
+  "(CASE WHEN isfromprevyear THEN 0 ELSE 10000 END) + monthstart * 100 + datestart";
+
+const seasonExtremes = (extreme: "MIN" | "MAX"): string => `
+  SELECT name, year, intensity, monthstart, isstrongest FROM (
+    SELECT name, year, intensity, monthstart, isstrongest, position, rank, overall_rank, main_rank,
+      BOOL_OR(rank = overall_rank AND position > 140) OVER (PARTITION BY year) AS ext_extreme
+    FROM (
+      SELECT name, year, intensity, monthstart, isstrongest, position,
+        ${SEASON_RANK} AS rank,
+        ${extreme}(${SEASON_RANK}) OVER (PARTITION BY year) AS overall_rank,
+        ${extreme}(${SEASON_RANK}) FILTER (WHERE position <= 140) OVER (PARTITION BY year) AS main_rank
+      FROM storms
+      WHERE monthstart > 0 AND datestart > 0 AND year >= 2000${
+        extreme === "MAX" ? " AND year < EXTRACT(YEAR FROM CURRENT_DATE)" : ""
+      }
+    ) ranked
+  ) flagged
+  WHERE rank = overall_rank
+     OR (ext_extreme AND rank = main_rank)`;
+
 function joinNames(items: (string | number)[], joiner = "and"): string {
   const arr = items.map(String);
   if (arr.length === 0) return "";
@@ -61,16 +82,27 @@ async function generateFacts(): Promise<string[]> {
     );
   }
 
-  names = (await rows("SELECT DISTINCT name FROM storms WHERE position = 142 ORDER BY name")).map(
-    (r) => String(r.name),
+  const crossers = await rows(
+    "SELECT name, MIN(year) AS year FROM storms WHERE position = 142 GROUP BY name ORDER BY name",
   );
-  if (names.length > 0) {
+  const nhcCrossers = crossers.filter((r) => r.name !== "Li").map((r) => String(r.name));
+  const hawaiianCrossers = crossers
+    .filter((r) => r.name === "Li")
+    .map((r) => `${r.name} (${r.year})`);
+  if (nhcCrossers.length > 0) {
     facts.push(
       withNames(
-        `Besides Li (1994), there are ${names.length} names assigned by NHC that cross 3 Pacific basins`,
-        names,
+        `There are ${nhcCrossers.length} names assigned by NHC that cross 3 Pacific basins`,
+        nhcCrossers,
       ),
     );
+  }
+  if (hawaiianCrossers.length > 0) {
+    const label =
+      hawaiianCrossers.length === 1
+        ? "is the only name given in Hawaiian by CPHC"
+        : "are the only names given in Hawaiian by CPHC";
+    facts.push(`${joinNames(hawaiianCrossers)} ${label} to cross all 3 Pacific basins.`);
   }
 
   let rowsResult = await rows(
@@ -86,7 +118,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Category 5 from external basins ---
 
   rowsResult = await rows(
-    "SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5'",
+    "SELECT DISTINCT name FROM storms WHERE position = 142 AND intensity = '5' AND name != 'Li'",
   );
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
@@ -170,7 +202,7 @@ async function generateFacts(): Promise<string[]> {
   // --- First storms that are Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE isfirst = true AND intensity = '5' AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE intensity = '5' ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -179,6 +211,34 @@ async function generateFacts(): Promise<string[]> {
         ? "is the only season-opening storm"
         : "are the only season-opening storms";
     facts.push(`Since 2000, ${joinNames(items)} ${label} to reach category 5.`);
+  }
+
+  // --- Season openers that were also the strongest of their season ---
+
+  rowsResult = await rows(
+    `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE isstrongest = true ORDER BY year`,
+  );
+  if (rowsResult.length > 0) {
+    const items = rowsResult.map((r) => `${r.name} (${r.year})`);
+    const label =
+      items.length === 1
+        ? "is the only storm to open its season and also be its strongest"
+        : "are the only storms to open their season and also be its strongest";
+    facts.push(`Since 2000, ${joinNames(items)} ${label}.`);
+  }
+
+  // --- Season closers that were also the strongest of their season ---
+
+  rowsResult = await rows(
+    `SELECT name, year FROM (${seasonExtremes("MAX")}) f WHERE isstrongest = true ORDER BY year`,
+  );
+  if (rowsResult.length > 0) {
+    const items = rowsResult.map((r) => `${r.name} (${r.year})`);
+    const label =
+      items.length === 1
+        ? "is the only storm to close its season and also be its strongest"
+        : "are the only storms to close their season and also be its strongest";
+    facts.push(`Since 2000, ${joinNames(items)} ${label}.`);
   }
 
   // --- Storms spanning multiple years ---
@@ -225,7 +285,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Seasons ending with Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE islast = true AND intensity = '5' AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM (${seasonExtremes("MAX")}) f WHERE intensity = '5' ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -258,7 +318,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [6, 7, 8]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE isfirst = true AND monthstart = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE monthstart = $1 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -727,6 +787,41 @@ async function generateFacts(): Promise<string[]> {
   `);
   if (row) {
     facts.push(`The letter ${row.letter} has the fewest names starting with it (${row.cnt}).`);
+  }
+
+  // --- JTWC tracking oddities ---
+
+  // Every storm the JTWC never issued live warnings on (Haiyan included, even though it was
+  // later numbered — see the absurdity fact below).
+  rowsResult = await rows(
+    `SELECT name, year FROM storms WHERE isjtwcforecasted = false ORDER BY year, name`,
+  );
+  if (rowsResult.length > 0) {
+    const items = rowsResult.map((r) => `${r.name} (${r.year})`);
+    facts.push(
+      withNames(
+        `There ${items.length === 1 ? "is" : "are"} ${items.length} storm${
+          items.length === 1 ? "" : "s"
+        } the JTWC never issued warnings on`,
+        items,
+      ),
+    );
+  }
+
+  // The absurdity: not tracked, yet somehow still numbered in post-season reanalysis (Haiyan 27W).
+  rowsResult = await rows(`
+    SELECT s.name, s.year, LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS designation
+    FROM storms s
+    INNER JOIN positions p ON s.position = p.id
+    WHERE s.isjtwcforecasted = false AND s.jtwcnumber IS NOT NULL
+    ORDER BY s.year, s.name
+  `);
+  if (rowsResult.length > 0) {
+    const items = rowsResult.map((r) => `${r.name} (${r.year}, ${r.designation})`);
+    const label = items.length === 1 ? "is the only storm" : "are the only storms";
+    facts.push(
+      `${joinNames(items)} ${label} the JTWC never tracked, yet somehow still carries a JTWC number — assigned in post-season reanalysis.`,
+    );
   }
 
   return facts;

@@ -2,6 +2,7 @@ import {
   Activity,
   ArrowDownToLine,
   CloudLightning,
+  EyeOff,
   Globe,
   Grid3x3,
   List,
@@ -27,6 +28,7 @@ export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
     strongest: Zap,
     first: Medal,
     last: ArrowDownToLine,
+    untracked: EyeOff,
     position: MapPin,
     name: Tag,
     country: Globe,
@@ -67,6 +69,7 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
     { label: icon(Zap, "Strongest"), value: "strongest" },
     { label: icon(Medal, "First"), value: "first" },
     { label: icon(ArrowDownToLine, "Last"), value: "last" },
+    { label: icon(EyeOff, "Untracked"), value: "untracked" },
   ],
   average: [
     { label: icon(MapPin, "Position"), value: "position" },

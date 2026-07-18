@@ -37,6 +37,7 @@ const StormDetailModal = ({ isOpen, onClose, title, storms }: StormDetailModalPr
                   style={{ color: TEXT_COLOR_WHITE_BACKGROUND[storm.intensity] }}
                 >
                   {storm.name} {storm.year}
+                  {storm.jtwcDesignation && ` (${storm.jtwcDesignation})`}
                 </span>
               </div>
             ))}

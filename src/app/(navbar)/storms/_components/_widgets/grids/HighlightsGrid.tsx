@@ -15,6 +15,8 @@ const getHighlightColorClass = (highlightType: string): string => {
       return "bg-blue-300";
     case "last":
       return "bg-orange-300";
+    case "untracked":
+      return "bg-slate-300";
     default:
       return "bg-green-300";
   }

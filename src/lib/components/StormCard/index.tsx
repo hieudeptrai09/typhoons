@@ -1,9 +1,10 @@
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
-import { Calendar } from "lucide-react";
+import { Calendar, Hash } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {
   const bgColor = BACKGROUND_BADGE[storm.intensity];
@@ -21,10 +22,23 @@ const StormCard = ({ storm }: { storm: Storm }) => {
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="flex h-20 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
+      <div className="flex h-28 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
+        {hasHighlight(storm) && (
+          <div className="mb-1.5">
+            <StormHighlightBadges storm={storm} />
+          </div>
+        )}
         <span className="text-sm leading-tight font-bold" style={{ color: textColor }}>
           {label} {storm.name}
         </span>
+        {storm.jtwcDesignation && (
+          <div className="mt-1 flex items-center gap-1.5">
+            <Hash size={12} style={{ color: textColor }} />
+            <span className="text-xs font-medium" style={{ color: textColor }}>
+              {storm.jtwcDesignation}
+            </span>
+          </div>
+        )}
         {dateRange && (
           <div className="mt-1 flex items-center gap-1.5">
             <Calendar size={12} style={{ color: textColor }} />

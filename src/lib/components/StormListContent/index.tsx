@@ -3,6 +3,7 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -45,8 +46,14 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
           />
         </div>
       )}
+      {hasHighlight(storm) && (
+        <div className="mb-1.5">
+          <StormHighlightBadges storm={storm} />
+        </div>
+      )}
       <div className="text-sm font-bold" style={{ color: textColor }}>
         {label} {storm.name}
+        {storm.jtwcDesignation && ` (${storm.jtwcDesignation})`}
       </div>
       {dateRange && <div className="text-xs text-foreground">{dateRange}</div>}
     </div>

@@ -46,6 +46,8 @@ export interface Storm {
   monthStart?: number;
   monthEnd?: number;
   isFromPrevYear?: number;
+  jtwcDesignation?: string;
+  isJtwcForecasted?: boolean;
 }
 
 export interface FilterParams {
