@@ -20,27 +20,6 @@ const MONTH_NAMES: Record<number, string> = {
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-const SEASON_RANK =
-  "(CASE WHEN isfromprevyear THEN 0 ELSE 10000 END) + monthstart * 100 + datestart";
-
-const seasonExtremes = (extreme: "MIN" | "MAX"): string => `
-  SELECT name, year, intensity, monthstart, isstrongest FROM (
-    SELECT name, year, intensity, monthstart, isstrongest, position, rank, overall_rank, main_rank,
-      BOOL_OR(rank = overall_rank AND position > 140) OVER (PARTITION BY year) AS ext_extreme
-    FROM (
-      SELECT name, year, intensity, monthstart, isstrongest, position,
-        ${SEASON_RANK} AS rank,
-        ${extreme}(${SEASON_RANK}) OVER (PARTITION BY year) AS overall_rank,
-        ${extreme}(${SEASON_RANK}) FILTER (WHERE position <= 140) OVER (PARTITION BY year) AS main_rank
-      FROM storms
-      WHERE monthstart > 0 AND datestart > 0 AND year >= 2000${
-        extreme === "MAX" ? " AND year < EXTRACT(YEAR FROM CURRENT_DATE)" : ""
-      }
-    ) ranked
-  ) flagged
-  WHERE rank = overall_rank
-     OR (ext_extreme AND rank = main_rank)`;
-
 function joinNames(items: (string | number)[], joiner = "and"): string {
   const arr = items.map(String);
   if (arr.length === 0) return "";
@@ -202,7 +181,7 @@ async function generateFacts(): Promise<string[]> {
   // --- First storms that are Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE intensity = '5' ORDER BY year`,
+    `SELECT name, year FROM storms WHERE isfirst = true AND intensity = '5' ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -216,7 +195,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Season openers that were also the strongest of their season ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE isstrongest = true ORDER BY year`,
+    `SELECT name, year FROM storms WHERE isfirst = true AND isstrongest = true ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -230,7 +209,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Season closers that were also the strongest of their season ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM (${seasonExtremes("MAX")}) f WHERE isstrongest = true ORDER BY year`,
+    `SELECT name, year FROM storms WHERE islast = true AND isstrongest = true ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -285,7 +264,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Seasons ending with Cat 5 ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM (${seasonExtremes("MAX")}) f WHERE intensity = '5' ORDER BY year`,
+    `SELECT name, year FROM storms WHERE islast = true AND intensity = '5' ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -318,7 +297,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [6, 7, 8]) {
     rowsResult = await rows(
-      `SELECT name, year FROM (${seasonExtremes("MIN")}) f WHERE monthstart = $1 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE isfirst = true AND monthstart = $1 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {

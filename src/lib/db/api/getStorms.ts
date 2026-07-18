@@ -1,6 +1,5 @@
 import sql, { type QueryParam } from "@/lib/db";
 import type { Storm } from "@/lib/types";
-import { markSeasonExtremes } from "@/lib/utils/seasonExtremes";
 import { unstable_cache } from "next/cache";
 
 interface ApiResponse<T> {
@@ -24,6 +23,8 @@ interface StormRow {
   isFromPrevYear: number;
   jtwcDesignation: string | null;
   isJtwcForecasted: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 async function queryStorms(position: number | null = null): Promise<ApiResponse<Storm[]>> {
@@ -42,7 +43,9 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
       s.monthend AS "monthEnd",
       s.isfromprevyear AS "isFromPrevYear",
       LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
-      s.isjtwcforecasted AS "isJtwcForecasted"
+      s.isjtwcforecasted AS "isJtwcForecasted",
+      s.isfirst AS "isFirst",
+      s.islast AS "isLast"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id`;
 
@@ -71,12 +74,11 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
     isFromPrevYear: Number(row.isFromPrevYear),
     jtwcDesignation: row.jtwcDesignation ?? undefined,
     isJtwcForecasted: Boolean(row.isJtwcForecasted),
+    isFirst: Boolean(row.isFirst),
+    isLast: Boolean(row.isLast),
   }));
 
-  // Season extremes require the full basin per year, so only stamp on the unfiltered set.
-  const data = position === null ? markSeasonExtremes(mapped, mapped) : mapped;
-
-  return { data, count: data.length };
+  return { data: mapped, count: mapped.length };
 }
 
 export const getStorms = unstable_cache(queryStorms, ["getStorms"], { revalidate: 3600 });

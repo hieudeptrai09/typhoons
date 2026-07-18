@@ -1,8 +1,6 @@
 import sql from "@/lib/db";
 import type { PositionDetail, RetiredName, Storm } from "@/lib/types";
-import { markSeasonExtremes } from "@/lib/utils/seasonExtremes";
 import { unstable_cache } from "next/cache";
-import { getStorms } from "./getStorms";
 
 interface ApiResponse<T> {
   data: T;
@@ -46,6 +44,8 @@ interface StormRow {
   isFromPrevYear: number;
   jtwcDesignation: string | null;
   isJtwcForecasted: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 async function queryPositionDetails(position: number): Promise<ApiResponse<PositionDetail | null>> {
@@ -117,7 +117,9 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
       s.monthend AS "monthEnd",
       s.isfromprevyear AS "isFromPrevYear",
       LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
-      s.isjtwcforecasted AS "isJtwcForecasted"
+      s.isjtwcforecasted AS "isJtwcForecasted",
+      s.isfirst AS "isFirst",
+      s.islast AS "isLast"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
     WHERE s.position = $1
@@ -141,15 +143,15 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     isFromPrevYear: Number(row.isFromPrevYear),
     jtwcDesignation: row.jtwcDesignation ?? undefined,
     isJtwcForecasted: Boolean(row.isJtwcForecasted),
+    isFirst: Boolean(row.isFirst),
+    isLast: Boolean(row.isLast),
   }));
-
-  const { data: allStorms } = await getStorms();
 
   return {
     data: {
       country: posRow.country,
       names,
-      storms: markSeasonExtremes(storms, allStorms),
+      storms,
     },
   };
 }

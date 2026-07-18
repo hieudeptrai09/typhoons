@@ -1,8 +1,6 @@
 import sql from "@/lib/db";
 import type { RetiredName, SearchDetail, Storm } from "@/lib/types";
-import { markSeasonExtremes } from "@/lib/utils/seasonExtremes";
 import { unstable_cache } from "next/cache";
-import { getStorms } from "./getStorms";
 
 interface ApiResponse<T> {
   data: T;
@@ -42,6 +40,8 @@ interface StormRow {
   isFromPrevYear: number;
   jtwcDesignation: string | null;
   isJtwcForecasted: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchDetail>> {
@@ -106,7 +106,9 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       s.monthend AS "monthEnd",
       s.isfromprevyear AS "isFromPrevYear",
       LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
-      s.isjtwcforecasted AS "isJtwcForecasted"
+      s.isjtwcforecasted AS "isJtwcForecasted",
+      s.isfirst AS "isFirst",
+      s.islast AS "isLast"
     FROM storms s
     INNER JOIN positions p ON s.position = p.id
     WHERE LOWER(s.name) = LOWER($1)
@@ -130,14 +132,14 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
     isFromPrevYear: Number(row.isFromPrevYear),
     jtwcDesignation: row.jtwcDesignation ?? undefined,
     isJtwcForecasted: Boolean(row.isJtwcForecasted),
+    isFirst: Boolean(row.isFirst),
+    isLast: Boolean(row.isLast),
   }));
-
-  const { data: allStorms } = await getStorms();
 
   return {
     data: {
       name: nameDetail as SearchDetail["name"],
-      storms: markSeasonExtremes(storms, allStorms),
+      storms,
     },
   };
 }
