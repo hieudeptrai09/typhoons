@@ -21,7 +21,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="flex h-28 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
+      <div className="flex h-24 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
         <span className="text-sm leading-tight font-bold" style={{ color: textColor }}>
           {label} {storm.name}
         </span>
