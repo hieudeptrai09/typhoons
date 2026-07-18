@@ -1,5 +1,4 @@
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
-import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
@@ -23,11 +22,6 @@ const StormCard = ({ storm }: { storm: Storm }) => {
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div className="flex h-28 flex-col justify-center px-4" style={{ backgroundColor: bgColor }}>
-        {hasHighlight(storm) && (
-          <div className="mb-1.5">
-            <StormHighlightBadges storm={storm} />
-          </div>
-        )}
         <span className="text-sm leading-tight font-bold" style={{ color: textColor }}>
           {label} {storm.name}
         </span>
