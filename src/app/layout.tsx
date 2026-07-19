@@ -1,6 +1,10 @@
 import { TITLE_COMMON } from "@/lib/constants";
+import AntdProvider from "@/lib/layout/AntdProvider";
 import type { Metadata, Viewport } from "next";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
+
+const font = Open_Sans({ subsets: ["latin"], variable: "--font-open-sans", weight: "400" });
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -110,7 +114,7 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={font.variable}>
       <head>
         <script
           type="application/ld+json"
@@ -122,8 +126,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        {modal}
+        <AntdProvider>
+          {children}
+          {modal}
+        </AntdProvider>
       </body>
     </html>
   );
