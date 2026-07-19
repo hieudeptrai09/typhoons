@@ -12,8 +12,6 @@ interface MenuProps {
 
 const Menu = ({ href, label, bgColor, hoverBgColor }: MenuProps) => {
   return (
-    // Scope the primary color to this button so Ant Design drives the hover /
-    // active states itself, instead of swapping inline styles via JS handlers.
     <ConfigProvider
       theme={{
         token: {

@@ -37,7 +37,7 @@ const Navbar = ({ allNames }: { allNames: string[] }) => {
   }, []);
 
   return (
-    <nav ref={navRef} className="sticky top-0 z-50 bg-sky-700" aria-label="Main navigation">
+    <nav ref={navRef} className="sticky top-0 z-50 bg-blue-600" aria-label="Main navigation">
       <div className="mx-auto max-w-7xl px-2 py-2">
         <div className="relative flex items-center justify-between">
           <NavLink href="/" icon={Home} label="Home" isActive={pathName === "/"} />

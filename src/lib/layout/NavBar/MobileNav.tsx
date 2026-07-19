@@ -12,7 +12,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
     <div
       role="navigation"
       aria-label="Mobile navigation"
-      className={`absolute top-full right-0 left-0 z-40 overflow-hidden bg-sky-700 shadow-lg transition-all duration-300 ease-in-out md:hidden ${
+      className={`absolute top-full right-0 left-0 z-40 overflow-hidden bg-blue-600 shadow-lg transition-all duration-300 ease-in-out md:hidden ${
         isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
       }`}
     >
