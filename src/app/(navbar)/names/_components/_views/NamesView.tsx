@@ -2,7 +2,7 @@ import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultTyphoonName } from "@/lib/constants";
 import type { FilterParams, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
-import { Badge } from "antd";
+import { Badge, Button } from "antd";
 import { Filter, Settings, Skull } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -289,32 +289,32 @@ const NamesView = ({
     <>
       <div className="mx-auto mb-4 max-w-4xl">
         <div className="flex items-center justify-center gap-9">
-          <button
+          <Button
+            type="text"
             onClick={onToggleView}
             title="Switch to retired names"
             aria-label="Viewing all names, click to switch to retired"
-            className="cursor-pointer border-0 bg-transparent p-1 text-red-500 transition-colors hover:text-red-700"
-          >
-            <Skull size={30} />
-          </button>
+            icon={<Skull size={30} />}
+            className="!h-auto !w-auto !p-1 !text-red-500 hover:!bg-transparent hover:!text-red-700"
+          />
           <Badge count={activeFilterCount} color="#ef4444" offset={[-4, 4]}>
-            <button
+            <Button
+              type="text"
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-foreground transition-colors hover:text-highlight"
-            >
-              <Filter size={30} />
-            </button>
+              icon={<Filter size={30} />}
+              className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
+            />
           </Badge>
-          <button
+          <Button
+            type="text"
             onClick={() => setIsSettingsOpen(true)}
             title="Display settings"
             aria-label="Display settings"
-            className="cursor-pointer border-0 bg-transparent p-1 text-foreground transition-colors hover:text-highlight"
-          >
-            <Settings size={30} />
-          </button>
+            icon={<Settings size={30} />}
+            className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
+          />
         </div>
         <div className="hidden mt-2 justify-center">
           <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
