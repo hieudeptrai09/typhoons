@@ -33,7 +33,7 @@ function PositionPagination({ position }: { position: number }) {
   const nextPosition = isLast ? 1 : position + 1;
 
   const linkClass = (isWrap: boolean) =>
-    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors ${
+    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-semibold text-white transition-colors ${
       isWrap
         ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
         : "border-sky-600 bg-sky-600 hover:border-sky-700 hover:bg-sky-700"
@@ -148,7 +148,7 @@ function StormsSection({ storms }: { storms: Storm[] }) {
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
         <div>
-          <span className="text-sm font-medium text-foreground">Overall Avg: </span>
+          <span className="text-sm font-semibold text-foreground">Overall Avg: </span>
           <span
             className="text-lg font-bold"
             style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(overallAverage)] }}

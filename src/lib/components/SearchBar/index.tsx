@@ -131,7 +131,7 @@ const SearchBar = ({ variant, allNames }: SearchBarProps) => {
               <button
                 onClick={handleViewAll}
                 aria-label="View all search results"
-                className="w-full cursor-pointer px-4 py-2.5 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
+                className="w-full cursor-pointer px-4 py-2.5 text-center text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-50"
               >
                 View all results{filtered.length > 5 ? ` (${filtered.length})` : ""}
               </button>

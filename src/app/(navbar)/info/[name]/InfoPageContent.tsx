@@ -60,20 +60,20 @@ function NameDetailsSection({
       <div className={`flex gap-6 ${hasImage ? "flex-col sm:flex-row" : "flex-col"}`}>
         <div className="flex-1 space-y-4">
           <div>
-            <div className="text-sm font-medium text-foreground">Meaning</div>
+            <div className="text-sm font-semibold text-foreground">Meaning</div>
             <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
               {name.meaning}
             </p>
           </div>
 
           <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-medium text-foreground">Language</div>
+            <div className="text-sm font-semibold text-foreground">Language</div>
             <div className="mt-1 text-base text-foreground">{name.language}</div>
           </div>
 
           {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
             <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-medium text-foreground">
+              <div className="text-sm font-semibold text-foreground">
                 {correctSpelling ? "Correct spelling" : "Replaced by"}
               </div>
               <div className="mt-1 text-base font-semibold text-teal-600">
@@ -127,7 +127,7 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
   const nextName = names[isLast ? 0 : currentIndex + 1];
 
   const linkClass =
-    "flex items-center gap-1 rounded-lg border border-sky-600 bg-sky-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-sky-700 hover:bg-sky-700";
+    "flex items-center gap-1 rounded-lg border border-sky-600 bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-sky-700 hover:bg-sky-700";
 
   return (
     <nav
@@ -208,7 +208,7 @@ export default function InfoPageContent({
         {metaCountry && (
           <div className="flex items-center gap-2">
             {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
-            <span className="text-base font-medium text-foreground">{metaCountry}</span>
+            <span className="text-base font-semibold text-foreground">{metaCountry}</span>
           </div>
         )}
         {isInPosition && metaPosition != null && (

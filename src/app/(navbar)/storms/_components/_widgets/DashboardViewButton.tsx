@@ -53,7 +53,7 @@ const DashboardViewButton = ({ onClick, params }: FilterButtonProps) => {
         </Button>
       </div>
       <div className="mt-2 hidden justify-center">
-        <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
+        <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
           Click the button above to change view
         </span>
       </div>

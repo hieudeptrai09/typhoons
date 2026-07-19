@@ -178,7 +178,7 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
           </Badge>
         </div>
         <div className="mt-2 hidden justify-center">
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
             Click the list icon to view all names
           </span>
         </div>

@@ -83,7 +83,7 @@ const NamesSettingsModal = ({
     >
       <div className="space-y-5 py-4">
         <div>
-          <div className="mb-2 text-sm font-medium text-foreground">Display Mode</div>
+          <div className="mb-2 text-sm font-semibold text-foreground">Display Mode</div>
           <Radio.Group value={draftMode} onChange={(e) => setDraftMode(e.target.value)}>
             <Radio value="grid">Grid</Radio>
             <Radio value="list">List</Radio>

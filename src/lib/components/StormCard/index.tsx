@@ -34,7 +34,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
         {storm.jtwcDesignation && (
           <div className="mt-1 flex items-center gap-1.5">
             <Hash size={12} style={{ color: textColor }} />
-            <span className="text-xs font-medium" style={{ color: textColor }}>
+            <span className="text-xs font-semibold" style={{ color: textColor }}>
               {storm.jtwcDesignation}
             </span>
           </div>
@@ -42,7 +42,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
         {dateRange && (
           <div className="mt-1 flex items-center gap-1.5">
             <Calendar size={12} style={{ color: textColor }} />
-            <span className="text-xs font-medium" style={{ color: textColor }}>
+            <span className="text-xs font-semibold" style={{ color: textColor }}>
               {dateRange}
             </span>
           </div>

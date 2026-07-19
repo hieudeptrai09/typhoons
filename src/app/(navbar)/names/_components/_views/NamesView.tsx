@@ -317,7 +317,7 @@ const NamesView = ({
           </button>
         </div>
         <div className="hidden mt-2 justify-center">
-          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
             Click the skull icon to view retired names
           </span>
         </div>

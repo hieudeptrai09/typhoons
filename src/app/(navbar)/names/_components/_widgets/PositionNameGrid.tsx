@@ -100,7 +100,7 @@ const NameButton = ({
   >
     {showName ? (
       <span
-        className={`leading-tight font-medium ${colorOverride || getNameStatusColorClass(name)} hover:underline`}
+        className={`leading-tight font-semibold ${colorOverride || getNameStatusColorClass(name)} hover:underline`}
         style={{ fontSize: size.name }}
       >
         {name.name}

@@ -32,7 +32,7 @@ const NotFound = () => {
           <span className="text-8xl font-black text-white/50 select-none sm:text-9xl">4</span>
         </div>
 
-        <p className="nf-blow nf-blow-2 mb-10 text-lg font-medium tracking-wide text-white/60">
+        <p className="nf-blow nf-blow-2 mb-10 text-lg font-semibold tracking-wide text-white/60">
           This page was swept away by a storm.
         </p>
 

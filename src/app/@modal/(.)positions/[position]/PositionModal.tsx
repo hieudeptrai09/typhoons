@@ -212,7 +212,8 @@ export default function PositionModal({ detail, position, isError = false }: Pos
                     <span className="font-semibold text-foreground">{name}</span>
                     <span className="flex items-center gap-4 text-sm text-foreground">
                       <span>
-                        Count: <span className="font-medium text-foreground">{sorted.length}</span>
+                        Count:{" "}
+                        <span className="font-semibold text-foreground">{sorted.length}</span>
                       </span>
                       <span>
                         Avg:{" "}
