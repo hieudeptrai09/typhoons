@@ -1,16 +1,16 @@
 "use client";
 
 import HighlightedName from "@/lib/components/HighlightedName";
-import { Input } from "antd";
+import { AutoComplete, Input } from "antd";
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import styles from "./SearchBar.module.css";
 
 export type SearchBarVariant = "home" | "navbar";
 
 const PLACEHOLDER = "Search typhoon names...";
+const MAX_SUGGESTIONS = 5;
 
 const VARIANT_CONFIG: Record<
   SearchBarVariant,
@@ -45,101 +45,84 @@ const SearchBar = ({ variant, allNames }: SearchBarProps) => {
 
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
 
   const trimmed = query.trim();
   const filtered = trimmed
     ? allNames.filter((name) => name.toLowerCase().includes(trimmed.toLowerCase()))
     : [];
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const options = filtered.slice(0, MAX_SUGGESTIONS).map((name) => ({
+    value: name,
+    label: (
+      <span className="text-sm text-foreground">
+        <HighlightedName name={name} query={trimmed} />
+      </span>
+    ),
+  }));
 
-  const handleLinkClick = () => {
-    setIsDropdownOpen(false);
+  const goToInfo = (name: string) => {
+    setFocused(false);
     setQuery("");
+    router.push(`/info/${encodeURIComponent(name.toLowerCase())}/`);
   };
 
   const handleViewAll = () => {
-    setIsDropdownOpen(false);
+    setFocused(false);
     setQuery("");
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
-  const handleKeyDown = (e: { key: string }) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && trimmed) {
+      e.preventDefault();
       handleViewAll();
     }
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <AutoComplete
+      value={query}
+      onChange={setQuery}
+      onSelect={goToInfo}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      open={focused && Boolean(trimmed)}
+      filterOption={false}
+      options={options}
+      style={{ width: "100%" }}
+      notFoundContent={
+        <div id={statusId} className="px-1 py-2 text-sm text-foreground">
+          No results found
+        </div>
+      }
+      popupRender={(menu) => (
+        <>
+          {menu}
+          {filtered.length > 0 && (
+            <button
+              // Prevent the input blur that would close the popup before the click lands.
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={handleViewAll}
+              aria-label="View all search results"
+              className="w-full cursor-pointer border-t border-gray-100 px-4 py-2.5 text-center text-sm font-semibold text-sky-700 transition-colors hover:bg-sky-50"
+            >
+              View all results{filtered.length > MAX_SUGGESTIONS ? ` (${filtered.length})` : ""}
+            </button>
+          )}
+        </>
+      )}
+    >
       <Input
         size={config.size}
         placeholder={PLACEHOLDER}
         aria-label="Search typhoon names"
-        aria-describedby={isDropdownOpen && trimmed ? statusId : undefined}
         prefix={<Search size={config.prefixSize} className={config.prefixClassName} />}
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setIsDropdownOpen(true);
-        }}
-        onFocus={() => trimmed && setIsDropdownOpen(true)}
-        onKeyDown={handleKeyDown}
         allowClear
+        onKeyDown={handleKeyDown}
         className={config.inputClassName}
       />
-
-      {isDropdownOpen && trimmed && (
-        <div
-          className="absolute top-full right-0 left-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg"
-          role="listbox"
-          aria-label="Search results"
-        >
-          {filtered.length === 0 ? (
-            <div id={statusId} className="px-4 py-3 text-sm text-foreground">
-              No results found
-            </div>
-          ) : (
-            <>
-              <div className="max-h-80 overflow-y-auto">
-                {filtered.slice(0, 5).map((name) => (
-                  <Link
-                    key={name}
-                    href={`/info/${encodeURIComponent(name.toLowerCase())}/`}
-                    onClick={handleLinkClick}
-                    aria-label={`View details for ${name}`}
-                    role="option"
-                    aria-selected={false}
-                    className="flex w-full cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-2.5 text-left transition-colors hover:bg-blue-50"
-                  >
-                    <span className="text-sm text-foreground">
-                      <HighlightedName name={name} query={trimmed} />
-                    </span>
-                  </Link>
-                ))}
-              </div>
-              <button
-                onClick={handleViewAll}
-                aria-label="View all search results"
-                className="w-full cursor-pointer px-4 py-2.5 text-center text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-50"
-              >
-                View all results{filtered.length > 5 ? ` (${filtered.length})` : ""}
-              </button>
-            </>
-          )}
-        </div>
-      )}
-    </div>
+    </AutoComplete>
   );
 };
 

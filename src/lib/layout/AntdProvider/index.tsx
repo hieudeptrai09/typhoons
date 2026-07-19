@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider } from "antd";
+import { App, ConfigProvider } from "antd";
 import type { ReactNode } from "react";
 
 const BRAND = {
@@ -34,7 +34,10 @@ const AntdProvider = ({ children }: { children: ReactNode }) => {
         },
       }}
     >
-      {children}
+      {/* `App` provides the context that lets `App.useApp()` modals/messages
+          inherit this ConfigProvider's theme. `component={false}` keeps it
+          context-only so no extra wrapper element is added to the DOM. */}
+      <App component={false}>{children}</App>
     </ConfigProvider>
   );
 };
