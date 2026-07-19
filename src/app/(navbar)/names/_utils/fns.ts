@@ -6,16 +6,15 @@ export interface NamesSlugParams {
   showHistory: boolean;
 }
 
+const TOP_LEVEL_SLUGS = ["list", "retired", "history", "current"];
+const NESTED_PARENTS = ["history", "current"];
+const NESTED_CHILDREN = ["tag", "list"];
+
 export const isValidNamesSlug = (slug: string[] = []): boolean => {
   if (slug.length === 0) return true;
-  if (slug.length === 1) {
-    return ["list", "retired", "history", "current"].includes(slug[0]);
-  }
+  if (slug.length === 1) return TOP_LEVEL_SLUGS.includes(slug[0]);
   if (slug.length === 2) {
-    if (slug[0] === "history" || slug[0] === "current") {
-      return slug[1] === "tag" || slug[1] === "list";
-    }
-    return false;
+    return NESTED_PARENTS.includes(slug[0]) && NESTED_CHILDREN.includes(slug[1]);
   }
   return false;
 };
@@ -52,6 +51,22 @@ export const canonicalPath = (view: string, showHistory: boolean, showName: bool
   if (path === "/names/current/") return "/names/";
   return path;
 };
+
+export const slugToPath = (slug: string[] = []): string =>
+  `/names/${slug.join("/")}/`.replace(/\/+/g, "/");
+
+const ALL_SLUGS: string[][] = [
+  [],
+  ...TOP_LEVEL_SLUGS.map((slug) => [slug]),
+  ...NESTED_PARENTS.flatMap((parent) => NESTED_CHILDREN.map((child) => [parent, child])),
+];
+
+// Non-canonical slugs resolve to a different canonical URL, so only these belong in the sitemap.
+export const getCanonicalNamesSlugs = (): string[][] =>
+  ALL_SLUGS.filter((slug) => {
+    const { view, showName, showHistory } = slugToParams(slug);
+    return canonicalPath(view, showHistory, showName) === slugToPath(slug);
+  });
 
 export const getNamesTitle = (
   view: string | string[] | undefined,

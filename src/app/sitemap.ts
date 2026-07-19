@@ -1,182 +1,74 @@
+import {
+  getCanonicalNamesSlugs,
+  slugToPath as namesSlugToPath,
+} from "@/app/(navbar)/names/_utils/fns";
+import {
+  getCanonicalStormsSlugs,
+  paramsToPath,
+  slugToParams,
+} from "@/app/(navbar)/storms/_utils/fns";
+import { getNameList } from "@/lib/db/api/getNameList";
+import { getPositionSlug } from "@/lib/utils/fns";
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://typhoons.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const pathDepth = (path: string): number => path.split("/").filter(Boolean).length;
+const priorityForPath = (path: string): number => (10 - pathDepth(path)) / 10;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const nameList = await getNameList();
+
+  const stormsPages: MetadataRoute.Sitemap = getCanonicalStormsSlugs().map((slug) => {
+    const path = paramsToPath(slugToParams(slug));
+    return {
+      url: `${BASE_URL}${path}`,
+      lastModified: new Date("2026-07-19"),
+      changeFrequency: "monthly",
+      priority: priorityForPath(path),
+    };
+  });
+
+  const namesPages: MetadataRoute.Sitemap = getCanonicalNamesSlugs().map((slug) => {
+    const path = namesSlugToPath(slug);
+    return {
+      url: `${BASE_URL}${path}`,
+      lastModified: new Date("2026-06-24"),
+      changeFrequency: "monthly",
+      priority: priorityForPath(path),
+    };
+  });
+
+  const infoPages: MetadataRoute.Sitemap = (nameList?.data ?? []).map((name) => {
+    const path = `/info/${name.toLowerCase()}/`;
+    return {
+      url: `${BASE_URL}${path}`,
+      lastModified: new Date("2026-07-19"),
+      changeFrequency: "monthly",
+      priority: priorityForPath(path),
+    };
+  });
+
+  const positionPages: MetadataRoute.Sitemap = Array.from({ length: 143 }, (_, i) => {
+    const path = `/positions/${getPositionSlug(i + 1)}/`;
+    return {
+      url: `${BASE_URL}${path}`,
+      lastModified: new Date("2026-07-19"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    };
+  });
+
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
+      lastModified: new Date("2026-07-19"),
+      changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: `${BASE_URL}/storms/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/storms/positions/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/storms/list/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/strongest/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/first/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/last/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/strongest/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/first/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/highlights/last/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/average/position/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/average/position/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/average/name/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/average/name/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/average/country/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/average/year/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/storms/average/year/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/distance/position/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/distance/position/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/storms/distance/name/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/names/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/names/current/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/names/current/tag/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/names/history/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/names/history/tag/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/names/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/names/history/list/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/names/retired/`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/search/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+    ...stormsPages,
+    ...namesPages,
+    ...infoPages,
+    ...positionPages,
   ];
 }
