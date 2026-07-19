@@ -1,7 +1,8 @@
 "use client";
 
+import { Popover } from "antd";
 import { ArrowDownToLine } from "lucide-react";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -39,7 +40,6 @@ const InstallButton = () => {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isHintOpen, setIsHintOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onBeforeInstallPrompt(event: Event) {
@@ -60,19 +60,6 @@ const InstallButton = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isHintOpen) {
-      return;
-    }
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsHintOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isHintOpen]);
-
   async function install() {
     if (!installEvent) {
       return;
@@ -87,33 +74,48 @@ const InstallButton = () => {
     return null; // Don't show install button if already installed
   }
 
-  return (
-    <div ref={containerRef} className="relative flex items-center">
-      <button
-        type="button"
-        onClick={isIOS ? () => setIsHintOpen((open) => !open) : install}
-        aria-label="Install app"
-        aria-expanded={isIOS ? isHintOpen : undefined}
-        className="flex text-slate-400 transition-colors hover:text-slate-200!"
-      >
-        <ArrowDownToLine size={16} aria-hidden="true" />
-      </button>
+  const installTrigger = (
+    <button
+      type="button"
+      onClick={isIOS ? undefined : install}
+      aria-label="Install app"
+      aria-expanded={isIOS ? isHintOpen : undefined}
+      className="flex text-slate-400 transition-colors hover:text-slate-200!"
+    >
+      <ArrowDownToLine size={16} aria-hidden="true" />
+    </button>
+  );
 
-      {isHintOpen && (
-        <p className="absolute right-0 bottom-full mb-2 w-56 rounded-lg border border-slate-700 bg-slate-800 p-2 text-xs leading-relaxed text-slate-300 shadow-lg">
-          To install, tap the share button
-          <span role="img" aria-label="share icon">
-            {" "}
-            ⎋{" "}
-          </span>
-          and then &quot;Add to Home Screen&quot;
-          <span role="img" aria-label="plus icon">
-            {" "}
-            ➕{" "}
-          </span>
-          .
-        </p>
-      )}
+  if (!isIOS) {
+    return <div className="flex items-center">{installTrigger}</div>;
+  }
+
+  return (
+    <div className="flex items-center">
+      <Popover
+        open={isHintOpen}
+        onOpenChange={setIsHintOpen}
+        trigger="click"
+        placement="topRight"
+        color="#1e293b" // slate-800
+        content={
+          <p className="w-52 text-xs leading-relaxed text-slate-300">
+            To install, tap the share button
+            <span role="img" aria-label="share icon">
+              {" "}
+              ⎋{" "}
+            </span>
+            and then &quot;Add to Home Screen&quot;
+            <span role="img" aria-label="plus icon">
+              {" "}
+              ➕{" "}
+            </span>
+            .
+          </p>
+        }
+      >
+        {installTrigger}
+      </Popover>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider } from "antd";
+import { App, ConfigProvider } from "antd";
 import type { ReactNode } from "react";
 
 const BRAND = {
@@ -34,7 +34,7 @@ const AntdProvider = ({ children }: { children: ReactNode }) => {
         },
       }}
     >
-      {children}
+      <App component={false}>{children}</App>
     </ConfigProvider>
   );
 };

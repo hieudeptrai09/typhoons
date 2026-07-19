@@ -1,3 +1,10 @@
+.acRoot:global(.ant-select) :global(.ant-select-selector) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 .navbarInput:global(.ant-input-affix-wrapper) {
   background-color: rgba(255, 255, 255, 0.15) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
@@ -25,8 +32,8 @@
 }
 
 .homeInput:global(.ant-input-affix-wrapper):focus-within {
-  border-color: #2563eb !important;
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.15) !important;
+  border-color: #0369a1 !important; /* sky-700 — brand primary */
+  box-shadow: 0 2px 12px rgba(3, 105, 161, 0.15) !important;
 }
 
 .navbarInput :global(.ant-input) {

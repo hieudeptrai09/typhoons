@@ -1,20 +1,21 @@
 "use client";
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { Button, Modal } from "antd";
+import { App, Button } from "antd";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import { fetchRandomFact } from "../_actions";
 
 const FunFacts = () => {
   const [loading, setLoading] = useState(false);
+  const { modal } = App.useApp();
 
   const showFact = async () => {
     setLoading(true);
     try {
       const fact = await fetchRandomFact();
 
-      Modal.info({
+      modal.info({
         title: "Did you know?",
         icon: null,
         centered: true,
@@ -22,7 +23,7 @@ const FunFacts = () => {
         content: <p className="leading-relaxed text-foreground">{fact ?? "No facts available."}</p>,
       });
     } catch {
-      Modal.info({
+      modal.info({
         title: "Oops!",
         icon: null,
         centered: true,

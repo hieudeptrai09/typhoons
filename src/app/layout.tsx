@@ -1,5 +1,6 @@
 import { TITLE_COMMON } from "@/lib/constants";
 import AntdProvider from "@/lib/layout/AntdProvider";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
@@ -126,10 +127,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AntdProvider>
-          {children}
-          {modal}
-        </AntdProvider>
+        <AntdRegistry>
+          <AntdProvider>
+            {children}
+            {modal}
+          </AntdProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

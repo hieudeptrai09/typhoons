@@ -2,7 +2,7 @@ import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultRetiredName } from "@/lib/constants";
 import type { RetiredFilterParams, RetiredName, SuggestionWithNameId } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
-import { Badge } from "antd";
+import { Badge, Button } from "antd";
 import { Filter, List } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -158,23 +158,23 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
     <>
       <div className="mx-auto mb-4 max-w-4xl">
         <div className="flex items-center justify-center gap-9">
-          <button
+          <Button
+            type="text"
             onClick={onToggleView}
             title="Switch to all names"
             aria-label="Viewing retired names, click to switch to all names"
-            className="cursor-pointer border-0 bg-transparent p-1 text-blue-500 transition-colors hover:text-blue-700"
-          >
-            <List size={30} />
-          </button>
+            icon={<List size={30} />}
+            className="!h-auto !w-auto !p-1 !text-blue-500 hover:!bg-transparent hover:!text-blue-700"
+          />
           <Badge count={activeFilterCount} color="#3b82f6" offset={[-4, 4]}>
-            <button
+            <Button
+              type="text"
               onClick={() => setIsFilterModalOpen(true)}
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
-              className="cursor-pointer border-0 bg-transparent p-1 text-foreground transition-colors hover:text-highlight"
-            >
-              <Filter size={30} />
-            </button>
+              icon={<Filter size={30} />}
+              className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
+            />
           </Badge>
         </div>
         <div className="mt-2 hidden justify-center">

@@ -5,7 +5,7 @@ import { INTENSITY_LABEL } from "@/lib/constants";
 import type { ActiveOnThisDayStorm } from "@/lib/db/api/getActiveOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/fns";
-import { Button, Modal } from "antd";
+import { App, Button } from "antd";
 import { Waves } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -48,6 +48,7 @@ const getDayProgress = (storm: ActiveStorm) => {
 
 const ActiveStorms = () => {
   const [loading, setLoading] = useState(false);
+  const { modal } = App.useApp();
 
   const fetchStorms = async () => {
     setLoading(true);
@@ -56,7 +57,7 @@ const ActiveStorms = () => {
       const storms = await fetchActiveOnThisDay(today.getDate(), today.getMonth() + 1);
 
       if (storms.length === 0) {
-        Modal.info({
+        modal.info({
           title: "Active on this day",
           icon: null,
           centered: true,
@@ -68,7 +69,7 @@ const ActiveStorms = () => {
         return;
       }
 
-      Modal.info({
+      modal.info({
         title: "Active on this day",
         icon: null,
         centered: true,
@@ -127,7 +128,7 @@ const ActiveStorms = () => {
         ),
       });
     } catch {
-      Modal.info({
+      modal.info({
         title: "Oops!",
         icon: null,
         centered: true,

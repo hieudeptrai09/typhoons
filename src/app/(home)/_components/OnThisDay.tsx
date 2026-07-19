@@ -4,7 +4,7 @@ import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { OnThisDayStorm } from "@/lib/db/api/getOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { Button, Modal } from "antd";
+import { App, Button } from "antd";
 import { Calendar, LogIn, LogOut, Play, RefreshCw, Square } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -81,6 +81,7 @@ const getEventYear = (storm: OnThisDayStorm) => {
 
 const OnThisDay = () => {
   const [loading, setLoading] = useState(false);
+  const { modal } = App.useApp();
 
   const fetchStorms = async () => {
     setLoading(true);
@@ -89,7 +90,7 @@ const OnThisDay = () => {
       const storms = await fetchOnThisDay(today.getDate(), today.getMonth() + 1);
 
       if (storms.length === 0) {
-        Modal.info({
+        modal.info({
           title: "On this day",
           icon: null,
           centered: true,
@@ -101,7 +102,7 @@ const OnThisDay = () => {
 
       const dateStr = `${MONTH_NAMES[today.getMonth() + 1]} ${today.getDate()}`;
 
-      Modal.info({
+      modal.info({
         title: "On this day",
         icon: null,
         centered: true,
@@ -149,7 +150,7 @@ const OnThisDay = () => {
         ),
       });
     } catch {
-      Modal.info({
+      modal.info({
         title: "Oops!",
         icon: null,
         centered: true,
