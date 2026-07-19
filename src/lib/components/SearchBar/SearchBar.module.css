@@ -1,3 +1,13 @@
+/* The inner Input's affix-wrapper is the entire visible field. Neutralize the
+   AutoComplete/Select shell so its square, lighter selector box does not show
+   through behind the Input's rounded (pill / navbar) corners. */
+.acRoot:global(.ant-select) :global(.ant-select-selector) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 .navbarInput:global(.ant-input-affix-wrapper) {
   background-color: rgba(255, 255, 255, 0.15) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;

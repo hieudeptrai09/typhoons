@@ -90,6 +90,11 @@ const SearchBar = ({ variant, allNames }: SearchBarProps) => {
       open={focused && Boolean(trimmed)}
       filterOption={false}
       options={options}
+      // The inner Input renders the whole field; keep the Select shell
+      // borderless so its square selector box can't peek out behind the
+      // Input's rounded corners.
+      variant="borderless"
+      rootClassName={styles.acRoot}
       style={{ width: "100%" }}
       notFoundContent={
         <div id={statusId} className="px-1 py-2 text-sm text-foreground">
