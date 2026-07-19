@@ -36,7 +36,7 @@ function PositionPagination({ position }: { position: number }) {
     `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-semibold text-white transition-colors ${
       isWrap
         ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
-        : "border-sky-600 bg-sky-600 hover:border-sky-700 hover:bg-sky-700"
+        : "border-sky-700 bg-sky-700 hover:border-sky-800 hover:bg-sky-800"
     }`;
 
   return (

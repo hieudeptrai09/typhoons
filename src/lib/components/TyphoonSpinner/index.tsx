@@ -11,7 +11,7 @@ const sizeMap: Record<TyphoonSpinnerSize, number> = {
 
 const TyphoonSpinner = ({
   size = "medium",
-  colorClass = "text-sky-600",
+  colorClass = "text-sky-700",
 }: {
   size?: TyphoonSpinnerSize;
   colorClass?: string;

@@ -1,20 +1,8 @@
-.typhoon-table .ant-table-tbody td {
-  color: var(--text-foreground) !important;
-}
-
-.typhoon-table .ant-table-thead th {
-  background-color: #0369a1 !important; /* sky-700 */
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
 .typhoon-table .ant-table-thead .ant-table-column-sorter {
   color: #ffffff !important;
 }
 
-/* Active-sort header darkens to sky-800 */
 .typhoon-table .ant-table-thead th.ant-table-column-sort {
-  background-color: #075985 !important; /* sky-800 */
   text-decoration: underline !important;
 }
 

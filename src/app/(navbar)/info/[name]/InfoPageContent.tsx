@@ -127,7 +127,7 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
   const nextName = names[isLast ? 0 : currentIndex + 1];
 
   const linkClass =
-    "flex items-center gap-1 rounded-lg border border-sky-600 bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-sky-700 hover:bg-sky-700";
+    "flex items-center gap-1 rounded-lg border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-sky-800 hover:bg-sky-800";
 
   return (
     <nav

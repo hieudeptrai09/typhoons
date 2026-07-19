@@ -70,11 +70,12 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames, storms }: Hist
                 <div key={name.id} className="overflow-hidden rounded-lg">
                   <Button
                     type="text"
+                    block
                     disabled={!hasExpandable}
                     onClick={() => hasExpandable && handleNameClick(name.id)}
                     aria-describedby={name.meaning ? `history-meaning-${name.id}` : undefined}
                     aria-expanded={hasExpandable ? isExpanded : undefined}
-                    className={`!h-auto !w-full !rounded-lg !px-3 !py-2 !text-left ${
+                    className={`!h-auto !rounded-lg !px-3 !py-2 !text-left ${
                       isExpanded ? "!rounded-b-none !bg-sky-50" : ""
                     } ${!hasExpandable ? "!cursor-default" : ""}`}
                   >

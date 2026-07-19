@@ -135,9 +135,9 @@
   75%       { translate: 10px 2px; }
 }
 
-/* Button — sky-600 to match the site's blue identity */
+/* Button — sky-700 to match the site's blue identity */
 .nf-btn {
-  background: #0284c7;
+  background: #0369a1;
   color: white;
   border: none;
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -145,7 +145,7 @@
 }
 
 .nf-btn:hover {
-  background: #0369a1;
+  background: #075985;
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(2, 132, 199, 0.55);
 }

@@ -47,8 +47,9 @@ const SpecialNamesListDiv = ({ stormsData, onNameClick, nameColors }: SpecialNam
                 <Button
                   key={name}
                   type="text"
+                  block
                   onClick={() => onNameClick(name, storms)}
-                  className="!h-auto !min-h-11 !w-full !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!p-0"
+                  className="!h-auto !min-h-11 !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!p-0"
                   style={{ color }}
                 >
                   {name}

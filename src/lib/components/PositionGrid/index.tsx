@@ -37,7 +37,7 @@ const PositionGrid = ({ renderCell, positionOffset = 1, showHeader = true }: Pos
                   {COUNTRY_NAMES.map((countryName, index) => (
                     <th
                       key={index}
-                      className="border border-sky-300 bg-sky-600 p-2"
+                      className="border border-sky-300 bg-sky-700 p-2"
                       title={countryName}
                     >
                       <div className="flex items-center justify-center">
