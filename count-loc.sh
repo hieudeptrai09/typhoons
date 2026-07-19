@@ -8,4 +8,9 @@ echo "=== Đếm dòng code trong src/ ==="
 npx cloc src/
 
 echo
-echo "Ghi chú: những vị trí còn lại không đáng kể, tổng thêm 194 dòng code."
+echo "=== Đếm dòng code những file còn lại (ngoài src/) ==="
+# Chỉ lấy file được git quản lý, bỏ src/ và package-lock.json (file sinh tự động).
+other_files=$(mktemp)
+trap 'rm -f "$other_files"' EXIT
+git ls-files | grep -v '^src/' | grep -v '^package-lock.json$' > "$other_files"
+npx cloc --list-file="$other_files"
