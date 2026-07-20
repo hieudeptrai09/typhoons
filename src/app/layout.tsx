@@ -94,9 +94,28 @@ const jsonLd = {
         "retired typhoon names",
       ],
       creator: {
-        "@type": "Organization",
-        name: "JEBI.SE Malakas",
+        "@type": "Person",
+        name: "Cá Tra",
       },
+      license: "https://creativecommons.org/licenses/by-sa/4.0/",
+      isBasedOn: [
+        {
+          "@type": "CreativeWork",
+          name: "Japan Meteorological Agency (JMA) — RSMC Tokyo Typhoon Center",
+          url: "https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/tyname.html",
+        },
+        {
+          "@type": "CreativeWork",
+          name: "Joint Typhoon Warning Center (JTWC)",
+          url: "https://www.metoc.navy.mil/jtwc/jtwc.html",
+        },
+        {
+          "@type": "CreativeWork",
+          name: "Wikipedia",
+          url: "https://en.wikipedia.org/",
+          license: "https://creativecommons.org/licenses/by-sa/4.0/",
+        },
+      ],
       temporalCoverage: "2000/..",
       spatialCoverage: {
         "@type": "Place",
