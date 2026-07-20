@@ -85,6 +85,7 @@ const jsonLd = {
       description:
         "Comprehensive dataset of Western Pacific typhoons including storm names, intensities, positions, naming history, and retired names.",
       url: SITE_URL,
+      mainEntityOfPage: `${SITE_URL}/about`,
       keywords: [
         "typhoon",
         "tropical storm",
