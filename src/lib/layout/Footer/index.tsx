@@ -1,4 +1,5 @@
 import { TITLE_COMMON } from "@/lib/constants";
+import Link from "next/link";
 import InstallButton from "./InstallButton";
 
 const Footer = () => {
@@ -11,6 +12,12 @@ const Footer = () => {
         </p>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/about"
+            className="text-slate-400 transition-colors hover:text-slate-200!"
+          >
+            About
+          </Link>
           <InstallButton />
           <a
             href="https://www.facebook.com/profile.php?id=61586585781960"
