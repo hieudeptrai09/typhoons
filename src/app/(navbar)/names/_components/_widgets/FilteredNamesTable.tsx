@@ -1,5 +1,6 @@
 import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import type { TyphoonName } from "@/lib/types";
@@ -96,14 +97,17 @@ const FilteredNamesTable = ({
           key: "image",
           render: (_: unknown, record: TyphoonName) =>
             record.image ? (
-              <div className="relative h-28 rounded-lg" style={{ aspectRatio: "4/3" }}>
-                <ImageWithLoader
-                  src={record.image}
-                  alt={record.name}
-                  fill
-                  className="object-contain"
-                  unoptimized
-                />
+              <div>
+                <div className="relative h-28 rounded-lg" style={{ aspectRatio: "4/3" }}>
+                  <ImageWithLoader
+                    src={record.image}
+                    alt={record.name}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
+                <ImageCredit credit={record.imageCredit} />
               </div>
             ) : (
               <span>-</span>

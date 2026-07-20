@@ -1,3 +1,10 @@
+export interface ImageCredit {
+  author?: string;
+  license?: string;
+  licenseUrl?: string;
+  sourceUrl?: string;
+}
+
 export interface TyphoonName {
   id: number;
   position: number;
@@ -9,6 +16,7 @@ export interface TyphoonName {
   isReplaced: number;
   isLanguageProblem: number;
   image?: string;
+  imageCredit?: ImageCredit;
   description?: string;
   tag: string;
 }
@@ -24,6 +32,7 @@ export interface Suggestion {
   replacementMeaning: string;
   isChosen: boolean;
   image?: string;
+  imageCredit?: ImageCredit;
 }
 
 export interface SuggestionWithNameId extends Suggestion {

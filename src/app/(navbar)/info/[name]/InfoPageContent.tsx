@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import FrownError from "@/lib/components/FrownError";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
@@ -94,6 +95,7 @@ function NameDetailsSection({
 
         {name.image && (
           <div className="min-w-0 flex-1">
+            <ImageCredit credit={name.imageCredit} position="top" />
             <div
               className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
               style={{ aspectRatio: "4/3" }}

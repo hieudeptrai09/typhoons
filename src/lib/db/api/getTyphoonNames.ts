@@ -1,4 +1,10 @@
 import sql, { type QueryParam } from "@/lib/db";
+import {
+  imageCreditColumns,
+  imageCreditJoin,
+  toImageCredit,
+  type ImageCreditRow,
+} from "@/lib/db/imageCredit";
 import type { RetiredName } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -7,7 +13,7 @@ interface ApiResponse<T> {
   count: number;
 }
 
-interface TyphoonNameRow {
+interface TyphoonNameRow extends ImageCreditRow {
   id: number;
   name: string;
   meaning: string;
@@ -42,10 +48,12 @@ async function queryTyphoonNames(
       tn.language,
       tn.lastyear AS "lastYear",
       tn.image,
+      ${imageCreditColumns("tn.")},
       tn.description,
       tn.tag
     FROM typhoonnames tn
-    INNER JOIN positions p ON tn.position = p.id`;
+    INNER JOIN positions p ON tn.position = p.id
+    ${imageCreditJoin("tn.")}`;
 
   const params: QueryParam[] = [];
   if (isRetired !== null) {
@@ -74,6 +82,7 @@ async function queryTyphoonNames(
     language: row.language,
     lastYear: Number(row.lastYear),
     image: row.image ?? undefined,
+    imageCredit: toImageCredit(row),
     description: row.description ?? undefined,
     tag: row.tag,
   }));

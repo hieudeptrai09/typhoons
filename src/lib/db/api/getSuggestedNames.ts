@@ -1,4 +1,10 @@
 import sql from "@/lib/db";
+import {
+  imageCreditColumns,
+  imageCreditJoin,
+  toImageCredit,
+  type ImageCreditRow,
+} from "@/lib/db/imageCredit";
 import type { SuggestionWithNameId } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -7,7 +13,7 @@ interface ApiResponse<T> {
   count: number;
 }
 
-interface SuggestedNameRow {
+interface SuggestedNameRow extends ImageCreditRow {
   nameId: number;
   replacementName: string;
   replacementMeaning: string;
@@ -18,13 +24,15 @@ interface SuggestedNameRow {
 async function queryAllSuggestedNames(): Promise<ApiResponse<SuggestionWithNameId[]>> {
   const rows = await sql.query<SuggestedNameRow[]>(
     `SELECT
-      nameid AS "nameId",
-      replacementname AS "replacementName",
-      meaning as "replacementMeaning",
-      ischosen AS "isChosen",
-      image
-    FROM suggestednames
-    ORDER BY id ASC, nameid DESC, ischosen DESC`,
+      sn.nameid AS "nameId",
+      sn.replacementname AS "replacementName",
+      sn.meaning as "replacementMeaning",
+      sn.ischosen AS "isChosen",
+      sn.image,
+      ${imageCreditColumns("sn.")}
+    FROM suggestednames sn
+    ${imageCreditJoin("sn.")}
+    ORDER BY sn.id ASC, sn.nameid DESC, sn.ischosen DESC`,
   );
 
   const data: SuggestionWithNameId[] = rows.map((row) => ({
@@ -33,6 +41,7 @@ async function queryAllSuggestedNames(): Promise<ApiResponse<SuggestionWithNameI
     replacementMeaning: row.replacementMeaning,
     isChosen: Boolean(Number(row.isChosen)),
     image: row.image ?? undefined,
+    imageCredit: toImageCredit(row),
   }));
 
   return { data, count: data.length };

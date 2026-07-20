@@ -1,3 +1,4 @@
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { Suggestion } from "@/lib/types";
 
@@ -40,17 +41,20 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
         </div>
 
         {suggestion.image && (
-          <div
-            className="relative w-32 shrink-0 rounded-lg border border-gray-200 bg-gray-200 md:w-36"
-            style={{ aspectRatio: "4/3" }}
-          >
-            <ImageWithLoader
-              src={suggestion.image}
-              alt={suggestion.replacementName}
-              fill
-              className="object-contain shadow-sm"
-              unoptimized
-            />
+          <div className="w-32 shrink-0 md:w-36">
+            <div
+              className="relative rounded-lg border border-gray-200 bg-gray-200"
+              style={{ aspectRatio: "4/3" }}
+            >
+              <ImageWithLoader
+                src={suggestion.image}
+                alt={suggestion.replacementName}
+                fill
+                className="object-contain shadow-sm"
+                unoptimized
+              />
+            </div>
+            <ImageCredit credit={suggestion.imageCredit} />
           </div>
         )}
       </div>

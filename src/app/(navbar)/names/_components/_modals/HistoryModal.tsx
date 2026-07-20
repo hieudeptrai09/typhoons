@@ -1,4 +1,5 @@
 import DefModal from "@/lib/components/DefModal";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { BaseModalProps, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
@@ -117,17 +118,20 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames, storms }: Hist
 
                   {isExpanded && name.image && (
                     <div className="rounded-b-lg border-t border-sky-100 bg-sky-50 px-4 py-3">
-                      <div
-                        className="relative mx-auto overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
-                        style={{ width: 160, aspectRatio: "4/3" }}
-                      >
-                        <ImageWithLoader
-                          src={name.image}
-                          alt={name.name}
-                          fill
-                          className="object-contain"
-                          unoptimized
-                        />
+                      <div className="mx-auto" style={{ width: 160 }}>
+                        <div
+                          className="relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
+                          style={{ aspectRatio: "4/3" }}
+                        >
+                          <ImageWithLoader
+                            src={name.image}
+                            alt={name.name}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+                        <ImageCredit credit={name.imageCredit} />
                       </div>
                     </div>
                   )}

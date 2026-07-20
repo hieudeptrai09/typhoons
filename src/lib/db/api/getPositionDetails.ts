@@ -1,4 +1,10 @@
 import sql from "@/lib/db";
+import {
+  imageCreditColumns,
+  imageCreditJoin,
+  toImageCredit,
+  type ImageCreditRow,
+} from "@/lib/db/imageCredit";
 import type { PositionDetail, RetiredName, Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -10,7 +16,7 @@ interface PositionRow {
   country: string;
 }
 
-interface TyphoonNameRow {
+interface TyphoonNameRow extends ImageCreditRow {
   id: number;
   name: string;
   meaning: string;
@@ -74,10 +80,12 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
       tn.language,
       tn.lastyear AS "lastYear",
       tn.image,
+      ${imageCreditColumns("tn.")},
       tn.description,
       tn.tag
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
+    ${imageCreditJoin("tn.")}
     WHERE tn.position = $1
     ORDER BY tn.lastyear ASC, tn.name ASC`,
     [position],
@@ -97,6 +105,7 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     language: row.language,
     lastYear: Number(row.lastYear),
     image: row.image ?? undefined,
+    imageCredit: toImageCredit(row),
     description: row.description ?? undefined,
     tag: row.tag,
   }));

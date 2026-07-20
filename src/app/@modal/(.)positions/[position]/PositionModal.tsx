@@ -10,6 +10,7 @@ import CountryFlag from "@/lib/components/CountryFlag";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import { INTENSITY_LABEL } from "@/lib/constants";
@@ -93,14 +94,17 @@ function NameSlide({ name }: { name: TyphoonName }) {
         {name.meaning && <span className="text-foreground italic">{name.meaning}</span>}
       </p>
       {name.image && (
-        <div className="relative mx-auto aspect-4/3 w-full max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-          <ImageWithLoader
-            src={name.image}
-            alt={name.name}
-            fill
-            className="object-contain"
-            unoptimized
-          />
+        <div className="mx-auto w-full max-w-sm">
+          <div className="relative aspect-4/3 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+            <ImageWithLoader
+              src={name.image}
+              alt={name.name}
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          </div>
+          <ImageCredit credit={name.imageCredit} />
         </div>
       )}
     </div>

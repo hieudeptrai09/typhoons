@@ -7,6 +7,7 @@ import {
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormCard from "@/lib/components/StormCard";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
@@ -76,17 +77,20 @@ function NameRosterCard({ name }: { name: TyphoonName }) {
           )}
         </div>
         {name.image && (
-          <div
-            className="relative shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 sm:w-32"
-            style={{ aspectRatio: "4/3" }}
-          >
-            <ImageWithLoader
-              src={name.image}
-              alt={name.name}
-              fill
-              className="object-contain"
-              unoptimized
-            />
+          <div className="shrink-0 sm:w-32">
+            <div
+              className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
+              style={{ aspectRatio: "4/3" }}
+            >
+              <ImageWithLoader
+                src={name.image}
+                alt={name.name}
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+            <ImageCredit credit={name.imageCredit} />
           </div>
         )}
       </div>

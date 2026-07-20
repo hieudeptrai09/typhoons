@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
+import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { RetiredName, TyphoonName } from "@/lib/types";
 import { Inbox } from "lucide-react";
@@ -73,6 +74,7 @@ const NameDetailsContent = ({ name, hideReplacedBy = false }: NameDetailsContent
       {name.image && (
         <div className="min-w-0 flex-1">
           <div className="sticky top-0">
+            <ImageCredit credit={name.imageCredit} position="top" />
             <div
               className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
               style={{ aspectRatio: "4/3" }}

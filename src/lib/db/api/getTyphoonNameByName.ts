@@ -1,4 +1,10 @@
 import sql from "@/lib/db";
+import {
+  imageCreditColumns,
+  imageCreditJoin,
+  toImageCredit,
+  type ImageCreditRow,
+} from "@/lib/db/imageCredit";
 import type { RetiredName, SearchDetail, Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -6,7 +12,7 @@ interface ApiResponse<T> {
   data: T;
 }
 
-interface TyphoonNameRow {
+interface TyphoonNameRow extends ImageCreditRow {
   id: number;
   name: string;
   meaning: string;
@@ -60,10 +66,12 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       tn.language,
       tn.lastyear AS "lastYear",
       tn.image,
+      ${imageCreditColumns("tn.")},
       tn.description,
       tn.tag
     FROM typhoonnames tn
     INNER JOIN positions p ON tn.position = p.id
+    ${imageCreditJoin("tn.")}
     WHERE LOWER(tn.name) = LOWER($1)
     LIMIT 1`,
     [name],
@@ -85,6 +93,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
         language: nameRow.language,
         lastYear: Number(nameRow.lastYear),
         image: nameRow.image ?? undefined,
+        imageCredit: toImageCredit(nameRow),
         description: nameRow.description ?? undefined,
         tag: nameRow.tag,
       }
