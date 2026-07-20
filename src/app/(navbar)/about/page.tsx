@@ -98,6 +98,13 @@ const AboutPage = () => {
           . You are free to share and adapt the data for any purpose, as long as you give
           appropriate credit and distribute your contributions under the same license.
         </p>
+        <p className="mt-3 leading-relaxed text-slate-600">
+          This license covers the <span className="font-medium text-slate-700">data and
+          text</span> of this database only. Images are the property of their respective
+          owners and remain under their original copyright; they are shown for
+          illustrative purposes with credit where available, and are not covered by CC
+          BY-SA 4.0.
+        </p>
       </section>
 
       {/* Creator / contact */}
