@@ -98,7 +98,7 @@ const jsonLd = {
         "@type": "Person",
         name: "Cá Tra",
       },
-      license: "https://creativecommons.org/licenses/by-sa/4.0/",
+      license: "https://creativecommons.org/publicdomain/zero/1.0/",
       isBasedOn: [
         {
           "@type": "CreativeWork",

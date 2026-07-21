@@ -1,5 +1,5 @@
 import type { ImageCredit as ImageCreditType } from "@/lib/types";
-import { Image as ImageIcon, Library } from "lucide-react";
+import { Image as ImageIcon, ScrollText } from "lucide-react";
 
 interface ImageCreditProps {
   credit?: ImageCreditType;
@@ -34,7 +34,7 @@ const ImageCredit = ({ credit, position = "bottom" }: ImageCreditProps) => {
       </span>
       {license && (
         <span className="inline-flex items-center gap-1">
-          <Library className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <ScrollText className="h-3 w-3 shrink-0" aria-hidden="true" />
           {licenseUrl ? (
             <a
               href={licenseUrl}

@@ -1,6 +1,6 @@
 import { TITLE_COMMON } from "@/lib/constants";
-import type { Metadata } from "next";
 import { BookOpen, Database, Scale, User } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
@@ -41,10 +41,10 @@ const AboutPage = () => {
           The project
         </h2>
         <p className="mt-2 leading-relaxed text-slate-600">
-          {TITLE_COMMON} is a database of Western Pacific typhoons — storm tracking,
-          intensity analysis, naming history, and the stories behind typhoon names. It
-          covers the Western Pacific basin from 2000 to the present, and is maintained as
-          a personal, non-commercial project.
+          {TITLE_COMMON} is a database of Western Pacific typhoons — storm tracking, intensity
+          analysis, naming history, and the stories behind typhoon names. It covers the Western
+          Pacific basin from 2000 to the present, and is maintained as a personal, non-commercial
+          project.
         </p>
       </section>
 
@@ -55,16 +55,13 @@ const AboutPage = () => {
           Data sources &amp; credits
         </h2>
         <p className="mt-2 leading-relaxed text-slate-600">
-          Facts and figures are compiled from the following sources. Meteorological facts
-          themselves aren&apos;t owned by anyone; the credit below acknowledges the
-          organisations whose work this database builds upon.
+          Facts and figures are compiled from the following sources. Meteorological facts themselves
+          aren&apos;t owned by anyone; the credit below acknowledges the organisations whose work
+          this database builds upon.
         </p>
         <ul className="mt-4 space-y-3">
           {sources.map((source) => (
-            <li
-              key={source.name}
-              className="rounded-lg border border-slate-200 bg-white p-4"
-            >
+            <li key={source.name} className="rounded-lg border border-slate-200 bg-white p-4">
               <a
                 href={source.url}
                 target="_blank"
@@ -86,24 +83,38 @@ const AboutPage = () => {
           License
         </h2>
         <p className="mt-2 leading-relaxed text-slate-600">
-          This database is licensed under{" "}
+          This database is dedicated to the public domain under{" "}
           <a
-            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            href="https://creativecommons.org/publicdomain/zero/1.0/"
             target="_blank"
             rel="noopener noreferrer license"
             className="text-blue-600 hover:underline"
           >
-            Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+            Creative Commons Zero 1.0 Universal (CC0 1.0)
           </a>
-          . You are free to share and adapt the data for any purpose, as long as you give
-          appropriate credit and distribute your contributions under the same license.
+          . To the extent possible under law, all rights are waived. You are free to copy, adapt,
+          and use the data for any purpose, without asking permission — though a credit is always
+          appreciated.
         </p>
         <p className="mt-3 leading-relaxed text-slate-600">
-          This license covers the <span className="font-medium text-slate-700">data and
-          text</span> of this database only. Images are the property of their respective
-          owners and remain under their original copyright; they are shown for
-          illustrative purposes with credit where available, and are not covered by CC
-          BY-SA 4.0.
+          This dedication covers the{" "}
+          <span className="font-medium text-slate-700">data and text</span> of this database only.
+          It does not extend to the images, which belong to their respective owners and remain under
+          their original copyright. No ownership of, or license over, those images is claimed here.
+        </p>
+        <p className="mt-3 leading-relaxed text-slate-600">
+          Where an image&apos;s author and license are known, they are credited alongside it. This
+          is a personal, non-commercial project, and if you are a rights holder who would like an
+          image credited differently or removed, please{" "}
+          <a
+            href="https://www.facebook.com/profile.php?id=61586585781960"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            get in touch
+          </a>{" "}
+          and I will do so promptly.
         </p>
       </section>
 
@@ -114,9 +125,8 @@ const AboutPage = () => {
           Creator
         </h2>
         <p className="mt-2 leading-relaxed text-slate-600">
-          Built and maintained by{" "}
-          <span className="font-medium text-slate-700">Cá Tra</span>. Questions or
-          corrections are welcome via{" "}
+          Built and maintained by <span className="font-medium text-slate-700">Cá Tra</span>.
+          Questions or corrections are welcome via{" "}
           <a
             href="https://www.facebook.com/profile.php?id=61586585781960"
             target="_blank"

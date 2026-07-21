@@ -12,10 +12,7 @@ const Footer = () => {
         </p>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/about"
-            className="text-slate-400 transition-colors hover:text-slate-200!"
-          >
+          <Link href="/about" className="text-slate-400 transition-colors hover:text-slate-200!">
             About
           </Link>
           <InstallButton />
