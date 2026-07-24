@@ -1,7 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import FrownError from "@/lib/components/FrownError";
-import ImageCredit from "@/lib/components/ImageCredit";
-import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
 import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
@@ -52,70 +51,10 @@ function NameDetailsSection({
   name: TyphoonName | RetiredName;
   correctSpelling?: string;
 }) {
-  const hasImage = !!name.image;
-  const hasDescription = !!name.description;
-
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-foreground">Name Details</h2>
-      <div className={`flex gap-6 ${hasImage ? "flex-col sm:flex-row" : "flex-col"}`}>
-        <div className="flex-1 space-y-4">
-          <div>
-            <div className="text-sm font-semibold text-foreground">Meaning</div>
-            <p className="mt-1 text-base leading-relaxed font-semibold text-teal-600 italic">
-              {name.meaning}
-            </p>
-          </div>
-
-          <div className="border-t border-slate-200 pt-3">
-            <div className="text-sm font-semibold text-foreground">Language</div>
-            <div className="mt-1 text-base text-foreground">{name.language}</div>
-          </div>
-
-          {(correctSpelling || ("replacementName" in name && name.replacementName)) && (
-            <div className="border-t border-slate-200 pt-3">
-              <div className="text-sm font-semibold text-foreground">
-                {correctSpelling ? "Correct spelling" : "Replaced by"}
-              </div>
-              <div className="mt-1 text-base font-semibold text-teal-600">
-                {correctSpelling || ("replacementName" in name ? name.replacementName : "")}
-              </div>
-            </div>
-          )}
-
-          {!hasImage && hasDescription && (
-            <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="mb-2 text-xs font-semibold tracking-wide text-foreground uppercase">
-                Note
-              </div>
-              <p className="text-sm leading-relaxed text-foreground">{name.description}</p>
-            </div>
-          )}
-        </div>
-
-        {name.image && (
-          <div className="min-w-0 flex-1">
-            <ImageCredit credit={name.imageCredit} position="top" />
-            <div
-              className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
-              style={{ aspectRatio: "4/3" }}
-            >
-              <ImageWithLoader
-                src={name.image}
-                alt={name.name}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </div>
-            {hasDescription && (
-              <p className="mt-3 text-center text-xs leading-relaxed text-foreground italic">
-                {name.description}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
+      <NameDetailsContent name={name} correctSpelling={correctSpelling} />
     </section>
   );
 }

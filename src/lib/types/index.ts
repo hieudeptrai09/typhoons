@@ -12,6 +12,8 @@ export interface TyphoonName {
   meaning: string;
   country: string;
   language: string;
+  originalText?: string;
+  ipa?: string;
   isRetired: boolean;
   isReplaced: number;
   isLanguageProblem: number;
