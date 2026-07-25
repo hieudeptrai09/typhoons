@@ -62,13 +62,13 @@ const columns: ColumnsType<RetiredName> = [
     dataIndex: "note",
     key: "note",
     render: (_: unknown, record: RetiredName) => (
-      <span className="block max-w-[300px] wrap-break-word whitespace-normal">
+      <span className="block max-w-[200px] wrap-break-word whitespace-normal">
         {record.note || "-"}
       </span>
     ),
   },
   {
-    title: "Year of last storm",
+    title: "Last used",
     dataIndex: "lastYear",
     key: "lastYear",
     sorter: (a, b) => a.lastYear - b.lastYear,
