@@ -7,13 +7,16 @@ import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
+import AvgDateModal from "./_components/_modals/AvgDateModal";
 import DistanceModal from "./_components/_modals/DistanceModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import AverageView from "./_components/_views/AverageView";
+import AvgDateView from "./_components/_views/AvgDateView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
+import AvgDateLegend from "./_components/_widgets/AvgDateLegend";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
 import GapLegend from "./_components/_widgets/GapLegend";
 import IntensityLegend from "./_components/_widgets/IntensityLegend";
@@ -48,6 +51,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
   const [isDistanceModalOpen, setIsDistanceModalOpen] = useState(false);
+  const [isAvgDateModalOpen, setIsAvgDateModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
   const currentParams: DashboardParams = slugToParams(slug);
@@ -122,6 +126,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
+    // Avg. Date view: clicking a position or name opens the seasonal date modal
+    if (view === "avgdate") {
+      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
+      setSelectedData({ title, storms });
+      setIsAvgDateModalOpen(true);
+      return;
+    }
+
     const titleMap: Record<string, string> = {
       position: getPositionTitle(Number(data)),
       country: data as string,
@@ -175,6 +187,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 onCellClick={handleCellClick}
               />
             );
+          case "avgdate":
+            return (
+              <AvgDateView
+                params={currentParams}
+                stormsData={stormsData}
+                onCellClick={handleCellClick}
+              />
+            );
           default:
             return <div className="text-center text-foreground">Select filters to view data</div>;
         }
@@ -212,7 +232,20 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         average={selectedData?.average ?? -1}
       />
 
-      {view === "distance" ? <GapLegend /> : <IntensityLegend />}
+      <AvgDateModal
+        isOpen={isAvgDateModalOpen}
+        onClose={() => setIsAvgDateModalOpen(false)}
+        title={selectedData?.title || ""}
+        storms={selectedData?.storms || []}
+      />
+
+      {view === "distance" ? (
+        <GapLegend />
+      ) : view === "avgdate" ? (
+        <AvgDateLegend />
+      ) : (
+        <IntensityLegend />
+      )}
     </PageHeader>
   );
 }

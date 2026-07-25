@@ -15,6 +15,7 @@ const VIEW_TABS: { key: string; label: string }[] = [
   { key: "highlights", label: "Highlights" },
   { key: "average", label: "Average" },
   { key: "distance", label: "Gap" },
+  { key: "avgdate", label: "Avg. Date" },
 ];
 
 interface DashboardControlBarProps {

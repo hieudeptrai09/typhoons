@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { sortNamesByFirstYear } from "../../../_utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
@@ -7,9 +7,10 @@ interface NamesGridProps {
   stormsData: Storm[];
   onCellClick: (data: number | string, key: string) => void;
   nameColors?: Record<string, string>;
+  nameSubtitles?: Record<string, ReactNode>;
 }
 
-const NamesGrid = ({ stormsData, onCellClick, nameColors }: NamesGridProps) => {
+const NamesGrid = ({ stormsData, onCellClick, nameColors, nameSubtitles }: NamesGridProps) => {
   const stormsByPosition = useMemo<Record<number, Storm[]>>(
     () =>
       stormsData.reduce<Record<number, Storm[]>>((acc, storm) => {
@@ -48,19 +49,27 @@ const NamesGrid = ({ stormsData, onCellClick, nameColors }: NamesGridProps) => {
               <span className="text-xs text-gray-300">—</span>
             ) : (
               <div className="flex w-full flex-col items-center justify-center gap-0 px-1 md:gap-0.5">
-                {names.map(({ name, color }, idx) => (
-                  <button
-                    key={idx}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCellClick(name, "name");
-                    }}
-                    className="flex min-h-11 w-full cursor-pointer items-center justify-center text-center text-xs leading-tight font-semibold hover:underline md:min-h-0"
-                    style={{ color, background: "none", border: "none", padding: 0 }}
-                  >
-                    {name}
-                  </button>
-                ))}
+                {names.map(({ name, color }, idx) => {
+                  const subtitle = nameSubtitles?.[name];
+                  return (
+                    <button
+                      key={idx}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCellClick(name, "name");
+                      }}
+                      className="flex min-h-11 w-full cursor-pointer flex-col items-center justify-center text-center text-xs leading-tight font-semibold hover:underline md:min-h-0"
+                      style={{ color, background: "none", border: "none", padding: 0 }}
+                    >
+                      <span>{name}</span>
+                      {subtitle !== undefined && (
+                        <span className="text-[10px] font-normal text-gray-500 no-underline tabular-nums">
+                          {subtitle}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             ),
           className: "",

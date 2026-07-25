@@ -1,14 +1,21 @@
 import type { Storm } from "@/lib/types";
 import { Button } from "antd";
+import type { ReactNode } from "react";
 import { sortNamesByFirstYear, SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface SpecialNamesListDivProps {
   stormsData: Storm[];
   onNameClick: (name: string, storms: Storm[]) => void;
   nameColors?: Record<string, string>;
+  nameSubtitles?: Record<string, ReactNode>;
 }
 
-const SpecialNamesListDiv = ({ stormsData, onNameClick, nameColors }: SpecialNamesListDivProps) => {
+const SpecialNamesListDiv = ({
+  stormsData,
+  onNameClick,
+  nameColors,
+  nameSubtitles,
+}: SpecialNamesListDivProps) => {
   const stormsByPosition = SPECIAL_POSITIONS.map(({ id, label }) => {
     const positionStorms = stormsData.filter((s) => s.position === id);
 
@@ -49,10 +56,17 @@ const SpecialNamesListDiv = ({ stormsData, onNameClick, nameColors }: SpecialNam
                   type="text"
                   block
                   onClick={() => onNameClick(name, storms)}
-                  className="!h-auto !min-h-11 !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!p-0"
+                  className="!h-auto !min-h-11 !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!py-1"
                   style={{ color }}
                 >
-                  {name}
+                  <span className="flex flex-col items-center">
+                    <span>{name}</span>
+                    {nameSubtitles?.[name] !== undefined && (
+                      <span className="text-[10px] font-normal text-gray-500 tabular-nums">
+                        {nameSubtitles[name]}
+                      </span>
+                    )}
+                  </span>
                 </Button>
               ))
             )}

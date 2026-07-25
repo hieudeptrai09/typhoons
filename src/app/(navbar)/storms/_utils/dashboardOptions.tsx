@@ -1,6 +1,7 @@
 import {
   Activity,
   ArrowDownToLine,
+  CalendarRange,
   CloudLightning,
   EyeOff,
   Globe,
@@ -23,6 +24,7 @@ export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
     highlights: Star,
     average: Activity,
     distance: Ruler,
+    avgdate: CalendarRange,
   },
   filter: {
     strongest: Zap,
@@ -72,6 +74,10 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
     { label: icon(Moon, "Month"), value: "month" },
   ],
   distance: [
+    { label: icon(MapPin, "Position"), value: "position" },
+    { label: icon(Tag, "Name"), value: "name" },
+  ],
+  avgdate: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],

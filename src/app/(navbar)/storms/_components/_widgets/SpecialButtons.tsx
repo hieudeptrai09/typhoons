@@ -1,12 +1,19 @@
-import { getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { getAvgDateColor, getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { Button } from "antd";
-import { getIntensityFromNumber, SPECIAL_POSITIONS } from "../../_utils/fns";
+import {
+  formatDayOfYear,
+  getDoyMonth,
+  getIntensityFromNumber,
+  SPECIAL_POSITIONS,
+  type AvgDates,
+} from "../../_utils/fns";
 
 interface SpecialButtonsProps {
   onCellClick: (data: number, key: string) => void;
   isAverageView?: boolean;
   averageValues?: Record<number, number> | null;
   distanceValues?: Record<number, number> | null;
+  avgDateValues?: Record<number, AvgDates> | null;
 }
 
 const SpecialButtons = ({
@@ -14,8 +21,19 @@ const SpecialButtons = ({
   isAverageView = false,
   averageValues = null,
   distanceValues = null,
+  avgDateValues = null,
 }: SpecialButtonsProps) => {
   const getButtonContent = (buttonId: number): { color: string; suffix: string } => {
+    if (avgDateValues && avgDateValues[buttonId] !== undefined) {
+      const { startDoy, endDoy } = avgDateValues[buttonId];
+      return {
+        color: getAvgDateColor(getDoyMonth(startDoy)),
+        suffix:
+          startDoy < 0 && endDoy < 0
+            ? ""
+            : ` · ${formatDayOfYear(startDoy)}–${formatDayOfYear(endDoy)}`,
+      };
+    }
     if (distanceValues && distanceValues[buttonId] !== undefined) {
       const dist = distanceValues[buttonId];
       return {
