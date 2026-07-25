@@ -31,7 +31,7 @@ const NameDetailsContent = ({
       : undefined;
 
   return (
-    <article className={`flex gap-6 ${name.image ? "flex-col sm:flex-row" : "flex-col"}`}>
+    <article className={`flex gap-6 ${name.image ? "flex-row" : "flex-col"}`}>
       <div className="min-w-0 flex-1 space-y-4">
         <header>
           {(name.originalText || name.ipa) && (
