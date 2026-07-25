@@ -53,8 +53,8 @@ const SpecialButtons = ({
   };
 
   return (
-    <div className="mb-6 flex justify-center gap-4">
-      <div className="mr-2 self-center text-sm font-semibold text-foreground">Other Regions:</div>
+    <div className="mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:gap-4">
+      <div className="mr-2 text-sm font-semibold text-foreground">Other Regions:</div>
       {SPECIAL_POSITIONS.map((button) => {
         const { color, suffix } = getButtonContent(button.id);
         return (
