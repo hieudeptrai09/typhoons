@@ -7,7 +7,6 @@ import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
-import DashboardModal from "./_components/_modals/DashboardModal";
 import DistanceModal from "./_components/_modals/DistanceModal";
 import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
@@ -15,7 +14,7 @@ import AverageView from "./_components/_views/AverageView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
-import DashboardViewButton from "./_components/_widgets/DashboardViewButton";
+import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
 import GapLegend from "./_components/_widgets/GapLegend";
 import IntensityLegend from "./_components/_widgets/IntensityLegend";
 import {
@@ -45,7 +44,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
 
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
   const [isNameListModalOpen, setIsNameListModalOpen] = useState(false);
@@ -65,7 +63,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       : null;
 
   const handleApplyFilter = (newParams: DashboardParams) => {
-    setIsFilterModalOpen(false);
     router.push(paramsToPath(newParams));
   };
 
@@ -146,7 +143,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
   return (
     <PageHeader title={getDashboardTitle(view, mode, filter)}>
-      <DashboardViewButton onClick={() => setIsFilterModalOpen(true)} params={currentParams} />
+      <DashboardControlBar params={currentParams} onChange={handleApplyFilter} />
 
       {(() => {
         switch (view) {
@@ -182,14 +179,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
             return <div className="text-center text-foreground">Select filters to view data</div>;
         }
       })()}
-
-      <DashboardModal
-        key={JSON.stringify(currentParams)}
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        onApply={handleApplyFilter}
-        currentParams={currentParams}
-      />
 
       <StormDetailModal
         isOpen={isDetailModalOpen}

@@ -1,4 +1,5 @@
 import type { Storm } from "@/lib/types";
+import { getPositionTitle } from "@/lib/utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface StormsGridProps {
@@ -14,7 +15,9 @@ const StormsGrid = ({ stormsData, onCellClick, isClickable = true }: StormsGridP
     onPositionClick={(position) => onCellClick(position, "position")}
     renderCell={(position) => ({
       content: (
-        <div className="text-center text-base font-semibold text-foreground">{position}</div>
+        <div className="text-center text-base font-semibold text-foreground">
+          {getPositionTitle(position)}
+        </div>
       ),
       className: "",
       clickable: isClickable,

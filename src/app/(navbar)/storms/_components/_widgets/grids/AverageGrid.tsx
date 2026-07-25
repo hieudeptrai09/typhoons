@@ -1,5 +1,6 @@
 import type { Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { getPositionTitle } from "@/lib/utils/fns";
 import { getIntensityFromNumber } from "../../../_utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
@@ -29,7 +30,7 @@ const AverageGrid = ({
       return {
         content: (
           <div className="text-center text-base font-semibold" style={{ color: textColor }}>
-            {position}
+            {getPositionTitle(position)}
           </div>
         ),
         className: "",

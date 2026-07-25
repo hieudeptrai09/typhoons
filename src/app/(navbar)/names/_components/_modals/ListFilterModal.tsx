@@ -1,7 +1,7 @@
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, FilterParams } from "@/lib/types";
-import { toArr, toOpts, toStr } from "@/lib/utils/fns";
-import { Button, Form, Input, InputNumber, Radio, Select } from "antd";
+import { getPositionTitle, parsePositionLabel, toArr, toOpts, toStr } from "@/lib/utils/fns";
+import { Button, Form, Input, Radio, Select } from "antd";
 
 export interface ListFilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;
@@ -17,7 +17,7 @@ interface FormValues {
   country: string[];
   language: string[];
   tag: string[];
-  position: number | undefined;
+  position: string;
   status: string | undefined;
 }
 
@@ -38,7 +38,7 @@ const ListFilterModal = ({
     country: toArr(initialFilters.country),
     language: toArr(initialFilters.language),
     tag: toArr(initialFilters.tag),
-    position: initialFilters.position ? Number(initialFilters.position) : undefined,
+    position: initialFilters.position ? getPositionTitle(Number(initialFilters.position)) : "",
     status: showHistory ? initialFilters.status || "" : "current",
   };
 
@@ -47,17 +47,18 @@ const ListFilterModal = ({
     country: [],
     language: [],
     tag: [],
-    position: undefined,
+    position: "",
     status: showHistory ? "" : "current",
   };
 
   const handleApply = (values: FormValues) => {
+    const position = values.position ? parsePositionLabel(values.position) : null;
     onApply({
       name: values.name ?? "",
       country: toStr(values.country),
       language: toStr(values.language),
       tag: toStr(values.tag),
-      position: values.position != null ? String(values.position) : "",
+      position: position != null ? String(position) : "",
       status: values.status ?? "",
       letter: "",
     });
@@ -118,17 +119,19 @@ const ListFilterModal = ({
         <Form.Item
           label="Position"
           name="position"
-          extra={<span id="filter-position-help">Enter a value between 1 and 140</span>}
+          extra={
+            <span id="filter-position-help">Grid position (row + country letter), e.g. 3I</span>
+          }
           rules={[
-            { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
+            {
+              validator: (_, value: string) =>
+                !value || parsePositionLabel(value) !== null
+                  ? Promise.resolve()
+                  : Promise.reject(new Error("Enter a grid position like 3I, or a number 1–140")),
+            },
           ]}
         >
-          <InputNumber
-            placeholder="Enter position (1–140)..."
-            min={1}
-            max={140}
-            aria-describedby="filter-position-help"
-          />
+          <Input placeholder="e.g. 3I or 37" allowClear aria-describedby="filter-position-help" />
         </Form.Item>
 
         {showHistory && (

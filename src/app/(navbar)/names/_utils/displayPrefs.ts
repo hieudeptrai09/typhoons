@@ -1,7 +1,5 @@
 export interface NamesDisplayPrefs {
   showLetterNav: boolean;
-  colorfulHistory: boolean;
-  showImageAndDescription: boolean;
 }
 
 export const NAMES_DISPLAY_COOKIE = "namesDisplay";
@@ -10,8 +8,6 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export const defaultDisplayPrefs: NamesDisplayPrefs = {
   showLetterNav: false,
-  colorfulHistory: false,
-  showImageAndDescription: false,
 };
 
 export const parseDisplayPrefs = (raw: string | undefined): NamesDisplayPrefs => {
@@ -26,8 +22,6 @@ export const parseDisplayPrefs = (raw: string | undefined): NamesDisplayPrefs =>
     const prefs = parsed as Record<keyof NamesDisplayPrefs, unknown>;
     return {
       showLetterNav: prefs.showLetterNav === true,
-      colorfulHistory: prefs.colorfulHistory === true,
-      showImageAndDescription: prefs.showImageAndDescription === true,
     };
   } catch {
     return defaultDisplayPrefs;

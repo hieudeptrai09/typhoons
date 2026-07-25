@@ -9,7 +9,7 @@ const VALID_FILTERS: Record<string, string[]> = {
   distance: ["position", "name"],
 };
 
-const DEFAULT_FILTER: Record<string, string> = {
+export const DEFAULT_FILTER: Record<string, string> = {
   storms: "position",
   highlights: "strongest",
   average: "position",
@@ -41,6 +41,21 @@ export const isValidStormsSlug = (slug: string[] = []): boolean => {
 
 export const isListOnly = (view: string, filter: string): boolean =>
   (view === "average" && filter === "country") || (view === "average" && filter === "month");
+
+export const isGridOnly = (view: string, filter: string): boolean =>
+  view === "storms" && filter === "position";
+
+export const paramsForView = (view: string): DashboardParams => {
+  const filter = DEFAULT_FILTER[view] ?? "";
+  return { view, filter, mode: isListOnly(view, filter) ? "list" : "table" };
+};
+
+export const paramsForFilter = (view: string, filter: string, mode: string): DashboardParams => {
+  if (isGridOnly(view, filter)) return { view, filter, mode: "table" };
+  if (isListOnly(view, filter)) return { view, filter, mode: "list" };
+  if (view === "distance" && filter === "position") return { view, filter, mode: "table" };
+  return { view, filter, mode };
+};
 
 export const slugToParams = (slug: string[] = []): DashboardParams => {
   if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };

@@ -2,20 +2,40 @@ import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultTyphoonName } from "@/lib/constants";
 import type { FilterParams, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
-import { Badge, Button } from "antd";
-import { Filter, Settings, Skull } from "lucide-react";
+import { Badge, Button, Segmented } from "antd";
+import { CaseUpper, Filter, LayoutGrid, List, Tag } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
 import NameDetailsModal from "../_modals/NameDetailsModal";
-import NamesSettingsModal from "../_modals/NamesSettingsModal";
-import type { DisplaySettings } from "../_modals/NamesSettingsModal";
 import FilteredNamesTable from "../_widgets/FilteredNamesTable";
 import PositionNameGrid from "../_widgets/PositionNameGrid";
+import SlashToggleButton from "../_widgets/SlashToggleButton";
 import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
 import { writeDisplayPrefs } from "../../_utils/displayPrefs";
 import { paramsToPath } from "../../_utils/fns";
+
+const LAYOUT_OPTIONS = [
+  {
+    label: (
+      <span className="flex items-center justify-center gap-1.5">
+        <LayoutGrid size={13} />
+        Grid
+      </span>
+    ),
+    value: "grid",
+  },
+  {
+    label: (
+      <span className="flex items-center justify-center gap-1.5">
+        <List size={13} />
+        List
+      </span>
+    ),
+    value: "list",
+  },
+];
 
 interface NameFilterValues {
   name: string;
@@ -33,7 +53,6 @@ interface NamesViewProps {
   showName: boolean;
   showHistory: boolean;
   displayPrefs: NamesDisplayPrefs;
-  onToggleView: () => void;
 }
 
 const applyNameFilters = (names: TyphoonName[], filters: NameFilterValues): TyphoonName[] => {
@@ -96,7 +115,6 @@ const NamesView = ({
   showName,
   showHistory,
   displayPrefs,
-  onToggleView,
 }: NamesViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -116,14 +134,11 @@ const NamesView = ({
 
   const [prefs, setPrefs] = useState<NamesDisplayPrefs>(displayPrefs);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [historyPosition, setHistoryPosition] = useState<number>(0);
   const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-
-  const settings: DisplaySettings = { ...prefs, showName, showHistory };
 
   const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
 
@@ -198,6 +213,8 @@ const NamesView = ({
   }, [statusFilteredNames, hasActiveFilters, filterValues, prefs.showLetterNav, currentLetter]);
 
   const showLetterNav = !hasActiveFilters && prefs.showLetterNav;
+  // Reuse-count coloring is the full-overview visualization: it applies automatically on the history grid whenever the view isn't narrowed by letter nav or filters.
+  const colorfulHistory = showHistory && !hasActiveFilters && !prefs.showLetterNav;
 
   const buildQuery = useCallback((params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
@@ -233,23 +250,18 @@ const NamesView = ({
     router.push(`${currentPath}${query}`);
   };
 
-  const handleApplySettings = (mode: "grid" | "list", newSettings: DisplaySettings) => {
-    const newPrefs: NamesDisplayPrefs = {
-      showLetterNav: newSettings.showLetterNav,
-      colorfulHistory: newSettings.colorfulHistory,
-      showImageAndDescription: newSettings.showImageAndDescription,
-    };
+  const handleLayoutChange = (mode: string) => {
+    router.push(paramsToPath(mode, showHistory, showName));
+  };
 
+  const handleToggleLetterNav = () => {
+    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: !prefs.showLetterNav };
     setPrefs(newPrefs);
-    setIsSettingsOpen(false);
-    // Written before navigating so the next server render sees the new value.
     writeDisplayPrefs(newPrefs);
+  };
 
-    if (mode === "list") {
-      router.push(paramsToPath("list", newSettings.showHistory));
-    } else {
-      router.push(paramsToPath("grid", newSettings.showHistory, newSettings.showName));
-    }
+  const handleToggleTagIcons = () => {
+    router.push(paramsToPath("grid", showHistory, !showName));
   };
 
   const handleNameClick = (name: TyphoonName) => {
@@ -288,15 +300,29 @@ const NamesView = ({
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center gap-9">
-          <Button
-            type="text"
-            onClick={onToggleView}
-            title="Switch to retired names"
-            aria-label="Viewing all names, click to switch to retired"
-            icon={<Skull size={30} />}
-            className="!h-auto !w-auto !p-1 !text-red-500 hover:!bg-transparent hover:!text-red-700"
+        <div className="flex flex-wrap items-center justify-center gap-6">
+          <Segmented
+            options={LAYOUT_OPTIONS}
+            value={displayMode}
+            onChange={(v) => handleLayoutChange(String(v))}
+            aria-label="Switch between grid and list layout"
           />
+          <SlashToggleButton
+            active={prefs.showLetterNav}
+            onClick={handleToggleLetterNav}
+            title={prefs.showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
+          >
+            <CaseUpper size={26} />
+          </SlashToggleButton>
+          {displayMode === "grid" && (
+            <SlashToggleButton
+              active={!showName}
+              onClick={handleToggleTagIcons}
+              title={!showName ? "Category icons are on" : "Category icons are off"}
+            >
+              <Tag size={26} />
+            </SlashToggleButton>
+          )}
           <Badge count={activeFilterCount} color="#ef4444" offset={[-4, 4]}>
             <Button
               type="text"
@@ -307,19 +333,6 @@ const NamesView = ({
               className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
             />
           </Badge>
-          <Button
-            type="text"
-            onClick={() => setIsSettingsOpen(true)}
-            title="Display settings"
-            aria-label="Display settings"
-            icon={<Settings size={30} />}
-            className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
-          />
-        </div>
-        <div className="hidden mt-2 justify-center">
-          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-            Click the skull icon to view retired names
-          </span>
         </div>
       </div>
 
@@ -332,16 +345,12 @@ const NamesView = ({
           names={filteredAllNames}
           showName={showName}
           showHistory={showHistory}
-          colorfulHistory={prefs.colorfulHistory}
+          colorfulHistory={colorfulHistory}
           onNameClick={handleNameClick}
           onCellClick={handleCellClick}
         />
       ) : (
-        <FilteredNamesTable
-          filteredNames={filteredAllNames}
-          showImageAndDescription={prefs.showImageAndDescription}
-          onNameClick={handleNameClick}
-        />
+        <FilteredNamesTable filteredNames={filteredAllNames} onNameClick={handleNameClick} />
       )}
 
       <ListFilterModal
@@ -361,14 +370,6 @@ const NamesView = ({
           status: selectedStatus,
           letter: "",
         }}
-      />
-
-      <NamesSettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        displayMode={displayMode}
-        settings={settings}
-        onApply={handleApplySettings}
       />
 
       <NameDetailsModal

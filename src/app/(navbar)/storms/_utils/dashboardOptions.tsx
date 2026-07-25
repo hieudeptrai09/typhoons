@@ -48,13 +48,6 @@ const icon = (Icon: LucideIcon, label: string) => (
   </span>
 );
 
-export const VIEW_OPTIONS = [
-  { label: icon(CloudLightning, "Storms"), value: "storms" },
-  { label: icon(Star, "Highlights"), value: "highlights" },
-  { label: icon(Activity, "Average"), value: "average" },
-  { label: icon(Ruler, "Gap"), value: "distance" },
-];
-
 export const MODE_OPTIONS = [
   { label: icon(Grid3x3, "Grid"), value: "table" },
   { label: icon(List, "List"), value: "list" },

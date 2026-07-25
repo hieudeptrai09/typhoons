@@ -3,18 +3,21 @@ import { defaultRetiredName } from "@/lib/constants";
 import type { RetiredFilterParams, RetiredName, SuggestionWithNameId } from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge, Button } from "antd";
-import { Filter, List } from "lucide-react";
+import { CaseUpper, Filter } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import RetiredFilterModal from "../_modals/RetiredFilterModal";
 import RetiredNameDetailsModal from "../_modals/RetiredNameDetailsModal";
 import RetiredNamesTable from "../_widgets/RetiredNamesTable";
+import SlashToggleButton from "../_widgets/SlashToggleButton";
+import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
+import { writeDisplayPrefs } from "../../_utils/displayPrefs";
 import { paramsToPath } from "../../_utils/fns";
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];
   suggestedNames: SuggestionWithNameId[];
-  onToggleView: () => void;
+  displayPrefs: NamesDisplayPrefs;
 }
 
 const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) => {
@@ -22,7 +25,7 @@ const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) =
   return allLetters.find((letter) => availableLettersMap[letter]) ?? "A";
 };
 
-const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredViewProps) => {
+const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,9 +38,16 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
   const countryArr = toArr(selectedCountry);
   const reasonArr = toArr(selectedReason).map(Number);
 
+  const [prefs, setPrefs] = useState<NamesDisplayPrefs>(displayPrefs);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
   const [isRetiredNameModalOpen, setIsRetiredNameModalOpen] = useState(false);
+
+  const handleToggleLetterNav = () => {
+    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: !prefs.showLetterNav };
+    setPrefs(newPrefs);
+    writeDisplayPrefs(newPrefs);
+  };
 
   const suggestionsByNameId = useMemo(
     () =>
@@ -96,7 +106,7 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
     const hasActiveFilters =
       searchName || selectedYear || countryArr.length > 0 || reasonArr.length > 0 || searchPosition;
 
-    if (!hasActiveFilters) {
+    if (!hasActiveFilters && prefs.showLetterNav) {
       filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
@@ -109,6 +119,7 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
     reasonArr,
     searchPosition,
     currentLetter,
+    prefs.showLetterNav,
   ]);
 
   const buildQuery = useCallback((params: Record<string, string>) => {
@@ -157,15 +168,14 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
   return (
     <>
       <div className="mx-auto mb-4 max-w-4xl">
-        <div className="flex items-center justify-center gap-9">
-          <Button
-            type="text"
-            onClick={onToggleView}
-            title="Switch to all names"
-            aria-label="Viewing retired names, click to switch to all names"
-            icon={<List size={30} />}
-            className="!h-auto !w-auto !p-1 !text-blue-500 hover:!bg-transparent hover:!text-blue-700"
-          />
+        <div className="flex items-center justify-center gap-6">
+          <SlashToggleButton
+            active={prefs.showLetterNav}
+            onClick={handleToggleLetterNav}
+            title={prefs.showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
+          >
+            <CaseUpper size={26} />
+          </SlashToggleButton>
           <Badge count={activeFilterCount} color="#3b82f6" offset={[-4, 4]}>
             <Button
               type="text"
@@ -177,14 +187,9 @@ const RetiredView = ({ retiredNames, suggestedNames, onToggleView }: RetiredView
             />
           </Badge>
         </div>
-        <div className="mt-2 hidden justify-center">
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-            Click the list icon to view all names
-          </span>
-        </div>
       </div>
 
-      {activeFilterCount === 0 && (
+      {activeFilterCount === 0 && prefs.showLetterNav && (
         <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 

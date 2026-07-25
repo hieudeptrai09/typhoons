@@ -3,13 +3,14 @@
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
 import type { RetiredName, StormHistoryEntry, SuggestionWithNameId } from "@/lib/types";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
 import RetiredView from "./_components/_views/RetiredView";
+import type { NamesScope } from "./_components/_widgets/NamesScopeTabs";
+import NamesScopeTabs from "./_components/_widgets/NamesScopeTabs";
 import type { NamesDisplayPrefs } from "./_utils/displayPrefs";
-import { defaultDisplayPrefs, writeDisplayPrefs } from "./_utils/displayPrefs";
-import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
+import { canonicalPath, getNamesTitle, slugToParams } from "./_utils/fns";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;
@@ -24,19 +25,22 @@ const NamesPageContent = ({
   suggestedNames,
   displayPrefs,
 }: NamesPageContentProps) => {
-  const router = useRouter();
   const { slug } = useParams<{ slug?: string[] }>();
   const { view: viewMode, showName, showHistory } = slugToParams(slug);
 
   const retiredNames = useMemo(() => (allNames || []).filter((n) => n.isRetired), [allNames]);
 
-  const toggleView = () => {
-    if (viewMode === "retired") {
-      writeDisplayPrefs(defaultDisplayPrefs);
-      router.push("/names/");
-    } else {
-      router.push(paramsToPath("retired"));
-    }
+  const activeScope: NamesScope =
+    viewMode === "retired" ? "retired" : showHistory ? "history" : "current";
+
+  // From the retired view there is no grid/list context to preserve, so fall back to the grid.
+  const layout = viewMode === "list" ? "list" : "grid";
+  const scopeShowName = viewMode === "retired" ? true : showName;
+
+  const scopeHrefs: Record<NamesScope, string> = {
+    current: canonicalPath(layout, false, scopeShowName),
+    history: canonicalPath(layout, true, scopeShowName),
+    retired: canonicalPath("retired", false, false),
   };
 
   if (!allNames) {
@@ -45,11 +49,13 @@ const NamesPageContent = ({
 
   return (
     <PageHeader title={getNamesTitle(viewMode, showHistory ? "true" : "")}>
+      <NamesScopeTabs activeScope={activeScope} hrefs={scopeHrefs} />
+
       {viewMode === "retired" ? (
         <RetiredView
           retiredNames={retiredNames}
           suggestedNames={suggestedNames}
-          onToggleView={toggleView}
+          displayPrefs={displayPrefs}
         />
       ) : (
         <NamesView
@@ -59,7 +65,6 @@ const NamesPageContent = ({
           showName={showName}
           showHistory={showHistory}
           displayPrefs={displayPrefs}
-          onToggleView={toggleView}
         />
       )}
     </PageHeader>

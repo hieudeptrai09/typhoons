@@ -1,7 +1,7 @@
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredFilterParams } from "@/lib/types";
-import { toArr, toOpts, toStr } from "@/lib/utils/fns";
-import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
+import { getPositionTitle, parsePositionLabel, toArr, toOpts, toStr } from "@/lib/utils/fns";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 
@@ -16,7 +16,7 @@ interface FormValues {
   year: Dayjs | undefined;
   country: string[];
   reason: string[];
-  position: number | undefined;
+  position: string;
 }
 
 const REASON_OPTIONS = [
@@ -40,7 +40,7 @@ const RetiredFilterModal = ({
     year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
     country: toArr(initialFilters.country),
     reason: toArr(initialFilters.reason),
-    position: initialFilters.position ? Number(initialFilters.position) : undefined,
+    position: initialFilters.position ? getPositionTitle(Number(initialFilters.position)) : "",
   };
 
   const clearedValues: FormValues = {
@@ -48,16 +48,17 @@ const RetiredFilterModal = ({
     year: undefined,
     country: [],
     reason: [],
-    position: undefined,
+    position: "",
   };
 
   const handleApply = (values: FormValues) => {
+    const position = values.position ? parsePositionLabel(values.position) : null;
     onApply({
       name: values.name ?? "",
       year: values.year ? String(values.year.year()) : "",
       country: toStr(values.country),
       reason: toStr(values.reason),
-      position: values.position != null ? String(values.position) : "",
+      position: position != null ? String(position) : "",
       letter: "",
     });
   };
@@ -114,17 +115,19 @@ const RetiredFilterModal = ({
         <Form.Item
           label="Position"
           name="position"
-          extra={<span id="retired-position-help">Enter a value between 1 and 140</span>}
+          extra={
+            <span id="retired-position-help">Grid position (row + country letter), e.g. 3I</span>
+          }
           rules={[
-            { type: "number", min: 1, max: 140, message: "Position must be between 1 and 140" },
+            {
+              validator: (_, value: string) =>
+                !value || parsePositionLabel(value) !== null
+                  ? Promise.resolve()
+                  : Promise.reject(new Error("Enter a grid position like 3I, or a number 1–140")),
+            },
           ]}
         >
-          <InputNumber
-            placeholder="Enter position (1–140)..."
-            min={1}
-            max={140}
-            aria-describedby="retired-position-help"
-          />
+          <Input placeholder="e.g. 3I or 37" allowClear aria-describedby="retired-position-help" />
         </Form.Item>
 
         <Form.Item label="Retirement Reason" name="reason" className="mb-0">
