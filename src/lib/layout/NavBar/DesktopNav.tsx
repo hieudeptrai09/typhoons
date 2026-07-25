@@ -12,7 +12,7 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
         href="/storms/"
         icon={CloudLightning}
         label="Storms"
-        isActive={currentPath === "/storms/"}
+        isActive={currentPath.startsWith("/storms")}
       />
       <NavLink
         href="/names"

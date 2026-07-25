@@ -21,7 +21,7 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
           href="/storms/"
           icon={CloudLightning}
           label="Storms"
-          isActive={currentPath === "/storms/"}
+          isActive={currentPath.startsWith("/storms")}
           onClick={onClose}
         />
         <NavLink
