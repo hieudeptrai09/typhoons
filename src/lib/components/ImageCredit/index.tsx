@@ -1,12 +1,15 @@
 import type { ImageCredit as ImageCreditType } from "@/lib/types";
-import { Image as ImageIcon, ScrollText } from "lucide-react";
+import { Copyright } from "lucide-react";
 
 interface ImageCreditProps {
   credit?: ImageCreditType;
   position?: "top" | "bottom";
+  align?: "start" | "center" | "end";
 }
 
-const ImageCredit = ({ credit, position = "bottom" }: ImageCreditProps) => {
+const alignClass = { start: "", center: "justify-center", end: "justify-end" } as const;
+
+const ImageCredit = ({ credit, position = "bottom", align = "start" }: ImageCreditProps) => {
   if (!credit?.author) return null;
 
   const { author, license, licenseUrl, sourceUrl } = credit;
@@ -15,10 +18,11 @@ const ImageCredit = ({ credit, position = "bottom" }: ImageCreditProps) => {
 
   return (
     <p
-      className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] leading-relaxed text-gray-400 ${spacing} `}
+      className={`flex items-center gap-1 text-[11px] leading-relaxed text-gray-400 ${alignClass[align]} ${spacing} `}
+      title={`${author}${license ? `, ${license}` : ""}`}
     >
-      <span className="inline-flex items-center gap-1">
-        <ImageIcon className="h-3 w-3 shrink-0" aria-hidden="true" />
+      <Copyright className="h-3 w-3 shrink-0" aria-hidden="true" />
+      <span className="truncate">
         {sourceUrl ? (
           <a
             href={sourceUrl}
@@ -31,24 +35,24 @@ const ImageCredit = ({ credit, position = "bottom" }: ImageCreditProps) => {
         ) : (
           author
         )}
+        {license && (
+          <>
+            {", "}
+            {licenseUrl ? (
+              <a
+                href={licenseUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow license"
+                className={linkClass}
+              >
+                {license}
+              </a>
+            ) : (
+              license
+            )}
+          </>
+        )}
       </span>
-      {license && (
-        <span className="inline-flex items-center gap-1">
-          <ScrollText className="h-3 w-3 shrink-0" aria-hidden="true" />
-          {licenseUrl ? (
-            <a
-              href={licenseUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow license"
-              className={linkClass}
-            >
-              {license}
-            </a>
-          ) : (
-            license
-          )}
-        </span>
-      )}
     </p>
   );
 };

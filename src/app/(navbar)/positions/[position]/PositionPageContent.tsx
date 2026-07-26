@@ -127,10 +127,10 @@ function NameTimelineItem({ name, storms }: { name: TyphoonName | RetiredName; s
                 unoptimized
               />
             </div>
-            <ImageCredit credit={name.imageCredit} />
           </div>
         )}
       </div>
+      {name.image && <ImageCredit credit={name.imageCredit} align="end" />}
     </li>
   );
 }

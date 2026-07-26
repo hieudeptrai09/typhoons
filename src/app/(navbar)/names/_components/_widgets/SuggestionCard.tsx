@@ -54,10 +54,10 @@ const SuggestionCard = ({ suggestion }: SuggestionCardProps) => {
                 unoptimized
               />
             </div>
-            <ImageCredit credit={suggestion.imageCredit} />
           </div>
         )}
       </div>
+      {suggestion.image && <ImageCredit credit={suggestion.imageCredit} align="end" />}
     </div>
   );
 };

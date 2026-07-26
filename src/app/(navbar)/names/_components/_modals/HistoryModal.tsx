@@ -131,8 +131,8 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames, storms }: Hist
                             unoptimized
                           />
                         </div>
-                        <ImageCredit credit={name.imageCredit} />
                       </div>
+                      <ImageCredit credit={name.imageCredit} align="center" />
                     </div>
                   )}
                 </div>
