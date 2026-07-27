@@ -45,14 +45,14 @@ const CountryFlag = ({ country, className = "h-7 w-10" }: CountryFlagProps) => {
   if (!FlagComponent) return <span className="text-foreground">{country}</span>;
 
   return (
-    <div
-      className={`overflow-hidden rounded border border-gray-300 shadow-sm ${className}`}
+    <span
+      className={`inline-block overflow-hidden rounded border border-gray-300 shadow-sm ${className}`}
       title={country}
       role="img"
       aria-label={`Flag of ${country}`}
     >
       <FlagComponent className="h-full w-full object-cover" />
-    </div>
+    </span>
   );
 };
 

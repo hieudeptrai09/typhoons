@@ -14,6 +14,7 @@ export interface TyphoonName {
   language: string;
   originalText?: string;
   ipa?: string;
+  pronunciationFile?: string;
   isRetired: boolean;
   isReplaced: number;
   isLanguageProblem: number;

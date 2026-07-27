@@ -26,6 +26,7 @@ interface TyphoonNameRow extends ImageCreditRow {
   language: string;
   originalText: string | null;
   ipa: string | null;
+  pronunciationFile: string | null;
   lastYear: number;
   image: string | null;
   description: string | null;
@@ -68,6 +69,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
       tn.language,
       tn.originaltext AS "originalText",
       tn.ipa,
+      tn.pronunciationfile AS "pronunciationFile",
       tn.lastyear AS "lastYear",
       tn.image,
       ${imageCreditColumns("tn.")},
@@ -97,6 +99,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
         language: nameRow.language,
         originalText: nameRow.originalText ?? undefined,
         ipa: nameRow.ipa ?? undefined,
+        pronunciationFile: nameRow.pronunciationFile ?? undefined,
         lastYear: Number(nameRow.lastYear),
         image: nameRow.image ?? undefined,
         imageCredit: toImageCredit(nameRow),

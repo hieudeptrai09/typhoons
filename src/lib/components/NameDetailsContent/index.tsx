@@ -3,7 +3,8 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { RetiredName, TyphoonName } from "@/lib/types";
-import { Inbox } from "lucide-react";
+import { capitalize } from "@/lib/utils/fns";
+import { Inbox, Volume2 } from "lucide-react";
 
 export interface NameDetailsContentProps {
   name: TyphoonName | RetiredName | null;
@@ -24,6 +25,7 @@ const NameDetailsContent = ({
 
   const replacementName =
     !hideReplacedBy && "replacementName" in name ? name.replacementName : undefined;
+  const pronunciationFile = name.pronunciationFile?.trim();
   const crossRef = correctSpelling
     ? { label: "Correct spelling", value: correctSpelling }
     : replacementName
@@ -34,8 +36,8 @@ const NameDetailsContent = ({
     <article className={`flex gap-6 ${name.image ? "flex-row" : "flex-col"}`}>
       <div className="min-w-0 flex-1 space-y-4">
         <header>
-          {(name.originalText || name.ipa) && (
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          {(name.originalText || name.ipa || pronunciationFile) && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               {name.originalText && (
                 <span className="text-2xl leading-tight font-semibold text-foreground">
                   {name.originalText}
@@ -46,10 +48,24 @@ const NameDetailsContent = ({
                   {name.ipa}
                 </span>
               )}
+              {pronunciationFile && (
+                <a
+                  href={`https://www.typhooncommittee.org/tcsounds/${encodeURIComponent(pronunciationFile)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-slate-400! hover:text-teal-600!"
+                  title={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
+                  aria-label={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
+                >
+                  <Volume2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </a>
+              )}
             </div>
           )}
-          <div className="mt-1 flex items-center gap-2 text-sm text-slate-500 italic">
-            {name.language}, from {name.country}
+          <div className="mt-1 text-sm text-slate-500 italic">
+            <span className="mr-2">
+              {name.language}, from {name.country}
+            </span>
             <CountryFlag country={name.country} className="h-4 w-6 not-italic" />
           </div>
         </header>
