@@ -18,7 +18,8 @@
 .nf-sky::after {
   content: '';
   position: absolute;
-  inset: 0;
+  /* Oversized so the rotated, translating layer never exposes an edge */
+  inset: -100px -40px -40px;
   /* Thin oval per tile = discrete raindrop shape */
   background-image: radial-gradient(
     1px 16px at 50% 50%,
@@ -29,12 +30,13 @@
   background-size: 55px 65px;
   /* Tilt left for wind-driven rain */
   transform: rotate(-8deg) scale(1.15);
+  /* translateY by exactly one 65px tile keeps the loop seamless */
   animation: rain-fall 0.65s linear infinite;
 }
 
 @keyframes rain-fall {
-  from { background-position: 0 0; }
-  to { background-position: 0 65px; }
+  from { transform: rotate(-8deg) scale(1.15) translateY(0); }
+  to { transform: rotate(-8deg) scale(1.15) translateY(65px); }
 }
 
 .nf-sea {
@@ -152,4 +154,18 @@
 
 .nf-btn:active {
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-sky::after,
+  .nf-sea,
+  .nf-wave,
+  .nf-blow {
+    animation: none;
+  }
+
+  /* Near-static drift instead of a full stop — still reads as a typhoon */
+  .not-found-icon {
+    animation-duration: 120s;
+  }
 }

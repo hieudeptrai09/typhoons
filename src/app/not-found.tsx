@@ -25,21 +25,35 @@ const NotFound = () => {
       </div>
 
       {/* Content — blown by wind */}
-      <div className="nf-content">
-        <div className="nf-blow nf-blow-1 mb-4 flex items-center gap-2">
-          <span className="text-8xl font-black text-white/50 select-none sm:text-9xl">4</span>
+      <main className="nf-content">
+        <h1
+          aria-label="404 – Page not found"
+          className="nf-blow nf-blow-1 mb-4 flex items-center gap-2"
+        >
+          <span aria-hidden className="text-8xl font-black text-white/70 select-none sm:text-9xl">
+            4
+          </span>
           <TyphoonSymbol className="not-found-icon h-20 w-20 text-white/80 sm:h-24 sm:w-24" />
-          <span className="text-8xl font-black text-white/50 select-none sm:text-9xl">4</span>
-        </div>
+          <span aria-hidden className="text-8xl font-black text-white/70 select-none sm:text-9xl">
+            4
+          </span>
+        </h1>
 
-        <p className="nf-blow nf-blow-2 mb-10 text-lg font-semibold tracking-wide text-white/60">
+        <p className="nf-blow nf-blow-2 mb-10 text-lg font-semibold tracking-wide text-white/85">
           This page was swept away by a storm.
         </p>
 
         <Link href="/" className="nf-btn inline-block rounded-full px-8 py-3 font-semibold">
           Return to Safety
         </Link>
-      </div>
+
+        <Link
+          href="/storms/"
+          className="nf-blow nf-blow-3 mt-5 text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
+        >
+          or browse all storms
+        </Link>
+      </main>
     </div>
   );
 };
