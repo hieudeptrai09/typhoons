@@ -3,7 +3,7 @@ import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighli
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/fns";
+import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
 import { Calendar, Hash } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {
@@ -50,13 +50,21 @@ const StormCard = ({ storm }: { storm: Storm }) => {
       </div>
       <div className="relative h-44 w-full bg-slate-50">
         {hasMap ? (
-          <ImageWithLoader
-            src={storm.map}
-            alt={`${storm.name} ${storm.year} track`}
-            fill
-            className="object-contain"
-            unoptimized
-          />
+          <a
+            href={getZoomEarthUrl(storm.name, storm.year)}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+            className="block h-full w-full transition-opacity hover:opacity-80"
+          >
+            <ImageWithLoader
+              src={storm.map}
+              alt={`${storm.name} ${storm.year} track`}
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          </a>
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-foreground">
             No track map

@@ -7,7 +7,7 @@ import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighli
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/fns";
+import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
 import { Switch } from "antd";
 import { Inbox } from "lucide-react";
 import { useState } from "react";
@@ -37,13 +37,21 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
     >
       {showMap && hasMap && (
         <div className="relative mb-2 h-48 w-full">
-          <ImageWithLoader
-            src={storm.map}
-            alt={`${storm.name} ${storm.year} track`}
-            fill
-            className="rounded border border-gray-200 object-contain"
-            unoptimized
-          />
+          <a
+            href={getZoomEarthUrl(storm.name, storm.year)}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+            className="block h-full w-full transition-opacity hover:opacity-80"
+          >
+            <ImageWithLoader
+              src={storm.map}
+              alt={`${storm.name} ${storm.year} track`}
+              fill
+              className="rounded border border-gray-200 object-contain"
+              unoptimized
+            />
+          </a>
         </div>
       )}
       {hasHighlight(storm) && (

@@ -20,7 +20,7 @@ import {
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
-import { formatStormDateRange, getPositionTitle } from "@/lib/utils/fns";
+import { formatStormDateRange, getPositionTitle, getZoomEarthUrl } from "@/lib/utils/fns";
 import { Carousel as AntCarousel } from "antd";
 import { Calendar, ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -129,13 +129,21 @@ function StormSlide({ storm }: { storm: Storm }) {
       <div className="p-3">
         <div className="relative aspect-4/3 w-full overflow-hidden rounded-md bg-slate-50">
           {hasMap && (
-            <ImageWithLoader
-              src={storm.map}
-              alt={`${storm.name} ${storm.year} track`}
-              fill
-              className="object-contain"
-              unoptimized
-            />
+            <a
+              href={getZoomEarthUrl(storm.name, storm.year)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+              className="block h-full w-full transition-opacity hover:opacity-80"
+            >
+              <ImageWithLoader
+                src={storm.map}
+                alt={`${storm.name} ${storm.year} track`}
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </a>
           )}
         </div>
         <div className="mt-2 space-y-0.5">
