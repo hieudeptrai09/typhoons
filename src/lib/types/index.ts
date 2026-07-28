@@ -53,11 +53,8 @@ export interface Storm {
   isStrongest?: boolean;
   isFirst?: boolean;
   isLast?: boolean;
-  dateStart?: number;
-  dateEnd?: number;
-  monthStart?: number;
-  monthEnd?: number;
-  isFromPrevYear?: number;
+  dateStart?: string; // "YYYY-MM-DD"
+  dateEnd?: string; // "YYYY-MM-DD"; missing while a storm is ongoing
   jtwcDesignation?: string;
   isJtwcForecasted?: boolean;
 }

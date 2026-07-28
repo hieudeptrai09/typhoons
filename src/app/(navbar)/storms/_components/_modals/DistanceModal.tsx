@@ -57,14 +57,7 @@ const DistanceModal = ({ isOpen, onClose, title, storms, average }: DistanceModa
               // the same -1 "no gap" case the grid uses for a single storm.
               const gap = index > 0 ? storm.year - timeline[index - 1].year : -1;
               const color = getDistanceColor(gap);
-              const dateRange = formatStormDateRange(
-                storm.year,
-                storm.monthStart,
-                storm.dateStart,
-                storm.monthEnd,
-                storm.dateEnd,
-                storm.isFromPrevYear,
-              );
+              const dateRange = formatStormDateRange(storm.dateStart, storm.dateEnd);
 
               return (
                 <li key={`${storm.name}-${storm.year}-${index}`}>

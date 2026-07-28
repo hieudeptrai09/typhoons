@@ -1,7 +1,7 @@
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/fns";
+import { formatStormDateRange, parseDateParts } from "@/lib/utils/fns";
 import { Popover } from "antd";
 import {
   calculateAvgDates,
@@ -40,8 +40,7 @@ interface MonthGroup {
 const groupByStartMonth = (storms: Storm[]): MonthGroup[] => {
   const buckets = new Map<number | null, Storm[]>();
   storms.forEach((storm) => {
-    const month =
-      storm.monthStart && storm.monthStart >= 1 && storm.monthStart <= 12 ? storm.monthStart : null;
+    const month = parseDateParts(storm.dateStart)?.month ?? null;
     if (!buckets.has(month)) buckets.set(month, []);
     buckets.get(month)!.push(storm);
   });
@@ -112,14 +111,7 @@ const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => 
                     content={
                       <div className="flex flex-col gap-1.5">
                         {group.storms.map((storm) => {
-                          const range = formatStormDateRange(
-                            storm.year,
-                            storm.monthStart,
-                            storm.dateStart,
-                            storm.monthEnd,
-                            storm.dateEnd,
-                            storm.isFromPrevYear,
-                          );
+                          const range = formatStormDateRange(storm.dateStart, storm.dateEnd);
                           return (
                             <div
                               key={`${storm.name}-${storm.year}`}

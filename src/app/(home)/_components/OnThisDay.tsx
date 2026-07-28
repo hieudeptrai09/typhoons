@@ -69,14 +69,8 @@ const getVerb = (storm: OnThisDayStorm) => {
 };
 
 const getEventYear = (storm: OnThisDayStorm) => {
-  const spansYear = storm.monthEnd < storm.monthStart;
-  if (storm.reason === "started") {
-    return storm.isFromPrevYear ? storm.year - 1 : storm.year;
-  }
-  if (storm.reason === "ended") {
-    return storm.isFromPrevYear ? storm.year : spansYear ? storm.year + 1 : storm.year;
-  }
-  return storm.year;
+  const date = storm.reason === "ended" ? storm.dateEnd : storm.dateStart;
+  return date ? Number(date.slice(0, 4)) : storm.year;
 };
 
 const OnThisDay = () => {

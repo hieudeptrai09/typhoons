@@ -18,8 +18,6 @@ const MONTH_NAMES: Record<number, string> = {
   12: "December",
 };
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
 function joinNames(items: (string | number)[], joiner = "and"): string {
   const arr = items.map(String);
   if (arr.length === 0) return "";
@@ -223,7 +221,7 @@ async function generateFacts(): Promise<string[]> {
   // --- Storms spanning multiple years ---
 
   rowsResult = await rows(
-    `SELECT name, year FROM storms WHERE monthstart > 0 AND monthend > 0 AND dateend > 0 AND monthend < monthstart AND year >= 2000 ORDER BY year`,
+    `SELECT name, year FROM storms WHERE EXTRACT(YEAR FROM enddate) > EXTRACT(YEAR FROM startdate) AND year >= 2000 ORDER BY year`,
   );
   if (rowsResult.length > 0) {
     const items = rowsResult.map((r) => `${r.name} (${r.year})`);
@@ -234,24 +232,16 @@ async function generateFacts(): Promise<string[]> {
   // --- Longest-lived storm ---
 
   rowsResult = await rows(`
-    SELECT name, year, datestart, monthstart, dateend, monthend, isfromprevyear
+    SELECT name, year, (enddate - startdate + 1) AS days
     FROM storms
     WHERE position <= 140
-    AND monthstart > 0 AND datestart > 0 AND monthend > 0 AND dateend > 0
+    AND startdate IS NOT NULL AND enddate IS NOT NULL
   `);
   if (rowsResult.length > 0) {
-    // Same start/end convention as getStormRange in ActiveStorms: isfromprevyear shifts the
-    // start back a year, and an end month before the start month means it ran into the next.
-    const durations = rowsResult.map((r) => {
-      const year = Number(r.year);
-      const monthStart = Number(r.monthstart);
-      const startYear = r.isfromprevyear ? year - 1 : year;
-      const startDate = new Date(startYear, monthStart - 1, Number(r.datestart));
-      const endYear = Number(r.monthend) < monthStart ? startYear + 1 : startYear;
-      const endDate = new Date(endYear, Number(r.monthend) - 1, Number(r.dateend));
-      const days = Math.round((endDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
-      return { label: `${r.name} (${year})`, days };
-    });
+    const durations = rowsResult.map((r) => ({
+      label: `${r.name} (${r.year})`,
+      days: Number(r.days),
+    }));
     const maxDays = Math.max(...durations.map((d) => d.days));
     const longest = durations.filter((d) => d.days === maxDays).map((d) => d.label);
     const label =
@@ -279,7 +269,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE isstrongest = true AND monthstart = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE isstrongest = true AND EXTRACT(MONTH FROM startdate) = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -297,7 +287,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [6, 7, 8]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE isfirst = true AND monthstart = $1 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE isfirst = true AND EXTRACT(MONTH FROM startdate) = $1 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {
@@ -315,7 +305,7 @@ async function generateFacts(): Promise<string[]> {
 
   for (const month of [1, 2, 3, 4, 12]) {
     rowsResult = await rows(
-      `SELECT name, year FROM storms WHERE intensity = '5' AND monthstart = $1 AND year >= 2000 ORDER BY year`,
+      `SELECT name, year FROM storms WHERE intensity = '5' AND EXTRACT(MONTH FROM startdate) = $1 AND year >= 2000 ORDER BY year`,
       [month],
     );
     if (rowsResult.length > 0) {

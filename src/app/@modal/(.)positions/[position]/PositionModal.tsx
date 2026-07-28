@@ -114,14 +114,7 @@ function NameSlide({ name }: { name: TyphoonName }) {
 function StormSlide({ storm }: { storm: Storm }) {
   const accent = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
-  const dateRange = formatStormDateRange(
-    storm.year,
-    storm.monthStart,
-    storm.dateStart,
-    storm.monthEnd,
-    storm.dateEnd,
-    storm.isFromPrevYear,
-  );
+  const dateRange = formatStormDateRange(storm.dateStart, storm.dateEnd);
   const hasMap = !!storm.map && storm.map.trim() !== "";
 
   return (

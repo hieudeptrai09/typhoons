@@ -7,9 +7,8 @@ export interface OnThisDayStorm {
   intensity: IntensityType;
   position: number;
   year: number;
-  monthStart: number;
-  monthEnd: number;
-  isFromPrevYear: number;
+  dateStart: string | null;
+  dateEnd: string | null;
   reason: "started" | "ended" | "both";
 }
 
@@ -18,11 +17,8 @@ interface OnThisDayRow {
   intensity: string;
   position: number;
   year: number;
-  dateStart: number;
-  monthStart: number;
-  dateEnd: number;
-  monthEnd: number;
-  isFromPrevYear: number;
+  dateStart: string | null;
+  dateEnd: string | null;
 }
 
 async function queryOnThisDay(
@@ -34,26 +30,21 @@ async function queryOnThisDay(
       s.intensity,
       s.position,
       s.year,
-      s.datestart AS "dateStart",
-      s.monthstart AS "monthStart",
-      s.dateend AS "dateEnd",
-      s.monthend AS "monthEnd",
-      s.isfromprevyear AS "isFromPrevYear"
+      s.startdate::text AS "dateStart",
+      s.enddate::text AS "dateEnd"
     FROM storms s
-    WHERE (s.monthstart = $1 AND s.datestart = $2)
-       OR (s.monthend = $3 AND s.dateend = $4)
+    WHERE (EXTRACT(MONTH FROM s.startdate) = $1 AND EXTRACT(DAY FROM s.startdate) = $2)
+       OR (EXTRACT(MONTH FROM s.enddate) = $1 AND EXTRACT(DAY FROM s.enddate) = $2)
     ORDER BY s.year ASC`;
 
-  const rows = await sql.query<OnThisDayRow[]>(query, [month, day, month, day]);
+  const rows = await sql.query<OnThisDayRow[]>(query, [month, day]);
+
+  // "MM-DD" suffix of a "YYYY-MM-DD" date, for comparing against today.
+  const monthDay = `${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   const data: OnThisDayStorm[] = rows.map((row) => {
-    const monthStart = Number(row.monthStart);
-    const dateStart = Number(row.dateStart);
-    const monthEnd = Number(row.monthEnd);
-    const dateEnd = Number(row.dateEnd);
-
-    const startedToday = monthStart === month && dateStart === day;
-    const endedToday = monthEnd === month && dateEnd === day;
+    const startedToday = row.dateStart?.slice(5) === monthDay;
+    const endedToday = row.dateEnd?.slice(5) === monthDay;
     const reason: "started" | "ended" | "both" =
       startedToday && endedToday ? "both" : startedToday ? "started" : "ended";
 
@@ -62,9 +53,8 @@ async function queryOnThisDay(
       intensity: row.intensity as IntensityType,
       position: Number(row.position),
       year: Number(row.year),
-      monthStart,
-      monthEnd,
-      isFromPrevYear: Number(row.isFromPrevYear),
+      dateStart: row.dateStart,
+      dateEnd: row.dateEnd,
       reason,
     };
   });

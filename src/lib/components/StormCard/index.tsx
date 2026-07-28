@@ -11,14 +11,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
   const textColor = TEXT_COLOR_BADGE[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const hasMap = storm.map && storm.map.trim() !== "";
-  const dateRange = formatStormDateRange(
-    storm.year,
-    storm.monthStart,
-    storm.dateStart,
-    storm.monthEnd,
-    storm.dateEnd,
-    storm.isFromPrevYear,
-  );
+  const dateRange = formatStormDateRange(storm.dateStart, storm.dateEnd);
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">

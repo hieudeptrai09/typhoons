@@ -3,7 +3,7 @@ import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle, parseDateParts } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import HighlightsGrid from "../_widgets/grids/HighlightsGrid";
 import { getHighlights } from "../../_utils/fns";
@@ -19,9 +19,13 @@ interface HighlightRow {
   intensity: IntensityType;
   position: number;
   country: string;
-  monthStart?: number;
-  isFromPrevYear?: number;
+  startMonth?: number;
+  startYear?: number;
 }
+
+// A storm carried over from the previous season sorts before every January storm.
+const monthSortKey = (row: HighlightRow): number =>
+  row.startYear !== undefined && row.startYear < row.year ? 0 : (row.startMonth ?? 0);
 
 const columns: ColumnsType<HighlightRow> = [
   {
@@ -51,17 +55,12 @@ const columns: ColumnsType<HighlightRow> = [
   {
     title: "Month",
     key: "month",
-    sorter: (a, b) => {
-      const keyA = a.isFromPrevYear ? 0 : (a.monthStart ?? 0);
-      const keyB = b.isFromPrevYear ? 0 : (b.monthStart ?? 0);
-      return keyA - keyB;
-    },
+    sorter: (a, b) => monthSortKey(a) - monthSortKey(b),
     render: (_: unknown, row: HighlightRow) => {
-      if (!row.monthStart) return null;
-      const displayYear = row.isFromPrevYear ? row.year - 1 : row.year;
+      if (!row.startMonth || !row.startYear) return null;
       return (
         <span>
-          {row.monthStart}/{displayYear}
+          {row.startMonth}/{row.startYear}
         </span>
       );
     },
@@ -102,15 +101,18 @@ const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
     );
   }
 
-  const highlightData: HighlightRow[] = highlights.map((s) => ({
-    name: s.name,
-    year: s.year,
-    intensity: s.intensity,
-    position: s.position,
-    country: s.country,
-    monthStart: s.monthStart,
-    isFromPrevYear: s.isFromPrevYear,
-  }));
+  const highlightData: HighlightRow[] = highlights.map((s) => {
+    const start = parseDateParts(s.dateStart);
+    return {
+      name: s.name,
+      year: s.year,
+      intensity: s.intensity,
+      position: s.position,
+      country: s.country,
+      startMonth: start?.month,
+      startYear: start?.year,
+    };
+  });
 
   return (
     <DefTable<HighlightRow>

@@ -46,11 +46,8 @@ interface StormRow {
   correctSpelling: string | null;
   year: number;
   isStrongest: number;
-  dateStart: number | null;
-  dateEnd: number | null;
-  monthStart: number | null;
-  monthEnd: number | null;
-  isFromPrevYear: number;
+  dateStart: string | null;
+  dateEnd: string | null;
   jtwcDesignation: string | null;
   isJtwcForecasted: boolean;
   isFirst: boolean;
@@ -129,11 +126,8 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
       s.correctspelling AS "correctSpelling",
       s.year,
       s.isstrongest AS "isStrongest",
-      s.datestart AS "dateStart",
-      s.dateend AS "dateEnd",
-      s.monthstart AS "monthStart",
-      s.monthend AS "monthEnd",
-      s.isfromprevyear AS "isFromPrevYear",
+      s.startdate::text AS "dateStart",
+      s.enddate::text AS "dateEnd",
       LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
       s.isjtwcforecasted AS "isJtwcForecasted",
       s.isfirst AS "isFirst",
@@ -154,11 +148,8 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
     correctSpelling: row.correctSpelling ?? undefined,
     year: Number(row.year),
     isStrongest: Number(row.isStrongest) as unknown as Storm["isStrongest"],
-    dateStart: row.dateStart !== null ? Number(row.dateStart) : undefined,
-    dateEnd: row.dateEnd !== null ? Number(row.dateEnd) : undefined,
-    monthStart: row.monthStart !== null ? Number(row.monthStart) : undefined,
-    monthEnd: row.monthEnd !== null ? Number(row.monthEnd) : undefined,
-    isFromPrevYear: Number(row.isFromPrevYear),
+    dateStart: row.dateStart ?? undefined,
+    dateEnd: row.dateEnd ?? undefined,
     jtwcDesignation: row.jtwcDesignation ?? undefined,
     isJtwcForecasted: Boolean(row.isJtwcForecasted),
     isFirst: Boolean(row.isFirst),

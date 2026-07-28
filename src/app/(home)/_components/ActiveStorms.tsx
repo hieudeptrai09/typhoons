@@ -15,30 +15,38 @@ type ActiveStorm = ActiveOnThisDayStorm;
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-const hasEndDate = (storm: ActiveStorm) => storm.monthEnd > 0 && storm.dateEnd > 0;
+// Local-midnight Date from "YYYY-MM-DD", so day math matches the user's clock.
+const parseLocalDate = (date: string): Date => {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
 
-const getStormRange = (storm: ActiveStorm) => {
-  const startYear = storm.isFromPrevYear ? storm.year - 1 : storm.year;
-  const startDate = new Date(startYear, storm.monthStart - 1, storm.dateStart);
-  if (!hasEndDate(storm)) return { startDate, endDate: null };
+const groupBySeasonYear = (storms: ActiveStorm[]): [number, ActiveStorm[]][] => {
+  const groups = new Map<number, ActiveStorm[]>();
 
-  const endYear = storm.monthEnd < storm.monthStart ? startYear + 1 : startYear;
-  const endDate = new Date(endYear, storm.monthEnd - 1, storm.dateEnd);
-  return { startDate, endDate };
+  for (const storm of storms) {
+    const group = groups.get(storm.year);
+    if (group) group.push(storm);
+    else groups.set(storm.year, [storm]);
+  }
+
+  return [...groups.entries()].sort(([a], [b]) => a - b);
 };
 
 const getDayProgress = (storm: ActiveStorm) => {
-  const { startDate, endDate } = getStormRange(storm);
+  const startDate = parseLocalDate(storm.dateStart);
   const today = new Date();
 
-  if (!endDate) {
+  // An ongoing storm has no end date: count real days since it formed.
+  if (!storm.dateEnd) {
     const dayOfStorm = Math.round((today.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
     return { dayOfStorm, totalDays: null };
   }
 
+  const endDate = parseLocalDate(storm.dateEnd);
   const todayMonth = today.getMonth() + 1;
   const anniversaryYear =
-    todayMonth >= storm.monthStart ? startDate.getFullYear() : endDate.getFullYear();
+    todayMonth >= startDate.getMonth() + 1 ? startDate.getFullYear() : endDate.getFullYear();
   const anniversaryDate = new Date(anniversaryYear, todayMonth - 1, today.getDate());
 
   const dayOfStorm = Math.round((anniversaryDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
@@ -79,51 +87,54 @@ const ActiveStorms = () => {
             <p className="mb-3 text-sm font-semibold text-foreground">
               Storms that were in progress on this date in past years
             </p>
-            <ol className="m-0 list-decimal list-outside space-y-1.5 pl-8">
-              {storms.map((storm, i) => {
-                const label = INTENSITY_LABEL[storm.intensity];
-                const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
-                const range = formatStormDateRange(
-                  storm.year,
-                  storm.monthStart,
-                  storm.dateStart,
-                  storm.monthEnd,
-                  storm.dateEnd,
-                  storm.isFromPrevYear,
-                );
-                const { dayOfStorm, totalDays } = getDayProgress(storm);
+            <div className="space-y-3">
+              {groupBySeasonYear(storms).map(([year, yearStorms]) => (
+                <div key={year}>
+                  <p className="m-0 mb-1 text-sm font-bold text-foreground">{year}</p>
+                  <ol className="m-0 list-decimal list-outside space-y-1.5 pl-8">
+                    {yearStorms.map((storm, i) => {
+                      const label = INTENSITY_LABEL[storm.intensity];
+                      const color = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
+                      const range = formatStormDateRange(
+                        storm.dateStart,
+                        storm.dateEnd ?? undefined,
+                      );
+                      const { dayOfStorm, totalDays } = getDayProgress(storm);
 
-                return (
-                  <li key={i} className="text-sm leading-relaxed text-foreground">
-                    {label}{" "}
-                    <Link
-                      href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
-                      className="font-bold"
-                      style={{ color }}
-                    >
-                      {storm.name}
-                    </Link>
-                    {range ? (
-                      <>
-                        <span className="text-foreground"> ({range})</span>
-                        <br />
-                        <span className="text-sm text-foreground">
-                          Day{" "}
-                          {totalDays !== null ? (
+                      return (
+                        <li key={i} className="text-sm leading-relaxed text-foreground">
+                          {label}{" "}
+                          <Link
+                            href={`/info/${encodeURIComponent(storm.name.toLowerCase())}`}
+                            className="font-bold"
+                            style={{ color }}
+                          >
+                            {storm.name}
+                          </Link>
+                          {range ? (
                             <>
-                              <span className="font-semibold">{dayOfStorm}</span>/
-                              <span className="font-semibold">{totalDays}</span>
+                              <span className="text-foreground"> ({range})</span>
+                              <br />
+                              <span className="text-sm text-foreground">
+                                Day{" "}
+                                {totalDays !== null ? (
+                                  <>
+                                    <span className="font-semibold">{dayOfStorm}</span>/
+                                    <span className="font-semibold">{totalDays}</span>
+                                  </>
+                                ) : (
+                                  <span className="font-semibold">{dayOfStorm}</span>
+                                )}
+                              </span>
                             </>
-                          ) : (
-                            <span className="font-semibold">{dayOfStorm}</span>
-                          )}
-                        </span>
-                      </>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ol>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              ))}
+            </div>
           </div>
         ),
       });

@@ -21,14 +21,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
   const textColor = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const hasMap = storm.map && storm.map.trim() !== "";
-  const dateRange = formatStormDateRange(
-    storm.year,
-    storm.monthStart,
-    storm.dateStart,
-    storm.monthEnd,
-    storm.dateEnd,
-    storm.isFromPrevYear,
-  );
+  const dateRange = formatStormDateRange(storm.dateStart, storm.dateEnd);
 
   return (
     <div

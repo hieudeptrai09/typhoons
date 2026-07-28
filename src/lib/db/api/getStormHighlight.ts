@@ -17,7 +17,7 @@ interface NameRow {
 export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | null>> {
   const ongoing = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
-     WHERE monthend IS NULL OR monthend = 0 OR dateend IS NULL OR dateend = 0`,
+     WHERE enddate IS NULL`,
   );
 
   if (ongoing.length > 0) {
@@ -28,7 +28,7 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
   const latestRows = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
      WHERE position BETWEEN 1 AND 140
-     ORDER BY year DESC, monthstart DESC, datestart DESC, id DESC
+     ORDER BY year DESC, startdate DESC, id DESC
      LIMIT 1`,
   );
   const latest = latestRows[0];

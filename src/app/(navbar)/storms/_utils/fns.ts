@@ -1,6 +1,6 @@
 import { INTENSITY_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
-import { capitalize, normalizeParam } from "@/lib/utils/fns";
+import { capitalize, daysBetween, normalizeParam, parseDateParts } from "@/lib/utils/fns";
 
 const VALID_FILTERS: Record<string, string[]> = {
   storms: ["position", "name"],
@@ -196,16 +196,22 @@ const toDayOfYear = (month?: number, date?: number): number | null => {
   return MONTH_OFFSET[month - 1] + clampedDate;
 };
 
-const stormStartDoy = (s: Storm): number | null => toDayOfYear(s.monthStart, s.dateStart);
+const stormStartDoy = (s: Storm): number | null => {
+  const start = parseDateParts(s.dateStart);
+  return start ? toDayOfYear(start.month, start.day) : null;
+};
 
-// A storm whose end month precedes its start month crossed into the new year, so
-// its January end (month 1) is treated as "month 13": one full year later. This
-// keeps a Dec→Jan storm's end after its start when averaging and measuring span.
+// A storm that crossed into the new year has its January end treated as "month
+// 13": one full year later. This keeps a Dec→Jan storm's end after its start
+// when averaging and measuring span.
 const stormEndDoy = (s: Storm): number | null => {
-  const end = toDayOfYear(s.monthEnd, s.dateEnd);
-  if (end === null) return null;
-  const spansNewYear = Boolean(s.monthStart && s.monthEnd && s.monthEnd < s.monthStart);
-  return spansNewYear ? end + DAYS_IN_YEAR : end;
+  const end = parseDateParts(s.dateEnd);
+  if (!end) return null;
+  const doy = toDayOfYear(end.month, end.day);
+  if (doy === null) return null;
+  const start = parseDateParts(s.dateStart);
+  const spansNewYear = start !== null && end.year > start.year;
+  return spansNewYear ? doy + DAYS_IN_YEAR : doy;
 };
 
 // Wrap an averaged day-of-year (which may land past day 365 for new-year-spanning
@@ -256,15 +262,10 @@ export const formatDayOfYear = (doy: number): string => {
 // Calendar month (1–12) an averaged day-of-year falls in; -1 when there is no date.
 export const getDoyMonth = (doy: number): number => (doy < 0 ? -1 : fromDayOfYear(doy).month);
 
-// Average storm duration in whole days. stormEndDoy already carries new-year
-// spanning past day 365, so end is always ≥ start for a single storm.
+// Average storm duration in whole days.
 export const calculateAvgDuration = (storms: Storm[]): number => {
   const durations = storms
-    .map((s) => {
-      const start = stormStartDoy(s);
-      const end = stormEndDoy(s);
-      return start === null || end === null ? null : end - start;
-    })
+    .map((s) => daysBetween(s.dateStart, s.dateEnd))
     .filter((v): v is number => v !== null);
   return average(durations);
 };
@@ -282,8 +283,10 @@ export const SPECIAL_POSITIONS = [
 ] as const;
 
 export const getEffectiveMonth = (storm: Storm): number | null => {
-  if (!storm.monthStart || storm.year < 2000) return null;
-  return storm.isFromPrevYear ? 1 : storm.monthStart;
+  const start = parseDateParts(storm.dateStart);
+  if (!start || storm.year < 2000) return null;
+  // A storm carried over from the previous season counts toward January.
+  return start.year < storm.year ? 1 : start.month;
 };
 
 export const getDashboardTitle = (
