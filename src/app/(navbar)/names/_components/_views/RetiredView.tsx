@@ -155,11 +155,11 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
       position: filters.position,
       ...(!hasFilters ? { letter: currentLetter } : {}),
     });
-    router.push(`${paramsToPath("retired")}${query}`);
+    router.push(`${paramsToPath({ view: "retired" })}${query}`);
   };
 
   const handleLetterChange = (letter: string) => {
-    router.push(`${paramsToPath("retired")}${buildQuery({ letter })}`);
+    router.push(`${paramsToPath({ view: "retired" })}${buildQuery({ letter })}`);
   };
 
   const getLetterConfig = (letter: string) => {

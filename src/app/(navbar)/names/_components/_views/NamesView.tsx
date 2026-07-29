@@ -14,7 +14,7 @@ import PositionNameGrid from "../_widgets/PositionNameGrid";
 import SlashToggleButton from "../_widgets/SlashToggleButton";
 import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
 import { writeDisplayPrefs } from "../../_utils/displayPrefs";
-import { paramsToPath } from "../../_utils/fns";
+import { canonicalPath } from "../../_utils/fns";
 
 const LAYOUT_OPTIONS = [
   {
@@ -49,7 +49,7 @@ interface NameFilterValues {
 interface NamesViewProps {
   allNames: TyphoonName[];
   stormHistory: StormHistoryEntry[];
-  viewMode: string;
+  viewMode: "grid" | "list";
   showName: boolean;
   showHistory: boolean;
   displayPrefs: NamesDisplayPrefs;
@@ -120,7 +120,11 @@ const NamesView = ({
   const searchParams = useSearchParams();
 
   const displayMode = viewMode === "list" ? ("list" as const) : ("grid" as const);
-  const currentPath = paramsToPath(displayMode, showHistory, showName);
+  const currentPath = canonicalPath(
+    displayMode === "list"
+      ? { view: "list", showHistory }
+      : { view: "grid", showName, showHistory },
+  );
 
   const searchName = searchParams.get("name") || "";
   const selectedCountry = searchParams.get("country") || "";
@@ -251,7 +255,13 @@ const NamesView = ({
   };
 
   const handleLayoutChange = (mode: string) => {
-    router.push(paramsToPath(mode, showHistory, showName));
+    router.push(
+      canonicalPath(
+        mode === "list"
+          ? { view: "list", showHistory }
+          : { view: "grid", showName: true, showHistory },
+      ),
+    );
   };
 
   const handleToggleLetterNav = () => {
@@ -261,7 +271,7 @@ const NamesView = ({
   };
 
   const handleToggleTagIcons = () => {
-    router.push(paramsToPath("grid", showHistory, !showName));
+    router.push(canonicalPath({ view: "grid", showName: !showName, showHistory }));
   };
 
   const handleNameClick = (name: TyphoonName) => {

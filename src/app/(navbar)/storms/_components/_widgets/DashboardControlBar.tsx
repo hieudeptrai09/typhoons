@@ -3,15 +3,15 @@ import { Segmented } from "antd";
 import Link from "next/link";
 import { DASHBOARD_ICON_MAP, FILTER_OPTIONS, MODE_OPTIONS } from "../../_utils/dashboardOptions";
 import {
+  canonicalPath,
   isGridOnly,
   isListOnly,
   paramsForFilter,
   paramsForView,
-  paramsToPath,
 } from "../../_utils/fns";
 
 const VIEW_TABS: { key: string; label: string }[] = [
-  { key: "storms", label: "Storms" },
+  { key: "all", label: "Storms" },
   { key: "highlights", label: "Highlights" },
   { key: "average", label: "Average" },
   { key: "distance", label: "Gap" },
@@ -39,7 +39,7 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
           return (
             <Link
               key={key}
-              href={paramsToPath(paramsForView(key))}
+              href={canonicalPath(paramsForView(key))}
               aria-current={isActive ? "page" : undefined}
               className={`flex shrink-0 items-center justify-center gap-1.5 px-4 pb-3 text-sm font-semibold whitespace-nowrap transition-colors sm:flex-1 ${
                 isActive

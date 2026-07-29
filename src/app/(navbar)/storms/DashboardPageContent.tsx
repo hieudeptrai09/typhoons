@@ -23,10 +23,10 @@ import IntensityLegend from "./_components/_widgets/IntensityLegend";
 import {
   calculateAverage,
   calculateGapAverage,
+  canonicalPath,
   getDashboardTitle,
   getEffectiveMonth,
   getGroupedStorms,
-  paramsToPath,
   slugToParams,
 } from "./_utils/fns";
 
@@ -58,7 +58,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const { view, mode, filter } = currentParams;
 
   const averageValues =
-    view === "average" || view === "storms"
+    view === "average" || view === "all"
       ? Object.fromEntries(
           Object.entries(getGroupedStorms(stormsData || [], "position")).map(
             ([position, storms]) => [Number(position), calculateAverage(storms)],
@@ -67,14 +67,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       : null;
 
   const handleApplyFilter = (newParams: DashboardParams) => {
-    router.push(paramsToPath(newParams));
+    router.push(canonicalPath(newParams));
   };
 
   const handleCellClick = (data: number | string, key: string) => {
     const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
     // Storms view — name list mode: clicking a name row
-    if (view === "storms" && key === "name") {
+    if (view === "all" && key === "name") {
       const avgIntensity = calculateAverage(storms);
       setSelectedData({ name: data as string, storms, avgIntensity });
       setIsNameListModalOpen(true);
@@ -82,7 +82,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     }
 
     // Storms view — any table mode (position or name grid): clicking a cell
-    if (view === "storms" && key === "position") {
+    if (view === "all" && key === "position") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
       setSelectedData({ title, storms });
       setIsDetailModalOpen(true);
@@ -159,7 +159,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
       {(() => {
         switch (view) {
-          case "storms":
+          case "all":
             return (
               <StormsView
                 params={currentParams}

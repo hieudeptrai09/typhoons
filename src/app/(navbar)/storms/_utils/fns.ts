@@ -3,37 +3,32 @@ import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { capitalize, daysBetween, normalizeParam, parseDateParts } from "@/lib/utils/fns";
 
 const VALID_FILTERS: Record<string, string[]> = {
-  storms: ["position", "name"],
+  all: ["position", "name"],
   highlights: ["strongest", "first", "last", "untracked"],
   average: ["position", "name", "country", "year", "month"],
   distance: ["position", "name"],
   avgdate: ["position", "name"],
 };
 
+const VIEWS = Object.keys(VALID_FILTERS);
+
 export const DEFAULT_FILTER: Record<string, string> = {
-  storms: "position",
+  all: "position",
   highlights: "strongest",
   average: "position",
   distance: "position",
   avgdate: "position",
 };
 
+// Every URL is /storms/<view>/<filter>/[list]/, with the empty slug as the sole
+// exception. Anything off that grid is a 404 — there are no alias spellings.
 export const isValidStormsSlug = (slug: string[] = []): boolean => {
   if (slug.length === 0) return true;
 
   const [first, second, third] = slug;
 
   if (slug.length === 1) {
-    return [
-      "list",
-      "names",
-      "positions",
-      "storms",
-      "highlights",
-      "average",
-      "distance",
-      "avgdate",
-    ].includes(first);
+    return VIEWS.includes(first);
   }
   if (slug.length === 2) {
     const validFilters = VALID_FILTERS[first];
@@ -52,7 +47,7 @@ export const isListOnly = (view: string, filter: string): boolean =>
   (view === "average" && filter === "country") || (view === "average" && filter === "month");
 
 export const isGridOnly = (view: string, filter: string): boolean =>
-  view === "storms" && filter === "position";
+  view === "all" && filter === "position";
 
 export const paramsForView = (view: string): DashboardParams => {
   const filter = DEFAULT_FILTER[view] ?? "";
@@ -66,16 +61,16 @@ export const paramsForFilter = (view: string, filter: string, mode: string): Das
 };
 
 export const slugToParams = (slug: string[] = []): DashboardParams => {
-  if (slug.length === 0) return { view: "storms", mode: "table", filter: "name" };
+  if (slug.length === 0) return { view: "all", mode: "table", filter: "name" };
 
   const [first, second, third] = slug;
 
-  if (first === "list") return { view: "storms", mode: "list", filter: "name" };
-  if (first === "names") return { view: "storms", mode: "table", filter: "name" };
-  if (first === "positions") return { view: "storms", mode: "table", filter: "position" };
   const view = first;
   const filter = second || DEFAULT_FILTER[view] || "position";
-  const mode = third === "list" || isListOnly(view, filter) ? "list" : "table";
+
+  let mode = third === "list" ? "list" : "table";
+  if (isGridOnly(view, filter)) mode = "table";
+  if (isListOnly(view, filter)) mode = "list";
 
   return { view, mode, filter };
 };
@@ -83,12 +78,14 @@ export const slugToParams = (slug: string[] = []): DashboardParams => {
 export const paramsToPath = (params: DashboardParams): string => {
   const { view, mode, filter } = params;
 
-  if (view === "storms" && filter === "position") return "/storms/positions/";
-  if (view === "storms" && filter === "name" && mode === "table") return "/storms/";
-  if (view === "storms" && filter === "name" && mode === "list") return "/storms/list/";
   const base = `/storms/${view}/${filter}/`;
-  if (mode === "list") return `${base}list/`;
-  return base;
+  return mode === "list" ? `${base}list/` : base;
+};
+
+// The default pairing lives at the bare /storms/ route rather than /storms/all/name/.
+export const canonicalPath = (params: DashboardParams): string => {
+  const path = paramsToPath(params);
+  return path === "/storms/all/name/" ? "/storms/" : path;
 };
 
 export const slugToPath = (slug: string[] = []): string =>
@@ -96,14 +93,7 @@ export const slugToPath = (slug: string[] = []): string =>
 
 const ALL_SLUGS: string[][] = [
   [],
-  ["list"],
-  ["names"],
-  ["positions"],
-  ["storms"],
-  ["highlights"],
-  ["average"],
-  ["distance"],
-  ["avgdate"],
+  ...VIEWS.map((view) => [view]),
   ...Object.entries(VALID_FILTERS).flatMap(([view, filters]) =>
     filters.flatMap((filter) => [
       [view, filter],
@@ -114,7 +104,7 @@ const ALL_SLUGS: string[][] = [
 
 // Non-canonical slugs redirect, so prerendering them would only cache the redirect.
 export const getCanonicalStormsSlugs = (): string[][] =>
-  ALL_SLUGS.filter((slug) => paramsToPath(slugToParams(slug)) === slugToPath(slug));
+  ALL_SLUGS.filter((slug) => canonicalPath(slugToParams(slug)) === slugToPath(slug));
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
@@ -294,11 +284,11 @@ export const getDashboardTitle = (
   mode: string | string[] | undefined,
   filter: string | string[] | undefined,
 ): string => {
-  const viewStr = normalizeParam(view) || "storms";
+  const viewStr = normalizeParam(view) || "all";
   const filterStr = normalizeParam(filter);
 
   const viewTitles: Record<string, string> = {
-    storms: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
+    all: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filterStr)}`,
     distance: `Average Gap Between Storms by ${capitalize(filterStr)}`,
@@ -313,11 +303,11 @@ export const getDashboardDescription = (
   mode: string | string[] | undefined,
   filter: string | string[] | undefined,
 ): string => {
-  const viewStr = normalizeParam(view) || "storms";
+  const viewStr = normalizeParam(view) || "all";
   const modeStr = normalizeParam(mode) || "table";
   const filterStr = normalizeParam(filter);
 
-  if (viewStr === "storms") {
+  if (viewStr === "all") {
     if (modeStr === "list") {
       return "Browse all typhoon names used in the Western Pacific basin. Click any name to see detailed storm history, including years, intensities, and track maps.";
     }

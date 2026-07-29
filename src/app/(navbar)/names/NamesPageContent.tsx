@@ -26,21 +26,29 @@ const NamesPageContent = ({
   displayPrefs,
 }: NamesPageContentProps) => {
   const { slug } = useParams<{ slug?: string[] }>();
-  const { view: viewMode, showName, showHistory } = slugToParams(slug);
+  const params = slugToParams(slug);
 
   const retiredNames = useMemo(() => (allNames || []).filter((n) => n.isRetired), [allNames]);
 
   const activeScope: NamesScope =
-    viewMode === "retired" ? "retired" : showHistory ? "history" : "current";
+    params.view === "retired" ? "retired" : params.showHistory ? "history" : "current";
 
   // From the retired view there is no grid/list context to preserve, so fall back to the grid.
-  const layout = viewMode === "list" ? "list" : "grid";
-  const scopeShowName = viewMode === "retired" ? true : showName;
+  const layout = params.view === "list" ? "list" : "grid";
+  const scopeShowName = params.view === "grid" ? params.showName : true;
+
+  // Switching scope keeps the layout and name toggle the current view is already showing.
+  const scopeHref = (showHistory: boolean): string =>
+    canonicalPath(
+      layout === "list"
+        ? { view: "list", showHistory }
+        : { view: "grid", showName: scopeShowName, showHistory },
+    );
 
   const scopeHrefs: Record<NamesScope, string> = {
-    current: canonicalPath(layout, false, scopeShowName),
-    history: canonicalPath(layout, true, scopeShowName),
-    retired: canonicalPath("retired", false, false),
+    current: scopeHref(false),
+    history: scopeHref(true),
+    retired: canonicalPath({ view: "retired" }),
   };
 
   if (!allNames) {
@@ -48,10 +56,10 @@ const NamesPageContent = ({
   }
 
   return (
-    <PageHeader title={getNamesTitle(viewMode, showHistory ? "true" : "")}>
+    <PageHeader title={getNamesTitle(params)}>
       <NamesScopeTabs activeScope={activeScope} hrefs={scopeHrefs} />
 
-      {viewMode === "retired" ? (
+      {params.view === "retired" ? (
         <RetiredView
           retiredNames={retiredNames}
           suggestedNames={suggestedNames}
@@ -61,9 +69,9 @@ const NamesPageContent = ({
         <NamesView
           allNames={allNames}
           stormHistory={stormHistory}
-          viewMode={viewMode}
-          showName={showName}
-          showHistory={showHistory}
+          viewMode={params.view}
+          showName={params.view === "grid" && params.showName}
+          showHistory={params.showHistory}
           displayPrefs={displayPrefs}
         />
       )}

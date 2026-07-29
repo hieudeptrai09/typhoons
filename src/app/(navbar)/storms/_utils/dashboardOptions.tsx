@@ -20,7 +20,7 @@ import type { LucideIcon } from "lucide-react";
 
 export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
   view: {
-    storms: CloudLightning,
+    all: CloudLightning,
     highlights: Star,
     average: Activity,
     distance: Ruler,
@@ -56,7 +56,7 @@ export const MODE_OPTIONS = [
 ];
 
 export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]> = {
-  storms: [
+  all: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],

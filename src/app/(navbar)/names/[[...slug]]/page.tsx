@@ -9,6 +9,7 @@ import {
   canonicalPath,
   getNamesDescription,
   getNamesTitle,
+  isHistoryScope,
   isValidNamesSlug,
   slugToParams,
 } from "../_utils/fns";
@@ -25,17 +26,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {};
   }
 
-  const { view, showName, showHistory } = slugToParams(slug);
-
-  const titleParts = getNamesTitle(view, showHistory ? "true" : "");
-  const title = titleParts ? `${titleParts} | Names` : "Names";
-  const description = getNamesDescription(view, showName ? "true" : "", showHistory ? "true" : "");
+  const slugParams = slugToParams(slug);
 
   return {
-    title: title,
-    description: description,
+    title: `${getNamesTitle(slugParams)} | Names`,
+    description: getNamesDescription(slugParams),
     alternates: {
-      canonical: canonicalPath(view, showHistory, showName),
+      canonical: canonicalPath(slugParams),
     },
   };
 }
@@ -48,13 +45,13 @@ const NamesPage = async ({ params }: PageProps) => {
   }
 
   // Only the history grid and the retired view consume these, and the slug already says which is active.
-  const { view, showHistory } = slugToParams(slug);
+  const slugParams = slugToParams(slug);
 
   const [result, cookieStore, historyResult, suggestedResult] = await Promise.all([
     getTyphoonNames(),
     cookies(),
-    showHistory ? getAllStormHistory() : null,
-    view === "retired" ? getAllSuggestedNames() : null,
+    isHistoryScope(slugParams) ? getAllStormHistory() : null,
+    slugParams.view === "retired" ? getAllSuggestedNames() : null,
   ]);
   const displayPrefs = parseDisplayPrefs(cookieStore.get(NAMES_DISPLAY_COOKIE)?.value);
 
