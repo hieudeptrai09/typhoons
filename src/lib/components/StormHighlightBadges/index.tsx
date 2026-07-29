@@ -2,9 +2,9 @@ import type { Storm } from "@/lib/types";
 import { ArrowDownToLine, EyeOff, Medal, Zap } from "lucide-react";
 
 export const hasHighlight = (storm: Storm): boolean =>
-  Boolean(storm.isStrongest) ||
-  Boolean(storm.isFirst) ||
-  Boolean(storm.isLast) ||
+  storm.isStrongest === true ||
+  storm.isFirst === true ||
+  storm.isLast === true ||
   storm.isJtwcForecasted === false;
 
 const BADGE_CLASS =
@@ -15,17 +15,17 @@ const StormHighlightBadges = ({ storm }: { storm: Storm }) => {
 
   return (
     <div className="flex flex-wrap items-center gap-1">
-      {Boolean(storm.isStrongest) && (
+      {storm.isStrongest && (
         <span className={`${BADGE_CLASS} bg-rose-200 text-rose-700`}>
           <Zap size={10} /> Strongest
         </span>
       )}
-      {Boolean(storm.isFirst) && (
+      {storm.isFirst && (
         <span className={`${BADGE_CLASS} bg-blue-200 text-blue-700`}>
           <Medal size={10} /> First
         </span>
       )}
-      {Boolean(storm.isLast) && (
+      {storm.isLast && (
         <span className={`${BADGE_CLASS} bg-orange-200 text-orange-700`}>
           <ArrowDownToLine size={10} /> Last
         </span>

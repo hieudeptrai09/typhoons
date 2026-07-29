@@ -1,11 +1,6 @@
-import sql from "@/lib/db";
+import sql, { type ApiListResponse } from "@/lib/db";
 import type { StormHistoryEntry } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-
-interface ApiResponse<T> {
-  data: T;
-  count: number;
-}
 
 interface StormHistoryRow {
   name: string;
@@ -13,7 +8,7 @@ interface StormHistoryRow {
   year: number;
 }
 
-async function queryAllStormHistory(): Promise<ApiResponse<StormHistoryEntry[]>> {
+async function queryAllStormHistory(): Promise<ApiListResponse<StormHistoryEntry[]>> {
   const rows = await sql.query<StormHistoryRow[]>(
     `SELECT
       s.name,
@@ -25,8 +20,8 @@ async function queryAllStormHistory(): Promise<ApiResponse<StormHistoryEntry[]>>
 
   const data: StormHistoryEntry[] = rows.map((row) => ({
     name: row.name,
-    position: Number(row.position),
-    year: Number(row.year),
+    position: row.position,
+    year: row.year,
   }));
 
   return { data, count: data.length };

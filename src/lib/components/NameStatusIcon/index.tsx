@@ -1,25 +1,26 @@
+import type { RetirementReason } from "@/lib/types";
 import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
 import { CircleHelp, Flame, Skull, SpellCheck2 } from "lucide-react";
 
 interface Props {
   isRetired: boolean;
-  isLanguageProblem: number;
+  retirementReason?: RetirementReason;
   size?: number;
   position?: number;
 }
 
 export default function NameStatusIcon({
   isRetired,
-  isLanguageProblem,
+  retirementReason,
   size = 20,
   position,
 }: Props) {
   const isExternal = isExternalPosition(position);
-  const colorClass = getNameStatusColorClass({ isRetired, isLanguageProblem, isExternal });
+  const colorClass = getNameStatusColorClass({ isRetired, retirementReason, isExternal });
   if (isExternal) {
     return <CircleHelp className={colorClass} size={size} />;
   }
-  if (isLanguageProblem === 2) {
+  if (retirementReason === "misspell") {
     return <SpellCheck2 className={colorClass} size={size} />;
   }
   if (isRetired) {

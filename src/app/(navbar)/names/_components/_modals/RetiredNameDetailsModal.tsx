@@ -55,7 +55,7 @@ const RetiredNameDetailsModal = ({
       width={600}
       title={
         <span
-          className={`text-2xl font-bold ${getRetiredReasonColorClass(selectedName.isLanguageProblem)}`}
+          className={`text-2xl font-bold ${getRetiredReasonColorClass(selectedName.retirementReason)}`}
         >
           {selectedName.name}
         </span>

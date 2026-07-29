@@ -134,7 +134,7 @@ async function generateFacts(): Promise<string[]> {
   rowsResult = await rows(`
     SELECT DISTINCT t.name, s.intensity FROM typhoonnames t
     INNER JOIN storms s ON t.name = s.name AND t.position = s.position AND s.year = t.lastyear
-    WHERE t.isretired = true AND t.islanguageproblem = 0 AND t.position <= 140
+    WHERE t.isretired = true AND t.retirementreason = 'destructive' AND t.position <= 140
     AND s.year >= 2000
     AND s.intensity IN ('TD', 'TS', 'STS')
     ORDER BY t.name
@@ -612,7 +612,7 @@ async function generateFacts(): Promise<string[]> {
 
   names = (
     await rows(
-      `SELECT name FROM typhoonnames WHERE islanguageproblem = 1 AND isretired = true ORDER BY name`,
+      `SELECT name FROM typhoonnames WHERE retirementreason = 'language' AND isretired = true ORDER BY name`,
     )
   ).map((r) => String(r.name));
   if (names.length > 0) {
@@ -628,7 +628,7 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Nearest equator ---
 
-  rowsResult = await rows(`SELECT name FROM typhoonnames WHERE islanguageproblem = 3`);
+  rowsResult = await rows(`SELECT name FROM typhoonnames WHERE retirementreason = 'special'`);
   if (rowsResult.length > 0) {
     names = rowsResult.map((r) => String(r.name));
     const label = names.length === 1 ? "is the storm" : "are the storms";
@@ -639,7 +639,7 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT name, note FROM typhoonnames
-    WHERE islanguageproblem = 1 AND isretired = true AND note IS NOT NULL AND note != ''
+    WHERE retirementreason = 'language' AND isretired = true AND note IS NOT NULL AND note != ''
   `);
   for (const r of rowsResult) {
     const reason = String(r.note);

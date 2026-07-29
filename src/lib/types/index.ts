@@ -5,6 +5,9 @@ export interface ImageCredit {
   sourceUrl?: string;
 }
 
+// Why a name left rotation. Set only when isRetired is true; the DB enforces that pairing.
+export type RetirementReason = "destructive" | "language" | "misspell" | "special";
+
 export interface TyphoonName {
   id: number;
   position: number;
@@ -16,8 +19,8 @@ export interface TyphoonName {
   ipa?: string;
   pronunciationFile?: string;
   isRetired: boolean;
-  isReplaced: number;
-  isLanguageProblem: number;
+  isReplaced: boolean;
+  retirementReason?: RetirementReason;
   image?: string;
   imageCredit?: ImageCredit;
   description?: string;
@@ -105,8 +108,8 @@ export interface SearchResult {
   name: string;
   position: number;
   country: string;
-  isRetired: number;
-  isLanguageProblem: number;
+  isRetired: boolean;
+  retirementReason: RetirementReason | null;
   stormCount: number;
   note: string | null;
   replacementName: string | null;

@@ -1,5 +1,5 @@
 import DefModal from "@/lib/components/DefModal";
-import type { BaseModalProps, RetiredFilterParams } from "@/lib/types";
+import type { BaseModalProps, RetiredFilterParams, RetirementReason } from "@/lib/types";
 import { getPositionTitle, parsePositionLabel, toArr, toOpts, toStr } from "@/lib/utils/fns";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
@@ -19,11 +19,11 @@ interface FormValues {
   position: string;
 }
 
-const REASON_OPTIONS = [
-  { value: "0", label: "Destructive Storm" },
-  { value: "1", label: "Language Problem" },
-  { value: "2", label: "Misspelling" },
-  { value: "3", label: "Special Storm" },
+const REASON_OPTIONS: { value: RetirementReason; label: string }[] = [
+  { value: "destructive", label: "Destructive Storm" },
+  { value: "language", label: "Language Problem" },
+  { value: "misspell", label: "Misspelling" },
+  { value: "special", label: "Special Storm" },
 ];
 
 const RetiredFilterModal = ({

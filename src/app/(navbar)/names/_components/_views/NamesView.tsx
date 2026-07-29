@@ -91,7 +91,7 @@ const categorizeLettersByStatus = (
 
   namesList.forEach((name) => {
     const letter = name.name.charAt(0).toUpperCase();
-    const isRetired = Boolean(name.isRetired);
+    const isRetired = name.isRetired;
 
     if (!letterStatusMap[letter]) letterStatusMap[letter] = [false, false, false];
 

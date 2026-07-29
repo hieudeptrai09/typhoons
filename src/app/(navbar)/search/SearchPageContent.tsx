@@ -51,8 +51,8 @@ const getColumns = (query: string): ColumnsType<SearchResult> => [
     sorter: (a, b) => Number(a.isRetired) - Number(b.isRetired),
     render: (_: unknown, record: SearchResult) => (
       <NameStatusIcon
-        isRetired={Boolean(record.isRetired)}
-        isLanguageProblem={record.isLanguageProblem}
+        isRetired={record.isRetired}
+        retirementReason={record.retirementReason ?? undefined}
         position={record.position}
         size={20}
       />

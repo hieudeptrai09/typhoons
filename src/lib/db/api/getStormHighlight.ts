@@ -1,9 +1,5 @@
-import sql from "@/lib/db";
+import sql, { type ApiResponse } from "@/lib/db";
 import type { StormHighlight } from "@/lib/types";
-
-interface ApiResponse<T> {
-  data: T;
-}
 
 interface StormPositionRow {
   name: string;
@@ -22,7 +18,7 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
 
   if (ongoing.length > 0) {
     const pick = ongoing[Math.floor(Math.random() * ongoing.length)];
-    return { data: { name: pick.name, position: Number(pick.position), status: "active" } };
+    return { data: { name: pick.name, position: pick.position, status: "active" } };
   }
 
   const latestRows = await sql.query<StormPositionRow[]>(
@@ -37,7 +33,7 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
     return { data: null };
   }
 
-  const nextPosition = (Number(latest.position) % 140) + 1;
+  const nextPosition = (latest.position % 140) + 1;
 
   const nextNameRows = await sql.query<NameRow[]>(
     `SELECT name FROM typhoonnames
@@ -48,7 +44,7 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
   const nextName = nextNameRows[0];
 
   if (!nextName) {
-    return { data: { name: latest.name, position: Number(latest.position), status: "next" } };
+    return { data: { name: latest.name, position: latest.position, status: "next" } };
   }
 
   return { data: { name: nextName.name, position: nextPosition, status: "next" } };

@@ -41,7 +41,7 @@ const columns: ColumnsType<TyphoonName> = [
     render: (_: unknown, record: TyphoonName) => (
       <NameStatusIcon
         isRetired={record.isRetired}
-        isLanguageProblem={record.isLanguageProblem}
+        retirementReason={record.retirementReason}
         size={20}
       />
     ),

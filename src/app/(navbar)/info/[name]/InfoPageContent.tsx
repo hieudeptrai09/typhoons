@@ -3,7 +3,7 @@ import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
-import type { RetiredName, SearchDetail, Storm, TyphoonName } from "@/lib/types";
+import type { RetiredName, RetirementReason, SearchDetail, Storm, TyphoonName } from "@/lib/types";
 import {
   getNameStatusBgClass,
   getNameStatusColorClass,
@@ -21,16 +21,16 @@ interface InfoPageContentProps {
 function StatusBadge({
   isInPosition,
   isRetired,
-  isLanguageProblem,
+  retirementReason,
 }: {
   isInPosition: boolean;
   isRetired: boolean;
-  isLanguageProblem: number;
+  retirementReason?: RetirementReason;
 }) {
-  const status = { isRetired, isLanguageProblem, isExternal: !isInPosition };
+  const status = { isRetired, retirementReason, isExternal: !isInPosition };
   const label = !isInPosition
     ? "External name"
-    : isLanguageProblem === 2
+    : retirementReason === "misspell"
       ? "Misspelling"
       : isRetired
         ? "Retired"
@@ -124,7 +124,7 @@ export default function InfoPageContent({
   const titleColorClass = nameData
     ? getNameStatusColorClass({ ...nameData, isExternal: !isInPosition })
     : "text-foreground";
-  const isRetired = nameData ? Boolean(nameData.isRetired) : false;
+  const isRetired = nameData?.isRetired ?? false;
 
   const correctSpelling = storms[0]?.correctSpelling;
   const metaCountry = nameData?.country ?? storms[0]?.country;
@@ -136,7 +136,7 @@ export default function InfoPageContent({
       <div className="mb-3 flex items-center gap-3">
         <NameStatusIcon
           isRetired={isRetired}
-          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+          retirementReason={nameData?.retirementReason}
           position={isInPosition ? nameData?.position : 0}
           size={28}
         />
@@ -158,7 +158,7 @@ export default function InfoPageContent({
         <StatusBadge
           isInPosition={isInPosition}
           isRetired={isRetired}
-          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+          retirementReason={nameData?.retirementReason}
         />
       </div>
 

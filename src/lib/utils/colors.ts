@@ -1,4 +1,4 @@
-import type { IntensityType } from "@/lib/types";
+import type { IntensityType, RetirementReason } from "@/lib/types";
 
 // --- Intensity badge colors ---
 
@@ -72,7 +72,7 @@ export const getAvgDateColor = (month: number): string =>
 
 interface NameStatus {
   isRetired: boolean;
-  isLanguageProblem: number;
+  retirementReason?: RetirementReason;
   isExternal?: boolean;
 }
 
@@ -81,34 +81,34 @@ export const isExternalPosition = (position?: number): boolean =>
 
 export const getNameStatusColor = (name: NameStatus): string => {
   if (name.isExternal) return "#475569";
-  if (name.isLanguageProblem === 2) return "#d97706";
-  if (Boolean(name.isRetired)) return "#dc2626";
+  if (name.retirementReason === "misspell") return "#d97706";
+  if (name.isRetired) return "#dc2626";
   return "#059669";
 };
 
 export const getNameStatusColorClass = (name: NameStatus): string => {
   if (name.isExternal) return "text-slate-600";
-  if (name.isLanguageProblem === 2) return "text-amber-600";
-  if (Boolean(name.isRetired)) return "text-red-600";
+  if (name.retirementReason === "misspell") return "text-amber-600";
+  if (name.isRetired) return "text-red-600";
   return "text-emerald-600";
 };
 
 export const getNameStatusBgClass = (name: NameStatus): string => {
   if (name.isExternal) return "bg-slate-100";
-  if (name.isLanguageProblem === 2) return "bg-amber-100";
-  if (Boolean(name.isRetired)) return "bg-red-100";
+  if (name.retirementReason === "misspell") return "bg-amber-100";
+  if (name.isRetired) return "bg-red-100";
   return "bg-emerald-100";
 };
 
-export const getRetiredReasonColorClass = (isLanguageProblem: number): string => {
-  switch (isLanguageProblem) {
-    case 0:
+export const getRetiredReasonColorClass = (reason?: RetirementReason): string => {
+  switch (reason) {
+    case "destructive":
       return "text-red-600";
-    case 1:
+    case "language":
       return "text-purple-600";
-    case 2:
+    case "misspell":
       return "text-amber-600";
-    case 3:
+    case "special":
       return "text-foreground";
     default:
       return "text-red-600";

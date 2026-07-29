@@ -121,12 +121,12 @@ export default async function OpengraphImage({ params }: OgImageProps) {
 
   const displayName = nameData?.name ?? storms[0]?.name ?? decodedName;
   const isInPosition = nameData ? !isExternalPosition(nameData.position) : false;
-  const isRetired = nameData ? Boolean(nameData.isRetired) : false;
+  const isRetired = nameData?.isRetired ?? false;
   const country = nameData?.country ?? storms[0]?.country;
 
   const statusKey = !isInPosition
     ? "external"
-    : nameData?.isLanguageProblem === 2
+    : nameData?.retirementReason === "misspell"
       ? "misspelling"
       : isRetired
         ? "retired"
@@ -134,7 +134,7 @@ export default async function OpengraphImage({ params }: OgImageProps) {
   const status = STATUS_STYLE[statusKey];
   const statusLabel = !isInPosition
     ? "External name"
-    : nameData?.isLanguageProblem === 2
+    : nameData?.retirementReason === "misspell"
       ? "Misspelling"
       : isRetired
         ? retiredData?.lastYear
@@ -153,7 +153,7 @@ export default async function OpengraphImage({ params }: OgImageProps) {
         ? "1 storm"
         : `${storms.length} storms`;
   const replacedLabel =
-    isRetired && Number(nameData?.isReplaced) && retiredData?.replacementName
+    isRetired && nameData?.isReplaced && retiredData?.replacementName
       ? `replaced by ${retiredData.replacementName}`
       : null;
 

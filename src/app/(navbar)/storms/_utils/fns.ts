@@ -130,11 +130,11 @@ export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
 
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   if (type === "strongest") {
-    return stormsData.filter((storm) => Boolean(storm.isStrongest));
+    return stormsData.filter((storm) => storm.isStrongest);
   } else if (type === "first") {
-    return stormsData.filter((storm) => Boolean(storm.isFirst));
+    return stormsData.filter((storm) => storm.isFirst);
   } else if (type === "last") {
-    return stormsData.filter((storm) => Boolean(storm.isLast));
+    return stormsData.filter((storm) => storm.isLast);
   } else if (type === "untracked") {
     return stormsData.filter((storm) => storm.isJtwcForecasted === false);
   }

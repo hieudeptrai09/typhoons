@@ -1,154 +1,42 @@
-import sql from "@/lib/db";
+import sql, { type ApiResponse } from "@/lib/db";
+import { stormColumns, stormJoin, toStorm, type StormRow } from "@/lib/db/module/storm";
 import {
-  imageCreditColumns,
-  imageCreditJoin,
-  toImageCredit,
-  type ImageCreditRow,
-} from "@/lib/db/imageCredit";
-import type { RetiredName, SearchDetail, Storm } from "@/lib/types";
+  toRetiredName,
+  typhoonNameColumns,
+  typhoonNameJoin,
+  type TyphoonNameRow,
+} from "@/lib/db/module/typhoonName";
+import type { SearchDetail } from "@/lib/types";
 import { unstable_cache } from "next/cache";
-
-interface ApiResponse<T> {
-  data: T;
-}
-
-interface TyphoonNameRow extends ImageCreditRow {
-  id: number;
-  name: string;
-  meaning: string;
-  position: number;
-  country: string;
-  isRetired: number;
-  isReplaced: number;
-  isLanguageProblem: number;
-  replacementName: string | null;
-  note: string | null;
-  language: string;
-  originalText: string | null;
-  ipa: string | null;
-  pronunciationFile: string | null;
-  lastYear: number;
-  image: string | null;
-  description: string | null;
-  tag: string;
-}
-
-interface StormRow {
-  position: number;
-  country: string;
-  name: string;
-  intensity: string;
-  map: string;
-  correctSpelling: string | null;
-  year: number;
-  isStrongest: number;
-  dateStart: string | null;
-  dateEnd: string | null;
-  jtwcDesignation: string | null;
-  isJtwcForecasted: boolean;
-  isFirst: boolean;
-  isLast: boolean;
-}
 
 async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchDetail>> {
   const nameRows = await sql.query<TyphoonNameRow[]>(
     `SELECT
-      tn.id,
-      tn.name,
-      tn.meaning,
-      tn.position,
-      p.country,
-      tn.isretired AS "isRetired",
-      tn.isreplaced AS "isReplaced",
-      tn.islanguageproblem AS "isLanguageProblem",
-      tn.replacementname AS "replacementName",
-      tn.note,
-      tn.language,
-      tn.originaltext AS "originalText",
-      tn.ipa,
-      tn.pronunciationfile AS "pronunciationFile",
-      tn.lastyear AS "lastYear",
-      tn.image,
-      ${imageCreditColumns("tn.")},
-      tn.description,
-      tn.tag
+      ${typhoonNameColumns()}
     FROM typhoonnames tn
-    INNER JOIN positions p ON tn.position = p.id
-    ${imageCreditJoin("tn.")}
+    ${typhoonNameJoin()}
     WHERE LOWER(tn.name) = LOWER($1)
     LIMIT 1`,
     [name],
   );
 
   const nameRow = nameRows[0];
-  const nameDetail: RetiredName | null = nameRow
-    ? {
-        id: Number(nameRow.id),
-        name: nameRow.name,
-        meaning: nameRow.meaning,
-        position: Number(nameRow.position),
-        country: nameRow.country,
-        isRetired: Boolean(Number(nameRow.isRetired)),
-        isReplaced: Number(nameRow.isReplaced),
-        isLanguageProblem: Number(nameRow.isLanguageProblem),
-        replacementName: nameRow.replacementName ?? "",
-        note: nameRow.note ?? undefined,
-        language: nameRow.language,
-        originalText: nameRow.originalText ?? undefined,
-        ipa: nameRow.ipa ?? undefined,
-        pronunciationFile: nameRow.pronunciationFile ?? undefined,
-        lastYear: Number(nameRow.lastYear),
-        image: nameRow.image ?? undefined,
-        imageCredit: toImageCredit(nameRow),
-        description: nameRow.description ?? undefined,
-        tag: nameRow.tag,
-      }
-    : null;
+  const nameDetail = nameRow ? toRetiredName(nameRow) : null;
 
   const stormRows = await sql.query<StormRow[]>(
     `SELECT
-      s.position,
-      p.country,
-      s.name,
-      s.intensity,
-      s.map,
-      s.correctspelling AS "correctSpelling",
-      s.year,
-      s.isstrongest AS "isStrongest",
-      s.startdate::text AS "dateStart",
-      s.enddate::text AS "dateEnd",
-      LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
-      s.isjtwcforecasted AS "isJtwcForecasted",
-      s.isfirst AS "isFirst",
-      s.islast AS "isLast"
+      ${stormColumns()}
     FROM storms s
-    INNER JOIN positions p ON s.position = p.id
+    ${stormJoin()}
     WHERE LOWER(s.name) = LOWER($1)
     ORDER BY s.year ASC, s.position`,
     [name],
   );
 
-  const storms: Storm[] = stormRows.map((row) => ({
-    position: Number(row.position),
-    country: row.country,
-    name: row.name,
-    intensity: row.intensity as Storm["intensity"],
-    map: row.map,
-    correctSpelling: row.correctSpelling ?? undefined,
-    year: Number(row.year),
-    isStrongest: Number(row.isStrongest) as unknown as Storm["isStrongest"],
-    dateStart: row.dateStart ?? undefined,
-    dateEnd: row.dateEnd ?? undefined,
-    jtwcDesignation: row.jtwcDesignation ?? undefined,
-    isJtwcForecasted: Boolean(row.isJtwcForecasted),
-    isFirst: Boolean(row.isFirst),
-    isLast: Boolean(row.isLast),
-  }));
-
   return {
     data: {
       name: nameDetail as SearchDetail["name"],
-      storms,
+      storms: stormRows.map(toStorm),
     },
   };
 }

@@ -29,7 +29,7 @@ const columns: ColumnsType<RetiredName> = [
     fixed: "left" as const,
     sorter: (a, b) => a.name.localeCompare(b.name),
     render: (_: unknown, record: RetiredName) => (
-      <span className={`font-semibold ${getRetiredReasonColorClass(record.isLanguageProblem)}`}>
+      <span className={`font-semibold ${getRetiredReasonColorClass(record.retirementReason)}`}>
         {record.name}
       </span>
     ),

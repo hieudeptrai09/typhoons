@@ -43,8 +43,8 @@ export const defaultTyphoonName: TyphoonName = {
   country: "",
   language: "",
   isRetired: false,
-  isReplaced: 0,
-  isLanguageProblem: 0,
+  isReplaced: false,
+  // retirementReason stays undefined: the default name is not retired.
   tag: "",
 };
 

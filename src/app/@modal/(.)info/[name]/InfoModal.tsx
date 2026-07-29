@@ -27,7 +27,7 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
   const nameData = detail?.name ?? null;
   const storms = detail?.storms ?? [];
   const displayName = nameData?.name ?? name;
-  const isRetired = nameData ? Boolean(nameData.isRetired) : false;
+  const isRetired = nameData?.isRetired ?? false;
 
   const [activeTab, setActiveTab] = useState<TabType>("details");
 
@@ -43,7 +43,7 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
   } else {
     const nameStatusColor = getNameStatusColor({
       isRetired,
-      isLanguageProblem: nameData?.isLanguageProblem ?? 0,
+      retirementReason: nameData?.retirementReason,
       isExternal: isExternalPosition(nameData?.position),
     });
 
@@ -60,7 +60,7 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
       <div className="flex items-center gap-2">
         <NameStatusIcon
           isRetired={isRetired}
-          isLanguageProblem={nameData?.isLanguageProblem ?? 0}
+          retirementReason={nameData?.retirementReason}
           position={nameData?.position ?? 0}
           size={24}
         />

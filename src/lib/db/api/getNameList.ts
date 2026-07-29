@@ -1,16 +1,11 @@
-import sql from "@/lib/db";
+import sql, { type ApiListResponse } from "@/lib/db";
 import { unstable_cache } from "next/cache";
-
-interface ApiResponse<T> {
-  data: T;
-  count: number;
-}
 
 interface NameRow {
   name: string;
 }
 
-async function queryNameList(): Promise<ApiResponse<string[]>> {
+async function queryNameList(): Promise<ApiListResponse<string[]>> {
   const rows = await sql.query<NameRow[]>(
     `SELECT name FROM typhoonnames
      UNION

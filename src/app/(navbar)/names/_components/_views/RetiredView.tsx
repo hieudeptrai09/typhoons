@@ -1,6 +1,11 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultRetiredName } from "@/lib/constants";
-import type { RetiredFilterParams, RetiredName, SuggestionWithNameId } from "@/lib/types";
+import type {
+  RetiredFilterParams,
+  RetiredName,
+  RetirementReason,
+  SuggestionWithNameId,
+} from "@/lib/types";
 import { toArr } from "@/lib/utils/fns";
 import { Badge, Button } from "antd";
 import { CaseUpper, Filter } from "lucide-react";
@@ -36,7 +41,7 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
   const searchPosition = searchParams.get("position") || "";
 
   const countryArr = toArr(selectedCountry);
-  const reasonArr = toArr(selectedReason).map(Number);
+  const reasonArr = toArr(selectedReason) as RetirementReason[];
 
   const [prefs, setPrefs] = useState<NamesDisplayPrefs>(displayPrefs);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -97,7 +102,9 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
       filtered = filtered.filter((n) => countryArr.includes(n.country));
     }
     if (reasonArr.length > 0) {
-      filtered = filtered.filter((n) => reasonArr.includes(n.isLanguageProblem));
+      filtered = filtered.filter(
+        (n) => n.retirementReason && reasonArr.includes(n.retirementReason),
+      );
     }
     if (searchPosition) {
       filtered = filtered.filter((n) => n.position === Number(searchPosition));

@@ -1,47 +1,13 @@
-import sql, { type QueryParam } from "@/lib/db";
+import sql, { type ApiListResponse, type QueryParam } from "@/lib/db";
+import { stormColumns, stormJoin, toStorm, type StormRow } from "@/lib/db/module/storm";
 import type { Storm } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
-interface ApiResponse<T> {
-  data: T;
-  count: number;
-}
-
-interface StormRow {
-  position: number;
-  country: string;
-  name: string;
-  intensity: string;
-  map: string;
-  correctSpelling: string | null;
-  year: number;
-  isStrongest: number;
-  dateStart: string | null;
-  dateEnd: string | null;
-  jtwcDesignation: string | null;
-  isJtwcForecasted: boolean;
-  isFirst: boolean;
-  isLast: boolean;
-}
-
-async function queryStorms(position: number | null = null): Promise<ApiResponse<Storm[]>> {
+async function queryStorms(position: number | null = null): Promise<ApiListResponse<Storm[]>> {
   let query = `SELECT
-      s.position,
-      p.country,
-      s.name,
-      s.intensity,
-      s.map,
-      s.correctspelling AS "correctSpelling",
-      s.year,
-      s.isstrongest AS "isStrongest",
-      s.startdate::text AS "dateStart",
-      s.enddate::text AS "dateEnd",
-      LPAD(s.jtwcnumber::text, 2, '0') || p.suffix::text AS "jtwcDesignation",
-      s.isjtwcforecasted AS "isJtwcForecasted",
-      s.isfirst AS "isFirst",
-      s.islast AS "isLast"
+      ${stormColumns()}
     FROM storms s
-    INNER JOIN positions p ON s.position = p.id`;
+    ${stormJoin()}`;
 
   const params: QueryParam[] = [];
   if (position !== null) {
@@ -51,25 +17,9 @@ async function queryStorms(position: number | null = null): Promise<ApiResponse<
   query += " ORDER BY s.year ASC, s.position";
 
   const rows = await sql.query<StormRow[]>(query, params);
+  const data = rows.map(toStorm);
 
-  const mapped: Storm[] = rows.map((row) => ({
-    position: Number(row.position),
-    country: row.country,
-    name: row.name,
-    intensity: row.intensity as Storm["intensity"],
-    map: row.map,
-    correctSpelling: row.correctSpelling ?? undefined,
-    year: Number(row.year),
-    isStrongest: Number(row.isStrongest) as unknown as Storm["isStrongest"],
-    dateStart: row.dateStart ?? undefined,
-    dateEnd: row.dateEnd ?? undefined,
-    jtwcDesignation: row.jtwcDesignation ?? undefined,
-    isJtwcForecasted: Boolean(row.isJtwcForecasted),
-    isFirst: Boolean(row.isFirst),
-    isLast: Boolean(row.isLast),
-  }));
-
-  return { data: mapped, count: mapped.length };
+  return { data, count: data.length };
 }
 
 export const getStorms = unstable_cache(queryStorms, ["getStorms"], { revalidate: 3600 });

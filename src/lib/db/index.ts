@@ -3,6 +3,14 @@ import postgres from "postgres";
 export type QueryParam = postgres.Serializable;
 export type QueryRow = postgres.Row;
 
+export interface ApiResponse<T> {
+  data: T;
+}
+
+export interface ApiListResponse<T> extends ApiResponse<T> {
+  count: number;
+}
+
 const client = postgres(process.env.SUPABASE_POSTGRES_URL!, {
   // Supabase's pooled connection (pgbouncer, transaction mode) doesn't support prepared statements, so they must be disabled here.
   prepare: false,

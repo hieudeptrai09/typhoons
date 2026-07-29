@@ -1,27 +1,23 @@
-import sql from "@/lib/db";
+import sql, { type ApiListResponse } from "@/lib/db";
 import {
   imageCreditColumns,
   imageCreditJoin,
   toImageCredit,
   type ImageCreditRow,
-} from "@/lib/db/imageCredit";
+} from "@/lib/db/module/imageCredit";
 import type { SuggestionWithNameId } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
-interface ApiResponse<T> {
-  data: T;
-  count: number;
-}
-
 interface SuggestedNameRow extends ImageCreditRow {
-  nameId: number;
+  // bigint: postgres.js returns int8 as a string to avoid silent precision loss.
+  nameId: string;
   replacementName: string;
-  replacementMeaning: string;
-  isChosen: number;
+  replacementMeaning: string | null;
+  isChosen: boolean;
   image: string | null;
 }
 
-async function queryAllSuggestedNames(): Promise<ApiResponse<SuggestionWithNameId[]>> {
+async function queryAllSuggestedNames(): Promise<ApiListResponse<SuggestionWithNameId[]>> {
   const rows = await sql.query<SuggestedNameRow[]>(
     `SELECT
       sn.nameid AS "nameId",
@@ -36,10 +32,11 @@ async function queryAllSuggestedNames(): Promise<ApiResponse<SuggestionWithNameI
   );
 
   const data: SuggestionWithNameId[] = rows.map((row) => ({
+    // Load-bearing: nameId arrives as a string because the column is bigint.
     nameId: Number(row.nameId),
     replacementName: row.replacementName,
-    replacementMeaning: row.replacementMeaning,
-    isChosen: Boolean(Number(row.isChosen)),
+    replacementMeaning: row.replacementMeaning ?? "",
+    isChosen: row.isChosen,
     image: row.image ?? undefined,
     imageCredit: toImageCredit(row),
   }));

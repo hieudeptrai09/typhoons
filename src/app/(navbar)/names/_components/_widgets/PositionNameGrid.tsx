@@ -180,7 +180,7 @@ const PositionNameGrid = ({
   onCellClick,
 }: PositionNameGridProps) => {
   const namesByPosition = names.reduce<Record<number, TyphoonName[]>>((acc, n) => {
-    if (n.isLanguageProblem === 2) return acc;
+    if (n.retirementReason === "misspell") return acc;
     if (!acc[n.position]) acc[n.position] = [];
     acc[n.position].push(n);
     return acc;
