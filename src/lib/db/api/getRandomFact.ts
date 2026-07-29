@@ -47,13 +47,14 @@ async function generateFacts(): Promise<string[]> {
 
   // --- Cross-basin facts ---
 
+  //add Li 1994
   let names = (
     await rows("SELECT DISTINCT name FROM storms WHERE position = 141 ORDER BY name")
   ).map((r) => String(r.name));
   if (names.length > 0) {
     facts.push(
       withNames(
-        `There are ${names.length} names given in Hawaiian by CPHC that crossed into the West Pacific basin`,
+        `There are ${names.length + 1} names given in Hawaiian by CPHC that crossed into the West Pacific basin`,
         names,
       ),
     );
@@ -348,46 +349,33 @@ async function generateFacts(): Promise<string[]> {
     );
   }
 
-  // --- Names where ALL appearances are Cat 5 (times >= 2) ---
+  // --- Names where EVERY appearance hit a given intensity (times >= 2) ---
 
-  rowsResult = await rows(`
-    SELECT name, COUNT(*) as total
-    FROM storms WHERE position <= 140 AND year >= 2000
-    GROUP BY name, position
-    HAVING COUNT(*) >= 2 AND COUNT(*) = SUM(CASE WHEN intensity = '5' THEN 1 ELSE 0 END)
-  `);
-  let byCount = new Map<number, string[]>();
-  for (const r of rowsResult) {
-    const total = Number(r.total);
-    if (!byCount.has(total)) byCount.set(total, []);
-    byCount.get(total)!.push(String(r.name));
-  }
-  for (const [times, namesForCount] of byCount) {
-    const label = namesForCount.length === 1 ? "is the only storm" : "are the only storms";
-    facts.push(
-      `${joinNames(namesForCount)} ${label} that appeared ${times} times, each time as a category 5 storm.`,
-    );
-  }
-
-  // --- Names where ALL appearances are Cat 4 (times >= 2) ---
-
-  rowsResult = await rows(`
-    SELECT name, COUNT(*) as total
-    FROM storms WHERE position <= 140 AND year >= 2000
-    GROUP BY name, position
-    HAVING COUNT(*) >= 2 AND COUNT(*) = SUM(CASE WHEN intensity = '4' THEN 1 ELSE 0 END)
-  `);
-  byCount = new Map<number, string[]>();
-  for (const r of rowsResult) {
-    const total = Number(r.total);
-    if (!byCount.has(total)) byCount.set(total, []);
-    byCount.get(total)!.push(String(r.name));
-  }
-  for (const [times, namesForCount] of byCount) {
-    const label = namesForCount.length === 1 ? "is the only storm" : "are the only storms";
-    facts.push(
-      `${joinNames(namesForCount)} ${label} that appeared ${times} times, each time as a category 4 storm.`,
-    );
+  // The category 3+ pass also picks up the all-5 and all-4 names, which is intentional
+  const uniformIntensities: { match: string; label: string }[] = [
+    { match: "intensity = '5'", label: "a category 5 storm" },
+    { match: "intensity = '4'", label: "a category 4 storm" },
+    { match: "intensity IN ('3','4','5')", label: "a category 3 or stronger storm" },
+  ];
+  for (const { match, label: intensityLabel } of uniformIntensities) {
+    rowsResult = await rows(`
+      SELECT name, COUNT(*) as total
+      FROM storms WHERE position <= 140 AND year >= 2000
+      GROUP BY name, position
+      HAVING COUNT(*) >= 2 AND COUNT(*) = SUM(CASE WHEN ${match} THEN 1 ELSE 0 END)
+    `);
+    const byCount = new Map<number, string[]>();
+    for (const r of rowsResult) {
+      const total = Number(r.total);
+      if (!byCount.has(total)) byCount.set(total, []);
+      byCount.get(total)!.push(String(r.name));
+    }
+    for (const [times, namesForCount] of byCount) {
+      const label = namesForCount.length === 1 ? "is the only storm" : "are the only storms";
+      facts.push(
+        `${joinNames(namesForCount)} ${label} that appeared ${times} times, each time as ${intensityLabel}.`,
+      );
+    }
   }
 
   // --- Total names and countries in WPAC ---
