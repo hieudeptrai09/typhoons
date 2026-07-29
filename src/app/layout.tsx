@@ -27,21 +27,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: TITLE_COMMON,
-    title: {
-      template: `%s | ${TITLE_COMMON}`,
-      default: TITLE_COMMON,
-    },
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
+    url: "./",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: {
-      template: `%s | ${TITLE_COMMON}`,
-      default: TITLE_COMMON,
-    },
-    description: SITE_DESCRIPTION,
   },
   alternates: {
     canonical: "./",
