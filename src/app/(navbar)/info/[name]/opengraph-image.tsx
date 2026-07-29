@@ -4,22 +4,7 @@ import { INTENSITY_RANK, TITLE_COMMON } from "@/lib/constants";
 import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import type { IntensityType, RetiredName, Storm, TyphoonName } from "@/lib/types";
 import { BACKGROUND_BADGE, isExternalPosition, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
-import {
-  CN,
-  FM,
-  HK,
-  JP,
-  KH,
-  KP,
-  KR,
-  LA,
-  MO,
-  MY,
-  PH,
-  TH,
-  US,
-  VN,
-} from "country-flag-icons/string/3x2";
+import { fetchImageAsDataUri, flagDataUri } from "@/lib/utils/og";
 import { ImageResponse } from "next/og";
 
 export const alt = `Typhoon name details | ${TITLE_COMMON}`;
@@ -29,23 +14,6 @@ export const contentType = "image/png";
 interface OgImageProps {
   params: Promise<{ name: string }>;
 }
-
-const COUNTRY_FLAG_SVG: Record<string, string> = {
-  Cambodia: KH,
-  China: CN,
-  "DPR Korea": KP,
-  "HK, China": HK,
-  Japan: JP,
-  "Laos PDR": LA,
-  "Macao, China": MO,
-  Malaysia: MY,
-  Micronesia: FM,
-  Philippines: PH,
-  "RO Korea": KR,
-  Thailand: TH,
-  "U.S.A.": US,
-  Vietnam: VN,
-};
 
 const STATUS_STYLE = {
   external: { color: "#475569", background: "#f1f5f9" },
@@ -74,32 +42,6 @@ const pickStrongestStorm = (storms: Storm[]): Storm | null =>
     if (diff > 0 || (diff === 0 && storm.year > best.year)) return storm;
     return best;
   }, null);
-
-// Wikimedia occasionally drops a request under burst load, so retry before giving up; a missing map only hides the panel, it never fails the render.
-async function fetchMapAsDataUri(url: string): Promise<string | null> {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const res = await fetch(url, {
-        headers: { "User-Agent": "CaTraTyphoonsApp/1.0 (og-image generator)" },
-      });
-      if (res.ok) {
-        const type = res.headers.get("content-type") ?? "image/png";
-        const buffer = Buffer.from(await res.arrayBuffer());
-        return `data:${type};base64,${buffer.toString("base64")}`;
-      }
-    } catch {
-      // fall through to retry
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
-  }
-  return null;
-}
-
-const flagDataUri = (country: string): string | null => {
-  const svg = COUNTRY_FLAG_SVG[country];
-  if (!svg) return null;
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
-};
 
 export default async function OpengraphImage({ params }: OgImageProps) {
   const { name } = await params;
@@ -143,7 +85,7 @@ export default async function OpengraphImage({ params }: OgImageProps) {
         : "Active";
 
   const strongest = pickStrongestStorm(storms);
-  const mapSrc = strongest ? await fetchMapAsDataUri(strongest.map) : null;
+  const mapSrc = strongest ? await fetchImageAsDataUri(strongest.map) : null;
   const flagSrc = country ? flagDataUri(country) : null;
 
   const stormCountLabel =
