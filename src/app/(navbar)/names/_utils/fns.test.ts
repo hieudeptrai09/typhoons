@@ -1,5 +1,4 @@
 import {
-  canonicalPath,
   getCanonicalNamesSlugs,
   getNamesDescription,
   getNamesTitle,
@@ -11,9 +10,8 @@ import {
   type NamesSlugParams,
 } from "@/app/(navbar)/names/_utils/fns";
 
-// The eight slugs the route serves, with the params each one resolves to.
+// The seven slugs the route serves, with the params each one resolves to.
 const SERVED_SLUGS: [string, string[], NamesSlugParams][] = [
-  ["/names/", [], { view: "grid", showName: true, showHistory: false }],
   ["/names/retired/", ["retired"], { view: "retired" }],
   ["/names/current/", ["current"], { view: "grid", showName: true, showHistory: false }],
   [
@@ -43,8 +41,8 @@ describe("isValidNamesSlug", () => {
     expect(isValidNamesSlug(slug)).toBe(false);
   });
 
-  it("accepts the missing slug an optional catch-all route passes", () => {
-    expect(isValidNamesSlug()).toBe(true);
+  it("rejects the empty slug — /names/ is a 404, not a page", () => {
+    expect(isValidNamesSlug([])).toBe(false);
   });
 });
 
@@ -55,10 +53,6 @@ describe("slugToParams", () => {
 
   it("falls back to the default grid for an unrecognised slug", () => {
     expect(slugToParams(["bogus"])).toEqual({ view: "grid", showName: true, showHistory: false });
-  });
-
-  it("treats the missing slug of an optional catch-all route as the default grid", () => {
-    expect(slugToParams()).toEqual({ view: "grid", showName: true, showHistory: false });
   });
 });
 
@@ -101,32 +95,10 @@ describe("paramsToPath", () => {
   });
 });
 
-describe("canonicalPath", () => {
-  it("shortens the default current grid to /names/", () => {
-    const params: NamesSlugParams = { view: "grid", showName: true, showHistory: false };
-    expect(paramsToPath(params)).toBe("/names/current/");
-    expect(canonicalPath(params)).toBe("/names/");
-  });
-
-  it("leaves every other path as-is", () => {
-    expect(canonicalPath({ view: "retired" })).toBe("/names/retired/");
-    expect(canonicalPath({ view: "grid", showName: true, showHistory: true })).toBe(
-      "/names/history/",
-    );
-    expect(canonicalPath({ view: "grid", showName: false, showHistory: false })).toBe(
-      "/names/current/tag/",
-    );
-  });
-});
-
 describe("slugToPath", () => {
-  it("collapses the doubled slash left by an empty slug", () => {
-    expect(slugToPath([])).toBe("/names/");
+  it("joins the segments into a trailing-slash path", () => {
+    expect(slugToPath(["retired"])).toBe("/names/retired/");
     expect(slugToPath(["history", "tag"])).toBe("/names/history/tag/");
-  });
-
-  it("maps the missing slug of an optional catch-all route to the base path", () => {
-    expect(slugToPath()).toBe("/names/");
   });
 });
 
@@ -141,7 +113,7 @@ describe("getCanonicalNamesSlugs", () => {
 
   it("returns slugs that already sit at their own canonical path", () => {
     for (const slug of canonical) {
-      expect(canonicalPath(slugToParams(slug))).toBe(slugToPath(slug));
+      expect(paramsToPath(slugToParams(slug))).toBe(slugToPath(slug));
     }
   });
 
@@ -150,17 +122,16 @@ describe("getCanonicalNamesSlugs", () => {
     expect(new Set(paths).size).toBe(paths.length);
   });
 
-  it("drops the slugs that resolve to another URL", () => {
-    // /names/current/ is the one served path that shortens to another URL, so /names/ stands in.
-    expect(canonical).not.toContainEqual(["current"]);
+  it("never emits the empty slug — /names/ is a 404, not a page", () => {
+    expect(canonical).not.toContainEqual([]);
+    expect(canonical).toContainEqual(["current"]);
     expect(canonical).toContainEqual(["current", "list"]);
-    expect(canonical).toContainEqual([]);
     expect(canonical).toContainEqual(["retired"]);
   });
 
-  it("lists every served slug except the one /names/ already covers", () => {
+  it("lists every served slug", () => {
     expect(canonical.map((slug) => slugToPath(slug)).sort()).toEqual([
-      "/names/",
+      "/names/current/",
       "/names/current/list/",
       "/names/current/tag/",
       "/names/history/",

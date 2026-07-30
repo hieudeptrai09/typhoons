@@ -7,8 +7,8 @@ const TOP_LEVEL_SLUGS = ["retired", "history", "current"];
 const NESTED_PARENTS = ["history", "current"];
 const NESTED_CHILDREN = ["tag", "list"];
 
-export const isValidNamesSlug = (slug: string[] = []): boolean => {
-  if (slug.length === 0) return true;
+// Every URL is /names/<scope>/[child]/
+export const isValidNamesSlug = (slug: string[]): boolean => {
   if (slug.length === 1) return TOP_LEVEL_SLUGS.includes(slug[0]);
   if (slug.length === 2) {
     return NESTED_PARENTS.includes(slug[0]) && NESTED_CHILDREN.includes(slug[1]);
@@ -16,7 +16,7 @@ export const isValidNamesSlug = (slug: string[] = []): boolean => {
   return false;
 };
 
-export const slugToParams = (slug: string[] = []): NamesSlugParams => {
+export const slugToParams = (slug: string[]): NamesSlugParams => {
   const [first, second] = slug;
 
   if (first === "retired") return { view: "retired" };
@@ -43,24 +43,16 @@ export const paramsToPath = (params: NamesSlugParams): string => {
   return `${base}/`;
 };
 
-export const canonicalPath = (params: NamesSlugParams): string => {
-  const path = paramsToPath(params);
-  if (path === "/names/current/") return "/names/";
-  return path;
-};
-
-export const slugToPath = (slug: string[] = []): string =>
-  `/names/${slug.join("/")}/`.replace(/\/+/g, "/");
+export const slugToPath = (slug: string[]): string => `/names/${slug.join("/")}/`;
 
 const ALL_SLUGS: string[][] = [
-  [],
   ...TOP_LEVEL_SLUGS.map((slug) => [slug]),
   ...NESTED_PARENTS.flatMap((parent) => NESTED_CHILDREN.map((child) => [parent, child])),
 ];
 
-// Non-canonical slugs resolve to a different canonical URL, so only these belong in the sitemap.
+// Non-canonical slugs redirect, so only these belong in the sitemap.
 export const getCanonicalNamesSlugs = (): string[][] =>
-  ALL_SLUGS.filter((slug) => canonicalPath(slugToParams(slug)) === slugToPath(slug));
+  ALL_SLUGS.filter((slug) => paramsToPath(slugToParams(slug)) === slugToPath(slug));
 
 export const getNamesTitle = (params: NamesSlugParams): string => {
   if (params.view === "retired") return "Retired Typhoon Names";

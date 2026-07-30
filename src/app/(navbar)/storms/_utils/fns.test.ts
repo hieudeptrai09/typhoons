@@ -5,7 +5,6 @@ import {
   calculateAvgDuration,
   calculateDistances,
   calculateGapAverage,
-  canonicalPath,
   formatDayOfYear,
   formatDistance,
   getCanonicalStormsSlugs,
@@ -60,8 +59,8 @@ describe("getIntensityFromNumber", () => {
 });
 
 describe("isValidStormsSlug", () => {
-  it("accepts the empty slug", () => {
-    expect(isValidStormsSlug([])).toBe(true);
+  it("rejects the empty slug — /storms/ is a 404, not a page", () => {
+    expect(isValidStormsSlug([])).toBe(false);
   });
 
   it("rejects every one-segment slug — the filter is never optional", () => {
@@ -90,17 +89,9 @@ describe("isValidStormsSlug", () => {
     expect(isValidStormsSlug(["bogus"])).toBe(false);
     expect(isValidStormsSlug(["average", "country", "list", "extra"])).toBe(false);
   });
-
-  it("accepts the missing slug an optional catch-all route passes", () => {
-    expect(isValidStormsSlug()).toBe(true);
-  });
 });
 
 describe("slugToParams", () => {
-  it("defaults the bare /storms/ route to all storms by name", () => {
-    expect(slugToParams([])).toEqual({ view: "all", mode: "table", filter: "name" });
-  });
-
   it("reads the grid coordinates straight off the slug", () => {
     expect(slugToParams(["all", "name", "list"])).toEqual({
       view: "all",
@@ -122,10 +113,6 @@ describe("slugToParams", () => {
     expect(slugToParams(["average", "country"]).mode).toBe("list");
     expect(slugToParams(["average", "month"]).mode).toBe("list");
     expect(slugToParams(["average", "position"]).mode).toBe("table");
-  });
-
-  it("treats the missing slug of an optional catch-all route as the default", () => {
-    expect(slugToParams()).toEqual({ view: "all", mode: "table", filter: "name" });
   });
 });
 
@@ -164,7 +151,7 @@ describe("paramsForView / paramsForFilter", () => {
   });
 });
 
-describe("paramsToPath / canonicalPath", () => {
+describe("paramsToPath", () => {
   it("builds every path from the same view/filter/mode template", () => {
     expect(paramsToPath({ view: "all", mode: "table", filter: "name" })).toBe("/storms/all/name/");
     expect(paramsToPath({ view: "all", mode: "list", filter: "name" })).toBe(
@@ -172,16 +159,6 @@ describe("paramsToPath / canonicalPath", () => {
     );
     expect(paramsToPath({ view: "all", mode: "table", filter: "position" })).toBe(
       "/storms/all/position/",
-    );
-  });
-
-  it("collapses only the default pairing onto the bare route", () => {
-    expect(canonicalPath({ view: "all", mode: "table", filter: "name" })).toBe("/storms/");
-    expect(canonicalPath({ view: "all", mode: "list", filter: "name" })).toBe(
-      "/storms/all/name/list/",
-    );
-    expect(canonicalPath({ view: "average", mode: "table", filter: "year" })).toBe(
-      "/storms/average/year/",
     );
   });
 
@@ -196,13 +173,9 @@ describe("paramsToPath / canonicalPath", () => {
 });
 
 describe("slugToPath", () => {
-  it("collapses the doubled slash left by an empty slug", () => {
-    expect(slugToPath([])).toBe("/storms/");
+  it("joins the segments into a trailing-slash path", () => {
+    expect(slugToPath(["all", "name"])).toBe("/storms/all/name/");
     expect(slugToPath(["average", "country", "list"])).toBe("/storms/average/country/list/");
-  });
-
-  it("maps the missing slug of an optional catch-all route to the base path", () => {
-    expect(slugToPath()).toBe("/storms/");
   });
 });
 
@@ -217,7 +190,7 @@ describe("getCanonicalStormsSlugs", () => {
 
   it("returns slugs that already sit at their own canonical path", () => {
     for (const slug of canonical) {
-      expect(canonicalPath(slugToParams(slug))).toBe(slugToPath(slug));
+      expect(paramsToPath(slugToParams(slug))).toBe(slugToPath(slug));
     }
   });
 
@@ -229,8 +202,11 @@ describe("getCanonicalStormsSlugs", () => {
   it("never emits bare views — they are 404s, not redirects", () => {
     expect(canonical).not.toContainEqual(["highlights"]);
     expect(canonical).not.toContainEqual(["all"]);
-    expect(canonical).not.toContainEqual(["all", "name"]); // collapses onto /storms/
-    expect(canonical).toContainEqual([]);
+  });
+
+  it("never emits the empty slug — /storms/ is a 404, not a page", () => {
+    expect(canonical).not.toContainEqual([]);
+    expect(canonical).toContainEqual(["all", "name"]);
     expect(canonical).toContainEqual(["all", "position"]);
     expect(canonical).toContainEqual(["all", "name", "list"]);
   });

@@ -10,7 +10,7 @@ import RetiredView from "./_components/_views/RetiredView";
 import type { NamesScope } from "./_components/_widgets/NamesScopeTabs";
 import NamesScopeTabs from "./_components/_widgets/NamesScopeTabs";
 import type { NamesDisplayPrefs } from "./_utils/displayPrefs";
-import { canonicalPath, getNamesTitle, slugToParams } from "./_utils/fns";
+import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;
@@ -25,7 +25,7 @@ const NamesPageContent = ({
   suggestedNames,
   displayPrefs,
 }: NamesPageContentProps) => {
-  const { slug } = useParams<{ slug?: string[] }>();
+  const { slug } = useParams<{ slug: string[] }>();
   const params = slugToParams(slug);
 
   const retiredNames = useMemo(() => (allNames || []).filter((n) => n.isRetired), [allNames]);
@@ -39,7 +39,7 @@ const NamesPageContent = ({
 
   // Switching scope keeps the layout and name toggle the current view is already showing.
   const scopeHref = (showHistory: boolean): string =>
-    canonicalPath(
+    paramsToPath(
       layout === "list"
         ? { view: "list", showHistory }
         : { view: "grid", showName: scopeShowName, showHistory },
@@ -48,7 +48,7 @@ const NamesPageContent = ({
   const scopeHrefs: Record<NamesScope, string> = {
     current: scopeHref(false),
     history: scopeHref(true),
-    retired: canonicalPath({ view: "retired" }),
+    retired: paramsToPath({ view: "retired" }),
   };
 
   if (!allNames) {

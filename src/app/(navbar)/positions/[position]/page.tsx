@@ -12,9 +12,7 @@ const isValidPosition = (position: number): boolean =>
   Number.isInteger(position) && position >= 1 && position <= 143;
 
 export async function generateStaticParams() {
-  const numeric = Array.from({ length: 140 }, (_, i) => ({ position: String(i + 1) }));
-  const slugs = ["cphc", "nhc", "imd"].map((position) => ({ position }));
-  return [...numeric, ...slugs];
+  return Array.from({ length: 143 }, (_, i) => ({ position: getPositionSlug(i + 1) }));
 }
 
 export async function generateMetadata({ params }: PositionPageProps): Promise<Metadata> {

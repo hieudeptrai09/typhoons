@@ -15,14 +15,16 @@ const GRID_MAX = GRID_ROWS * GRID_COLS; // 140
 
 export const positionColumnLetter = (col: number): string => String.fromCharCode(65 + col);
 
+const positionGridLabel = (position: number): string | null => {
+  if (!Number.isInteger(position) || position < 1 || position > GRID_MAX) return null;
+  const row = Math.floor((position - 1) / GRID_COLS) + 1;
+  return `${row}${positionColumnLetter((position - 1) % GRID_COLS)}`;
+};
+
 export const getPositionTitle = (position: number): string => {
   const slug = POSITION_SLUGS[position];
   if (slug) return slug.toUpperCase();
-  if (Number.isInteger(position) && position >= 1 && position <= GRID_MAX) {
-    const row = Math.floor((position - 1) / GRID_COLS) + 1;
-    return `${row}${positionColumnLetter((position - 1) % GRID_COLS)}`;
-  }
-  return `#${position}`;
+  return positionGridLabel(position) ?? `#${position}`;
 };
 
 // Parse a grid label ("3I" / "3i") or a plain number ("37") into a 1–140 position, else null.
@@ -42,15 +44,18 @@ export const parsePositionLabel = (input: string): number | null => {
   return Number.isInteger(num) && num >= 1 && num <= GRID_MAX ? num : null;
 };
 
+// URLs carry the lowercase grid label ("3i"), so the page redirects /positions/3I/ and /positions/37/ onto it.
 export const getPositionSlug = (position: number): string =>
-  POSITION_SLUGS[position] ?? String(position);
+  POSITION_SLUGS[position] ?? positionGridLabel(position)?.toLowerCase() ?? String(position);
 
 export const getPositionFromSlug = (slug: string): number | null => {
   if (slug in SLUG_POSITIONS) return SLUG_POSITIONS[slug];
   const gridPosition = parsePositionLabel(slug);
   if (gridPosition !== null) return gridPosition;
   const num = Number(slug);
-  return Number.isInteger(num) ? num : null;
+  // Out-of-grid integers pass through so the caller can range-check and 404;
+  // Number("") is 0, so an empty slug needs its own rejection.
+  return slug.trim() !== "" && Number.isInteger(num) ? num : null;
 };
 
 export const normalizeParam = (param: string | string[] | undefined): string => {

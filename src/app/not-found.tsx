@@ -48,7 +48,7 @@ const NotFound = () => {
         </Link>
 
         <Link
-          href="/storms/"
+          href="/storms/all/name/"
           className="nf-blow nf-blow-3 mt-5 text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
         >
           or browse all storms

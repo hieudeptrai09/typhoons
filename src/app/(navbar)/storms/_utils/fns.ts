@@ -10,8 +10,6 @@ const VALID_FILTERS: Record<string, string[]> = {
   avgdate: ["position", "name"],
 };
 
-const VIEWS = Object.keys(VALID_FILTERS);
-
 export const DEFAULT_FILTER: Record<string, string> = {
   all: "position",
   highlights: "strongest",
@@ -20,16 +18,10 @@ export const DEFAULT_FILTER: Record<string, string> = {
   avgdate: "position",
 };
 
-// Every URL is /storms/<view>/<filter>/[list]/, with the empty slug as the sole
-// exception. Anything off that grid is a 404 — there are no alias spellings.
-export const isValidStormsSlug = (slug: string[] = []): boolean => {
-  if (slug.length === 0) return true;
-
+// Every URL is /storms/<view>/<filter>/[list]/
+export const isValidStormsSlug = (slug: string[]): boolean => {
   const [first, second, third] = slug;
 
-  if (slug.length === 1) {
-    return VIEWS.includes(first);
-  }
   if (slug.length === 2) {
     const validFilters = VALID_FILTERS[first];
     if (!validFilters) return false;
@@ -60,13 +52,8 @@ export const paramsForFilter = (view: string, filter: string, mode: string): Das
   return { view, filter, mode };
 };
 
-export const slugToParams = (slug: string[] = []): DashboardParams => {
-  if (slug.length === 0) return { view: "all", mode: "table", filter: "name" };
-
-  const [first, second, third] = slug;
-
-  const view = first;
-  const filter = second || DEFAULT_FILTER[view] || "position";
+export const slugToParams = (slug: string[]): DashboardParams => {
+  const [view, filter, third] = slug;
 
   let mode = third === "list" ? "list" : "table";
   if (isGridOnly(view, filter)) mode = "table";
@@ -82,18 +69,9 @@ export const paramsToPath = (params: DashboardParams): string => {
   return mode === "list" ? `${base}list/` : base;
 };
 
-// The default pairing lives at the bare /storms/ route rather than /storms/all/name/.
-export const canonicalPath = (params: DashboardParams): string => {
-  const path = paramsToPath(params);
-  return path === "/storms/all/name/" ? "/storms/" : path;
-};
-
-export const slugToPath = (slug: string[] = []): string =>
-  `/storms/${slug.join("/")}/`.replace(/\/+/g, "/");
+export const slugToPath = (slug: string[]): string => `/storms/${slug.join("/")}/`;
 
 const ALL_SLUGS: string[][] = [
-  [],
-  ...VIEWS.map((view) => [view]),
   ...Object.entries(VALID_FILTERS).flatMap(([view, filters]) =>
     filters.flatMap((filter) => [
       [view, filter],
@@ -104,7 +82,7 @@ const ALL_SLUGS: string[][] = [
 
 // Non-canonical slugs redirect, so prerendering them would only cache the redirect.
 export const getCanonicalStormsSlugs = (): string[][] =>
-  ALL_SLUGS.filter((slug) => canonicalPath(slugToParams(slug)) === slugToPath(slug));
+  ALL_SLUGS.filter((slug) => paramsToPath(slugToParams(slug)) === slugToPath(slug));
 
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   const rounded = Math.round(avgNumber);
@@ -295,7 +273,7 @@ export const getDashboardTitle = (
     avgdate: `Average Storm Dates by ${capitalize(filterStr)}`,
   };
 
-  return viewTitles[viewStr];
+  return viewTitles[viewStr] ?? viewTitles.all;
 };
 
 export const getDashboardDescription = (

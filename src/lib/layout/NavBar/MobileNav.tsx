@@ -18,14 +18,14 @@ const MobileNav = ({ currentPath, isOpen, onClose }: MobileNavProps) => {
     >
       <div className="space-y-2 px-4 py-2">
         <NavLink
-          href="/storms/"
+          href="/storms/all/name/"
           icon={CloudLightning}
           label="Storms"
           isActive={currentPath.startsWith("/storms")}
           onClick={onClose}
         />
         <NavLink
-          href="/names"
+          href="/names/current/"
           icon={BookText}
           label="Names"
           isActive={currentPath.startsWith("/names")}

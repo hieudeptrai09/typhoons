@@ -9,13 +9,13 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
   return (
     <div className="hidden space-x-4 md:flex" role="navigation" aria-label="Desktop navigation">
       <NavLink
-        href="/storms/"
+        href="/storms/all/name/"
         icon={CloudLightning}
         label="Storms"
         isActive={currentPath.startsWith("/storms")}
       />
       <NavLink
-        href="/names"
+        href="/names/current/"
         icon={BookText}
         label="Names"
         isActive={currentPath.startsWith("/names")}

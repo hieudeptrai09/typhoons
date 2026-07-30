@@ -1,5 +1,5 @@
 import { getStormHighlight } from "@/lib/db/api/getStormHighlight";
-import { capitalize, getPositionTitle } from "@/lib/utils/fns";
+import { capitalize, getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
 import Link from "next/link";
 
 const CONTAINER_CLASS = "mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm";
@@ -54,7 +54,7 @@ const StormHighlightBadge = async () => {
       </Link>
 
       <Link
-        href={`/positions/${highlight.position}`}
+        href={`/positions/${getPositionSlug(highlight.position)}`}
         className="text-teal-700 transition-colors hover:text-teal-800"
       >
         {getPositionTitle(highlight.position)}

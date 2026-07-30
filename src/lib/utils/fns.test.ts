@@ -80,9 +80,16 @@ describe("parsePositionLabel", () => {
 });
 
 describe("position slugs", () => {
-  it("slugs the external basins by agency and everything else by number", () => {
+  it("slugs the external basins by agency and grid cells by lowercase label", () => {
     expect(getPositionSlug(141)).toBe("cphc");
-    expect(getPositionSlug(37)).toBe("37");
+    expect(getPositionSlug(37)).toBe("3i");
+    expect(getPositionSlug(1)).toBe("1a");
+    expect(getPositionSlug(140)).toBe("10n");
+  });
+
+  it("keeps digits for positions that have no grid label", () => {
+    expect(getPositionSlug(999)).toBe("999");
+    expect(getPositionSlug(0)).toBe("0");
   });
 
   it("round-trips every position the sitemap emits", () => {
@@ -91,8 +98,17 @@ describe("position slugs", () => {
     }
   });
 
-  it("also accepts a grid label as a slug", () => {
+  it("is the lowercase of the title for every grid cell", () => {
+    for (let position = 1; position <= 140; position++) {
+      expect(getPositionSlug(position)).toBe(getPositionTitle(position).toLowerCase());
+    }
+  });
+
+  // The canonical slug is "3i", so these are the spellings the page redirects onto it.
+  it("also accepts the uppercase label and the plain number as a slug", () => {
     expect(getPositionFromSlug("3i")).toBe(37);
+    expect(getPositionFromSlug("3I")).toBe(37);
+    expect(getPositionFromSlug("37")).toBe(37);
   });
 
   it("rejects a non-numeric slug", () => {

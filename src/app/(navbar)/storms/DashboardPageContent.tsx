@@ -23,10 +23,10 @@ import IntensityLegend from "./_components/_widgets/IntensityLegend";
 import {
   calculateAverage,
   calculateGapAverage,
-  canonicalPath,
   getDashboardTitle,
   getEffectiveMonth,
   getGroupedStorms,
+  paramsToPath,
   slugToParams,
 } from "./_utils/fns";
 
@@ -45,7 +45,7 @@ interface DashboardPageContentProps {
 
 export default function DashboardPageContent({ stormsData }: DashboardPageContentProps) {
   const router = useRouter();
-  const { slug } = useParams<{ slug?: string[] }>();
+  const { slug } = useParams<{ slug: string[] }>();
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
@@ -67,7 +67,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       : null;
 
   const handleApplyFilter = (newParams: DashboardParams) => {
-    router.push(canonicalPath(newParams));
+    router.push(paramsToPath(newParams));
   };
 
   const handleCellClick = (data: number | string, key: string) => {

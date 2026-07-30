@@ -3,20 +3,21 @@ import { getAllSuggestedNames } from "@/lib/db/api/getSuggestedNames";
 import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { NAMES_DISPLAY_COOKIE, parseDisplayPrefs } from "../_utils/displayPrefs";
 import {
-  canonicalPath,
   getNamesDescription,
   getNamesTitle,
   isHistoryScope,
   isValidNamesSlug,
+  paramsToPath,
   slugToParams,
+  slugToPath,
 } from "../_utils/fns";
 import NamesPageContent from "../NamesPageContent";
 
 type PageProps = {
-  params: Promise<{ slug?: string[] }>;
+  params: Promise<{ slug: string[] }>;
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${getNamesTitle(slugParams)} | Names`,
     description: getNamesDescription(slugParams),
     alternates: {
-      canonical: canonicalPath(slugParams),
+      canonical: paramsToPath(slugParams),
     },
   };
 }
@@ -46,6 +47,11 @@ const NamesPage = async ({ params }: PageProps) => {
 
   // Only the history grid and the retired view consume these, and the slug already says which is active.
   const slugParams = slugToParams(slug);
+
+  const path = paramsToPath(slugParams);
+  if (slugToPath(slug) !== path) {
+    redirect(path);
+  }
 
   const [result, cookieStore, historyResult, suggestedResult] = await Promise.all([
     getTyphoonNames(),
