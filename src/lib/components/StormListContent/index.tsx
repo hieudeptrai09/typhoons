@@ -9,7 +9,7 @@ import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
 import { Switch } from "antd";
-import { Inbox } from "lucide-react";
+import { ExternalLink, Inbox } from "lucide-react";
 import { useState } from "react";
 
 export interface StormListContentProps {
@@ -30,21 +30,13 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
     >
       {showMap && hasMap && (
         <div className="relative mb-2 h-48 w-full">
-          <a
-            href={getZoomEarthUrl(storm.name, storm.year)}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-            className="block h-full w-full transition-opacity hover:opacity-80"
-          >
-            <ImageWithLoader
-              src={storm.map}
-              alt={`${storm.name} ${storm.year} track`}
-              fill
-              className="rounded border border-gray-200 object-contain"
-              unoptimized
-            />
-          </a>
+          <ImageWithLoader
+            src={storm.map}
+            alt={`${storm.name} ${storm.year} track`}
+            fill
+            className="rounded border border-gray-200 object-contain"
+            unoptimized
+          />
         </div>
       )}
       {hasHighlight(storm) && (
@@ -56,7 +48,19 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
         {label} {storm.name}
         {storm.jtwcDesignation && ` (${storm.jtwcDesignation})`}
       </div>
-      {dateRange && <div className="text-xs text-foreground">{dateRange}</div>}
+      <div className="flex flex-wrap items-center justify-between gap-x-2">
+        <span className="text-xs text-foreground">{dateRange}</span>
+        <a
+          href={getZoomEarthUrl(storm.name, storm.year)}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
+        >
+          Zoom Earth
+          <ExternalLink size={12} />
+        </a>
+      </div>
     </div>
   );
 }

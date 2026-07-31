@@ -4,7 +4,7 @@ import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
-import { Calendar, Hash } from "lucide-react";
+import { Calendar, ExternalLink, Hash, ImageOff } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {
   const bgColor = BACKGROUND_BADGE[storm.intensity];
@@ -43,26 +43,30 @@ const StormCard = ({ storm }: { storm: Storm }) => {
       </div>
       <div className="relative h-44 w-full bg-slate-50">
         {hasMap ? (
-          <a
-            href={getZoomEarthUrl(storm.name, storm.year)}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-            className="block h-full w-full transition-opacity hover:opacity-80"
-          >
-            <ImageWithLoader
-              src={storm.map}
-              alt={`${storm.name} ${storm.year} track`}
-              fill
-              className="object-contain"
-              unoptimized
-            />
-          </a>
+          <ImageWithLoader
+            src={storm.map}
+            alt={`${storm.name} ${storm.year} track`}
+            fill
+            className="object-contain"
+            unoptimized
+          />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-foreground">
-            No track map
+          <div className="flex h-full items-center justify-center gap-1.5 text-xs text-slate-400">
+            <ImageOff size={14} />
           </div>
         )}
+      </div>
+      <div className="border-t border-slate-100 px-4 py-2">
+        <a
+          href={getZoomEarthUrl(storm.name, storm.year)}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
+        >
+          Zoom Earth
+          <ExternalLink size={12} />
+        </a>
       </div>
     </div>
   );

@@ -22,9 +22,9 @@ import {
 } from "@/lib/utils/colors";
 import { formatStormDateRange, getPositionTitle, getZoomEarthUrl } from "@/lib/utils/fns";
 import { Carousel as AntCarousel } from "antd";
-import { Calendar, ChevronLeft, ChevronRight, SearchX } from "lucide-react";
+import { Calendar, ExternalLink, ImageOff, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef, useState, type ComponentRef, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 interface PositionModalProps {
   detail: PositionDetail | null;
@@ -35,52 +35,15 @@ interface PositionModalProps {
 type TabType = "names" | "storms";
 
 function Carousel({ slides }: { slides: ReactNode[] }) {
-  const ref = useRef<ComponentRef<typeof AntCarousel>>(null);
-  const [active, setActive] = useState(0);
-  const count = slides.length;
+  if (slides.length === 0) return null;
 
-  if (count === 0) return null;
+  // A lone slide has nowhere to go, so drop the controls entirely.
+  const hasControls = slides.length > 1;
 
   return (
-    <div>
-      <AntCarousel ref={ref} dots={false} afterChange={setActive}>
-        {slides}
-      </AntCarousel>
-      {count > 1 && (
-        <div className="mt-3 flex items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => ref.current?.prev()}
-            aria-label="Previous"
-            className="rounded-full border border-slate-200 p-1.5 text-foreground transition-colors hover:bg-slate-100"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <div className="flex items-center gap-1.5">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => ref.current?.goTo(i)}
-                aria-label={`Go to slide ${i + 1}`}
-                aria-current={i === active}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === active ? "w-4 bg-slate-700" : "w-1.5 bg-slate-300 hover:bg-slate-400"
-                }`}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => ref.current?.next()}
-            aria-label="Next"
-            className="rounded-full border border-slate-200 p-1.5 text-foreground transition-colors hover:bg-slate-100"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-    </div>
+    <AntCarousel rootClassName="carousel-light" arrows={hasControls} dots={hasControls}>
+      {slides}
+    </AntCarousel>
   );
 }
 
@@ -111,43 +74,47 @@ function NameSlide({ name }: { name: TyphoonName }) {
   );
 }
 
-function StormSlide({ storm }: { storm: Storm }) {
+function StormGridCard({ storm }: { storm: Storm }) {
   const accent = TEXT_COLOR_WHITE_BACKGROUND[storm.intensity];
   const label = INTENSITY_LABEL[storm.intensity];
   const dateRange = formatStormDateRange(storm.dateStart, storm.dateEnd);
   const hasMap = !!storm.map && storm.map.trim() !== "";
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div className="p-3">
-        <div className="relative aspect-4/3 w-full overflow-hidden rounded-md bg-slate-50">
-          {hasMap && (
-            <a
-              href={getZoomEarthUrl(storm.name, storm.year)}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-              className="block h-full w-full transition-opacity hover:opacity-80"
-            >
-              <ImageWithLoader
-                src={storm.map}
-                alt={`${storm.name} ${storm.year} track`}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </a>
-          )}
+    <div className="rounded-md bg-slate-50 p-2">
+      {hasMap ? (
+        <div className="relative aspect-4/3 w-full overflow-hidden rounded bg-white">
+          <ImageWithLoader
+            src={storm.map}
+            alt={`${storm.name} ${storm.year} track`}
+            fill
+            className="object-contain"
+            unoptimized
+          />
         </div>
-        <div className="mt-2 space-y-0.5">
-          <div className="text-sm font-bold" style={{ color: accent }}>
-            {label}
-          </div>
-          <div className="flex items-center gap-1 text-sm text-foreground">
-            <Calendar size={12} />
-            {dateRange || "Date unknown"}
-          </div>
+      ) : (
+        <div className="flex h-20 items-center justify-center gap-1.5 rounded bg-slate-100 text-xs text-slate-400">
+          <ImageOff size={14} />
         </div>
+      )}
+      <div className="mt-2 space-y-1">
+        <div className="text-sm leading-tight font-bold" style={{ color: accent }}>
+          {label}
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-foreground">
+          <Calendar size={12} className="shrink-0" />
+          {dateRange || "Date unknown"}
+        </div>
+        <a
+          href={getZoomEarthUrl(storm.name, storm.year)}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
+          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
+        >
+          Zoom Earth
+          <ExternalLink size={12} />
+        </a>
       </div>
     </div>
   );
@@ -206,13 +173,15 @@ export default function PositionModal({ detail, position, isError = false }: Pos
             ([name, group]) => {
               const sorted = [...group].sort((a, b) => a.year - b.year);
               const average = calculateAverage(sorted);
-              const groupColor = TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(average)];
-              const groupAccent = BACKGROUND_BADGE[getIntensityFromNumber(average)];
+              const groupIntensity = getIntensityFromNumber(average);
               return (
                 <div key={name}>
                   <div
                     className="mb-2 flex items-center justify-between gap-2 rounded-md bg-slate-50 py-2 pr-4 pl-3"
-                    style={{ borderLeftWidth: 4, borderLeftColor: groupAccent }}
+                    style={{
+                      borderLeftWidth: 4,
+                      borderLeftColor: BACKGROUND_BADGE[groupIntensity],
+                    }}
                   >
                     <span className="font-semibold text-foreground">{name}</span>
                     <span className="flex items-center gap-4 text-sm text-foreground">
@@ -220,19 +189,22 @@ export default function PositionModal({ detail, position, isError = false }: Pos
                         Count:{" "}
                         <span className="font-semibold text-foreground">{sorted.length}</span>
                       </span>
-                      <span>
+                      <span title={INTENSITY_LABEL[groupIntensity]}>
                         Avg:{" "}
-                        <span className="font-bold" style={{ color: groupColor }}>
+                        <span
+                          className="font-bold"
+                          style={{ color: TEXT_COLOR_WHITE_BACKGROUND[groupIntensity] }}
+                        >
                           {average.toFixed(2)}
                         </span>
                       </span>
                     </span>
                   </div>
-                  <Carousel
-                    slides={sorted.map((storm, idx) => (
-                      <StormSlide key={idx} storm={storm} />
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {sorted.map((storm, idx) => (
+                      <StormGridCard key={idx} storm={storm} />
                     ))}
-                  />
+                  </div>
                 </div>
               );
             },
@@ -286,7 +258,7 @@ export default function PositionModal({ detail, position, isError = false }: Pos
   }
 
   return (
-    <DefModal onClose={() => router.back()} title={title}>
+    <DefModal onClose={() => router.back()} title={title} width={600}>
       {content}
     </DefModal>
   );
