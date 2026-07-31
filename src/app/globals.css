@@ -5,7 +5,7 @@
   --foreground: #374151;
   --highlight: #171717;
   --text-disabled: #9ca3af;
-  --navbar-height: 64px;
+  --navbar-height: 48px;
 }
 
 @theme inline {
