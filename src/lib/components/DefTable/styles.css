@@ -6,6 +6,11 @@
   text-decoration: underline !important;
 }
 
+/* Shift-click adds a sort criterion, so headers must not select text instead */
+.typhoon-table .ant-table-thead th.ant-table-column-has-sorters {
+  user-select: none;
+}
+
 /* Neutralize the sorted column: match the zebra striping so sorted looks
    identical to unsorted (overrides antd's default sorted-column tint) */
 .typhoon-table .ant-table-tbody tr:nth-child(even) td.ant-table-column-sort {
