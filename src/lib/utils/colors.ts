@@ -3,6 +3,7 @@ import type { IntensityType, RetirementReason } from "@/lib/types";
 // --- Intensity badge colors ---
 
 export const BACKGROUND_BADGE: Record<IntensityType, string> = {
+  NT: "#CBD5E1",
   TD: "#00CCFF",
   TS: "#00FF00",
   STS: "#C0FFC0",
@@ -14,6 +15,7 @@ export const BACKGROUND_BADGE: Record<IntensityType, string> = {
 };
 
 export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
+  NT: "#334155",
   TD: "#003D4C",
   TS: "#005500",
   STS: "#004D26",
@@ -25,6 +27,7 @@ export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
 };
 
 export const TEXT_COLOR_WHITE_BACKGROUND: Record<IntensityType, string> = {
+  NT: "#475569",
   TD: "#0099CC",
   TS: "#00AC00",
   STS: "#008844",

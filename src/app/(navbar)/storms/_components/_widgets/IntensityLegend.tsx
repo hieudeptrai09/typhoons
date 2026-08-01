@@ -1,4 +1,4 @@
-import { INTENSITY_LABEL, INTENSITY_RANK, SORTING_RANK } from "@/lib/constants";
+import { INTENSITY_LABEL, SORTING_RANK } from "@/lib/constants";
 import type { IntensityType } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 
@@ -22,7 +22,7 @@ export default function IntensityLegend() {
               </span>
               <span className="text-xs text-foreground">
                 {INTENSITY_LABEL[intensity]}{" "}
-                <span className="text-foreground">({INTENSITY_RANK[intensity]})</span>
+                <span className="text-foreground">({SORTING_RANK[intensity]})</span>
               </span>
             </span>
           ))}

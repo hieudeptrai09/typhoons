@@ -11,6 +11,7 @@ export const SORTING_RANK: Record<IntensityType, number> = {
   STS: 0,
   TS: -1,
   TD: -2,
+  NT: -3,
 };
 
 export const INTENSITY_RANK: Record<IntensityType, number> = {
@@ -22,6 +23,7 @@ export const INTENSITY_RANK: Record<IntensityType, number> = {
   STS: 0,
   TS: 0,
   TD: -1,
+  NT: -2,
 };
 
 export const INTENSITY_LABEL: Record<IntensityType, string> = {
@@ -33,6 +35,7 @@ export const INTENSITY_LABEL: Record<IntensityType, string> = {
   STS: "Severe Tropical Storm",
   TS: "Tropical Storm",
   TD: "Tropical Depression",
+  NT: "(not tracked by JTWC)",
 };
 
 export const defaultTyphoonName: TyphoonName = {

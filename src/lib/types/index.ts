@@ -59,7 +59,6 @@ export interface Storm {
   dateStart?: string; // "YYYY-MM-DD"
   dateEnd?: string; // "YYYY-MM-DD"; missing while a storm is ongoing
   jtwcDesignation?: string;
-  isJtwcForecasted?: boolean;
 }
 
 export interface FilterParams {
@@ -101,7 +100,7 @@ export interface TableColumn<T> {
 
 export type SortDirection = "asc" | "desc" | null;
 
-export type IntensityType = "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
+export type IntensityType = "NT" | "TD" | "TS" | "STS" | "1" | "2" | "3" | "4" | "5";
 
 export interface SearchResult {
   id: number | null;

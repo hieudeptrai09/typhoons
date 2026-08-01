@@ -14,7 +14,6 @@ export interface StormRow {
   dateStart: string | null;
   dateEnd: string | null;
   jtwcDesignation: string | null;
-  isJtwcForecasted: boolean;
   isFirst: boolean;
   isLast: boolean;
 }
@@ -33,7 +32,6 @@ export const stormColumns = (stormAlias = "s", positionAlias = "p") =>
       ${stormAlias}.startdate::text AS "dateStart",
       ${stormAlias}.enddate::text AS "dateEnd",
       LPAD(${stormAlias}.jtwcnumber::text, 2, '0') || ${positionAlias}.suffix::text AS "jtwcDesignation",
-      ${stormAlias}.isjtwcforecasted AS "isJtwcForecasted",
       ${stormAlias}.isfirst AS "isFirst",
       ${stormAlias}.islast AS "isLast"`;
 
@@ -52,7 +50,6 @@ export const toStorm = (row: StormRow): Storm => ({
   dateStart: row.dateStart ?? undefined,
   dateEnd: row.dateEnd ?? undefined,
   jtwcDesignation: row.jtwcDesignation ?? undefined,
-  isJtwcForecasted: row.isJtwcForecasted,
   isFirst: row.isFirst,
   isLast: row.isLast,
 });

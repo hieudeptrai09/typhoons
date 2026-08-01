@@ -92,7 +92,8 @@ export const getIntensityFromNumber = (avgNumber: number): IntensityType => {
   if (rounded === 2) return "2";
   if (rounded === 1) return "1";
   if (rounded === 0) return "TS";
-  if (rounded <= -1) return "TD";
+  if (rounded === -1) return "TD";
+  if (rounded <= -2) return "NT";
   return "TD";
 };
 
@@ -104,7 +105,7 @@ export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   } else if (type === "last") {
     return stormsData.filter((storm) => storm.isLast);
   } else if (type === "untracked") {
-    return stormsData.filter((storm) => storm.isJtwcForecasted === false);
+    return stormsData.filter((storm) => storm.intensity === "NT");
   }
   return [];
 };

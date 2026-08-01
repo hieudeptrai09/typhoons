@@ -54,7 +54,11 @@ describe("getIntensityFromNumber", () => {
     expect(getIntensityFromNumber(0.4)).toBe("TS");
     expect(getIntensityFromNumber(-0.4)).toBe("TS");
     expect(getIntensityFromNumber(-1)).toBe("TD");
-    expect(getIntensityFromNumber(-5)).toBe("TD");
+  });
+
+  it("maps ranks below TD onto untracked", () => {
+    expect(getIntensityFromNumber(-2)).toBe("NT");
+    expect(getIntensityFromNumber(-5)).toBe("NT");
   });
 });
 
@@ -217,7 +221,7 @@ describe("getHighlights", () => {
     storm({ name: "Yagi", isStrongest: true }),
     storm({ name: "Haiyan", isFirst: true }),
     storm({ name: "Nakri", isLast: true }),
-    storm({ name: "Krathon", isJtwcForecasted: false }),
+    storm({ name: "Krathon", intensity: "NT" }),
   ];
 
   it("selects by the requested flag", () => {
@@ -251,6 +255,11 @@ describe("calculateAverage", () => {
   it("ranks TS and STS the same, below category 1", () => {
     expect(calculateAverage([storm({ intensity: "TS" }), storm({ intensity: "STS" })])).toBe(0);
     expect(calculateAverage([storm({ intensity: "TD" })])).toBe(-1);
+  });
+
+  it("ranks storms the JTWC never tracked at -2, below TD", () => {
+    expect(calculateAverage([storm({ intensity: "NT" })])).toBe(-2);
+    expect(calculateAverage([storm({ intensity: "4" }), storm({ intensity: "NT" })])).toBe(1);
   });
 });
 

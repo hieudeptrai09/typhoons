@@ -11,7 +11,9 @@ SET search_path TO catfisha_typhoons, public;
 -- ---------------------------------------------------------------------------
 
 -- Saffir-Simpson category for typhoons ('1'-'5'), below-typhoon strength otherwise.
-CREATE TYPE storms_intensity AS ENUM ('TD', 'TS', 'STS', '1', '2', '3', '4', '5');
+-- 'NT' is not a step on the scale: the JTWC never issued warnings on that storm, so it has
+-- no category at all. It sorts first so the enum order still runs weakest to strongest.
+CREATE TYPE storms_intensity AS ENUM ('NT', 'TD', 'TS', 'STS', '1', '2', '3', '4', '5');
 
 -- JTWC basin letter appended to the storm number, e.g. jtwcnumber 11 + 'W' -> "11W".
 CREATE TYPE suffix AS ENUM ('W', 'E', 'B', 'C');
@@ -122,8 +124,9 @@ CREATE TABLE storms (
     -- list entry; '' otherwise.
     correctspelling character varying(10) NOT NULL,
     isstrongest boolean DEFAULT false NOT NULL,     -- strongest storm to carry this name
-    jtwcnumber integer,                             -- combined with positions.suffix into "12W"
-    isjtwcforecasted boolean DEFAULT true NOT NULL,
+    -- Combined with positions.suffix into "12W". Set even for a few 'NT' storms, which the
+    -- JTWC numbered in post-season reanalysis without ever having tracked them live.
+    jtwcnumber integer,
     isfirst boolean DEFAULT false NOT NULL,         -- first storm of its season
     islast boolean DEFAULT false NOT NULL,          -- last storm of its season
     startdate date,
@@ -138,12 +141,12 @@ CREATE INDEX idx_17761_position ON storms USING btree ("position");
 
 INSERT INTO storms (
     id, "position", name, intensity, map, year, correctspelling,
-    isstrongest, jtwcnumber, isjtwcforecasted, isfirst, islast, startdate, enddate
+    isstrongest, jtwcnumber, isfirst, islast, startdate, enddate
 )
 VALUES (
     591, 19, 'Yagi', '5',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Yagi_2024_track.png/960px-Yagi_2024_track.png',
-    2024, '', true, 12, true, false, false, '2024-08-31', '2024-09-09'
+    2024, '', true, 12, false, false, '2024-08-31', '2024-09-09'
 );
 
 -- ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { INTENSITY_RANK, TITLE_COMMON } from "@/lib/constants";
+import { SORTING_RANK, TITLE_COMMON } from "@/lib/constants";
 import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import type { IntensityType, RetiredName, Storm, TyphoonName } from "@/lib/types";
 import { BACKGROUND_BADGE, isExternalPosition, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
@@ -31,6 +31,7 @@ const INTENSITY_SHORT: Record<IntensityType, string> = {
   STS: "STS",
   TS: "TS",
   TD: "TD",
+  NT: "Not tracked",
 };
 
 // Strongest storm by intensity; among equals the most recent one.
@@ -38,7 +39,7 @@ const pickStrongestStorm = (storms: Storm[]): Storm | null =>
   storms.reduce<Storm | null>((best, storm) => {
     if (!storm.map) return best;
     if (!best) return storm;
-    const diff = INTENSITY_RANK[storm.intensity] - INTENSITY_RANK[best.intensity];
+    const diff = SORTING_RANK[storm.intensity] - SORTING_RANK[best.intensity];
     if (diff > 0 || (diff === 0 && storm.year > best.year)) return storm;
     return best;
   }, null);
