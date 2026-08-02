@@ -14,24 +14,61 @@ import {
   unsubscribeFromPush,
   type PushSupport,
 } from "@/lib/push/client";
-import { PUSH_TOPIC_META, type PushTopic } from "@/lib/push/topics";
-import { App, Button, Modal, Switch } from "antd";
-import { Bell, BellRing } from "lucide-react";
+import { App, Button, Tooltip } from "antd";
+import { Bell, BellOff, BellRing } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+
+// Set when someone switches notifications off, so the next page load does not immediately
+// resubscribe them. Without it, auto-subscribe and the off switch fight each other.
+const OPT_OUT_KEY = "typhoons.push.optout";
+
+const readOptOut = (): boolean => {
+  try {
+    return window.localStorage.getItem(OPT_OUT_KEY) === "1";
+  } catch {
+    // Private-mode Safari throws on localStorage; treating that as "not opted out" only
+    // means the auto-subscribe attempt runs again, which is harmless.
+    return false;
+  }
+};
+
+const writeOptOut = (value: boolean): void => {
+  try {
+    if (value) window.localStorage.setItem(OPT_OUT_KEY, "1");
+    else window.localStorage.removeItem(OPT_OUT_KEY);
+  } catch {
+    /* nothing to do — the toggle still works for this session */
+  }
+};
 
 const PushBell = () => {
   const { message } = App.useApp();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [support, setSupport] = useState<PushSupport | null>(null);
   const [permission, setPermission] = useState<NotificationPermission>("default");
-  const [topics, setTopics] = useState<PushTopic[]>([]);
+  const [enabled, setEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const enabled = topics.length > 0;
+  // Everyone gets every topic; there is no per-topic choice in the UI.
+  const persist = useCallback(async () => {
+    const subscription = await subscribeToPush();
+    await savePushSubscription({
+      endpoint: subscription.endpoint,
+      p256dh: subscription.p256dh,
+      auth: subscription.auth,
+      topics: DEFAULT_TOPICS,
+      userAgent: navigator.userAgent,
+    });
+    setPermission(Notification.permission);
+    setEnabled(true);
+  }, []);
 
-  // Read the browser's state once on mount so the bell shows what is actually subscribed
-  // rather than what this tab last did.
+  const disable = useCallback(async () => {
+    const endpoint = await unsubscribeFromPush();
+    if (endpoint) await removePushSubscription(endpoint);
+    setEnabled(false);
+  }, []);
+
   useEffect(() => {
     const current = getPushSupport();
     setSupport(current);
@@ -40,145 +77,84 @@ const PushBell = () => {
     setPermission(Notification.permission);
 
     void (async () => {
-      const subscription = await getExistingSubscription();
-      if (!subscription) return;
-
-      const saved = await loadPushSubscription(subscription.endpoint);
-      // A subscription the server has never heard of is stale — leave the bell off and let
-      // the next enable re-register it.
-      if (saved) setTopics(saved);
-    })();
-  }, []);
-
-  const persist = useCallback(async (next: PushTopic[]) => {
-    const subscription = await subscribeToPush();
-    await savePushSubscription({
-      endpoint: subscription.endpoint,
-      p256dh: subscription.p256dh,
-      auth: subscription.auth,
-      topics: next,
-      userAgent: navigator.userAgent,
-    });
-    setTopics(next);
-    setPermission(Notification.permission);
-  }, []);
-
-  const disable = useCallback(async () => {
-    const endpoint = await unsubscribeFromPush();
-    if (endpoint) await removePushSubscription(endpoint);
-    setTopics([]);
-  }, []);
-
-  const run = useCallback(
-    async (action: () => Promise<void>, success: string) => {
-      setBusy(true);
-      try {
-        await action();
-        message.success(success);
-      } catch (error) {
-        if (error instanceof PushSubscribeError && error.kind === "denied") {
-          setPermission("denied");
-          message.error("Notifications are blocked. Allow them in your browser settings first.");
-        } else {
-          message.error("Could not update notifications. Please try again.");
+      const existing = await getExistingSubscription();
+      if (existing) {
+        const saved = await loadPushSubscription(existing.endpoint);
+        if (saved) {
+          setEnabled(true);
+          return;
         }
-      } finally {
-        setBusy(false);
       }
-    },
-    [message],
-  );
 
-  const toggleAll = (checked: boolean) => {
-    if (checked) void run(() => persist(DEFAULT_TOPICS), "Notifications on");
-    else void run(disable, "Notifications off");
+      if (readOptOut() || Notification.permission === "denied") return;
+
+      // Subscribe on sight. Firefox and Safari require a user gesture for
+      // requestPermission() and will reject this outright, which is exactly why the bell
+      // stays clickable — the failure here is silent on purpose, since a toast about a
+      // permission nobody asked for is worse than no notifications at all.
+      try {
+        await persist();
+      } catch {
+        setPermission(Notification.permission);
+      }
+    })();
+  }, [persist]);
+
+  const toggle = async () => {
+    setBusy(true);
+    try {
+      if (enabled) {
+        await disable();
+        writeOptOut(true);
+        message.success("Notifications off");
+      } else {
+        writeOptOut(false);
+        await persist();
+        message.success("Notifications on");
+      }
+    } catch (error) {
+      if (error instanceof PushSubscribeError && error.kind === "denied") {
+        setPermission("denied");
+        message.error("Notifications are blocked. Allow them in your browser settings first.");
+      } else {
+        message.error("Could not update notifications. Please try again.");
+      }
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const toggleTopic = (topic: PushTopic, checked: boolean) => {
-    const next = checked ? [...topics, topic] : topics.filter((item) => item !== topic);
+  const unsupported = support !== null && !support.supported;
+  const blocked = permission === "denied";
 
-    // The last topic switched off means "stop notifying me", so drop the subscription
-    // rather than leaving an empty one the server would reject.
-    if (next.length === 0) {
-      void run(disable, "Notifications off");
-      return;
+  const tooltip = (() => {
+    if (unsupported) {
+      return support.reason === "needs-install"
+        ? "Add this app to your Home Screen to get notifications"
+        : "This browser doesn't support notifications";
     }
+    if (blocked) return "Notifications are blocked in your browser settings";
+    return enabled ? "Notifications on — tap to turn off" : "Tap to turn notifications on";
+  })();
 
-    void run(() => persist(next), "Preferences saved");
-  };
-
-  const renderBody = () => {
-    if (support && !support.supported) {
-      return (
-        <p className="text-foreground">
-          {support.reason === "needs-install"
-            ? "Add this app to your Home Screen first — iOS only allows notifications for installed apps."
-            : "This browser doesn't support notifications."}
-        </p>
-      );
-    }
-
-    if (permission === "denied") {
-      return (
-        <p className="text-foreground">
-          Notifications are blocked for this site. Allow them in your browser settings, then come
-          back here.
-        </p>
-      );
-    }
-
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <p className="m-0 font-semibold text-foreground">Notify me</p>
-          <Switch checked={enabled} loading={busy} onChange={toggleAll} />
-        </div>
-
-        {PUSH_TOPIC_META.map((meta) => (
-          <div key={meta.key} className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="m-0 text-sm font-semibold text-foreground">{meta.label}</p>
-              <p className="m-0 text-xs text-foreground/70">{meta.description}</p>
-            </div>
-            <Switch
-              size="small"
-              className="mt-1"
-              checked={topics.includes(meta.key)}
-              disabled={busy || !enabled}
-              onChange={(checked) => toggleTopic(meta.key, checked)}
-            />
-          </div>
-        ))}
-
-        <p className="m-0 text-xs text-foreground/60">
-          These are database updates, not weather warnings. For live advisories, follow the JMA,
-          JTWC or PAGASA.
-        </p>
-      </div>
-    );
-  };
+  const icon = (() => {
+    if (unsupported || blocked) return <BellOff size={20} />;
+    return enabled ? <BellRing size={20} /> : <Bell size={20} />;
+  })();
 
   return (
-    <>
+    <Tooltip title={tooltip}>
       <Button
         type="text"
-        onClick={() => setIsOpen(true)}
-        aria-label={enabled ? "Notification settings (on)" : "Notification settings"}
-        icon={enabled ? <BellRing size={20} /> : <Bell size={20} />}
-        className="!text-white hover:!bg-white/20"
+        onClick={toggle}
+        disabled={unsupported || blocked || busy}
+        loading={busy}
+        aria-label={tooltip}
+        aria-pressed={enabled}
+        icon={icon}
+        className="text-white! hover:bg-white/20! disabled:text-white/50!"
       />
-
-      <Modal
-        open={isOpen}
-        onCancel={() => setIsOpen(false)}
-        title="Notifications"
-        centered
-        footer={null}
-        width={420}
-      >
-        {renderBody()}
-      </Modal>
-    </>
+    </Tooltip>
   );
 };
 
