@@ -1,5 +1,6 @@
 "use client";
 
+import PushBell from "@/lib/components/PushBell";
 import SearchBar from "@/lib/components/SearchBar";
 import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -33,6 +34,7 @@ const Navbar = ({ allNames }: { allNames: string[] }) => {
 
           <div className="flex items-center gap-2 md:gap-4">
             <DesktopNav currentPath={pathName} />
+            <PushBell />
             <MenuToggle isOpen={isMenuOpen} onToggle={toggleMenu} />
           </div>
         </div>
