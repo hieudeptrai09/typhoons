@@ -22,7 +22,8 @@ const NotFound = () => {
 
       <p className="mb-2 text-2xl font-bold text-foreground">This page drifted off the map</p>
       <p className="mb-10 max-w-md text-base text-slate-600">
-        The page you&rsquo;re looking for may have been moved, renamed, or swept away by a storm.
+        It may have moved, or been swept away by a storm.
+        <br />
         Let&rsquo;s get you back on course.
       </p>
 
