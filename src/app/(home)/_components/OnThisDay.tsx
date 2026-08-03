@@ -102,7 +102,7 @@ const OnThisDay = () => {
         centered: true,
         okText: "Got it",
         content: (
-          <div>
+          <div className="max-h-[70vh] overflow-y-auto">
             <p className="mb-3 text-sm font-semibold text-foreground">{dateStr}</p>
             <ul className="m-0 list-none space-y-1.5 p-0">
               {storms.map((storm, i) => {
