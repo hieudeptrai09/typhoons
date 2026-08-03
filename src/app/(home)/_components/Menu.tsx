@@ -19,6 +19,11 @@ const Menu = ({ href, label, bgColor, hoverBgColor }: MenuProps) => {
           colorPrimaryHover: hoverBgColor,
           colorPrimaryActive: hoverBgColor,
         },
+        components: {
+          Button: {
+            primaryShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
+          },
+        },
       }}
     >
       <Link href={href} className="block">

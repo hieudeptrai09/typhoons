@@ -26,6 +26,21 @@ export const INTENSITY_RANK: Record<IntensityType, number> = {
   NT: -2,
 };
 
+export const MONTH_NAMES: Record<number, string> = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
+
 export const INTENSITY_LABEL: Record<IntensityType, string> = {
   5: "Category 5 Super Typhoon",
   4: "Category 4 Typhoon",

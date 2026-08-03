@@ -1,5 +1,5 @@
 import { TITLE_COMMON } from "@/lib/constants";
-import { BookOpen, Database, Scale, User } from "lucide-react";
+import { BookOpen, Database, ExternalLink, Scale, User } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -61,16 +61,24 @@ const AboutPage = () => {
         </p>
         <ul className="mt-4 space-y-3">
           {sources.map((source) => (
-            <li key={source.name} className="rounded-lg border border-slate-200 bg-white p-4">
+            <li key={source.name}>
               <a
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-600 hover:underline"
+                className="group flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-blue-300 hover:bg-blue-50/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
               >
-                {source.name}
+                <span className="min-w-0">
+                  <span className="font-medium text-blue-600 group-hover:underline">
+                    {source.name}
+                  </span>
+                  <span className="mt-1 block text-sm text-slate-500">{source.detail}</span>
+                </span>
+                <ExternalLink
+                  className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-blue-600"
+                  aria-hidden="true"
+                />
               </a>
-              <p className="mt-1 text-sm text-slate-500">{source.detail}</p>
             </li>
           ))}
         </ul>
@@ -82,40 +90,43 @@ const AboutPage = () => {
           <Scale className="h-5 w-5 text-blue-600" aria-hidden="true" />
           License
         </h2>
-        <p className="mt-2 leading-relaxed text-slate-600">
-          This database is dedicated to the public domain under{" "}
-          <a
-            href="https://creativecommons.org/publicdomain/zero/1.0/"
-            target="_blank"
-            rel="noopener noreferrer license"
-            className="text-blue-600 hover:underline"
-          >
-            Creative Commons Zero 1.0 Universal (CC0 1.0)
-          </a>
-          . To the extent possible under law, all rights are waived. You are free to copy, adapt,
-          and use the data for any purpose, without asking permission — though a credit is always
-          appreciated.
-        </p>
-        <p className="mt-3 leading-relaxed text-slate-600">
-          This dedication covers the{" "}
-          <span className="font-medium text-slate-700">data and text</span> of this database only.
-          It does not extend to the images, which belong to their respective owners and remain under
-          their original copyright. No ownership of, or license over, those images is claimed here.
-        </p>
-        <p className="mt-3 leading-relaxed text-slate-600">
-          Where an image&apos;s author and license are known, they are credited alongside it. This
-          is a personal, non-commercial project, and if you are a rights holder who would like an
-          image credited differently or removed, please{" "}
-          <a
-            href="https://www.facebook.com/profile.php?id=61586585781960"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
-          >
-            get in touch
-          </a>{" "}
-          and I will do so promptly.
-        </p>
+        <div className="mt-3 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-slate-50">
+          <p className="p-4 leading-relaxed text-slate-600 sm:p-5">
+            This database is dedicated to the public domain under{" "}
+            <a
+              href="https://creativecommons.org/publicdomain/zero/1.0/"
+              target="_blank"
+              rel="noopener noreferrer license"
+              className="text-blue-600 hover:underline"
+            >
+              Creative Commons Zero 1.0 Universal (CC0 1.0)
+            </a>
+            . To the extent possible under law, all rights are waived. You are free to copy, adapt,
+            and use the data for any purpose, without asking permission — though a credit is always
+            appreciated.
+          </p>
+          <p className="p-4 leading-relaxed text-slate-600 sm:p-5">
+            This dedication covers the{" "}
+            <span className="font-medium text-slate-700">data and text</span> of this database only.
+            It does not extend to the images, which belong to their respective owners and remain
+            under their original copyright. No ownership of, or license over, those images is
+            claimed here.
+          </p>
+          <p className="p-4 leading-relaxed text-slate-600 sm:p-5">
+            Where an image&apos;s author and license are known, they are credited alongside it. This
+            is a personal, non-commercial project, and if you are a rights holder who would like an
+            image credited differently or removed, please{" "}
+            <a
+              href="https://www.facebook.com/profile.php?id=61586585781960"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              get in touch
+            </a>{" "}
+            and I will do so promptly.
+          </p>
+        </div>
       </section>
 
       {/* Creator / contact */}

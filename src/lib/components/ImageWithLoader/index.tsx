@@ -20,13 +20,18 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
         </div>
       )}
 
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <ImageOff className="h-1/4 w-1/4 min-h-6 min-w-6 text-gray-400" strokeWidth={1.5} />
+      {hasError ? (
+        <div
+          role="img"
+          aria-label="No image available"
+          className="@container flex h-full w-full flex-col items-center justify-center gap-1.5 p-2 text-center text-gray-400"
+        >
+          <ImageOff className="h-1/4 w-1/4 min-h-6 min-w-6" strokeWidth={1.5} aria-hidden />
+          <span aria-hidden className="hidden text-xs font-medium @[7rem]:block">
+            No image available
+          </span>
         </div>
-      )}
-
-      {!hasError && (
+      ) : (
         <Image
           {...props}
           alt={props.alt || ""}

@@ -51,8 +51,15 @@ const StormCard = ({ storm }: { storm: Storm }) => {
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center gap-1.5 text-xs text-slate-400">
-            <ImageOff size={14} />
+          <div
+            role="img"
+            aria-label="No image available"
+            className="@container flex h-full w-full flex-col items-center justify-center gap-1.5 p-2 text-center text-gray-400"
+          >
+            <ImageOff className="h-1/4 w-1/4 min-h-6 min-w-6" strokeWidth={1.5} aria-hidden />
+            <span aria-hidden className="hidden text-xs font-medium @[7rem]:block">
+              No track map
+            </span>
           </div>
         )}
       </div>

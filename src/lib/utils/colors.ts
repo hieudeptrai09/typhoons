@@ -54,10 +54,6 @@ export const getDistanceColor = (years: number): string => {
 };
 
 // --- Average-date month colors ---
-// Storm-date averages land in June–October, so each of those months gets one of
-// five distinct hues. The date text always names the month too, so color is a
-// reinforcing channel — validated on white at normal-vision ΔE ≥ 15 (all pairs)
-// and contrast ≥ 3:1; the CVD blue↔purple overlap is covered by that label.
 export const AVG_DATE_MONTH_COLOR: Record<number, string> = {
   6: "#1d4ed8", // June — blue
   7: "#15803d", // July — green
@@ -70,6 +66,20 @@ export const AVG_DATE_FALLBACK_COLOR = "#374151";
 
 export const getAvgDateColor = (month: number): string =>
   AVG_DATE_MONTH_COLOR[month] ?? AVG_DATE_FALLBACK_COLOR;
+
+// --- Highlights grid colors ---
+
+export const HIGHLIGHT_CELL_CLASS: Record<string, string> = {
+  strongest: "bg-rose-300",
+  first: "bg-blue-300",
+  last: "bg-orange-300",
+  untracked: "bg-slate-300",
+};
+
+export const HIGHLIGHT_EMPTY_CELL_CLASS = "bg-gray-100";
+
+export const getHighlightCellClass = (highlightType: string): string =>
+  HIGHLIGHT_CELL_CLASS[highlightType] ?? "bg-green-300";
 
 // --- Name status colors ---
 

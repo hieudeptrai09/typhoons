@@ -1,7 +1,17 @@
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, FilterParams } from "@/lib/types";
-import { getPositionTitle, parsePositionLabel, toArr, toOpts, toStr } from "@/lib/utils/fns";
+import type { PositionValue } from "@/lib/utils/fns";
+import {
+  getPositionTitle,
+  isPartialPosition,
+  positionFromValue,
+  positionToValue,
+  toArr,
+  toOpts,
+  toStr,
+} from "@/lib/utils/fns";
 import { Button, Form, Input, Radio, Select } from "antd";
+import PositionSelect from "../_widgets/PositionSelect";
 
 export interface ListFilterModalProps extends BaseModalProps {
   onApply: (filters: FilterParams) => void;
@@ -10,6 +20,7 @@ export interface ListFilterModalProps extends BaseModalProps {
   tags: string[];
   initialFilters: FilterParams;
   showHistory: boolean;
+  matchCount: (filters: FilterParams) => number;
 }
 
 interface FormValues {
@@ -17,9 +28,22 @@ interface FormValues {
   country: string[];
   language: string[];
   tag: string[];
-  position: string;
+  position: PositionValue;
   status: string | undefined;
 }
+
+const toFilters = (values: FormValues): FilterParams => {
+  const position = positionFromValue(values.position);
+  return {
+    name: values.name ?? "",
+    country: toStr(values.country),
+    language: toStr(values.language),
+    tag: toStr(values.tag),
+    position: position != null ? String(position) : "",
+    status: values.status ?? "",
+    letter: "",
+  };
+};
 
 const ListFilterModal = ({
   isOpen,
@@ -30,6 +54,7 @@ const ListFilterModal = ({
   tags,
   initialFilters,
   showHistory,
+  matchCount,
 }: ListFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
@@ -38,7 +63,7 @@ const ListFilterModal = ({
     country: toArr(initialFilters.country),
     language: toArr(initialFilters.language),
     tag: toArr(initialFilters.tag),
-    position: initialFilters.position ? getPositionTitle(Number(initialFilters.position)) : "",
+    position: positionToValue(initialFilters.position ? Number(initialFilters.position) : null),
     status: showHistory ? initialFilters.status || "" : "current",
   };
 
@@ -47,22 +72,28 @@ const ListFilterModal = ({
     country: [],
     language: [],
     tag: [],
-    position: "",
+    position: positionToValue(null),
     status: showHistory ? "" : "current",
   };
 
-  const handleApply = (values: FormValues) => {
-    const position = values.position ? parsePositionLabel(values.position) : null;
-    onApply({
-      name: values.name ?? "",
-      country: toStr(values.country),
-      language: toStr(values.language),
-      tag: toStr(values.tag),
-      position: position != null ? String(position) : "",
-      status: values.status ?? "",
-      letter: "",
-    });
+  const handleClearAll = () => {
+    form.setFieldsValue(clearedValues);
+    form.setFields([{ name: "position", errors: [] }]);
   };
+
+  const watched = Form.useWatch([], form);
+  const values = watched ?? openValues;
+  const position = positionFromValue(values.position);
+  const pending = toFilters(values);
+  const hasFilters = Boolean(
+    pending.name ||
+    pending.country ||
+    pending.language ||
+    pending.tag ||
+    pending.position ||
+    (showHistory && pending.status),
+  );
+  const count = hasFilters ? matchCount(pending) : null;
 
   return (
     <DefModal
@@ -71,22 +102,27 @@ const ListFilterModal = ({
       width={480}
       title={<span className="text-xl font-bold text-foreground">Filter Options</span>}
       footer={[
-        <Button
-          key="clear"
-          onClick={() => form.setFieldsValue(clearedValues)}
-          aria-label="Clear all filters"
-        >
+        <Button key="clear" onClick={handleClearAll} aria-label="Clear all filters">
           Clear All
         </Button>,
-        <Button key="apply" type="primary" onClick={() => form.submit()} aria-label="Apply filters">
-          Apply
+        <Button
+          key="apply"
+          type="primary"
+          onClick={() => form.submit()}
+          aria-label={
+            count == null
+              ? "Apply filters"
+              : `Apply filters, ${count} ${count === 1 ? "name" : "names"} match`
+          }
+        >
+          {count == null ? "Apply" : `Apply (${count})`}
         </Button>,
       ]}
     >
       <Form
         form={form}
         layout="vertical"
-        onFinish={handleApply}
+        onFinish={(formValues: FormValues) => onApply(toFilters(formValues))}
         className="py-4"
         initialValues={openValues}
       >
@@ -120,18 +156,22 @@ const ListFilterModal = ({
           label="Position"
           name="position"
           extra={
-            <span id="filter-position-help">Grid position (row + country letter), e.g. 3I</span>
+            <span id="filter-position-help">
+              {position != null
+                ? `Cell ${getPositionTitle(position)} — position #${position} in the naming table`
+                : "Pick the row and the contributing country of the cell in the naming table"}
+            </span>
           }
           rules={[
             {
-              validator: (_, value: string) =>
-                !value || parsePositionLabel(value) !== null
-                  ? Promise.resolve()
-                  : Promise.reject(new Error("Enter a grid position like 3I, or a number 1–140")),
+              validator: (_, value: PositionValue) =>
+                isPartialPosition(value)
+                  ? Promise.reject(new Error("Pick both a row and a country"))
+                  : Promise.resolve(),
             },
           ]}
         >
-          <Input placeholder="e.g. 3I or 37" allowClear aria-describedby="filter-position-help" />
+          <PositionSelect />
         </Form.Item>
 
         {showHistory && (

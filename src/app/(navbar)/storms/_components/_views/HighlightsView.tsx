@@ -5,7 +5,7 @@ import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
 import { getPositionTitle, parseDateParts } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
-import HighlightsGrid from "../_widgets/grids/HighlightsGrid";
+import HighlightsGrid from "../_grids/HighlightsGrid";
 import { getHighlights } from "../../_utils/fns";
 
 interface HighlightsViewProps {

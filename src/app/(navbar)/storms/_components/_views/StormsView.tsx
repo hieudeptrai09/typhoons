@@ -5,8 +5,8 @@ import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
-import NamesGrid from "../_widgets/grids/NamesGrid";
-import StormsGrid from "../_widgets/grids/StormsGrid";
+import NamesGrid from "../_grids/NamesGrid";
+import StormsGrid from "../_grids/StormsGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
@@ -87,13 +87,13 @@ const StormsView = ({ params, stormsData, averageValues, onCellClick }: StormsVi
 
   if (filter === "position") {
     return (
-      <div>
+      <div className="flex flex-col gap-6">
+        <StormsGrid onCellClick={onCellClick} stormsData={stormsData} isClickable />
         <SpecialButtons
           onCellClick={onCellClick}
           isAverageView={false}
           averageValues={averageValues}
         />
-        <StormsGrid onCellClick={onCellClick} stormsData={stormsData} isClickable />
       </div>
     );
   }

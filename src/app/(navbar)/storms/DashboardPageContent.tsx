@@ -2,10 +2,12 @@
 
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
+import { MONTH_NAMES } from "@/lib/constants";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/fns";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import DashboardLegend from "./_components/_legends/DashboardLegend";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import AvgDateModal from "./_components/_modals/AvgDateModal";
 import DistanceModal from "./_components/_modals/DistanceModal";
@@ -17,9 +19,6 @@ import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
-import AvgDateLegend from "./_components/_widgets/legends/AvgDateLegend";
-import GapLegend from "./_components/_widgets/legends/GapLegend";
-import IntensityLegend from "./_components/_widgets/legends/IntensityLegend";
 import {
   calculateAverage,
   calculateGapAverage,
@@ -102,9 +101,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
     // Average / month: clicking a month row opens storm detail modal
     if (view === "average" && filter === "month") {
-      const monthName = new Date(2000, (data as number) - 1, 1).toLocaleString("default", {
-        month: "long",
-      });
+      const monthName = MONTH_NAMES[data as number];
       const monthStorms = (stormsData || []).filter(
         (s) => getEffectiveMonth(s) === (data as number),
       );
@@ -118,8 +115,8 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Distance view: clicking a position or name opens the gap timeline
-    if (view === "distance") {
+    // Recurrence view: clicking a position or name opens the recurrence timeline
+    if (view === "recurrence") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
       setSelectedData({ title, storms, average: calculateGapAverage(storms) });
       setIsDistanceModalOpen(true);
@@ -179,7 +176,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 onCellClick={handleCellClick}
               />
             );
-          case "distance":
+          case "recurrence":
             return (
               <DistanceView
                 params={currentParams}
@@ -239,13 +236,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         storms={selectedData?.storms || []}
       />
 
-      {view === "distance" ? (
-        <GapLegend />
-      ) : view === "avgdate" ? (
-        <AvgDateLegend />
-      ) : (
-        <IntensityLegend />
-      )}
+      <DashboardLegend params={currentParams} />
     </PageHeader>
   );
 }

@@ -6,7 +6,7 @@ const VALID_FILTERS: Record<string, string[]> = {
   all: ["position", "name"],
   highlights: ["strongest", "first", "last", "untracked"],
   average: ["position", "name", "country", "year", "month"],
-  distance: ["position", "name"],
+  recurrence: ["position", "name"],
   avgdate: ["position", "name"],
 };
 
@@ -14,7 +14,7 @@ export const DEFAULT_FILTER: Record<string, string> = {
   all: "position",
   highlights: "strongest",
   average: "position",
-  distance: "position",
+  recurrence: "position",
   avgdate: "position",
 };
 
@@ -36,7 +36,7 @@ export const isValidStormsSlug = (slug: string[]): boolean => {
 };
 
 export const isListOnly = (view: string, filter: string): boolean =>
-  (view === "average" && filter === "country") || (view === "average" && filter === "month");
+  view === "average" && ["country", "month", "year"].includes(filter);
 
 export const isGridOnly = (view: string, filter: string): boolean =>
   view === "all" && filter === "position";
@@ -258,6 +258,25 @@ export const getEffectiveMonth = (storm: Storm): number | null => {
   return start.year < storm.year ? 1 : start.month;
 };
 
+export type LegendKind = "intensity" | "recurrence" | "avgdate" | "highlight" | null;
+
+export const getLegendKind = ({ view, mode, filter }: DashboardParams): LegendKind => {
+  switch (view) {
+    case "recurrence":
+      return "recurrence";
+    case "avgdate":
+      return "avgdate";
+    case "highlights":
+      return mode === "list" ? "intensity" : "highlight";
+    case "average":
+      return "intensity";
+    case "all":
+      return mode === "list" && filter === "name" ? "intensity" : null;
+    default:
+      return null;
+  }
+};
+
 export const getDashboardTitle = (
   view: string | string[] | undefined,
   mode: string | string[] | undefined,
@@ -270,7 +289,7 @@ export const getDashboardTitle = (
     all: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
     average: `Average Intensity by ${capitalize(filterStr)}`,
-    distance: `Average Gap Between Storms by ${capitalize(filterStr)}`,
+    recurrence: `Average Storm Recurrence by ${capitalize(filterStr)}`,
     avgdate: `Average Storm Dates by ${capitalize(filterStr)}`,
   };
 
@@ -326,14 +345,14 @@ export const getDashboardDescription = (
     );
   }
 
-  if (viewStr === "distance") {
-    const distanceDescriptions: Record<string, string> = {
+  if (viewStr === "recurrence") {
+    const recurrenceDescriptions: Record<string, string> = {
       position:
         "View the average number of years between consecutive storms at each naming position. Identify which slots see more or less frequent activity.",
-      name: "Explore the average year-gap between storms sharing the same typhoon name. See how often each name is recycled in the naming cycle.",
+      name: "Explore how often storms sharing the same typhoon name recur, in years. See how often each name is recycled in the naming cycle.",
     };
     return (
-      distanceDescriptions[filterStr] ||
+      recurrenceDescriptions[filterStr] ||
       "Analyze the temporal spacing between storms grouped by position or name."
     );
   }

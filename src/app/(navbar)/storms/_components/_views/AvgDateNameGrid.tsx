@@ -1,7 +1,7 @@
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import { useMemo, type ReactNode } from "react";
-import NamesGrid from "../_widgets/grids/NamesGrid";
+import NamesGrid from "../_grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import { calculateAvgDatesByGroup, formatDayOfYear, getDoyMonth } from "../../_utils/fns";
 

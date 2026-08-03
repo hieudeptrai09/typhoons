@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import DefTable from "@/lib/components/DefTable";
+import { MONTH_NAMES } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -12,21 +13,6 @@ import {
   getGroupedStorms,
   getIntensityFromNumber,
 } from "../../_utils/fns";
-
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 interface AverageListTableProps {
   filter: string;
@@ -55,7 +41,7 @@ const transformData = (dataMap: Record<string, Storm[]>, filterType: string): Av
       case "year":
         return { year: parseInt(key), ...base };
       case "month":
-        return { month: parseInt(key), monthName: MONTH_NAMES[parseInt(key) - 1], ...base };
+        return { month: parseInt(key), monthName: MONTH_NAMES[parseInt(key)], ...base };
       case "country":
         return { country: key, ...base };
       case "name":

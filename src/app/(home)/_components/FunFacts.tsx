@@ -2,7 +2,7 @@
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { App, Button } from "antd";
-import { Sparkles } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { fetchRandomFact } from "../_actions";
 
@@ -42,7 +42,7 @@ const FunFacts = () => {
         loading ? (
           <TyphoonSpinner size="small" colorClass="text-amber-700" />
         ) : (
-          <Sparkles size={16} />
+          <Lightbulb size={16} />
         )
       }
       onClick={showFact}

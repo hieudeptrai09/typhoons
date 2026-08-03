@@ -1,7 +1,7 @@
 import type { Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { useMemo } from "react";
-import NamesGrid from "../_widgets/grids/NamesGrid";
+import NamesGrid from "../_grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
 import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 

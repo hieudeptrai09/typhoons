@@ -10,7 +10,7 @@ import {
   MapPin,
   Medal,
   Moon,
-  Ruler,
+  Repeat,
   Star,
   Sun,
   Tag,
@@ -23,7 +23,7 @@ export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
     all: CloudLightning,
     highlights: Star,
     average: Activity,
-    distance: Ruler,
+    recurrence: Repeat,
     avgdate: CalendarRange,
   },
   filter: {
@@ -73,7 +73,7 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
     { label: icon(Sun, "Year"), value: "year" },
     { label: icon(Moon, "Month"), value: "month" },
   ],
-  distance: [
+  recurrence: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],

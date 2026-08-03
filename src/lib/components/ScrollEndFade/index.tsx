@@ -1,18 +1,9 @@
 "use client";
 
+import type { ComponentPropsWithoutRef } from "react";
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Tracks the horizontal scroll position of a scrollable descendant so a
- * right-edge fade can be shown only while there is more content to the right,
- * and hidden once the user has scrolled to the end (so the last column is
- * readable). Works for antd tables (which scroll inside `.ant-table-content`)
- * and for any container tagged `data-scroll-container`.
- *
- * Attach `wrapperRef` to the `relative` wrapper around the scroller, and gate
- * the fade element on `showEndFade`.
- */
-export function useScrollEndFade() {
+const ScrollEndFade = ({ children, className, ...rest }: ComponentPropsWithoutRef<"div">) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [showEndFade, setShowEndFade] = useState(false);
 
@@ -65,5 +56,17 @@ export function useScrollEndFade() {
     };
   }, []);
 
-  return { wrapperRef, showEndFade };
-}
+  return (
+    <div ref={wrapperRef} className={`relative ${className ?? ""}`} {...rest}>
+      {children}
+      <div
+        className={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-stone-100 to-transparent transition-opacity duration-200 md:hidden ${
+          showEndFade ? "opacity-100" : "opacity-0"
+        }`}
+        aria-hidden="true"
+      />
+    </div>
+  );
+};
+
+export default ScrollEndFade;

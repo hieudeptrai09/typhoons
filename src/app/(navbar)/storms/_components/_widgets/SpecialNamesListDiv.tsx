@@ -37,7 +37,7 @@ const SpecialNamesListDiv = ({
   if (stormsByPosition.every((p) => p.names.length === 0)) return null;
 
   return (
-    <div className="mb-6 flex flex-wrap justify-center gap-4">
+    <div className="flex flex-wrap justify-center gap-4">
       <div className="mr-2 self-start pt-2 text-sm font-semibold text-foreground">
         Other Regions:
       </div>

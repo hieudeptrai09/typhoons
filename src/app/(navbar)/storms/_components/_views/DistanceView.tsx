@@ -6,7 +6,7 @@ import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
-import DistanceGrid from "../_widgets/grids/DistanceGrid";
+import DistanceGrid from "../_grids/DistanceGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import { calculateDistances, formatDistance, getGroupedStorms } from "../../_utils/fns";
 import DistanceNameGrid from "./DistanceNameGrid";
@@ -73,7 +73,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceRow> 
   };
 
   const distanceCol: ColumnsType<DistanceRow>[number] = {
-    title: "Avg Gap (years)",
+    title: "Avg Recurrence (years)",
     dataIndex: "distance",
     key: "distance",
     sorter: (a, b) => a.distanceNumber - b.distanceNumber,
@@ -157,18 +157,18 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
   // position + table → special buttons + distance grid
   if (params.mode === "table" && filterType === "position") {
     return (
-      <div>
-        <SpecialButtons
-          onCellClick={onCellClick}
-          isAverageView={false}
-          averageValues={null}
-          distanceValues={distanceValuesForGrid}
-        />
+      <div className="flex flex-col gap-6">
         <DistanceGrid
           onCellClick={onCellClick}
           stormsData={stormsData}
           distanceValues={distanceValuesForGrid}
           isClickable
+        />
+        <SpecialButtons
+          onCellClick={onCellClick}
+          isAverageView={false}
+          averageValues={null}
+          distanceValues={distanceValuesForGrid}
         />
       </div>
     );

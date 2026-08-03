@@ -14,7 +14,7 @@ const VIEW_TABS: { key: string; label: string }[] = [
   { key: "all", label: "Storms" },
   { key: "highlights", label: "Highlights" },
   { key: "average", label: "Average" },
-  { key: "distance", label: "Gap" },
+  { key: "recurrence", label: "Recurrence" },
   { key: "avgdate", label: "Avg. Date" },
 ];
 
@@ -31,7 +31,7 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
     <div className="mx-auto mb-6 flex max-w-4xl flex-col gap-4">
       <nav
         aria-label="Dashboard view"
-        className="mx-auto flex w-full max-w-2xl overflow-x-auto border-b border-gray-200"
+        className="mx-auto grid w-full max-w-2xl grid-cols-5 border-b border-gray-200"
       >
         {VIEW_TABS.map(({ key, label }) => {
           const Icon = DASHBOARD_ICON_MAP.view[key];
@@ -41,14 +41,14 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
               key={key}
               href={paramsToPath(paramsForView(key))}
               aria-current={isActive ? "page" : undefined}
-              className={`flex shrink-0 items-center justify-center gap-1.5 px-4 pb-3 text-sm font-semibold whitespace-nowrap transition-colors sm:flex-1 ${
+              className={`flex min-w-0 flex-col items-center justify-end gap-1 px-0.5 pb-2.5 text-center text-[11px] leading-tight font-semibold transition-colors sm:flex-row sm:justify-center sm:gap-1.5 sm:px-4 sm:pb-3 sm:text-sm ${
                 isActive
                   ? "border-b-2 border-sky-700 text-sky-700"
                   : "text-foreground hover:text-highlight"
               }`}
             >
-              <Icon size={15} />
-              {label}
+              <Icon size={15} className="shrink-0" />
+              <span className="sm:whitespace-nowrap">{label}</span>
             </Link>
           );
         })}

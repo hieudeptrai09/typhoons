@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import AverageGrid from "../_widgets/grids/AverageGrid";
+import AverageGrid from "../_grids/AverageGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 
 interface AveragePositionGridProps {
@@ -13,14 +13,14 @@ const AveragePositionGrid = ({
   averageValues,
   onCellClick,
 }: AveragePositionGridProps) => (
-  <div>
-    <SpecialButtons onCellClick={onCellClick} isAverageView averageValues={averageValues} />
+  <div className="flex flex-col gap-6">
     <AverageGrid
       onCellClick={onCellClick}
       stormsData={stormsData}
       averageValues={averageValues}
       isClickable
     />
+    <SpecialButtons onCellClick={onCellClick} isAverageView averageValues={averageValues} />
   </div>
 );
 

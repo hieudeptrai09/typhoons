@@ -1,14 +1,25 @@
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredFilterParams, RetirementReason } from "@/lib/types";
-import { getPositionTitle, parsePositionLabel, toArr, toOpts, toStr } from "@/lib/utils/fns";
+import type { PositionValue } from "@/lib/utils/fns";
+import {
+  getPositionTitle,
+  isPartialPosition,
+  positionFromValue,
+  positionToValue,
+  toArr,
+  toOpts,
+  toStr,
+} from "@/lib/utils/fns";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
+import PositionSelect from "../_widgets/PositionSelect";
 
 interface RetiredFilterModalProps extends BaseModalProps {
   onApply: (filters: RetiredFilterParams) => void;
   countries: string[];
   initialFilters: RetiredFilterParams;
+  matchCount: (filters: RetiredFilterParams) => number;
 }
 
 interface FormValues {
@@ -16,7 +27,7 @@ interface FormValues {
   year: Dayjs | undefined;
   country: string[];
   reason: string[];
-  position: string;
+  position: PositionValue;
 }
 
 const REASON_OPTIONS: { value: RetirementReason; label: string }[] = [
@@ -26,12 +37,25 @@ const REASON_OPTIONS: { value: RetirementReason; label: string }[] = [
   { value: "special", label: "Special Storm" },
 ];
 
+const toFilters = (values: FormValues): RetiredFilterParams => {
+  const position = positionFromValue(values.position);
+  return {
+    name: values.name ?? "",
+    year: values.year ? String(values.year.year()) : "",
+    country: toStr(values.country),
+    reason: toStr(values.reason),
+    position: position != null ? String(position) : "",
+    letter: "",
+  };
+};
+
 const RetiredFilterModal = ({
   isOpen,
   onClose,
   onApply,
   countries,
   initialFilters,
+  matchCount,
 }: RetiredFilterModalProps) => {
   const [form] = Form.useForm<FormValues>();
 
@@ -40,7 +64,7 @@ const RetiredFilterModal = ({
     year: initialFilters.year ? dayjs().year(Number(initialFilters.year)) : undefined,
     country: toArr(initialFilters.country),
     reason: toArr(initialFilters.reason),
-    position: initialFilters.position ? getPositionTitle(Number(initialFilters.position)) : "",
+    position: positionToValue(initialFilters.position ? Number(initialFilters.position) : null),
   };
 
   const clearedValues: FormValues = {
@@ -48,20 +72,22 @@ const RetiredFilterModal = ({
     year: undefined,
     country: [],
     reason: [],
-    position: "",
+    position: positionToValue(null),
   };
 
-  const handleApply = (values: FormValues) => {
-    const position = values.position ? parsePositionLabel(values.position) : null;
-    onApply({
-      name: values.name ?? "",
-      year: values.year ? String(values.year.year()) : "",
-      country: toStr(values.country),
-      reason: toStr(values.reason),
-      position: position != null ? String(position) : "",
-      letter: "",
-    });
+  const handleClearAll = () => {
+    form.setFieldsValue(clearedValues);
+    form.setFields([{ name: "position", errors: [] }]);
   };
+
+  const watched = Form.useWatch([], form);
+  const values = watched ?? openValues;
+  const position = positionFromValue(values.position);
+  const pending = toFilters(values);
+  const hasFilters = Boolean(
+    pending.name || pending.year || pending.country || pending.reason || pending.position,
+  );
+  const count = hasFilters ? matchCount(pending) : null;
 
   return (
     <DefModal
@@ -70,22 +96,27 @@ const RetiredFilterModal = ({
       width={480}
       title={<span className="text-xl font-bold text-foreground">Filter Options</span>}
       footer={[
-        <Button
-          key="clear"
-          onClick={() => form.setFieldsValue(clearedValues)}
-          aria-label="Clear all filters"
-        >
+        <Button key="clear" onClick={handleClearAll} aria-label="Clear all filters">
           Clear All
         </Button>,
-        <Button key="apply" type="primary" onClick={() => form.submit()} aria-label="Apply filters">
-          Apply
+        <Button
+          key="apply"
+          type="primary"
+          onClick={() => form.submit()}
+          aria-label={
+            count == null
+              ? "Apply filters"
+              : `Apply filters, ${count} retired ${count === 1 ? "name" : "names"} match`
+          }
+        >
+          {count == null ? "Apply" : `Apply (${count})`}
         </Button>,
       ]}
     >
       <Form
         form={form}
         layout="vertical"
-        onFinish={handleApply}
+        onFinish={(formValues: FormValues) => onApply(toFilters(formValues))}
         className="py-4"
         initialValues={openValues}
       >
@@ -116,18 +147,22 @@ const RetiredFilterModal = ({
           label="Position"
           name="position"
           extra={
-            <span id="retired-position-help">Grid position (row + country letter), e.g. 3I</span>
+            <span id="retired-position-help">
+              {position != null
+                ? `Cell ${getPositionTitle(position)} — position #${position} in the naming table`
+                : "Pick the row and the contributing country of the cell in the naming table"}
+            </span>
           }
           rules={[
             {
-              validator: (_, value: string) =>
-                !value || parsePositionLabel(value) !== null
-                  ? Promise.resolve()
-                  : Promise.reject(new Error("Enter a grid position like 3I, or a number 1–140")),
+              validator: (_, value: PositionValue) =>
+                isPartialPosition(value)
+                  ? Promise.reject(new Error("Pick both a row and a country"))
+                  : Promise.resolve(),
             },
           ]}
         >
-          <Input placeholder="e.g. 3I or 37" allowClear aria-describedby="retired-position-help" />
+          <PositionSelect />
         </Form.Item>
 
         <Form.Item label="Retirement Reason" name="reason" className="mb-0">

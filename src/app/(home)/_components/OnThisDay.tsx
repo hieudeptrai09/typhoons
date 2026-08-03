@@ -1,7 +1,7 @@
 "use client";
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { INTENSITY_LABEL } from "@/lib/constants";
+import { INTENSITY_LABEL, MONTH_NAMES } from "@/lib/constants";
 import type { OnThisDayStorm } from "@/lib/db/api/getOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { App, Button } from "antd";
@@ -11,22 +11,6 @@ import { useState } from "react";
 import { fetchOnThisDay } from "../_actions";
 
 const EXTERNAL_POSITIONS = [141, 142, 143];
-
-const MONTH_NAMES = [
-  "",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 const getReasonIcon = (
   storm: OnThisDayStorm,

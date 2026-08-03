@@ -15,6 +15,7 @@ import {
   getGroupedStorms,
   getHighlights,
   getIntensityFromNumber,
+  getLegendKind,
   isGridOnly,
   isListOnly,
   isValidStormsSlug,
@@ -68,7 +69,7 @@ describe("isValidStormsSlug", () => {
   });
 
   it("rejects every one-segment slug — the filter is never optional", () => {
-    for (const slug of ["all", "highlights", "average", "distance", "avgdate"]) {
+    for (const slug of ["all", "highlights", "average", "recurrence", "avgdate"]) {
       expect(isValidStormsSlug([slug])).toBe(false);
     }
     for (const slug of ["list", "names", "positions", "storms"]) {
@@ -116,6 +117,7 @@ describe("slugToParams", () => {
   it("forces list mode for filters that have no grid", () => {
     expect(slugToParams(["average", "country"]).mode).toBe("list");
     expect(slugToParams(["average", "month"]).mode).toBe("list");
+    expect(slugToParams(["average", "year"]).mode).toBe("list");
     expect(slugToParams(["average", "position"]).mode).toBe("table");
   });
 });
@@ -124,8 +126,9 @@ describe("isListOnly / isGridOnly", () => {
   it("marks the average filters that only render as a list", () => {
     expect(isListOnly("average", "country")).toBe(true);
     expect(isListOnly("average", "month")).toBe(true);
+    expect(isListOnly("average", "year")).toBe(true);
     expect(isListOnly("average", "position")).toBe(false);
-    expect(isListOnly("distance", "country")).toBe(false);
+    expect(isListOnly("recurrence", "country")).toBe(false);
   });
 
   it("marks all-storms-by-position as grid only", () => {
@@ -365,6 +368,40 @@ describe("average storm dates", () => {
   });
 });
 
+describe("getLegendKind", () => {
+  const kind = (view: string, filter: string, mode: string) =>
+    getLegendKind({ view, filter, mode });
+
+  it("shows no legend where the storms grids render one flat color", () => {
+    expect(kind("all", "position", "table")).toBeNull();
+    expect(kind("all", "name", "table")).toBeNull();
+  });
+
+  it("shows the intensity scale only where color tracks intensity", () => {
+    expect(kind("all", "name", "list")).toBe("intensity");
+    expect(kind("highlights", "strongest", "list")).toBe("intensity");
+    expect(kind("average", "position", "table")).toBe("intensity");
+    expect(kind("average", "name", "table")).toBe("intensity");
+    expect(kind("average", "year", "list")).toBe("intensity");
+  });
+
+  it("gives the categorical cell tints their own mini-key", () => {
+    expect(kind("highlights", "strongest", "table")).toBe("highlight");
+    expect(kind("highlights", "untracked", "table")).toBe("highlight");
+  });
+
+  it("keeps the gap and month legends on their own views", () => {
+    expect(kind("recurrence", "position", "table")).toBe("recurrence");
+    expect(kind("recurrence", "name", "list")).toBe("recurrence");
+    expect(kind("avgdate", "position", "table")).toBe("avgdate");
+    expect(kind("avgdate", "name", "list")).toBe("avgdate");
+  });
+
+  it("falls back to no legend for an unknown view", () => {
+    expect(kind("nonsense", "position", "table")).toBeNull();
+  });
+});
+
 describe("calculateAvgDuration", () => {
   it("averages the whole-day durations", () => {
     expect(
@@ -438,8 +475,8 @@ describe("getDashboardTitle", () => {
       "Strongest Typhoons by Position",
     );
     expect(getDashboardTitle("average", "list", "country")).toBe("Average Intensity by Country");
-    expect(getDashboardTitle("distance", "table", "name")).toBe(
-      "Average Gap Between Storms by Name",
+    expect(getDashboardTitle("recurrence", "table", "name")).toBe(
+      "Average Storm Recurrence by Name",
     );
     expect(getDashboardTitle("avgdate", "table", "position")).toBe(
       "Average Storm Dates by Position",

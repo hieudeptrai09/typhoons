@@ -8,10 +8,13 @@ import {
   getPositionSlug,
   getPositionTitle,
   getZoomEarthUrl,
+  isPartialPosition,
   normalizeParam,
   parseDateParts,
   parsePositionLabel,
   positionColumnLetter,
+  positionFromValue,
+  positionToValue,
   removeFromDelimitedString,
   toArr,
   toOpts,
@@ -75,6 +78,47 @@ describe("parsePositionLabel", () => {
   it("round-trips against getPositionTitle across the whole grid", () => {
     for (let position = 1; position <= 140; position++) {
       expect(parsePositionLabel(getPositionTitle(position))).toBe(position);
+    }
+  });
+});
+
+describe("position picker values", () => {
+  it("splits a position into its row and column", () => {
+    expect(positionToValue(1)).toEqual({ row: 1, col: 0 });
+    expect(positionToValue(14)).toEqual({ row: 1, col: 13 });
+    expect(positionToValue(37)).toEqual({ row: 3, col: 8 });
+    expect(positionToValue(140)).toEqual({ row: 10, col: 13 });
+  });
+
+  it("yields an empty value outside the grid", () => {
+    expect(positionFromValue(positionToValue(null))).toBeNull();
+    expect(positionFromValue(positionToValue(0))).toBeNull();
+    expect(positionFromValue(positionToValue(141))).toBeNull(); // external basins aren't grid cells
+  });
+
+  it("spells out both keys when empty, so setFieldsValue can merge the pick away", () => {
+    expect(Object.keys(positionToValue(null))).toEqual(["row", "col"]);
+  });
+
+  it("resolves a position only once both halves are picked", () => {
+    expect(positionFromValue({ row: 3, col: 8 })).toBe(37);
+    expect(positionFromValue({ row: 3 })).toBeNull();
+    expect(positionFromValue({ col: 8 })).toBeNull();
+    expect(positionFromValue({})).toBeNull();
+    expect(positionFromValue(undefined)).toBeNull();
+  });
+
+  it("flags a half-filled pick so the form can ask for the other half", () => {
+    expect(isPartialPosition({ row: 3 })).toBe(true);
+    expect(isPartialPosition({ col: 0 })).toBe(true);
+    expect(isPartialPosition({ row: 3, col: 8 })).toBe(false);
+    expect(isPartialPosition({})).toBe(false);
+    expect(isPartialPosition(undefined)).toBe(false);
+  });
+
+  it("round-trips against positionToValue across the whole grid", () => {
+    for (let position = 1; position <= 140; position++) {
+      expect(positionFromValue(positionToValue(position))).toBe(position);
     }
   });
 });

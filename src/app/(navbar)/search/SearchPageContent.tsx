@@ -2,6 +2,7 @@
 
 import CountryFlag from "@/lib/components/CountryFlag";
 import DefTable from "@/lib/components/DefTable";
+import DidYouMean from "@/lib/components/DidYouMean";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import HighlightedName from "@/lib/components/HighlightedName";
@@ -87,6 +88,7 @@ interface SearchPageContentProps {
   count: number;
   query: string;
   isError: boolean;
+  similarNames?: string[];
 }
 
 export default function SearchPageContent({
@@ -94,6 +96,7 @@ export default function SearchPageContent({
   count,
   query,
   isError,
+  similarNames = [],
 }: SearchPageContentProps) {
   const router = useRouter();
 
@@ -118,6 +121,7 @@ export default function SearchPageContent({
           <EmptyResults
             icon={SearchX}
             description={`No typhoon names match "${query}". Check the spelling or try a shorter name.`}
+            action={<DidYouMean names={similarNames} />}
           />
         ) : (
           <>

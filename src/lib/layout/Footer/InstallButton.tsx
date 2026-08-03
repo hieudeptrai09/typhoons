@@ -80,7 +80,7 @@ const InstallButton = () => {
       onClick={isIOS ? undefined : install}
       aria-label="Install app"
       aria-expanded={isIOS ? isHintOpen : undefined}
-      className="flex text-slate-400 transition-colors hover:text-slate-200!"
+      className="flex text-slate-300 transition-colors hover:text-slate-200!"
     >
       <ArrowDownToLine size={16} aria-hidden="true" />
     </button>

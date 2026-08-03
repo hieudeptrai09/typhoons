@@ -1,3 +1,4 @@
+import { getSimilarNames } from "@/lib/db/api/getSimilarNames";
 import { search } from "@/lib/db/api/search";
 import type { Metadata } from "next";
 import SearchPageContent from "./SearchPageContent";
@@ -13,9 +14,15 @@ export const metadata: Metadata = {
 const SearchPage = async ({ searchParams }: { searchParams: Promise<{ q?: string }> }) => {
   const { q = "" } = await searchParams;
 
-  const result = q.trim() ? await search(q.trim()) : null;
+  const query = q.trim();
+  const result = query ? await search(query) : null;
 
-  const isError = q.trim() !== "" && result === null;
+  const isError = query !== "" && result === null;
+
+  // ILIKE found nothing, so fall back to fuzzy matches for a "Did you mean" hint.
+  // Suggestions are a nicety, so a failed name-list fetch degrades to the plain empty state.
+  const similar =
+    query && result?.count === 0 ? await getSimilarNames(query).catch(() => null) : null;
 
   return (
     <SearchPageContent
@@ -23,6 +30,7 @@ const SearchPage = async ({ searchParams }: { searchParams: Promise<{ q?: string
       count={result?.count ?? 0}
       query={q}
       isError={isError}
+      similarNames={similar?.data ?? []}
     />
   );
 };

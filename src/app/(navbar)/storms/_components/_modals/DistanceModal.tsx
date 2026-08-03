@@ -31,12 +31,12 @@ const DistanceModal = ({ isOpen, onClose, title, storms, average }: DistanceModa
     >
       <div className="pt-3">
         <div>
-          <span id="avg-gap-label" className="text-foreground">
-            Average Gap:{" "}
+          <span id="avg-recurrence-label" className="text-foreground">
+            Average Recurrence:{" "}
           </span>
           <span
             className="text-lg font-bold"
-            aria-describedby="avg-gap-label"
+            aria-describedby="avg-recurrence-label"
             style={{ color: getDistanceColor(average) }}
           >
             {formatDistance(average)}
@@ -45,7 +45,9 @@ const DistanceModal = ({ isOpen, onClose, title, storms, average }: DistanceModa
         </div>
 
         <div className="mt-3 mb-2 text-foreground">
-          {timeline.length === 1 ? "Only one storm, so no gap can be measured:" : "Storm timeline:"}
+          {timeline.length === 1
+            ? "Only one storm, so no recurrence can be measured:"
+            : "Storm timeline:"}
         </div>
 
         {timeline.length === 0 ? (

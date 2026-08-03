@@ -1,4 +1,5 @@
 import DefModal from "@/lib/components/DefModal";
+import { MONTH_NAMES } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import { formatStormDateRange, parseDateParts } from "@/lib/utils/fns";
@@ -14,21 +15,6 @@ interface AvgDateModalProps extends BaseModalProps {
   title: string;
   storms: Storm[];
 }
-
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 interface MonthGroup {
   month: number | null; // null → start date unknown
@@ -48,7 +34,7 @@ const groupByStartMonth = (storms: Storm[]): MonthGroup[] => {
   return [...buckets.entries()]
     .map(([month, groupStorms]) => ({
       month,
-      label: month === null ? "Unknown" : MONTH_NAMES[month - 1],
+      label: month === null ? "Unknown" : MONTH_NAMES[month],
       count: groupStorms.length,
       storms: [...groupStorms].sort((a, b) => a.year - b.year),
     }))

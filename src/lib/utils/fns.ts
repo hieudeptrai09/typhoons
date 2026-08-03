@@ -44,6 +44,26 @@ export const parsePositionLabel = (input: string): number | null => {
   return Number.isInteger(num) && num >= 1 && num <= GRID_MAX ? num : null;
 };
 
+// Filters pick a grid cell by its two visible coordinates (row number + country column) rather than
+// by the "3I" code, so a value only resolves to a position once both halves are chosen.
+export interface PositionValue {
+  row?: number;
+  col?: number;
+}
+
+// The empty value spells out both keys because Form.setFieldsValue merges plain objects into the
+// store: a bare {} would merge nothing and leave the previous pick in place.
+export const positionToValue = (position: number | null): PositionValue =>
+  position != null && position >= 1 && position <= GRID_MAX
+    ? { row: Math.floor((position - 1) / GRID_COLS) + 1, col: (position - 1) % GRID_COLS }
+    : { row: undefined, col: undefined };
+
+export const positionFromValue = (value?: PositionValue): number | null =>
+  value?.row != null && value.col != null ? (value.row - 1) * GRID_COLS + value.col + 1 : null;
+
+export const isPartialPosition = (value?: PositionValue) =>
+  (value?.row != null) !== (value?.col != null);
+
 // URLs carry the lowercase grid label ("3i"), so the page redirects /positions/3I/ and /positions/37/ onto it.
 export const getPositionSlug = (position: number): string =>
   POSITION_SLUGS[position] ?? positionGridLabel(position)?.toLowerCase() ?? String(position);

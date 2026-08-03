@@ -1,10 +1,11 @@
 "use client";
 
 import HighlightedName from "@/lib/components/HighlightedName";
-import { AutoComplete, Input } from "antd";
+import { topSuggestions } from "@/lib/utils/fuzzy";
+import { AutoComplete, Input, type AutoCompleteProps } from "antd";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styles from "./SearchBar.module.css";
 
 export type SearchBarVariant = "home" | "navbar";
@@ -52,14 +53,29 @@ const SearchBar = ({ variant, allNames }: SearchBarProps) => {
     ? allNames.filter((name) => name.toLowerCase().includes(trimmed.toLowerCase()))
     : [];
 
-  const options = filtered.slice(0, MAX_SUGGESTIONS).map((name) => ({
+  const suggestions = useMemo(
+    () =>
+      trimmed && filtered.length === 0
+        ? topSuggestions(trimmed, allNames, { limit: MAX_SUGGESTIONS })
+        : [],
+    [trimmed, filtered.length, allNames],
+  );
+
+  const toOption = (name: string) => ({
     value: name,
     label: (
       <span className="text-sm text-foreground">
         <HighlightedName name={name} query={trimmed} />
       </span>
     ),
-  }));
+  });
+
+  const options: AutoCompleteProps["options"] =
+    filtered.length > 0
+      ? filtered.slice(0, MAX_SUGGESTIONS).map(toOption)
+      : suggestions.length > 0
+        ? [{ label: "Did you mean?", options: suggestions.map(toOption) }]
+        : [];
 
   const goToInfo = (name: string) => {
     setFocused(false);

@@ -1,11 +1,11 @@
 "use client";
 
-import { useScrollEndFade } from "@/lib/hooks/useScrollEndFade";
 import type { TableProps } from "antd";
 import { Table } from "antd";
 import type { ColumnsType, ColumnType } from "antd/es/table";
 import type { SorterResult } from "antd/es/table/interface";
 import { useMemo, useRef, useState } from "react";
+import ScrollEndFade from "../ScrollEndFade";
 import {
   nextCriteria,
   sortPriority,
@@ -45,7 +45,6 @@ const DefTable = <T extends object>({
   maxWidth,
   tableKey,
 }: DefTableProps<T>) => {
-  const { wrapperRef, showEndFade } = useScrollEndFade();
   const [criteria, setCriteria] = useState<SortCriterion[]>([]);
   // Touch devices have no shift key, so the toolbar offers a one-shot add mode.
   const [addNext, setAddNext] = useState(false);
@@ -133,9 +132,7 @@ const DefTable = <T extends object>({
           </button>
         </div>
       )}
-      <div
-        ref={wrapperRef}
-        className="relative"
+      <ScrollEndFade
         // antd sorts on click and on Enter; both are preceded by an event that
         // still carries the modifier key.
         onMouseDownCapture={(event) => {
@@ -163,13 +160,7 @@ const DefTable = <T extends object>({
           scroll={{ x: "max-content" }}
           sticky
         />
-        <div
-          className={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-stone-100 to-transparent transition-opacity duration-200 md:hidden ${
-            showEndFade ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden="true"
-        />
-      </div>
+      </ScrollEndFade>
     </div>
   );
 };

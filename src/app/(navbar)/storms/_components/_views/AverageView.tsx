@@ -2,7 +2,6 @@ import type { DashboardParams, Storm } from "@/lib/types";
 import AverageListTable from "./AverageListTable";
 import AverageNameGrid from "./AverageNameGrid";
 import AveragePositionGrid from "./AveragePositionGrid";
-import AverageYearGrid from "./AverageYearGrid";
 
 interface AverageViewProps {
   params: DashboardParams;
@@ -17,9 +16,6 @@ const AverageView = ({ params, stormsData, averageValues, onCellClick }: Average
   if (mode === "table") {
     if (filter === "name") {
       return <AverageNameGrid stormsData={stormsData} onCellClick={onCellClick} />;
-    }
-    if (filter === "year") {
-      return <AverageYearGrid stormsData={stormsData} onCellClick={onCellClick} />;
     }
     return (
       <AveragePositionGrid

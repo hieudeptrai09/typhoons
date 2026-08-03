@@ -6,7 +6,7 @@ import { getAvgDateColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/fns";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
-import AvgDateGrid from "../_widgets/grids/AvgDateGrid";
+import AvgDateGrid from "../_grids/AvgDateGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import {
   calculateAvgDatesByGroup,
@@ -165,14 +165,14 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
   // position + table → special buttons + avg-date grid
   if (params.mode === "table" && filterType === "position") {
     return (
-      <div>
-        <SpecialButtons onCellClick={onCellClick} avgDateValues={avgDateValuesForGrid} />
+      <div className="flex flex-col gap-6">
         <AvgDateGrid
           onCellClick={onCellClick}
           stormsData={stormsData}
           avgDateValues={avgDateValuesForGrid}
           isClickable
         />
+        <SpecialButtons onCellClick={onCellClick} avgDateValues={avgDateValuesForGrid} />
       </div>
     );
   }

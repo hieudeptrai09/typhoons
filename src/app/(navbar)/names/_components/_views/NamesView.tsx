@@ -233,6 +233,19 @@ const NamesView = ({
     router.push(`${currentPath}${buildQuery({ letter })}`);
   };
 
+  const countMatchingNames = useCallback(
+    (filters: FilterParams) =>
+      applyNameFilters(allNames, {
+        name: filters.name,
+        country: toArr(filters.country),
+        language: toArr(filters.language),
+        tag: toArr(filters.tag),
+        position: filters.position,
+        status: filters.status,
+      }).length,
+    [allNames],
+  );
+
   const handleApplyFilters = (filters: FilterParams) => {
     setIsFilterModalOpen(false);
     const hasFilters =
@@ -265,9 +278,13 @@ const NamesView = ({
   };
 
   const handleToggleLetterNav = () => {
-    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: !prefs.showLetterNav };
+    const nextShowLetterNav = !showLetterNav;
+    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: nextShowLetterNav };
     setPrefs(newPrefs);
     writeDisplayPrefs(newPrefs);
+    if (nextShowLetterNav && hasActiveFilters) {
+      router.push(`${currentPath}${buildQuery({ letter: currentLetter })}`);
+    }
   };
 
   const handleToggleTagIcons = () => {
@@ -318,9 +335,9 @@ const NamesView = ({
             aria-label="Switch between grid and list layout"
           />
           <SlashToggleButton
-            active={prefs.showLetterNav}
+            active={showLetterNav}
             onClick={handleToggleLetterNav}
-            title={prefs.showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
+            title={showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
           >
             <CaseUpper size={26} />
           </SlashToggleButton>
@@ -371,6 +388,7 @@ const NamesView = ({
         languages={languages}
         tags={tags}
         showHistory={showHistory}
+        matchCount={countMatchingNames}
         initialFilters={{
           name: searchName,
           country: selectedCountry,

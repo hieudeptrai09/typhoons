@@ -1,22 +1,8 @@
+import { MONTH_NAMES } from "@/lib/constants";
 import sql, { type QueryParam } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 
 type Row = Record<string, unknown>;
-
-const MONTH_NAMES: Record<number, string> = {
-  1: "January",
-  2: "February",
-  3: "March",
-  4: "April",
-  5: "May",
-  6: "June",
-  7: "July",
-  8: "August",
-  9: "September",
-  10: "October",
-  11: "November",
-  12: "December",
-};
 
 function joinNames(items: (string | number)[], joiner = "and"): string {
   const arr = items.map(String);

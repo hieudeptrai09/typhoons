@@ -1,171 +1,20 @@
-.not-found-page {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  background: #082f49;
-  z-index: 40;
+/* Gentle counter-clockwise spin for the typhoon swirl standing in for the "0". */
+.nf-swirl {
+  animation: nf-swirl-rotate 8s linear infinite;
+  filter: drop-shadow(0 4px 12px rgba(3, 105, 161, 0.25));
 }
 
-.nf-sky {
-  position: absolute;
-  inset: 0;
-  bottom: 40%;
-  overflow: hidden;
-  background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0284c7 100%);
-}
-
-/* Subtle rain streaks on the sky */
-.nf-sky::after {
-  content: '';
-  position: absolute;
-  /* Oversized so the rotated, translating layer never exposes an edge */
-  inset: -100px -40px -40px;
-  /* Thin oval per tile = discrete raindrop shape */
-  background-image: radial-gradient(
-    1px 16px at 50% 50%,
-    rgba(255, 255, 255, 0.5) 0%,
-    transparent 100%
-  );
-  /* ~26 columns × ~10 rows of drops */
-  background-size: 55px 65px;
-  /* Tilt left for wind-driven rain */
-  transform: rotate(-8deg) scale(1.15);
-  /* translateY by exactly one 65px tile keeps the loop seamless */
-  animation: rain-fall 0.65s linear infinite;
-}
-
-@keyframes rain-fall {
-  from { transform: rotate(-8deg) scale(1.15) translateY(0); }
-  to { transform: rotate(-8deg) scale(1.15) translateY(65px); }
-}
-
-.nf-sea {
-  position: absolute;
-  inset: 0;
-  animation: sea-bob 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes sea-bob {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -50px; }
-}
-
-.nf-ocean {
-  position: absolute;
-  top: 60%;
-  inset-inline: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, #0369a1 0%, #0c4a6e 50%, #082f49 100%);
-}
-
-.nf-waves {
-  position: absolute;
-  top: 52%;
-  left: 0;
-  right: 0;
-  height: 120px;
-  z-index: 1;
-}
-
-.nf-wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-}
-
-.nf-wave path {
-  fill: currentColor;
-}
-
-.nf-wave-1 {
-  color: rgba(3, 105, 161, 0.5);
-  animation: wave-slide 7s linear infinite;
-}
-
-.nf-wave-2 {
-  color: rgba(3, 105, 161, 0.7);
-  animation: wave-slide 5s linear infinite reverse;
-}
-
-.nf-wave-3 {
-  color: #0369a1;
-  animation: wave-slide 9s linear infinite;
-}
-
-@keyframes wave-slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.nf-content {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 1rem;
-  padding-top: 60px;
-}
-
-.not-found-icon {
-  animation: nf-rotate 6s linear infinite;
-  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.3));
-}
-
-@keyframes nf-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
-}
-
-/* Gentle wind sway — atmospheric, not jarring */
-.nf-blow {
-  animation: wind-sway 6s ease-in-out infinite;
-}
-
-.nf-blow-1 { animation-delay: 0s; }
-.nf-blow-2 { animation-delay: 0.3s; }
-.nf-blow-3 { animation-delay: 0.6s; }
-
-@keyframes wind-sway {
-  0%, 100% { translate: 0 0; }
-  25%       { translate: -8px -3px; }
-  75%       { translate: 10px 2px; }
-}
-
-/* Button — sky-700 to match the site's blue identity */
-.nf-btn {
-  background: #0369a1;
-  color: white;
-  border: none;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.45);
-}
-
-.nf-btn:hover {
-  background: #075985;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(2, 132, 199, 0.55);
-}
-
-.nf-btn:active {
-  transform: translateY(0);
+@keyframes nf-swirl-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nf-sky::after,
-  .nf-sea,
-  .nf-wave,
-  .nf-blow {
+  .nf-swirl {
     animation: none;
-  }
-
-  /* Near-static drift instead of a full stop — still reads as a typhoon */
-  .not-found-icon {
-    animation-duration: 120s;
   }
 }

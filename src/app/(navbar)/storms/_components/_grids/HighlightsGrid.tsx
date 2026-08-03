@@ -1,4 +1,5 @@
 import type { Storm } from "@/lib/types";
+import { getHighlightCellClass, HIGHLIGHT_EMPTY_CELL_CLASS } from "@/lib/utils/colors";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface HighlightsGridProps {
@@ -6,21 +7,6 @@ interface HighlightsGridProps {
   highlightedStorms: Storm[];
   highlightType: string;
 }
-
-const getHighlightColorClass = (highlightType: string): string => {
-  switch (highlightType) {
-    case "strongest":
-      return "bg-rose-300";
-    case "first":
-      return "bg-blue-300";
-    case "last":
-      return "bg-orange-300";
-    case "untracked":
-      return "bg-slate-300";
-    default:
-      return "bg-green-300";
-  }
-};
 
 const HighlightsGrid = ({ stormsData, highlightedStorms, highlightType }: HighlightsGridProps) => (
   <PositionCellGrid
@@ -31,7 +17,7 @@ const HighlightsGrid = ({ stormsData, highlightedStorms, highlightType }: Highli
       if (positionStorms.length === 0) {
         return {
           content: <span className="text-sm text-gray-300">—</span>,
-          className: "bg-gray-100",
+          className: HIGHLIGHT_EMPTY_CELL_CLASS,
           clickable: false,
         };
       }
@@ -46,7 +32,7 @@ const HighlightsGrid = ({ stormsData, highlightedStorms, highlightType }: Highli
             ))}
           </div>
         ),
-        className: getHighlightColorClass(highlightType),
+        className: getHighlightCellClass(highlightType),
         clickable: false,
       };
     }}

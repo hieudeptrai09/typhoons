@@ -25,6 +25,38 @@ interface RetiredViewProps {
   displayPrefs: NamesDisplayPrefs;
 }
 
+interface RetiredFilterValues {
+  name: string;
+  year: string;
+  country: string[];
+  reason: RetirementReason[];
+  position: string;
+}
+
+const applyRetiredFilters = (names: RetiredName[], filters: RetiredFilterValues): RetiredName[] => {
+  let filtered = [...names];
+
+  if (filters.name) {
+    filtered = filtered.filter((n) => n.name.toLowerCase().includes(filters.name.toLowerCase()));
+  }
+  if (filters.year) {
+    filtered = filtered.filter((n) => n.lastYear === Number(filters.year));
+  }
+  if (filters.country.length > 0) {
+    filtered = filtered.filter((n) => filters.country.includes(n.country));
+  }
+  if (filters.reason.length > 0) {
+    filtered = filtered.filter(
+      (n) => n.retirementReason && filters.reason.includes(n.retirementReason),
+    );
+  }
+  if (filters.position) {
+    filtered = filtered.filter((n) => n.position === Number(filters.position));
+  }
+
+  return filtered;
+};
+
 const getFirstAvailableLetter = (availableLettersMap: Record<string, boolean>) => {
   const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   return allLetters.find((letter) => availableLettersMap[letter]) ?? "A";
@@ -47,12 +79,6 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedRetiredName, setSelectedRetiredName] = useState<RetiredName>(defaultRetiredName);
   const [isRetiredNameModalOpen, setIsRetiredNameModalOpen] = useState(false);
-
-  const handleToggleLetterNav = () => {
-    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: !prefs.showLetterNav };
-    setPrefs(newPrefs);
-    writeDisplayPrefs(newPrefs);
-  };
 
   const suggestionsByNameId = useMemo(
     () =>
@@ -79,6 +105,8 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
     searchPosition,
   ].filter(Boolean).length;
 
+  const hasActiveFilters = activeFilterCount > 0;
+
   const availableLettersMap = useMemo(() => {
     const map: Record<string, boolean> = {};
     retiredNames.forEach((n) => {
@@ -89,32 +117,19 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
 
   const currentLetter = searchParams.get("letter") || getFirstAvailableLetter(availableLettersMap);
 
+  const showLetterNav = !hasActiveFilters && prefs.showLetterNav;
+
   const displayedNames = useMemo(() => {
-    let filtered = [...retiredNames];
+    const filtered = applyRetiredFilters(retiredNames, {
+      name: searchName,
+      year: selectedYear,
+      country: countryArr,
+      reason: reasonArr,
+      position: searchPosition,
+    });
 
-    if (searchName) {
-      filtered = filtered.filter((n) => n.name.toLowerCase().includes(searchName.toLowerCase()));
-    }
-    if (selectedYear) {
-      filtered = filtered.filter((n) => n.lastYear === Number(selectedYear));
-    }
-    if (countryArr.length > 0) {
-      filtered = filtered.filter((n) => countryArr.includes(n.country));
-    }
-    if (reasonArr.length > 0) {
-      filtered = filtered.filter(
-        (n) => n.retirementReason && reasonArr.includes(n.retirementReason),
-      );
-    }
-    if (searchPosition) {
-      filtered = filtered.filter((n) => n.position === Number(searchPosition));
-    }
-
-    const hasActiveFilters =
-      searchName || selectedYear || countryArr.length > 0 || reasonArr.length > 0 || searchPosition;
-
-    if (!hasActiveFilters && prefs.showLetterNav) {
-      filtered = filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
+    if (showLetterNav) {
+      return filtered.filter((n) => n.name.charAt(0).toUpperCase() === currentLetter);
     }
 
     return filtered;
@@ -126,7 +141,7 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
     reasonArr,
     searchPosition,
     currentLetter,
-    prefs.showLetterNav,
+    showLetterNav,
   ]);
 
   const buildQuery = useCallback((params: Record<string, string>) => {
@@ -142,6 +157,18 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
     setSelectedRetiredName(name);
     setIsRetiredNameModalOpen(true);
   };
+
+  const countMatchingNames = useCallback(
+    (filters: RetiredFilterParams) =>
+      applyRetiredFilters(retiredNames, {
+        name: filters.name,
+        year: filters.year,
+        country: toArr(filters.country),
+        reason: toArr(filters.reason) as RetirementReason[],
+        position: filters.position,
+      }).length,
+    [retiredNames],
+  );
 
   const handleApplyFilters = (filters: RetiredFilterParams) => {
     setIsFilterModalOpen(false);
@@ -162,6 +189,16 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
     router.push(`${paramsToPath({ view: "retired" })}${buildQuery({ letter })}`);
   };
 
+  const handleToggleLetterNav = () => {
+    const nextShowLetterNav = !showLetterNav;
+    const newPrefs: NamesDisplayPrefs = { ...prefs, showLetterNav: nextShowLetterNav };
+    setPrefs(newPrefs);
+    writeDisplayPrefs(newPrefs);
+    if (nextShowLetterNav && hasActiveFilters) {
+      router.push(`${paramsToPath({ view: "retired" })}${buildQuery({ letter: currentLetter })}`);
+    }
+  };
+
   const getLetterConfig = (letter: string) => {
     const isAvailable = availableLettersMap[letter];
     const isActive = currentLetter === letter;
@@ -177,9 +214,9 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
       <div className="mx-auto mb-4 max-w-4xl">
         <div className="flex items-center justify-center gap-6">
           <SlashToggleButton
-            active={prefs.showLetterNav}
+            active={showLetterNav}
             onClick={handleToggleLetterNav}
-            title={prefs.showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
+            title={showLetterNav ? "Letter navigation is on" : "Letter navigation is off"}
           >
             <CaseUpper size={26} />
           </SlashToggleButton>
@@ -196,7 +233,7 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
         </div>
       </div>
 
-      {activeFilterCount === 0 && prefs.showLetterNav && (
+      {showLetterNav && (
         <LetterNavigation onLetterChange={handleLetterChange} getLetterConfig={getLetterConfig} />
       )}
 
@@ -209,6 +246,7 @@ const RetiredView = ({ retiredNames, suggestedNames, displayPrefs }: RetiredView
         onClose={() => setIsFilterModalOpen(false)}
         onApply={handleApplyFilters}
         countries={countries}
+        matchCount={countMatchingNames}
         initialFilters={{
           name: searchName,
           year: selectedYear,

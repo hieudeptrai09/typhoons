@@ -46,3 +46,7 @@ export const getTyphoonNameByName = unstable_cache(
   ["getTyphoonNameByName"],
   { revalidate: 3600 },
 );
+
+// The name exists nowhere: not in rotation, and never used by a storm.
+export const isNameNotFound = (result: ApiResponse<SearchDetail> | null) =>
+  result !== null && !result.data.name && result.data.storms.length === 0;

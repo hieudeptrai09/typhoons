@@ -2,7 +2,7 @@
 
 import SearchBar from "@/lib/components/SearchBar";
 import { Button, Popover } from "antd";
-import { Menu, X } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import ActiveStorms from "./ActiveStorms";
 import FunFacts from "./FunFacts";
@@ -37,11 +37,14 @@ const QuickActionsMenu = ({ allNames }: { allNames: string[] }) => {
       >
         <Button
           type="text"
+          aria-haspopup="menu"
           aria-expanded={isOpen}
           aria-controls="home-quick-actions-panel"
-          aria-label={isOpen ? "Close quick actions menu" : "Open quick actions menu"}
-          icon={isOpen ? <X size={20} /> : <Menu size={20} />}
-          className="h-10! w-10! shrink-0! rounded-lg! border! border-amber-600/70! text-amber-700! hover:bg-amber-50!"
+          aria-label={
+            isOpen ? "Close discover menu" : "Discover: on this day, active storms, fun facts"
+          }
+          icon={isOpen ? <X size={20} /> : <Sparkles size={20} />}
+          className="h-11! w-11! shrink-0! rounded-lg! border! border-amber-600/70! text-amber-700! hover:bg-amber-50!"
         />
       </Popover>
     </div>
