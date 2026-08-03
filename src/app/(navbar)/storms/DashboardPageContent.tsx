@@ -16,10 +16,10 @@ import AvgDateView from "./_components/_views/AvgDateView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import StormsView from "./_components/_views/StormsView";
-import AvgDateLegend from "./_components/_widgets/AvgDateLegend";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
-import GapLegend from "./_components/_widgets/GapLegend";
-import IntensityLegend from "./_components/_widgets/IntensityLegend";
+import AvgDateLegend from "./_components/_widgets/legends/AvgDateLegend";
+import GapLegend from "./_components/_widgets/legends/GapLegend";
+import IntensityLegend from "./_components/_widgets/legends/IntensityLegend";
 import {
   calculateAverage,
   calculateGapAverage,
