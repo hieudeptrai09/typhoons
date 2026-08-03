@@ -5,6 +5,12 @@ import "./not-found.css";
 const NotFound = () => {
   return (
     <div className="not-found-page">
+      {/* Persistent brand / home affordance so the user is never stranded */}
+      <Link href="/" aria-label="Go to home page" className="nf-home">
+        <TyphoonSymbol className="h-7 w-7 text-white" />
+        <span className="font-bold">Home</span>
+      </Link>
+
       {/* Sky */}
       <div className="nf-sky" />
 
@@ -49,7 +55,7 @@ const NotFound = () => {
 
         <Link
           href="/storms/all/name/"
-          className="nf-blow nf-blow-3 mt-5 text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
+          className="nf-blow nf-blow-3 mt-5 text-sm font-semibold text-white underline decoration-white/70 underline-offset-4 hover:decoration-white"
         >
           or browse all storms
         </Link>

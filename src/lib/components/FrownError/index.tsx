@@ -1,5 +1,6 @@
 import { Button, Empty } from "antd";
 import { Frown } from "lucide-react";
+import Link from "next/link";
 
 const FrownError = ({
   description = "Something went wrong. Please try again later.",
@@ -15,11 +16,31 @@ const FrownError = ({
         imageStyle={{ height: 64, display: "flex", justifyContent: "center" }}
         description={<span className="text-foreground">{description}</span>}
       >
-        {onRetry && (
-          <Button type="primary" onClick={onRetry}>
-            Retry
-          </Button>
-        )}
+        <div className="mt-2 flex flex-col items-center gap-3">
+          {onRetry && (
+            <Button
+              type="primary"
+              size="large"
+              shape="round"
+              onClick={onRetry}
+              className="font-semibold"
+            >
+              Try again
+            </Button>
+          )}
+          {/* Always offer a way out even when a retry won't help. */}
+          <div className="flex items-center gap-3 text-sm">
+            <Link href="/" className="font-medium text-sky-700 hover:underline">
+              Back to home
+            </Link>
+            <span className="text-gray-300" aria-hidden>
+              ·
+            </span>
+            <Link href="/storms/all/name/" className="font-medium text-sky-700 hover:underline">
+              Browse storms
+            </Link>
+          </div>
+        </div>
       </Empty>
     </div>
   );

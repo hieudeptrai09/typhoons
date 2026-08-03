@@ -137,23 +137,50 @@
   75%       { translate: 10px 2px; }
 }
 
-/* Button — sky-700 to match the site's blue identity */
+/* Primary action — a solid white pill so it reads clearly against the blue
+   scene (dark-blue text on white ≈ 12:1 contrast) instead of blending in. */
 .nf-btn {
-  background: #0369a1;
-  color: white;
+  background: #ffffff;
+  color: #0c4a6e; /* sky-900 */
   border: none;
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.45);
+  box-shadow: 0 6px 24px rgba(2, 6, 23, 0.35);
 }
 
 .nf-btn:hover {
-  background: #075985;
+  background: #e0f2fe; /* sky-100 */
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(2, 132, 199, 0.55);
+  box-shadow: 0 10px 32px rgba(2, 6, 23, 0.45);
 }
 
 .nf-btn:active {
   transform: translateY(0);
+}
+
+/* Persistent home link, top-left, above the scene */
+.nf-home {
+  position: absolute;
+  top: 1rem;
+  left: 1.25rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.nf-home:hover {
+  opacity: 1;
+}
+
+.nf-home:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+  border-radius: 4px;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
