@@ -1,60 +1,60 @@
 import TyphoonSymbol from "@/lib/components/TyphoonSpinner/TyphoonSymbol";
+import { Home, Tag, Wind } from "lucide-react";
 import Link from "next/link";
 import "./not-found.css";
 
 const NotFound = () => {
   return (
-    <div className="not-found-page">
-      {/* Sky */}
-      <div className="nf-sky" />
+    <main className="flex h-dvh flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-sky-100 to-sky-200 px-6 text-center">
+      {/* 404 — the typhoon swirl stands in for the middle "0" */}
+      <h1
+        aria-label="404 — Page not found"
+        className="mb-6 flex items-center justify-center gap-3 select-none sm:gap-4"
+      >
+        <span aria-hidden className="text-8xl font-black text-sky-800 tabular-nums sm:text-9xl">
+          4
+        </span>
+        <TyphoonSymbol className="nf-swirl h-20 w-20 text-sky-700 sm:h-28 sm:w-28" />
+        <span aria-hidden className="text-8xl font-black text-sky-800 tabular-nums sm:text-9xl">
+          4
+        </span>
+      </h1>
 
-      {/* Sea: ocean + waves bob together */}
-      <div className="nf-sea">
-        <div className="nf-ocean" />
-        <div className="nf-waves">
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-1">
-            <path d="M0,60 C180,20 360,100 540,60 C720,20 900,100 1080,60 C1260,20 1440,80 1440,60 L1440,120 L0,120 Z" />
-          </svg>
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-2">
-            <path d="M0,80 C200,40 400,100 600,70 C800,40 1000,110 1200,70 C1350,40 1440,80 1440,70 L1440,120 L0,120 Z" />
-          </svg>
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="nf-wave nf-wave-3">
-            <path d="M0,90 C160,60 320,110 480,80 C640,50 800,110 960,80 C1120,50 1280,100 1440,80 L1440,120 L0,120 Z" />
-          </svg>
-        </div>
-      </div>
+      <p className="mb-2 text-2xl font-bold text-foreground">This page drifted off the map</p>
+      <p className="mb-10 max-w-md text-base text-slate-600">
+        It may have moved, or been swept away by a storm.
+        <br />
+        Let&rsquo;s get you back on course.
+      </p>
 
-      {/* Content — blown by wind */}
-      <main className="nf-content">
-        <h1
-          aria-label="404 – Page not found"
-          className="nf-blow nf-blow-1 mb-4 flex items-center gap-2"
+      {/* Lightweight links, not heavy buttons, so a dead end still feels calm */}
+      <nav
+        aria-label="Suggested pages"
+        className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-base font-semibold"
+      >
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
         >
-          <span aria-hidden className="text-8xl font-black text-white/70 select-none sm:text-9xl">
-            4
-          </span>
-          <TyphoonSymbol className="not-found-icon h-20 w-20 text-white/80 sm:h-24 sm:w-24" />
-          <span aria-hidden className="text-8xl font-black text-white/70 select-none sm:text-9xl">
-            4
-          </span>
-        </h1>
-
-        <p className="nf-blow nf-blow-2 mb-10 text-lg font-semibold tracking-wide text-white/85">
-          This page was swept away by a storm.
-        </p>
-
-        <Link href="/" className="nf-btn inline-block rounded-full px-8 py-3 font-semibold">
-          Return to Safety
+          <Home aria-hidden size={18} />
+          Home
         </Link>
-
         <Link
           href="/storms/all/name/"
-          className="nf-blow nf-blow-3 mt-5 text-sm font-medium text-white/70 underline-offset-4 hover:text-white hover:underline"
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
         >
-          or browse all storms
+          <Wind aria-hidden size={18} />
+          Browse storms
         </Link>
-      </main>
-    </div>
+        <Link
+          href="/names/current/"
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
+        >
+          <Tag aria-hidden size={18} />
+          Explore names
+        </Link>
+      </nav>
+    </main>
   );
 };
 
