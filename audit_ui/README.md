@@ -6,8 +6,9 @@ This folder contains a full UI/UX design audit of **https://typhoons.vercel.app/
 
 ## Contents
 
-- `AUDIT_REPORT.md` — the full written audit: every finding with severity, rationale, and a concrete fix.
-- `index.html` — a visual gallery: open in a browser to see every screenshot next to its findings.
+- `audit.html` — **the main deliverable**: a single self-contained web page combining the full written audit with the screenshots inlined per section (click any thumbnail to enlarge). Open it in any browser.
+- `AUDIT_REPORT.md` — the same findings in Markdown: every finding with severity, rationale, and a concrete fix.
+- `index.html` — a plain visual gallery of every screenshot.
 - `screenshots/`
   - `desktop/` — 31 full-page screenshots at 1440×900
   - `mobile/` — 15 full-page screenshots at 390×844 (iPhone-class)
