@@ -17,7 +17,7 @@ const SlashToggleButton = ({ active, onClick, title, children }: SlashToggleButt
     title={title}
     aria-label={title}
     aria-pressed={active}
-    className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
+    className="h-auto! w-auto! p-1! text-foreground! hover:bg-transparent! hover:text-highlight!"
   >
     <span className="relative flex h-[30px] w-[30px] items-center justify-center">
       {children}

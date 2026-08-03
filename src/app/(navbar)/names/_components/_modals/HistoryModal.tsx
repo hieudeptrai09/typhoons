@@ -76,9 +76,9 @@ const HistoryModal = ({ isOpen, onClose, position, positionNames, storms }: Hist
                     onClick={() => hasExpandable && handleNameClick(name.id)}
                     aria-describedby={name.meaning ? `history-meaning-${name.id}` : undefined}
                     aria-expanded={hasExpandable ? isExpanded : undefined}
-                    className={`!h-auto !rounded-lg !px-3 !py-2 !text-left ${
-                      isExpanded ? "!rounded-b-none !bg-sky-50" : ""
-                    } ${!hasExpandable ? "!cursor-default" : ""}`}
+                    className={`h-auto! rounded-lg! px-3! py-2! text-left! ${
+                      isExpanded ? "rounded-b-none! bg-sky-50!" : ""
+                    } ${!hasExpandable ? "cursor-default!" : ""}`}
                   >
                     <div className="flex w-full items-baseline gap-2">
                       <span className="min-w-8 shrink-0 text-sm font-bold text-foreground">

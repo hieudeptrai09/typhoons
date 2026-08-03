@@ -56,7 +56,7 @@ const SpecialNamesListDiv = ({
                   type="text"
                   block
                   onClick={() => onNameClick(name, storms)}
-                  className="!h-auto !min-h-11 !px-2 !py-1.5 !text-xs !leading-tight !font-semibold hover:!bg-transparent hover:!underline md:!min-h-0 md:!py-1"
+                  className="h-auto! min-h-11! px-2! py-1.5! text-xs! leading-tight! font-semibold! hover:bg-transparent! hover:underline! md:min-h-0! md:py-1!"
                   style={{ color }}
                 >
                   <span className="flex flex-col items-center">

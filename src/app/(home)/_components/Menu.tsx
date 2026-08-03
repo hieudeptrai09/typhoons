@@ -27,7 +27,7 @@ const Menu = ({ href, label, bgColor, hoverBgColor }: MenuProps) => {
           type="primary"
           size="large"
           shape="round"
-          className="!h-12 !text-xl !font-bold"
+          className="h-12! text-xl! font-bold!"
         >
           {label}
         </Button>

@@ -63,7 +63,7 @@ const SpecialButtons = ({
             onClick={() => onCellClick(button.id, "position")}
             aria-label={`View storms from ${button.label} region`}
             style={{ color }}
-            className="!font-semibold"
+            className="font-semibold!"
           >
             {button.label}
             {suffix}

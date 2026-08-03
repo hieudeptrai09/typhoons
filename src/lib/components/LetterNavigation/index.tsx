@@ -27,7 +27,7 @@ const LetterNavigation = ({ onLetterChange, getLetterConfig }: LetterNavigationP
               onClick={() => isAvailable && onLetterChange(letter)}
               aria-label={`Filter by letter ${letter}`}
               aria-pressed={isActive}
-              className={`!min-w-0 !px-1 !text-base !font-semibold ${isActive ? "!underline !decoration-2 !underline-offset-4" : ""}`}
+              className={`min-w-0! px-1! text-base! font-semibold! ${isActive ? "underline! decoration-2! underline-offset-4!" : ""}`}
               style={{ color }}
             >
               {letter}

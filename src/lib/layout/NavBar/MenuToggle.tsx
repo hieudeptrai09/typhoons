@@ -13,7 +13,7 @@ const MenuToggle = ({ isOpen, onToggle }: MenuToggleProps) => {
       onClick={onToggle}
       aria-label="Toggle menu"
       icon={isOpen ? <X size={24} /> : <Menu size={24} />}
-      className="!z-50 !text-white hover:!bg-white/20 md:!hidden"
+      className="z-50! text-white! hover:bg-white/20! md:hidden!"
     />
   );
 };

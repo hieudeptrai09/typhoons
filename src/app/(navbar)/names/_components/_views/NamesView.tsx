@@ -340,7 +340,7 @@ const NamesView = ({
               title="Filters"
               aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
               icon={<Filter size={30} />}
-              className="!h-auto !w-auto !p-1 !text-foreground hover:!bg-transparent hover:!text-highlight"
+              className="h-auto! w-auto! p-1! text-foreground! hover:bg-transparent! hover:text-highlight!"
             />
           </Badge>
         </div>
