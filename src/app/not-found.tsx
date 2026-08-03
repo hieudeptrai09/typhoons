@@ -1,5 +1,6 @@
-import Menu from "@/app/(home)/_components/Menu";
 import TyphoonSymbol from "@/lib/components/TyphoonSpinner/TyphoonSymbol";
+import { Home, Tag, Wind } from "lucide-react";
+import Link from "next/link";
 import "./not-found.css";
 
 const NotFound = () => {
@@ -25,21 +26,32 @@ const NotFound = () => {
         Let&rsquo;s get you back on course.
       </p>
 
-      {/* Same rounded action buttons as the home page, so every dead end has a clear way out */}
-      <nav aria-label="Suggested pages" className="flex w-full max-w-sm flex-col gap-4">
-        <Menu href="/" label="Back to Home" bgColor="#0369a1" hoverBgColor="#075985" />
-        <Menu
+      {/* Lightweight links, not heavy buttons, so a dead end still feels calm */}
+      <nav
+        aria-label="Suggested pages"
+        className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-base font-semibold"
+      >
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
+        >
+          <Home aria-hidden size={18} />
+          Home
+        </Link>
+        <Link
           href="/storms/all/name/"
-          label="Browse Storms"
-          bgColor="#2563eb"
-          hoverBgColor="#1d4ed8"
-        />
-        <Menu
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
+        >
+          <Wind aria-hidden size={18} />
+          Browse storms
+        </Link>
+        <Link
           href="/names/current/"
-          label="Explore Names"
-          bgColor="#0d9488"
-          hoverBgColor="#0f766e"
-        />
+          className="inline-flex items-center gap-1.5 text-sky-700 transition-colors hover:text-sky-900"
+        >
+          <Tag aria-hidden size={18} />
+          Explore names
+        </Link>
       </nav>
     </main>
   );
