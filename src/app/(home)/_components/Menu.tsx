@@ -19,6 +19,14 @@ const Menu = ({ href, label, bgColor, hoverBgColor }: MenuProps) => {
           colorPrimaryHover: hoverBgColor,
           colorPrimaryActive: hoverBgColor,
         },
+        components: {
+          Button: {
+            // Antd's default primary shadow is a hard 2px offset line, which on
+            // these large pill buttons reads as a second button peeking out.
+            // Replace it with a soft, blurred shadow.
+            primaryShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
+          },
+        },
       }}
     >
       <Link href={href} className="block">
