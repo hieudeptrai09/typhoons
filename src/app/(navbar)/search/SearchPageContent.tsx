@@ -12,6 +12,7 @@ import { clickableRowProps } from "@/lib/utils/a11y";
 import { Empty } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, SearchX } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -87,13 +88,32 @@ interface SearchPageContentProps {
   count: number;
   query: string;
   isError: boolean;
+  suggestions?: string[];
 }
+
+const DidYouMean = ({ names }: { names: string[] }) => (
+  <div className="mt-2">
+    <div className="mb-2 text-sm text-foreground">Did you mean:</div>
+    <div className="flex flex-wrap justify-center gap-2">
+      {names.map((name) => (
+        <Link
+          key={name}
+          href={`/info/${encodeURIComponent(name.toLowerCase())}/`}
+          className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700 transition-colors hover:border-sky-300 hover:bg-sky-100"
+        >
+          {name}
+        </Link>
+      ))}
+    </div>
+  </div>
+);
 
 export default function SearchPageContent({
   results,
   count,
   query,
   isError,
+  suggestions = [],
 }: SearchPageContentProps) {
   const router = useRouter();
 
@@ -117,7 +137,10 @@ export default function SearchPageContent({
         ) : count === 0 ? (
           <EmptyResults
             icon={SearchX}
-            description={`No typhoon names match "${query}". Check the spelling or try a shorter name.`}
+            description={`No typhoon names match "${query}".${
+              suggestions.length ? "" : " Check the spelling or try a shorter name."
+            }`}
+            action={suggestions.length ? <DidYouMean names={suggestions} /> : undefined}
           />
         ) : (
           <>
