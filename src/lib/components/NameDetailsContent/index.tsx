@@ -32,64 +32,67 @@ const NameDetailsContent = ({
       ? { label: "Replaced by", value: replacementName }
       : undefined;
 
+  // The same content renders in a narrow modal and on the wide /info page.
+  // Container queries drive the layout off the actual width: a narrow container
+  // stacks (image as a full-width banner on top, details below) so no space is
+  // wasted, while a wide one uses the two-column layout.
   return (
-    <article className={`flex gap-6 ${name.image ? "flex-row" : "flex-col"}`}>
-      <div className="min-w-0 flex-1 space-y-4">
-        <header>
-          {(name.originalText || name.ipa || pronunciationFile) && (
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              {name.originalText && (
-                <span className="text-2xl leading-tight font-semibold text-foreground">
-                  {name.originalText}
-                </span>
-              )}
-              {name.ipa && (
-                <span className="font-mono text-sm text-slate-500" aria-label="Pronunciation">
-                  {name.ipa}
-                </span>
-              )}
-              {pronunciationFile && (
-                <a
-                  href={`https://www.typhooncommittee.org/tcsounds/${encodeURIComponent(pronunciationFile)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-slate-400! hover:text-teal-600!"
-                  title={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
-                  aria-label={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
-                >
-                  <Volume2 className="h-4 w-4 shrink-0" aria-hidden="true" />
-                </a>
-              )}
+    <div className="@container">
+      <article className="flex flex-col gap-5 @2xl:flex-row @2xl:gap-6">
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
+          <header>
+            {(name.originalText || name.ipa || pronunciationFile) && (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                {name.originalText && (
+                  <span className="text-2xl leading-tight font-semibold text-foreground">
+                    {name.originalText}
+                  </span>
+                )}
+                {name.ipa && (
+                  <span className="font-mono text-sm text-slate-500" aria-label="Pronunciation">
+                    {name.ipa}
+                  </span>
+                )}
+                {pronunciationFile && (
+                  <a
+                    href={`https://www.typhooncommittee.org/tcsounds/${encodeURIComponent(pronunciationFile)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-slate-400! hover:text-teal-600!"
+                    title={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
+                    aria-label={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
+                  >
+                    <Volume2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            )}
+            <div className="mt-1 text-sm text-slate-500 italic">
+              <span className="mr-2">
+                {name.language}, from {name.country}
+              </span>
+              <CountryFlag country={name.country} className="h-4 w-6 not-italic" />
             </div>
+          </header>
+
+          <p className="text-lg leading-relaxed font-semibold text-teal-600">{name.meaning}</p>
+
+          {name.description && (
+            <p className="text-sm leading-relaxed text-foreground">{name.description}</p>
           )}
-          <div className="mt-1 text-sm text-slate-500 italic">
-            <span className="mr-2">
-              {name.language}, from {name.country}
-            </span>
-            <CountryFlag country={name.country} className="h-4 w-6 not-italic" />
-          </div>
-        </header>
 
-        <p className="text-lg leading-relaxed font-semibold text-teal-600">{name.meaning}</p>
+          {crossRef && (
+            <footer className="mt-auto border-t border-slate-200 pt-3 text-sm text-foreground">
+              {crossRef.label} <span className="font-semibold text-teal-600">{crossRef.value}</span>
+            </footer>
+          )}
+        </div>
 
-        {name.description && (
-          <p className="text-sm leading-relaxed text-foreground">{name.description}</p>
-        )}
-
-        {crossRef && (
-          <footer className="border-t border-slate-200 pt-3 text-sm text-foreground">
-            {crossRef.label} <span className="font-semibold text-teal-600">{crossRef.value}</span>
-          </footer>
-        )}
-      </div>
-
-      {name.image && (
-        <figure className="min-w-0 flex-1">
-          <div className="sticky top-0">
-            <div
-              className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
-              style={{ aspectRatio: "4/3" }}
-            >
+        {name.image && (
+          // order-first keeps the image on top when stacked (narrow modal);
+          // in the two-column layout it returns to the right, as on /info.
+          <figure className="order-first min-w-0 @2xl:order-none @2xl:flex-1">
+            <div className="relative h-52 w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 @2xl:aspect-[4/3] @2xl:h-auto">
               <ImageWithLoader
                 src={name.image}
                 alt={name.name}
@@ -99,10 +102,10 @@ const NameDetailsContent = ({
               />
             </div>
             <ImageCredit credit={name.imageCredit} />
-          </div>
-        </figure>
-      )}
-    </article>
+          </figure>
+        )}
+      </article>
+    </div>
   );
 };
 
