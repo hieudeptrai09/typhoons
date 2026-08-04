@@ -38,7 +38,7 @@ const NameDetailsContent = ({
   // wasted, while a wide one uses the two-column layout.
   return (
     <div className="@container">
-      <article className="flex flex-col gap-5 @2xl:flex-row @2xl:gap-6">
+      <article className="flex flex-col gap-5 @2xl:flex-row @2xl:items-center @2xl:gap-8">
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <header>
             {(name.originalText || name.ipa || pronunciationFile) && (
@@ -82,16 +82,17 @@ const NameDetailsContent = ({
           )}
 
           {crossRef && (
-            <footer className="mt-auto border-t border-slate-200 pt-3 text-sm text-foreground">
+            <footer className="border-t border-slate-200 pt-3 text-sm text-foreground">
               {crossRef.label} <span className="font-semibold text-teal-600">{crossRef.value}</span>
             </footer>
           )}
         </div>
 
         {name.image && (
-          // order-first keeps the image on top when stacked (narrow modal);
-          // in the two-column layout it returns to the right, as on /info.
-          <figure className="order-first min-w-0 @2xl:order-none @2xl:flex-1">
+          // order-first keeps the image on top when stacked (narrow modal); in the
+          // two-column layout it returns to the right, sized so the shorter details
+          // column sits centered beside it rather than leaving a tall empty gap.
+          <figure className="order-first min-w-0 @2xl:order-none @2xl:w-2/5 @2xl:shrink-0">
             <div className="relative h-52 w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 @2xl:aspect-[4/3] @2xl:h-auto">
               <ImageWithLoader
                 src={name.image}
