@@ -38,7 +38,7 @@ const NameDetailsContent = ({
   // wasted, while a wide one uses the two-column layout.
   return (
     <div className="@container">
-      <article className="flex flex-col gap-5 @2xl:flex-row @2xl:items-center @2xl:gap-8">
+      <article className="flex flex-col gap-5 @md:flex-row @md:items-center @md:gap-6">
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <header>
             {(name.originalText || name.ipa || pronunciationFile) && (
@@ -92,8 +92,8 @@ const NameDetailsContent = ({
           // order-first keeps the image on top when stacked (narrow modal); in the
           // two-column layout it returns to the right, sized so the shorter details
           // column sits centered beside it rather than leaving a tall empty gap.
-          <figure className="order-first min-w-0 @2xl:order-none @2xl:w-2/5 @2xl:shrink-0">
-            <div className="relative h-52 w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 @2xl:aspect-[4/3] @2xl:h-auto">
+          <figure className="order-first min-w-0 @md:order-none @md:w-2/5 @md:shrink-0">
+            <div className="relative h-52 w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 @md:aspect-[4/3] @md:h-auto">
               <ImageWithLoader
                 src={name.image}
                 alt={name.name}
