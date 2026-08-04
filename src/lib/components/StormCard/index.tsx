@@ -1,10 +1,11 @@
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import NoImage from "@/lib/components/NoImage";
 import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
-import { Calendar, ExternalLink, Hash, ImageOff } from "lucide-react";
+import { Calendar, ExternalLink, Hash } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {
   const bgColor = BACKGROUND_BADGE[storm.intensity];
@@ -51,9 +52,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center gap-1.5 text-xs text-slate-400">
-            <ImageOff size={14} />
-          </div>
+          <NoImage label="No track map" />
         )}
       </div>
       <div className="border-t border-slate-100 px-4 py-2">

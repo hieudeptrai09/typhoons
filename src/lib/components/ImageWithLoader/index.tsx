@@ -1,9 +1,9 @@
 "use client";
 
-import { ImageOff } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import type { ComponentProps } from "react";
+import NoImage from "../NoImage";
 import TyphoonSpinner from "../TyphoonSpinner";
 
 type ImageWithLoaderProps = ComponentProps<typeof Image>;
@@ -20,13 +20,9 @@ const ImageWithLoader = ({ className, ...props }: ImageWithLoaderProps) => {
         </div>
       )}
 
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <ImageOff className="h-1/4 w-1/4 min-h-6 min-w-6 text-gray-400" strokeWidth={1.5} />
-        </div>
-      )}
-
-      {!hasError && (
+      {hasError ? (
+        <NoImage />
+      ) : (
         <Image
           {...props}
           alt={props.alt || ""}
