@@ -8,7 +8,7 @@ import {
   paramsForFilter,
   paramsForView,
   paramsToPath,
-} from "../../_utils/fns";
+} from "../../_utils/routing";
 
 const VIEW_TABS: { key: string; label: string }[] = [
   { key: "all", label: "Storms" },

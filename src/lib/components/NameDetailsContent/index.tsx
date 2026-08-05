@@ -3,7 +3,7 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { RetiredName, TyphoonName } from "@/lib/types";
-import { capitalize } from "@/lib/utils/fns";
+import { capitalize } from "@/lib/utils/format";
 import { History, Inbox, Languages, Replace, SpellCheck, Volume2 } from "lucide-react";
 import type { ReactNode } from "react";
 

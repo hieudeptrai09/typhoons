@@ -3,7 +3,7 @@ import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import type { BaseModalProps, StormHistoryEntry, TyphoonName } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
 import { Button } from "antd";
 import { useState } from "react";
 

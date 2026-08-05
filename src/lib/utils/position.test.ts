@@ -1,25 +1,14 @@
 import {
-  capitalize,
-  daysBetween,
-  DELIMITER,
-  fmt,
-  formatStormDateRange,
   getPositionFromSlug,
   getPositionSlug,
   getPositionTitle,
-  getZoomEarthUrl,
+  isExternalPosition,
   isPartialPosition,
-  normalizeParam,
-  parseDateParts,
   parsePositionLabel,
   positionColumnLetter,
   positionFromValue,
   positionToValue,
-  removeFromDelimitedString,
-  toArr,
-  toOpts,
-  toStr,
-} from "@/lib/utils/fns";
+} from "@/lib/utils/position";
 
 describe("positionColumnLetter", () => {
   it("letters the grid columns A through N", () => {
@@ -47,6 +36,23 @@ describe("getPositionTitle", () => {
     expect(getPositionTitle(0)).toBe("#0");
     expect(getPositionTitle(144)).toBe("#144");
     expect(getPositionTitle(1.5)).toBe("#1.5");
+  });
+});
+
+describe("isExternalPosition", () => {
+  it("flags the positions that sit outside the naming grid", () => {
+    expect(isExternalPosition(141)).toBe(true);
+    expect(isExternalPosition(0)).toBe(true);
+  });
+
+  it("accepts every cell of the grid", () => {
+    expect(isExternalPosition(1)).toBe(false);
+    expect(isExternalPosition(37)).toBe(false);
+    expect(isExternalPosition(140)).toBe(false);
+  });
+
+  it("treats a missing position as not external", () => {
+    expect(isExternalPosition(undefined)).toBe(false);
   });
 });
 
@@ -164,147 +170,5 @@ describe("position slugs", () => {
   it("passes out-of-grid integers through for the caller to range-check", () => {
     expect(getPositionFromSlug("999")).toBe(999);
     expect(getPositionFromSlug("0")).toBe(0);
-  });
-});
-
-describe("normalizeParam", () => {
-  it("takes the first entry of a repeated query param", () => {
-    expect(normalizeParam(["a", "b"])).toBe("a");
-  });
-
-  it("collapses every empty form to an empty string", () => {
-    expect(normalizeParam([])).toBe("");
-    expect(normalizeParam(undefined)).toBe("");
-    expect(normalizeParam("")).toBe("");
-  });
-
-  it("passes a single value through", () => {
-    expect(normalizeParam("retired")).toBe("retired");
-  });
-});
-
-describe("delimited filter values", () => {
-  it("splits and joins on the delimiter", () => {
-    expect(toArr(`Japan${DELIMITER}Vietnam`)).toEqual(["Japan", "Vietnam"]);
-    expect(toStr(["Japan", "Vietnam"])).toBe(`Japan${DELIMITER}Vietnam`);
-  });
-
-  it("treats an empty or absent value as no selection", () => {
-    expect(toArr("")).toEqual([]);
-    expect(toStr(undefined)).toBe("");
-    expect(toStr([])).toBe("");
-  });
-
-  it("drops empty segments left by a stale delimiter", () => {
-    expect(toArr("Japan||Vietnam")).toEqual(["Japan", "Vietnam"]);
-  });
-
-  it("removes one selection while keeping the rest", () => {
-    expect(removeFromDelimitedString("Japan|Vietnam|Thailand", "Vietnam")).toBe("Japan|Thailand");
-  });
-
-  it("leaves an empty string when the last selection is removed", () => {
-    expect(removeFromDelimitedString("Japan", "Japan")).toBe("");
-  });
-
-  it("leaves the value alone when the item is not selected", () => {
-    expect(removeFromDelimitedString("Japan|Vietnam", "Laos PDR")).toBe("Japan|Vietnam");
-  });
-
-  it("renders a selection for display", () => {
-    expect(fmt("Japan|Vietnam")).toBe("Japan, Vietnam");
-    expect(fmt("")).toBe("");
-  });
-
-  it("builds select options", () => {
-    expect(toOpts(["Animal", "Plant"])).toEqual([
-      { label: "Animal", value: "Animal" },
-      { label: "Plant", value: "Plant" },
-    ]);
-  });
-});
-
-describe("capitalize", () => {
-  it("uppercases the first character only", () => {
-    expect(capitalize("strongest")).toBe("Strongest");
-    expect(capitalize("avgdate")).toBe("Avgdate");
-  });
-
-  it("tolerates an empty string", () => {
-    expect(capitalize("")).toBe("");
-  });
-});
-
-describe("getZoomEarthUrl", () => {
-  it("builds a slugged storm URL", () => {
-    expect(getZoomEarthUrl("Yagi", 2024)).toBe("https://zoom.earth/storms/yagi-2024/");
-  });
-
-  it("trims and hyphenates a multi-word name", () => {
-    expect(getZoomEarthUrl("  Tropical Depression  ", 2001)).toBe(
-      "https://zoom.earth/storms/tropical-depression-2001/",
-    );
-  });
-});
-
-describe("parseDateParts", () => {
-  it("splits a YYYY-MM-DD string", () => {
-    expect(parseDateParts("2024-08-31")).toEqual({ year: 2024, month: 8, day: 31 });
-  });
-
-  it("returns null for anything it cannot fully parse", () => {
-    expect(parseDateParts(undefined)).toBeNull();
-    expect(parseDateParts("")).toBeNull();
-    expect(parseDateParts("2024-08")).toBeNull(); // no day
-    expect(parseDateParts("not-a-date")).toBeNull();
-  });
-
-  it("trusts the DB rather than range-checking the parts", () => {
-    expect(parseDateParts("2024-13-45")).toEqual({ year: 2024, month: 13, day: 45 });
-  });
-});
-
-describe("daysBetween", () => {
-  it("counts the days spanned by a storm", () => {
-    expect(daysBetween("2024-08-31", "2024-09-09")).toBe(9);
-  });
-
-  it("returns 0 for a single-day storm", () => {
-    expect(daysBetween("2024-08-31", "2024-08-31")).toBe(0);
-  });
-
-  it("counts across a year boundary", () => {
-    expect(daysBetween("2023-12-30", "2024-01-02")).toBe(3);
-  });
-
-  it("counts across a leap day", () => {
-    expect(daysBetween("2024-02-28", "2024-03-01")).toBe(2);
-  });
-
-  it("returns null while a storm is still ongoing", () => {
-    expect(daysBetween("2024-08-31", undefined)).toBeNull();
-    expect(daysBetween(undefined, "2024-09-09")).toBeNull();
-  });
-
-  it("goes negative for a reversed range rather than clamping", () => {
-    expect(daysBetween("2024-09-09", "2024-08-31")).toBe(-9);
-  });
-});
-
-describe("formatStormDateRange", () => {
-  it("omits the year on the start when both ends share it", () => {
-    expect(formatStormDateRange("2024-08-31", "2024-09-09")).toBe("31/8 - 9/9/2024");
-  });
-
-  it("shows both years when the storm crosses into a new one", () => {
-    expect(formatStormDateRange("2023-12-30", "2024-01-02")).toBe("30/12/2023 - 2/1/2024");
-  });
-
-  it("marks an ongoing storm as running to now", () => {
-    expect(formatStormDateRange("2024-08-31", undefined)).toBe("31/8 - now");
-  });
-
-  it("returns null when there is no start date at all", () => {
-    expect(formatStormDateRange(undefined, "2024-09-09")).toBeNull();
   });
 });

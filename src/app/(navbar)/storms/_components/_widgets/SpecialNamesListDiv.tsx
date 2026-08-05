@@ -1,7 +1,8 @@
 import type { Storm } from "@/lib/types";
+import { SPECIAL_POSITIONS } from "@/lib/utils/position";
+import { sortNamesByFirstYear } from "@/lib/utils/storms";
 import { Button } from "antd";
 import type { ReactNode } from "react";
-import { sortNamesByFirstYear, SPECIAL_POSITIONS } from "../../_utils/fns";
 
 interface SpecialNamesListDivProps {
   stormsData: Storm[];

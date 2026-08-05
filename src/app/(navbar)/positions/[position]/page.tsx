@@ -1,5 +1,5 @@
 import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
-import { getPositionFromSlug, getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
+import { getPositionFromSlug, getPositionSlug, getPositionTitle } from "@/lib/utils/position";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import PositionPageContent from "./PositionPageContent";

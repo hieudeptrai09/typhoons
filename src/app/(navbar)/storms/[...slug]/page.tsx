@@ -1,15 +1,14 @@
 import { getStorms } from "@/lib/db/api/getStorms";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { getDashboardDescription, getDashboardTitle } from "../_utils/metadata";
 import {
   getCanonicalStormsSlugs,
-  getDashboardDescription,
-  getDashboardTitle,
   isValidStormsSlug,
   paramsToPath,
   slugToParams,
   slugToPath,
-} from "../_utils/fns";
+} from "../_utils/routing";
 import DashboardPageContent from "../DashboardPageContent";
 
 type PageProps = {

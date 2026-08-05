@@ -1,7 +1,7 @@
 import type { Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
-import { getIntensityFromNumber } from "../../_utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
+import { getIntensityFromNumber } from "@/lib/utils/storms";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface AverageGridProps {

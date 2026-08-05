@@ -1,29 +1,12 @@
 import {
   getCanonicalNamesSlugs,
-  getNamesDescription,
-  getNamesTitle,
   isHistoryScope,
   isValidNamesSlug,
   paramsToPath,
   slugToParams,
   slugToPath,
-  type NamesSlugParams,
-} from "@/app/(navbar)/names/_utils/fns";
-
-// The seven slugs the route serves, with the params each one resolves to.
-const SERVED_SLUGS: [string, string[], NamesSlugParams][] = [
-  ["/names/retired/", ["retired"], { view: "retired" }],
-  ["/names/current/", ["current"], { view: "grid", showName: true, showHistory: false }],
-  [
-    "/names/current/tag/",
-    ["current", "tag"],
-    { view: "grid", showName: false, showHistory: false },
-  ],
-  ["/names/current/list/", ["current", "list"], { view: "list", showHistory: false }],
-  ["/names/history/", ["history"], { view: "grid", showName: true, showHistory: true }],
-  ["/names/history/tag/", ["history", "tag"], { view: "grid", showName: false, showHistory: true }],
-  ["/names/history/list/", ["history", "list"], { view: "list", showHistory: true }],
-];
+} from "@/app/(navbar)/names/_utils/routing";
+import { SERVED_SLUGS } from "@/app/(navbar)/names/_utils/testFixtures";
 
 describe("isValidNamesSlug", () => {
   it.each(SERVED_SLUGS)("accepts %s", (_path, slug) => {
@@ -147,49 +130,5 @@ describe("getCanonicalNamesSlugs", () => {
 
     expect(childrenOf("current").sort()).toEqual(childrenOf("history").sort());
     expect(childrenOf("current").sort()).toEqual(["list", "tag"]);
-  });
-});
-
-describe("getNamesTitle", () => {
-  it("titles by view, with history taking precedence over the default", () => {
-    expect(getNamesTitle({ view: "retired" })).toBe("Retired Typhoon Names");
-    expect(getNamesTitle({ view: "grid", showName: true, showHistory: true })).toBe(
-      "Typhoon Name History",
-    );
-    expect(getNamesTitle({ view: "grid", showName: true, showHistory: false })).toBe(
-      "Current Typhoon Names",
-    );
-    expect(getNamesTitle({ view: "list", showHistory: false })).toBe("Current Typhoon Names");
-  });
-
-  it("gives every served slug a title", () => {
-    for (const [, slug] of SERVED_SLUGS) {
-      expect(getNamesTitle(slugToParams(slug)).length).toBeGreaterThan(0);
-    }
-  });
-});
-
-describe("getNamesDescription", () => {
-  it("describes each view distinctly", () => {
-    const retired = getNamesDescription({ view: "retired" });
-    const list = getNamesDescription({ view: "list", showHistory: false });
-    const grid = getNamesDescription({ view: "grid", showName: true, showHistory: false });
-    expect(new Set([retired, list, grid]).size).toBe(3);
-  });
-
-  it("varies the grid description by the name and history toggles", () => {
-    const variants = [
-      getNamesDescription({ view: "grid", showName: true, showHistory: true }),
-      getNamesDescription({ view: "grid", showName: false, showHistory: true }),
-      getNamesDescription({ view: "grid", showName: true, showHistory: false }),
-      getNamesDescription({ view: "grid", showName: false, showHistory: false }),
-    ];
-    expect(new Set(variants).size).toBe(4);
-  });
-
-  it("has a description for every canonical slug", () => {
-    for (const slug of getCanonicalNamesSlugs()) {
-      expect(getNamesDescription(slugToParams(slug)).length).toBeGreaterThan(0);
-    }
   });
 });

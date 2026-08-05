@@ -3,7 +3,7 @@ import { getDistanceColor } from "@/lib/utils/colors";
 import { useMemo } from "react";
 import NamesGrid from "../_grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import { calculateDistances } from "../../_utils/fns";
+import { calculateDistances } from "../../_utils/stats";
 
 interface DistanceNameGridProps {
   stormsData: Storm[];

@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface StormsGridProps {

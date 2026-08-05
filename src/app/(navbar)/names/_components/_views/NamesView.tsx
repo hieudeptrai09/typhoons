@@ -1,7 +1,7 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
 import { defaultTyphoonName } from "@/lib/constants";
 import type { FilterParams, StormHistoryEntry, TyphoonName } from "@/lib/types";
-import { toArr } from "@/lib/utils/fns";
+import { toArr } from "@/lib/utils/params";
 import { Badge, Button, Segmented } from "antd";
 import { CaseUpper, Filter, LayoutGrid, List, Tag } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -14,7 +14,7 @@ import PositionNameGrid from "../_widgets/PositionNameGrid";
 import SlashToggleButton from "../_widgets/SlashToggleButton";
 import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
 import { writeDisplayPrefs } from "../../_utils/displayPrefs";
-import { paramsToPath } from "../../_utils/fns";
+import { paramsToPath } from "../../_utils/routing";
 
 const LAYOUT_OPTIONS = [
   {

@@ -3,8 +3,9 @@ import { join } from "node:path";
 import { SORTING_RANK, TITLE_COMMON } from "@/lib/constants";
 import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
 import type { IntensityType, RetiredName, Storm, TyphoonName } from "@/lib/types";
-import { BACKGROUND_BADGE, isExternalPosition, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
+import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { fetchImageAsDataUri, flagDataUri } from "@/lib/utils/og";
+import { isExternalPosition } from "@/lib/utils/position";
 import { ImageResponse } from "next/og";
 
 export const alt = `Typhoon name details | ${TITLE_COMMON}`;

@@ -6,7 +6,7 @@ import type {
   RetirementReason,
   SuggestionWithNameId,
 } from "@/lib/types";
-import { toArr } from "@/lib/utils/fns";
+import { toArr } from "@/lib/utils/params";
 import { Badge, Button } from "antd";
 import { CaseUpper, Filter } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,7 +17,7 @@ import RetiredNamesTable from "../_widgets/RetiredNamesTable";
 import SlashToggleButton from "../_widgets/SlashToggleButton";
 import type { NamesDisplayPrefs } from "../../_utils/displayPrefs";
 import { writeDisplayPrefs } from "../../_utils/displayPrefs";
-import { paramsToPath } from "../../_utils/fns";
+import { paramsToPath } from "../../_utils/routing";
 
 interface RetiredViewProps {
   retiredNames: RetiredName[];

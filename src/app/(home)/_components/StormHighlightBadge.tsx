@@ -1,5 +1,6 @@
 import { getStormHighlight } from "@/lib/db/api/getStormHighlight";
-import { capitalize, getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
+import { capitalize } from "@/lib/utils/format";
+import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
 import Link from "next/link";
 
 const CONTAINER_CLASS = "mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm";

@@ -1,14 +1,14 @@
 import {
   getCanonicalNamesSlugs,
   slugToPath as namesSlugToPath,
-} from "@/app/(navbar)/names/_utils/fns";
+} from "@/app/(navbar)/names/_utils/routing";
 import {
   getCanonicalStormsSlugs,
   paramsToPath,
   slugToParams,
-} from "@/app/(navbar)/storms/_utils/fns";
+} from "@/app/(navbar)/storms/_utils/routing";
 import { getNameList } from "@/lib/db/api/getNameList";
-import { getPositionSlug } from "@/lib/utils/fns";
+import { getPositionSlug } from "@/lib/utils/position";
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://typhoons.vercel.app";

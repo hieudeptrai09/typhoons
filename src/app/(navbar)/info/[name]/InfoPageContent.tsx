@@ -4,11 +4,8 @@ import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
 import type { RetiredName, RetirementReason, SearchDetail, Storm, TyphoonName } from "@/lib/types";
-import {
-  getNameStatusBgClass,
-  getNameStatusColorClass,
-  isExternalPosition,
-} from "@/lib/utils/colors";
+import { getNameStatusBgClass, getNameStatusColorClass } from "@/lib/utils/colors";
+import { isExternalPosition } from "@/lib/utils/position";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface InfoPageContentProps {

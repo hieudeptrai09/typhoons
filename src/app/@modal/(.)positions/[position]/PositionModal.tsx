@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  calculateAverage,
-  getGroupedStorms,
-  getIntensityFromNumber,
-  sortNamesByFirstYear,
-} from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
@@ -20,7 +14,15 @@ import {
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
-import { formatStormDateRange, getPositionTitle, getZoomEarthUrl } from "@/lib/utils/fns";
+import { formatStormDateRange } from "@/lib/utils/date";
+import { getZoomEarthUrl } from "@/lib/utils/format";
+import { getPositionTitle } from "@/lib/utils/position";
+import {
+  calculateAverage,
+  getGroupedStorms,
+  getIntensityFromNumber,
+  sortNamesByFirstYear,
+} from "@/lib/utils/storms";
 import { Carousel as AntCarousel } from "antd";
 import { Calendar, ExternalLink, ImageOff, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";

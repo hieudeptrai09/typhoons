@@ -2,9 +2,9 @@ import DefModal from "@/lib/components/DefModal";
 import { INTENSITY_LABEL, INTENSITY_RANK, SORTING_RANK } from "@/lib/constants";
 import type { BaseModalProps, IntensityType, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { getGroupedStorms, getIntensityFromNumber } from "@/lib/utils/storms";
 import { Popover } from "antd";
 import { Info } from "lucide-react";
-import { getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 export type AverageModalCriteria = "position" | "country" | "year" | "month" | "name";
 

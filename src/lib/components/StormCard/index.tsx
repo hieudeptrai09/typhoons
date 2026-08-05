@@ -3,7 +3,8 @@ import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighli
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
-import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
+import { formatStormDateRange } from "@/lib/utils/date";
+import { getZoomEarthUrl } from "@/lib/utils/format";
 import { Calendar, ExternalLink, Hash, ImageOff } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {

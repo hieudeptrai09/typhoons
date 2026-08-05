@@ -1,9 +1,3 @@
-import {
-  calculateAverage,
-  getGroupedStorms,
-  getIntensityFromNumber,
-  sortNamesByFirstYear,
-} from "@/app/(navbar)/storms/_utils/fns";
 import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
@@ -17,7 +11,13 @@ import {
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
-import { getPositionSlug, getPositionTitle } from "@/lib/utils/fns";
+import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
+import {
+  calculateAverage,
+  getGroupedStorms,
+  getIntensityFromNumber,
+  sortNamesByFirstYear,
+} from "@/lib/utils/storms";
 import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 
 interface PositionPageContentProps {

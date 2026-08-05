@@ -1,5 +1,5 @@
 import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
-import { getPositionFromSlug, getPositionSlug } from "@/lib/utils/fns";
+import { getPositionFromSlug, getPositionSlug } from "@/lib/utils/position";
 import { notFound, permanentRedirect } from "next/navigation";
 import PositionModal from "./PositionModal";
 

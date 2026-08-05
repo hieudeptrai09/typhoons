@@ -3,7 +3,8 @@ import DefTable from "@/lib/components/DefTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getAvgDateColor } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
+import { getGroupedStorms } from "@/lib/utils/storms";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import AvgDateGrid from "../_grids/AvgDateGrid";
@@ -12,9 +13,8 @@ import {
   calculateAvgDatesByGroup,
   formatDayOfYear,
   getDoyMonth,
-  getGroupedStorms,
   type AvgDates,
-} from "../../_utils/fns";
+} from "../../_utils/avgDates";
 import AvgDateNameGrid from "./AvgDateNameGrid";
 
 interface AvgDateViewProps {

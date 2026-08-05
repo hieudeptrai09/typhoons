@@ -1,15 +1,14 @@
+import { toOpts } from "@/app/(navbar)/names/_utils/selectOptions";
 import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, RetiredFilterParams, RetirementReason } from "@/lib/types";
-import type { PositionValue } from "@/lib/utils/fns";
+import { toArr, toStr } from "@/lib/utils/params";
+import type { PositionValue } from "@/lib/utils/position";
 import {
   getPositionTitle,
   isPartialPosition,
   positionFromValue,
   positionToValue,
-  toArr,
-  toOpts,
-  toStr,
-} from "@/lib/utils/fns";
+} from "@/lib/utils/position";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";

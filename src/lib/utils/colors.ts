@@ -89,9 +89,6 @@ interface NameStatus {
   isExternal?: boolean;
 }
 
-export const isExternalPosition = (position?: number): boolean =>
-  position !== undefined && (position < 1 || position > 140);
-
 export const getNameStatusColor = (name: NameStatus): string => {
   if (name.isExternal) return "#475569";
   if (name.retirementReason === "misspell") return "#d97706";

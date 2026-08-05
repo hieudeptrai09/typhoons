@@ -7,7 +7,8 @@ import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighli
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { formatStormDateRange, getZoomEarthUrl } from "@/lib/utils/fns";
+import { formatStormDateRange } from "@/lib/utils/date";
+import { getZoomEarthUrl } from "@/lib/utils/format";
 import { Switch } from "antd";
 import { ExternalLink, Inbox } from "lucide-react";
 import { useState } from "react";

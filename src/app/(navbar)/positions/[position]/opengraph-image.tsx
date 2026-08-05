@@ -1,12 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { calculateAverage, getIntensityFromNumber } from "@/app/(navbar)/storms/_utils/fns";
 import { TITLE_COMMON } from "@/lib/constants";
 import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
 import type { RetiredName, Storm, TyphoonName } from "@/lib/types";
 import { getNameStatusColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getPositionFromSlug, getPositionTitle } from "@/lib/utils/fns";
 import { fetchImageAsDataUri, flagDataUri } from "@/lib/utils/og";
+import { getPositionFromSlug, getPositionTitle } from "@/lib/utils/position";
+import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
 import { ImageResponse } from "next/og";
 
 export const alt = `Naming position details | ${TITLE_COMMON}`;

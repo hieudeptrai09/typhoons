@@ -1,8 +1,8 @@
 "use client";
 
-import CountryFlag, { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import type { PositionValue } from "@/lib/utils/fns";
-import { GRID_ROWS, positionColumnLetter } from "@/lib/utils/fns";
+import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
+import type { PositionValue } from "@/lib/utils/position";
+import { GRID_ROWS, positionColumnLetter } from "@/lib/utils/position";
 import { Select, Space } from "antd";
 
 const ROW_OPTIONS = Array.from({ length: GRID_ROWS }, (_, idx) => ({

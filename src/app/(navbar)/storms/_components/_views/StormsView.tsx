@@ -3,13 +3,13 @@ import DefTable from "@/lib/components/DefTable";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
+import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "@/lib/utils/storms";
 import type { ColumnsType } from "antd/es/table";
 import NamesGrid from "../_grids/NamesGrid";
 import StormsGrid from "../_grids/StormsGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "../../_utils/fns";
 
 interface StormsViewProps {
   params: DashboardParams;

@@ -27,6 +27,16 @@ export const getPositionTitle = (position: number): string => {
   return positionGridLabel(position) ?? `#${position}`;
 };
 
+// Positions outside the grid belong to another basin's agency (CPHC/NHC/IMD) rather than the naming table.
+export const isExternalPosition = (position?: number): boolean =>
+  position !== undefined && (position < 1 || position > GRID_MAX);
+
+// The agency positions as a render-ready list; integer-like keys iterate in ascending id order.
+export const SPECIAL_POSITIONS = Object.entries(POSITION_SLUGS).map(([id, slug]) => ({
+  id: Number(id),
+  label: slug.toUpperCase(),
+}));
+
 // Parse a grid label ("3I" / "3i") or a plain number ("37") into a 1–140 position, else null.
 export const parsePositionLabel = (input: string): number | null => {
   const trimmed = input.trim().toUpperCase();
@@ -76,68 +86,4 @@ export const getPositionFromSlug = (slug: string): number | null => {
   // Out-of-grid integers pass through so the caller can range-check and 404;
   // Number("") is 0, so an empty slug needs its own rejection.
   return slug.trim() !== "" && Number.isInteger(num) ? num : null;
-};
-
-export const normalizeParam = (param: string | string[] | undefined): string => {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-};
-
-export const DELIMITER = "|";
-
-export const toArr = (val: string) => (val ? val.split(DELIMITER).filter(Boolean) : []);
-
-export const removeFromDelimitedString = (val: string, item: string) =>
-  val
-    .split(DELIMITER)
-    .filter((v) => v !== item)
-    .join(DELIMITER);
-
-export const toStr = (val: string[] | undefined) => (val ?? []).join(DELIMITER);
-
-export const toOpts = (items: string[]) => items.map((v) => ({ label: v, value: v }));
-
-export const fmt = (val: string) => toArr(val).join(", ");
-
-export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-
-export const getZoomEarthUrl = (name: string, year: number): string =>
-  `https://zoom.earth/storms/${name.trim().toLowerCase().replace(/\s+/g, "-")}-${year}/`;
-
-export interface DateParts {
-  year: number;
-  month: number;
-  day: number;
-}
-
-// Storm dates travel as "YYYY-MM-DD" strings (never Date objects) so they can't shift a day when serialized or rendered in another timezone.
-export const parseDateParts = (date?: string): DateParts | null => {
-  if (!date) return null;
-  const [year, month, day] = date.split("-").map(Number);
-  if (!year || !month || !day) return null;
-  return { year, month, day };
-};
-
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-export const daysBetween = (dateStart?: string, dateEnd?: string): number | null => {
-  const start = parseDateParts(dateStart);
-  const end = parseDateParts(dateEnd);
-  if (!start || !end) return null;
-  return Math.round(
-    (Date.UTC(end.year, end.month - 1, end.day) -
-      Date.UTC(start.year, start.month - 1, start.day)) /
-      MS_PER_DAY,
-  );
-};
-
-export const formatStormDateRange = (dateStart?: string, dateEnd?: string): string | null => {
-  const start = parseDateParts(dateStart);
-  if (!start) return null;
-  const end = parseDateParts(dateEnd);
-  if (!end) return `${start.day}/${start.month} - now`;
-  if (start.year === end.year) {
-    return `${start.day}/${start.month} - ${end.day}/${end.month}/${end.year}`;
-  }
-  return `${start.day}/${start.month}/${start.year} - ${end.day}/${end.month}/${end.year}`;
 };

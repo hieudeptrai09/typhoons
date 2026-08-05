@@ -5,15 +5,14 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { NAMES_DISPLAY_COOKIE, parseDisplayPrefs } from "../_utils/displayPrefs";
+import { getNamesDescription, getNamesTitle } from "../_utils/metadata";
 import {
-  getNamesDescription,
-  getNamesTitle,
   isHistoryScope,
   isValidNamesSlug,
   paramsToPath,
   slugToParams,
   slugToPath,
-} from "../_utils/fns";
+} from "../_utils/routing";
 import NamesPageContent from "../NamesPageContent";
 
 type PageProps = {

@@ -4,7 +4,7 @@ import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { ActiveOnThisDayStorm } from "@/lib/db/api/getActiveOnThisDay";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/fns";
+import { formatStormDateRange } from "@/lib/utils/date";
 import { App, Button } from "antd";
 import { Waves } from "lucide-react";
 import Link from "next/link";

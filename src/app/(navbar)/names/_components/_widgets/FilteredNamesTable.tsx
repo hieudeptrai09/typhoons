@@ -4,7 +4,7 @@ import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import type { TyphoonName } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getNameStatusColorClass } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
 import type { ColumnsType } from "antd/es/table";
 
 interface FilteredNamesTableProps {

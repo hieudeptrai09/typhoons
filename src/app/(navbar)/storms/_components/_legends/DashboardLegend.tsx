@@ -1,5 +1,5 @@
 import type { DashboardParams } from "@/lib/types";
-import { getLegendKind } from "../../_utils/fns";
+import { getLegendKind } from "../../_utils/routing";
 import AvgDateLegend from "./AvgDateLegend";
 import HighlightsLegend from "./HighlightsLegend";
 import IntensityLegend from "./IntensityLegend";

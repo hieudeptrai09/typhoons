@@ -2,14 +2,14 @@ import DefModal from "@/lib/components/DefModal";
 import { MONTH_NAMES } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
-import { formatStormDateRange, parseDateParts } from "@/lib/utils/fns";
+import { formatStormDateRange, parseDateParts } from "@/lib/utils/date";
 import { Popover } from "antd";
 import {
   calculateAvgDates,
   calculateAvgDuration,
   formatDayOfYear,
   getDoyMonth,
-} from "../../_utils/fns";
+} from "../../_utils/avgDates";
 
 interface AvgDateModalProps extends BaseModalProps {
   title: string;

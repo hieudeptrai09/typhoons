@@ -2,8 +2,8 @@ import DefModal from "@/lib/components/DefModal";
 import StormListContent from "@/lib/components/StormListContent";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { getIntensityFromNumber } from "@/lib/utils/storms";
 import type { CSSProperties } from "react";
-import { getIntensityFromNumber } from "../../_utils/fns";
 
 // It's used to a part of modal @modal/(.)info/[name], but the owner forced to divorce and go back to here.
 export interface NameListModalProps extends BaseModalProps {

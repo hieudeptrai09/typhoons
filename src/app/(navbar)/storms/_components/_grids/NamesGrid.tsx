@@ -1,6 +1,6 @@
 import type { Storm } from "@/lib/types";
+import { sortNamesByFirstYear } from "@/lib/utils/storms";
 import { useMemo, type ReactNode } from "react";
-import { sortNamesByFirstYear } from "../../_utils/fns";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface NamesGridProps {

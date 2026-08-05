@@ -1,5 +1,6 @@
 import type { RetirementReason } from "@/lib/types";
-import { getNameStatusColorClass, isExternalPosition } from "@/lib/utils/colors";
+import { getNameStatusColorClass } from "@/lib/utils/colors";
+import { isExternalPosition } from "@/lib/utils/position";
 import { CircleHelp, Flame, Skull, SpellCheck2 } from "lucide-react";
 
 interface Props {

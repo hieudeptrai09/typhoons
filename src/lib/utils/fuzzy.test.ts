@@ -1,4 +1,4 @@
-import { damerauLevenshtein, similarity, topSuggestions } from "@/lib/utils/fuzzy";
+import { topSuggestions } from "@/lib/utils/fuzzy";
 
 // A slice of the real name pool: the crowded N- cluster that motivated edit distance over
 // trigrams, plus a few longer names and the hyphenated spellings.
@@ -24,45 +24,19 @@ const NAMES = [
   "Yagi",
 ];
 
-describe("damerauLevenshtein", () => {
-  it("counts each edit once", () => {
-    expect(damerauLevenshtein("nori", "nuri")).toBe(1); // substitution
-    expect(damerauLevenshtein("nori", "nori")).toBe(0);
-    expect(damerauLevenshtein("konrey", "kongrey")).toBe(1); // insertion
-    expect(damerauLevenshtein("noguri", "noguri")).toBe(0);
-  });
-
-  it("charges an adjacent swap as one edit, not two", () => {
-    expect(damerauLevenshtein("yagi", "yaig")).toBe(1);
-    expect(damerauLevenshtein("trami", "tramai")).toBe(1);
-  });
-
-  it("falls back to the other string's length when one is empty", () => {
-    expect(damerauLevenshtein("", "yagi")).toBe(4);
-    expect(damerauLevenshtein("yagi", "")).toBe(4);
-    expect(damerauLevenshtein("", "")).toBe(0);
-  });
-});
-
-describe("similarity", () => {
-  it("scores identical strings 1 and normalizes by the longer length", () => {
-    expect(similarity("yagi", "yagi")).toBe(1);
-    expect(similarity("nori", "nuri")).toBeCloseTo(0.75); // 1 edit over 4 chars
-  });
-
-  // The whole reason this module exists: trigram similarity puts these at 0.25, under
-  // pg_trgm's 0.3 default, so a one-letter typo on a four-letter name found nothing.
-  it("keeps one-letter typos on short names well above any usable threshold", () => {
-    for (const name of ["Nuri", "Nari", "Noru", "Bori"]) {
-      expect(similarity("nori", name.toLowerCase())).toBeGreaterThan(0.7);
-    }
-  });
-});
-
 describe("topSuggestions", () => {
+  // The whole reason this module scores by edit distance rather than trigrams: trigram
+  // similarity puts these at 0.25, under pg_trgm's 0.3 default, so a one-letter typo on a
+  // four-letter name found nothing at all.
   it("returns every one-edit neighbour of an ambiguous short name", () => {
     // The Nori case: four names sit one edit away and none of them outranks the others.
     expect(topSuggestions("Nori", NAMES)).toEqual(["Bori", "Nari", "Noru", "Nuri", "Noguri"]);
+  });
+
+  // Damerau, not plain Levenshtein: an adjacent swap costs one edit rather than two, which
+  // keeps a transposed typo above the threshold instead of dropping it.
+  it("recovers a name whose letters were transposed", () => {
+    expect(topSuggestions("yaig", NAMES)).toEqual(["Yagi"]);
   });
 
   it("puts the intended name first for a plain misspelling", () => {

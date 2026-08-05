@@ -4,15 +4,11 @@ import { MONTH_NAMES } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getPositionTitle } from "@/lib/utils/fns";
+import { getPositionTitle } from "@/lib/utils/position";
+import { calculateAverage, getGroupedStorms, getIntensityFromNumber } from "@/lib/utils/storms";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
-import {
-  calculateAverage,
-  getEffectiveMonth,
-  getGroupedStorms,
-  getIntensityFromNumber,
-} from "../../_utils/fns";
+import { getEffectiveMonth } from "../../_utils/stats";
 
 interface AverageListTableProps {
   filter: string;

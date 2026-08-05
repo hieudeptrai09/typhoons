@@ -10,7 +10,8 @@ import RetiredView from "./_components/_views/RetiredView";
 import type { NamesScope } from "./_components/_widgets/NamesScopeTabs";
 import NamesScopeTabs from "./_components/_widgets/NamesScopeTabs";
 import type { NamesDisplayPrefs } from "./_utils/displayPrefs";
-import { getNamesTitle, paramsToPath, slugToParams } from "./_utils/fns";
+import { getNamesTitle } from "./_utils/metadata";
+import { paramsToPath, slugToParams } from "./_utils/routing";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;

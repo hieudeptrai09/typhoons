@@ -1,4 +1,4 @@
-export function damerauLevenshtein(a: string, b: string): number {
+function damerauLevenshtein(a: string, b: string): number {
   const al = a.length;
   const bl = b.length;
   if (al === 0) return bl;
@@ -35,14 +35,14 @@ export function damerauLevenshtein(a: string, b: string): number {
 }
 
 /** Similarity in [0, 1]: 1 = identical, 0 = completely different. */
-export function similarity(a: string, b: string): number {
+function similarity(a: string, b: string): number {
   if (a === b) return 1;
   const maxLen = Math.max(a.length, b.length);
   if (maxLen === 0) return 1;
   return 1 - damerauLevenshtein(a, b) / maxLen;
 }
 
-export interface SuggestionOptions {
+interface SuggestionOptions {
   limit?: number;
   threshold?: number;
   minQueryLength?: number;

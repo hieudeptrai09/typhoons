@@ -3,10 +3,11 @@ import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
-import { getPositionTitle, parseDateParts } from "@/lib/utils/fns";
+import { parseDateParts } from "@/lib/utils/date";
+import { getPositionTitle } from "@/lib/utils/position";
 import type { ColumnsType } from "antd/es/table";
 import HighlightsGrid from "../_grids/HighlightsGrid";
-import { getHighlights } from "../../_utils/fns";
+import { getHighlights } from "../../_utils/stats";
 
 interface HighlightsViewProps {
   params: DashboardParams;
