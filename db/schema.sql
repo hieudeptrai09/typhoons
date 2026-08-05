@@ -68,12 +68,12 @@ CREATE TABLE typhoonnames (
     -- True once a replacement name has actually been selected; a name can be retired
     -- while the committee is still deciding, in which case suggestednames holds the candidates.
     isreplaced boolean DEFAULT false NOT NULL,
-    replacementname character varying(10) DEFAULT '' NOT NULL,  -- '' for names still in rotation
+    replacementname character varying(10),          -- NULL for names still in rotation
     note text,
     language character varying(20) NOT NULL,        -- language the name comes from, e.g. "Japanese"
     lastyear integer,                               -- final season the name was used; NULL while in rotation
     image character varying(255) DEFAULT NULL,
-    description character varying(255) DEFAULT '' NOT NULL,
+    description character varying(255),
     imageauthor character varying,
     imagesourceurl character varying,
     imagelicenseid smallint,
@@ -100,9 +100,9 @@ INSERT INTO typhoonnames (
 )
 VALUES (
     19, 'Yagi', 'Capricorn, goat', 'Animal', 19, true, true,
-    'Tomo', '', 'Japanese', 2024,
+    'Tomo', NULL, 'Japanese', 2024,
     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Feral_Goats_at_St_Tudno%27s_Churchyard_-_geograph.org.uk_-_2426882.jpg/960px-Feral_Goats_at_St_Tudno%27s_Churchyard_-_geograph.org.uk_-_2426882.jpg',
-    '', 'David Dixon',
+    NULL, 'David Dixon',
     'https://commons.wikimedia.org/wiki/File:Feral_Goats_at_St_Tudno''s_Churchyard_-_geograph.org.uk_-_2426882.jpg',
     5, '[ja̠ɡʲi]', 'ヤギ', 'Yagi.mp3', 'destructive'
 );
@@ -121,8 +121,8 @@ CREATE TABLE storms (
     map character varying(200) DEFAULT NULL,        -- track map URL
     year integer NOT NULL,
     -- Set only for the handful of storms whose official spelling differs from the
-    -- list entry; '' otherwise.
-    correctspelling character varying(10) NOT NULL,
+    -- list entry; NULL otherwise.
+    correctspelling character varying(10),
     isstrongest boolean DEFAULT false NOT NULL,     -- strongest storm to carry this name
     -- Combined with positions.suffix into "12W". Set even for a few 'NT' storms, which the
     -- JTWC numbered in post-season reanalysis without ever having tracked them live.
@@ -146,7 +146,7 @@ INSERT INTO storms (
 VALUES (
     591, 19, 'Yagi', '5',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Yagi_2024_track.png/960px-Yagi_2024_track.png',
-    2024, '', true, 12, false, false, '2024-08-31', '2024-09-09'
+    2024, NULL, true, 12, false, false, '2024-08-31', '2024-09-09'
 );
 
 -- ---------------------------------------------------------------------------

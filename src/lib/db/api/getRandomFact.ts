@@ -613,7 +613,7 @@ async function generateFacts(): Promise<string[]> {
 
   rowsResult = await rows(`
     SELECT name, note FROM typhoonnames
-    WHERE retirementreason = 'language' AND isretired = true AND note IS NOT NULL AND note != ''
+    WHERE retirementreason = 'language' AND isretired = true AND note IS NOT NULL
   `);
   for (const r of rowsResult) {
     const reason = String(r.note);

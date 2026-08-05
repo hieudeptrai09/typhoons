@@ -18,15 +18,13 @@ export interface StormRow {
   isLast: boolean;
 }
 
-// correctspelling is NOT NULL but empty for all but a handful of storms
-// so NULLIF lets the mapper's ?? undefined actually fire instead of passing "" through as a real value.
 export const stormColumns = (stormAlias = "s", positionAlias = "p") =>
   `${stormAlias}.position,
       ${positionAlias}.country,
       ${stormAlias}.name,
       ${stormAlias}.intensity,
       ${stormAlias}.map,
-      NULLIF(${stormAlias}.correctspelling, '') AS "correctSpelling",
+      ${stormAlias}.correctspelling AS "correctSpelling",
       ${stormAlias}.year,
       ${stormAlias}.isstrongest AS "isStrongest",
       ${stormAlias}.startdate::text AS "dateStart",

@@ -31,8 +31,6 @@ export interface TyphoonNameRow extends ImageCreditRow {
   tag: string;
 }
 
-// replacementname and description are NOT NULL but empty for a large share of rows
-// so NULLIF lets the mapper's ?? fallbacks actually fire instead of passing "" through as a real value.
 export const typhoonNameColumns = (nameAlias = "tn", positionAlias = "p") =>
   `${nameAlias}.id,
       ${nameAlias}.name,
@@ -42,7 +40,7 @@ export const typhoonNameColumns = (nameAlias = "tn", positionAlias = "p") =>
       ${nameAlias}.isretired AS "isRetired",
       ${nameAlias}.isreplaced AS "isReplaced",
       ${nameAlias}.retirementreason AS "retirementReason",
-      NULLIF(${nameAlias}.replacementname, '') AS "replacementName",
+      ${nameAlias}.replacementname AS "replacementName",
       ${nameAlias}.note,
       ${nameAlias}.language,
       ${nameAlias}.originaltext AS "originalText",
@@ -51,7 +49,7 @@ export const typhoonNameColumns = (nameAlias = "tn", positionAlias = "p") =>
       ${nameAlias}.lastyear AS "lastYear",
       ${nameAlias}.image,
       ${imageCreditColumns(`${nameAlias}.`)},
-      NULLIF(${nameAlias}.description, '') AS "description",
+      ${nameAlias}.description,
       ${nameAlias}.tag`;
 
 export const typhoonNameJoin = (nameAlias = "tn", positionAlias = "p") =>
