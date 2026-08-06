@@ -2,9 +2,19 @@ import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import PronunciationButton from "@/lib/components/PronunciationButton";
 import type { RetiredName, TyphoonName } from "@/lib/types";
 import { capitalize } from "@/lib/utils/format";
-import { History, Inbox, Languages, Replace, SpellCheck, Volume2 } from "lucide-react";
+import {
+  AudioLines,
+  ExternalLink,
+  History,
+  Inbox,
+  Languages,
+  Replace,
+  SpellCheck,
+  Volume2,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 export interface NameDetailsContentProps {
@@ -37,6 +47,8 @@ const NameDetailsContent = ({
     !hideReplacedBy && "replacementName" in name ? name.replacementName : undefined;
   const lastYear = "lastYear" in name ? name.lastYear : undefined;
   const pronunciationFile = name.pronunciationFile?.trim();
+  const displayName = capitalize(name.name.toLowerCase());
+  const englishClip = `/pronunciations/en/${encodeURIComponent(name.name)}.mp3`;
   const crossRef = correctSpelling
     ? { icon: SpellCheck, label: "Correct spelling", value: correctSpelling }
     : replacementName
@@ -71,24 +83,34 @@ const NameDetailsContent = ({
               {name.country} · {name.language}
             </InfoRow>
 
-            {(name.originalText || name.ipa || pronunciationFile) && (
+            {(name.originalText || name.ipa) && (
               <InfoRow icon={<Languages className="h-4 w-4" />}>
                 {name.originalText && <span className="font-medium">{name.originalText}</span>}
                 {name.ipa && <span aria-label="Pronunciation">{name.ipa}</span>}
-                {pronunciationFile && (
-                  <a
-                    href={`https://www.typhooncommittee.org/tcsounds/${encodeURIComponent(pronunciationFile)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-slate-400! hover:text-teal-600!"
-                    title={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
-                    aria-label={`Listen to the pronunciation of ${capitalize(name.name.toLowerCase())}`}
-                  >
-                    <Volume2 className="h-4 w-4 shrink-0 text-foreground" aria-hidden="true" />
-                  </a>
-                )}
               </InfoRow>
             )}
+
+            <InfoRow icon={<AudioLines className="h-4 w-4" />}>
+              {pronunciationFile && (
+                <a
+                  href={`https://www.typhooncommittee.org/tcsounds/${encodeURIComponent(pronunciationFile)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-600! transition-colors hover:border-teal-600 hover:text-teal-700! focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+                  title={`Open the native pronunciation of ${displayName} on typhooncommittee.org`}
+                  aria-label={`Open the native pronunciation of ${displayName} on typhooncommittee.org`}
+                >
+                  <Volume2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  Native
+                  <ExternalLink className="h-3 w-3 shrink-0 opacity-60" aria-hidden="true" />
+                </a>
+              )}
+              <PronunciationButton
+                src={englishClip}
+                label="English"
+                title={`Play the English pronunciation of ${displayName}`}
+              />
+            </InfoRow>
 
             {lastYear !== undefined && lastYear !== 0 && (
               <InfoRow icon={<History className="h-4 w-4" />}>Last used {lastYear}</InfoRow>

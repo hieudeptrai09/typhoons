@@ -27,6 +27,17 @@ const sources = [
     detail: "Naming history and background context, used under CC BY-SA 4.0.",
     url: "https://en.wikipedia.org/",
   },
+  {
+    name: "ESCAP/WMO Typhoon Committee",
+    detail: "Native pronunciation recordings, linked from the committee's own name list.",
+    url: "https://www.typhooncommittee.org/",
+  },
+  {
+    name: "Piper",
+    detail:
+      "Speech synthesis behind the English pronunciations, using the en_US-kristin voice trained on public-domain LibriVox recordings.",
+    url: "https://github.com/OHF-Voice/piper1-gpl",
+  },
 ];
 
 const AboutPage = () => {
@@ -111,6 +122,14 @@ const AboutPage = () => {
             It does not extend to the images, which belong to their respective owners and remain
             under their original copyright. No ownership of, or license over, those images is
             claimed here.
+          </p>
+          <p className="p-4 leading-relaxed text-slate-600 sm:p-5">
+            Each name carries two recordings. The{" "}
+            <span className="font-medium text-slate-700">English</span> one is synthesised here from
+            a public-domain voice and shows how an English speaker reads the name on sight — it is
+            not a guide to saying it correctly. The{" "}
+            <span className="font-medium text-slate-700">native</span> one, where it exists, is the
+            committee&apos;s own recording, linked from their site and belonging to them.
           </p>
           <p className="p-4 leading-relaxed text-slate-600 sm:p-5">
             Where an image&apos;s author and license are known, they are credited alongside it. This
