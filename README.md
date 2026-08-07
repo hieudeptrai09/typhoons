@@ -42,14 +42,9 @@ src/
     ├── layout/             # Navbar, footer, and AntD provider
     ├── types/              # Shared TypeScript types
     └── utils/              # Helpers (colors, a11y, OG images, misc)
-
-public/
-└── pronunciations/en/      # One clip per name, generated
 ```
 
 Pages fetch data directly in server components through `src/lib/db` — there are no API route handlers.
-
-Each name has two recordings: the **native** one linked from the Typhoon Committee, and an **English** one generated locally that shows how an English speaker reads the name on sight. Regenerate the English set after adding names — [scripts/generate-pronunciations.py](scripts/generate-pronunciations.py) has the steps.
 
 ## Development
 
@@ -63,13 +58,13 @@ The app needs a Supabase Postgres connection; see [.env.example](.env.example) f
 
 Other scripts:
 
-| Script           | Does                       |
-| ---------------- | -------------------------- |
-| `npm run build`  | Production build           |
-| `npm run start`  | Serve the production build |
-| `npm run lint`   | ESLint                     |
-| `npm run test`   | Jest unit tests            |
-| `npm run format` | Prettier + ESLint `--fix`  |
+| Script             | Does                             |
+| ------------------ | -------------------------------- |
+| `npm run build`    | Production build                 |
+| `npm run start`    | Serve the production build       |
+| `npm run lint`     | ESLint                           |
+| `npm run test`     | Jest unit tests                  |
+| `npm run format`   | Prettier + ESLint `--fix`        |
 
 ## License
 
