@@ -3,6 +3,7 @@ import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormCard from "@/lib/components/StormCard";
+import StormStats from "@/lib/components/StormStats";
 import type { RetiredName, RetirementReason, SearchDetail, Storm, TyphoonName } from "@/lib/types";
 import { getNameStatusBgClass, getNameStatusColorClass } from "@/lib/utils/colors";
 import { isExternalPosition } from "@/lib/utils/position";
@@ -51,7 +52,8 @@ function NameDetailsSection({
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-foreground">Name Details</h2>
-      <NameDetailsContent name={name} correctSpelling={correctSpelling} />
+      {/* The page header already carries the status badge. */}
+      <NameDetailsContent name={name} correctSpelling={correctSpelling} hideStatus />
     </section>
   );
 }
@@ -93,10 +95,14 @@ function StormsSection({ storms }: { storms: Storm[] }) {
       {storms.length === 0 ? (
         <p className="py-4 text-center text-foreground">No storms found for this name.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {storms.map((storm, idx) => (
-            <StormCard key={idx} storm={storm} />
-          ))}
+        <div className="space-y-6">
+          <StormStats storms={storms} />
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {storms.map((storm, idx) => (
+              <StormCard key={idx} storm={storm} />
+            ))}
+          </div>
         </div>
       )}
     </section>
@@ -143,14 +149,14 @@ export default function InfoPageContent({
       </div>
 
       <div className="mb-8 flex flex-wrap items-center gap-3">
-        {metaCountry && (
-          <div className="flex items-center gap-2">
-            {isInPosition && <CountryFlag country={metaCountry} className="h-5 w-8" />}
+        {metaCountry &&
+          (isInPosition ? (
+            <CountryFlag country={metaCountry} className="h-5 w-8" />
+          ) : (
             <span className="text-base font-semibold text-foreground">{metaCountry}</span>
-          </div>
-        )}
+          ))}
         {isInPosition && metaPosition != null && (
-          <span className="text-base text-foreground">· #{metaPosition}</span>
+          <span className="text-base text-foreground">#{metaPosition}</span>
         )}
         <StatusBadge
           isInPosition={isInPosition}

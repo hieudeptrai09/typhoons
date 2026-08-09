@@ -30,6 +30,35 @@ export const calculateAverage = (storms: Storm[]): number => {
   return sum / storms.length;
 };
 
+// Average number of years between consecutive appearances; -1 when a single storm
+// leaves no gap to measure, which 0 can't stand in for (a real same-year gap).
+export const calculateGapAverage = (storms: Storm[]): number => {
+  const years = storms.map((s) => s.year).sort((a, b) => a - b);
+  if (years.length <= 1) return -1;
+
+  const gaps: number[] = [];
+  for (let i = 1; i < years.length; i++) {
+    gaps.push(years[i] - years[i - 1]);
+  }
+  return gaps.reduce((a, b) => a + b, 0) / gaps.length;
+};
+
+export const calculateDistances = (
+  stormsData: Storm[],
+  groupBy: "position" | "name",
+): Record<string, number> => {
+  const grouped = getGroupedStorms(stormsData, groupBy);
+  const result: Record<string, number> = {};
+
+  Object.entries(grouped).forEach(([key, groupStorms]) => {
+    result[key] = calculateGapAverage(groupStorms);
+  });
+
+  return result;
+};
+
+export const formatDistance = (dist: number): string => (dist < 0 ? "N/A" : dist.toFixed(2));
+
 export const sortNamesByFirstYear = (entries: [string, Storm[]][]): [string, Storm[]][] =>
   [...entries].sort(
     ([, aStorms], [, bStorms]) =>

@@ -2,7 +2,7 @@ import DefModal from "@/lib/components/DefModal";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
-import { formatDistance } from "../../_utils/stats";
+import { formatDistance } from "@/lib/utils/storms";
 
 interface DistanceModalProps extends BaseModalProps {
   title: string;

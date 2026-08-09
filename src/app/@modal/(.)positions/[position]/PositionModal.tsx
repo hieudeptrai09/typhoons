@@ -6,11 +6,13 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import StormStats from "@/lib/components/StormStats";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
 import {
   BACKGROUND_BADGE,
+  getDistanceColor,
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
@@ -19,6 +21,8 @@ import { getZoomEarthUrl } from "@/lib/utils/format";
 import { getPositionTitle } from "@/lib/utils/position";
 import {
   calculateAverage,
+  calculateGapAverage,
+  formatDistance,
   getGroupedStorms,
   getIntensityFromNumber,
   sortNamesByFirstYear,
@@ -101,7 +105,7 @@ function StormGridCard({ storm }: { storm: Storm }) {
       )}
       <div className="mt-2 space-y-1">
         <div className="text-sm leading-tight font-bold" style={{ color: accent }}>
-          {label}
+          {label} {storm.name}
         </div>
         <div className="flex items-center gap-1.5 text-xs text-foreground">
           <Calendar size={12} className="shrink-0" />
@@ -151,20 +155,9 @@ export default function PositionModal({ detail, position, isError = false }: Pos
   const stormsPanel = (
     <div>
       {storms.length > 0 && (
-        <div className="mb-4 flex items-baseline justify-between gap-2">
+        <div className="mb-4 space-y-3">
           <span className="text-lg font-bold text-foreground">All Storms ({storms.length})</span>
-          <span className="text-sm text-foreground">
-            Overall Avg:{" "}
-            <span
-              className="font-bold"
-              style={{
-                color:
-                  TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(calculateAverage(storms))],
-              }}
-            >
-              {calculateAverage(storms).toFixed(2)}
-            </span>
-          </span>
+          <StormStats storms={storms} />
         </div>
       )}
       {storms.length === 0 ? (
@@ -176,17 +169,18 @@ export default function PositionModal({ detail, position, isError = false }: Pos
               const sorted = [...group].sort((a, b) => a.year - b.year);
               const average = calculateAverage(sorted);
               const groupIntensity = getIntensityFromNumber(average);
+              const recurrence = calculateGapAverage(sorted);
               return (
                 <div key={name}>
                   <div
-                    className="mb-2 flex items-center justify-between gap-2 rounded-md bg-slate-50 py-2 pr-4 pl-3"
+                    className="mb-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-md bg-slate-50 py-2 pr-4 pl-3"
                     style={{
                       borderLeftWidth: 4,
                       borderLeftColor: BACKGROUND_BADGE[groupIntensity],
                     }}
                   >
                     <span className="font-semibold text-foreground">{name}</span>
-                    <span className="flex items-center gap-4 text-sm text-foreground">
+                    <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground">
                       <span>
                         Count:{" "}
                         <span className="font-semibold text-foreground">{sorted.length}</span>
@@ -200,6 +194,19 @@ export default function PositionModal({ detail, position, isError = false }: Pos
                           {average.toFixed(2)}
                         </span>
                       </span>
+                      {/* A lone storm leaves no gap to measure, so the stat is left off entirely. */}
+                      {recurrence >= 0 && (
+                        <span>
+                          Every:{" "}
+                          <span
+                            className="font-bold"
+                            style={{ color: getDistanceColor(recurrence) }}
+                          >
+                            {formatDistance(recurrence)}
+                          </span>{" "}
+                          yrs
+                        </span>
+                      )}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

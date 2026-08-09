@@ -4,12 +4,11 @@ import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/position";
-import { getGroupedStorms } from "@/lib/utils/storms";
+import { calculateDistances, formatDistance, getGroupedStorms } from "@/lib/utils/storms";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import DistanceGrid from "../_grids/DistanceGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
-import { calculateDistances, formatDistance } from "../../_utils/stats";
 import DistanceNameGrid from "./DistanceNameGrid";
 
 interface DistanceViewProps {

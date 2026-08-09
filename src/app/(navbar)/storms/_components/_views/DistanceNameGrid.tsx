@@ -1,9 +1,9 @@
 import type { Storm } from "@/lib/types";
 import { getDistanceColor } from "@/lib/utils/colors";
+import { calculateDistances } from "@/lib/utils/storms";
 import { useMemo } from "react";
 import NamesGrid from "../_grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import { calculateDistances } from "../../_utils/stats";
 
 interface DistanceNameGridProps {
   stormsData: Storm[];

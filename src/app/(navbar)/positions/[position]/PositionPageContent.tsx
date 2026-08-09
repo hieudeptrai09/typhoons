@@ -4,9 +4,11 @@ import FrownError from "@/lib/components/FrownError";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormCard from "@/lib/components/StormCard";
+import StormStats from "@/lib/components/StormStats";
 import type { PositionDetail, RetiredName, Storm, TyphoonName } from "@/lib/types";
 import {
   BACKGROUND_BADGE,
+  getDistanceColor,
   getNameStatusColor,
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
@@ -14,6 +16,8 @@ import {
 import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
 import {
   calculateAverage,
+  calculateGapAverage,
+  formatDistance,
   getGroupedStorms,
   getIntensityFromNumber,
   sortNamesByFirstYear,
@@ -104,10 +108,10 @@ function NameTimelineItem({ name, storms }: { name: TyphoonName | RetiredName; s
           </div>
           {name.meaning && <p className="mt-0.5 text-sm text-teal-600 italic">{name.meaning}</p>}
 
+          {/* The era above already ends at the retirement year, so it isn't repeated here. */}
           {isSucceeded && (
             <p className={`mt-2 text-xs ${getNameStatusColorClass(name)}`}>
               {name.isRetired ? "Retired" : "Replaced"}
-              {retiredYear ? ` after ${retiredYear}` : ""}
             </p>
           )}
           {note && <p className="mt-0.5 text-xs text-slate-500 italic">{note}</p>}
@@ -178,39 +182,35 @@ function StormsSection({ storms }: { storms: Storm[] }) {
     );
   }
 
-  const overallAverage = calculateAverage(storms);
   const nameGroups = sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
     ([name, group]) => {
       const sorted = [...group].sort((a, b) => a.year - b.year);
-      return { name, storms: sorted, average: calculateAverage(sorted), count: sorted.length };
+      return {
+        name,
+        storms: sorted,
+        average: calculateAverage(sorted),
+        count: sorted.length,
+        recurrence: calculateGapAverage(sorted),
+      };
     },
   );
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
-        <div>
-          <span className="text-sm font-semibold text-foreground">Overall Avg: </span>
-          <span
-            className="text-lg font-bold"
-            style={{ color: TEXT_COLOR_WHITE_BACKGROUND[getIntensityFromNumber(overallAverage)] }}
-          >
-            {overallAverage.toFixed(2)}
-          </span>
-        </div>
-      </div>
+      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
       <div className="space-y-6">
+        <StormStats storms={storms} />
+
         {nameGroups.map((group) => {
           const intensityLabel = getIntensityFromNumber(group.average);
           return (
             <div key={group.name}>
               <div
-                className="mb-3 flex items-center justify-between rounded-md bg-slate-50 px-3 py-2"
+                className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-md bg-slate-50 px-3 py-2"
                 style={{ borderLeft: `4px solid ${BACKGROUND_BADGE[intensityLabel]}` }}
               >
                 <span className="font-semibold text-foreground">{group.name}</span>
-                <div className="flex gap-3 text-sm text-foreground">
+                <div className="flex flex-wrap gap-3 text-sm text-foreground">
                   <span>
                     Count: <span className="font-semibold text-foreground">{group.count}</span>
                   </span>
@@ -223,6 +223,19 @@ function StormsSection({ storms }: { storms: Storm[] }) {
                       {group.average.toFixed(2)}
                     </span>
                   </span>
+                  {/* A lone storm leaves no gap to measure, so the stat is left off entirely. */}
+                  {group.recurrence >= 0 && (
+                    <span>
+                      Every:{" "}
+                      <span
+                        className="font-semibold"
+                        style={{ color: getDistanceColor(group.recurrence) }}
+                      >
+                        {formatDistance(group.recurrence)}
+                      </span>{" "}
+                      yrs
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

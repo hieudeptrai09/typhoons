@@ -54,7 +54,13 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
         label: `Storms (${storms.length})`,
         content: <StormListContent storms={storms} />,
       },
-      { key: "details", label: "Name Details", content: <NameDetailsContent name={nameData} /> },
+      {
+        key: "details",
+        label: "Name Details",
+        content: (
+          <NameDetailsContent name={nameData} correctSpelling={storms[0]?.correctSpelling} />
+        ),
+      },
     ];
 
     title = (

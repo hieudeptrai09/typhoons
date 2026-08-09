@@ -11,6 +11,8 @@ export interface NameDetailsContentProps {
   name: TyphoonName | RetiredName | null;
   hideReplacedBy?: boolean;
   correctSpelling?: string;
+  /** Set where the surrounding page already carries a status badge, so it isn't shown twice. */
+  hideStatus?: boolean;
 }
 
 const InfoRow = ({ icon, children }: { icon: ReactNode; children: ReactNode }) => (
@@ -26,6 +28,7 @@ const NameDetailsContent = ({
   name,
   hideReplacedBy = false,
   correctSpelling,
+  hideStatus = false,
 }: NameDetailsContentProps) => {
   if (!name) {
     return (
@@ -46,17 +49,19 @@ const NameDetailsContent = ({
   return (
     <div className="@container">
       <article className="flex flex-col gap-4">
-        <span
-          className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            name.isRetired ? "bg-rose-100 text-rose-600" : "bg-emerald-100 text-emerald-700"
-          }`}
-        >
+        {!hideStatus && (
           <span
-            className={`h-1.5 w-1.5 rounded-full ${name.isRetired ? "bg-rose-500" : "bg-emerald-500"}`}
-            aria-hidden="true"
-          />
-          {name.isRetired ? "Retired" : "Active"}
-        </span>
+            className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              name.isRetired ? "bg-rose-100 text-rose-600" : "bg-emerald-100 text-emerald-700"
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${name.isRetired ? "bg-rose-500" : "bg-emerald-500"}`}
+              aria-hidden="true"
+            />
+            {name.isRetired ? "Retired" : "Active"}
+          </span>
+        )}
 
         <header className="flex flex-col gap-1.5">
           <h3 className="text-lg leading-tight font-semibold text-foreground">{name.meaning}</h3>

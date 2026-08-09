@@ -1,10 +1,4 @@
-import {
-  calculateDistances,
-  calculateGapAverage,
-  formatDistance,
-  getEffectiveMonth,
-  getHighlights,
-} from "@/app/(navbar)/storms/_utils/stats";
+import { getEffectiveMonth, getHighlights } from "@/app/(navbar)/storms/_utils/stats";
 import { storm } from "@/lib/testFixtures";
 
 describe("getHighlights", () => {
@@ -24,47 +18,6 @@ describe("getHighlights", () => {
 
   it("returns nothing for an unknown highlight type", () => {
     expect(getHighlights(storms, "bogus")).toEqual([]);
-  });
-});
-
-describe("calculateGapAverage / calculateDistances", () => {
-  it("averages the year gaps between appearances", () => {
-    const storms = [storm({ year: 2000 }), storm({ year: 2004 }), storm({ year: 2006 })];
-    expect(calculateGapAverage(storms)).toBe(3); // gaps of 4 and 2
-  });
-
-  it("sorts before measuring, so input order does not matter", () => {
-    const ascending = [storm({ year: 2000 }), storm({ year: 2006 })];
-    const descending = [storm({ year: 2006 }), storm({ year: 2000 })];
-    expect(calculateGapAverage(descending)).toBe(calculateGapAverage(ascending));
-  });
-
-  it("returns -1 when there is no gap to measure", () => {
-    expect(calculateGapAverage([storm({ year: 2024 })])).toBe(-1);
-    expect(calculateGapAverage([])).toBe(-1);
-  });
-
-  it("measures each group independently", () => {
-    const distances = calculateDistances(
-      [
-        storm({ name: "Yagi", year: 2000 }),
-        storm({ name: "Yagi", year: 2006 }),
-        storm({ name: "Nakri", year: 2024 }),
-      ],
-      "name",
-    );
-    expect(distances).toEqual({ Yagi: 6, Nakri: -1 });
-  });
-});
-
-describe("formatDistance", () => {
-  it("renders a gap to two decimals", () => {
-    expect(formatDistance(3)).toBe("3.00");
-    expect(formatDistance(4.5)).toBe("4.50");
-  });
-
-  it("renders the no-gap sentinel as N/A", () => {
-    expect(formatDistance(-1)).toBe("N/A");
   });
 });
 

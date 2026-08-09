@@ -2,7 +2,7 @@ import { getAvgDateColor, getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "
 import { SPECIAL_POSITIONS } from "@/lib/utils/position";
 import { getIntensityFromNumber } from "@/lib/utils/storms";
 import { Button } from "antd";
-import { formatDayOfYear, getDoyMonth, type AvgDates } from "../../_utils/avgDates";
+import { formatDayOfYear, getDoyMonth, type AvgDates } from "@/lib/utils/stormDates";
 
 interface SpecialButtonsProps {
   onCellClick: (data: number, key: string) => void;

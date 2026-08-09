@@ -4,7 +4,7 @@ import {
   calculateAvgDuration,
   formatDayOfYear,
   getDoyMonth,
-} from "@/app/(navbar)/storms/_utils/avgDates";
+} from "@/lib/utils/stormDates";
 import { storm } from "@/lib/testFixtures";
 
 describe("average storm dates", () => {

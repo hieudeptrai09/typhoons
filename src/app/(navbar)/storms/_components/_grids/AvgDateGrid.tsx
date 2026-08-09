@@ -1,6 +1,6 @@
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
-import { formatDayOfYear, getDoyMonth, type AvgDates } from "../../_utils/avgDates";
+import { formatDayOfYear, getDoyMonth, type AvgDates } from "@/lib/utils/stormDates";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface AvgDateGridProps {

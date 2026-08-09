@@ -16,7 +16,7 @@ import {
   formatDuration,
   getDoyMonth,
   type AvgDates,
-} from "../../_utils/avgDates";
+} from "@/lib/utils/stormDates";
 import AvgDateNameGrid from "./AvgDateNameGrid";
 
 interface AvgDateViewProps {

@@ -4,11 +4,13 @@ import CountryFlag from "@/lib/components/CountryFlag";
 import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
+import StormStats from "@/lib/components/StormStats";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
 import { getZoomEarthUrl } from "@/lib/utils/format";
+import { isExternalPosition } from "@/lib/utils/position";
 import { Switch } from "antd";
 import { ExternalLink, Inbox } from "lucide-react";
 import { useState } from "react";
@@ -46,7 +48,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
         </div>
       )}
       <div className="text-sm font-bold" style={{ color: textColor }}>
-        {label} {storm.name}
+        {label} {storm.year}
         {storm.jtwcDesignation && ` (${storm.jtwcDesignation})`}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-x-2">
@@ -73,38 +75,23 @@ const StormListContent = ({ storms }: StormListContentProps) => {
     return <EmptyResults icon={Inbox} description="No storms found for this name." />;
   }
 
+  const isInternal = !isExternalPosition(storms[0].position);
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 border-b border-gray-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span id="storm-list-country-label" className="font-semibold text-foreground">
-              Contributed by:
-            </span>
-            {storms[0].position <= 140 && (
-              <CountryFlag country={storms[0].country} className="h-5 w-8" />
-            )}
-            <span className="text-foreground">{storms[0].country}</span>
+      <div className="flex flex-col gap-3 border-b border-gray-200 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-sm text-foreground">
+            {isInternal && <CountryFlag country={storms[0].country} className="h-5 w-8" />}
+            <span>{storms[0].country}</span>
+            {isInternal && <span className="text-gray-400">· #{storms[0].position}</span>}
           </div>
-          <div>
-            <span id="storm-list-position-label" className="font-semibold text-foreground">
-              Position:
-            </span>
-            <span className="ml-2 text-foreground" aria-describedby="storm-list-position-label">
-              {storms[0].position}
-            </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold text-foreground">Show Map</span>
+            <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
           </div>
-          {storms[0].correctSpelling && (
-            <div>
-              <span className="font-semibold text-foreground">Correct spelling:</span>
-              <span className="ml-2 text-foreground">{storms[0].correctSpelling}</span>
-            </div>
-          )}
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-foreground">Show Map</span>
-          <Switch checked={showMap} onChange={setShowMap} aria-label="Show storm track map" />
-        </div>
+        <StormStats storms={storms} />
       </div>
 
       <div>

@@ -3,14 +3,14 @@ import { MONTH_NAMES } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import { formatStormDateRange, parseStormDate } from "@/lib/utils/date";
-import { Popover } from "antd";
 import {
   calculateAvgDates,
   calculateAvgDuration,
   formatDayOfYear,
   formatDuration,
   getDoyMonth,
-} from "../../_utils/avgDates";
+} from "@/lib/utils/stormDates";
+import { Popover } from "antd";
 
 interface AvgDateModalProps extends BaseModalProps {
   title: string;
@@ -76,11 +76,7 @@ const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => 
             value={formatDayOfYear(endDoy)}
             color={getAvgDateColor(getDoyMonth(endDoy))}
           />
-          <StatBlock
-            label="Avg. Duration"
-            value={formatDuration(avgDuration)}
-            color="#334155"
-          />
+          <StatBlock label="Avg. Duration" value={formatDuration(avgDuration)} color="#334155" />
         </div>
 
         <div>

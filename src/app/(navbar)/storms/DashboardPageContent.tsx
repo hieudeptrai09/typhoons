@@ -5,7 +5,7 @@ import PageHeader from "@/lib/components/PageHeader";
 import { MONTH_NAMES } from "@/lib/constants";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/position";
-import { calculateAverage, getGroupedStorms } from "@/lib/utils/storms";
+import { calculateAverage, calculateGapAverage, getGroupedStorms } from "@/lib/utils/storms";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import DashboardLegend from "./_components/_legends/DashboardLegend";
@@ -22,7 +22,7 @@ import StormsView from "./_components/_views/StormsView";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
 import { getDashboardTitle } from "./_utils/metadata";
 import { paramsToPath, slugToParams } from "./_utils/routing";
-import { calculateGapAverage, getEffectiveMonth } from "./_utils/stats";
+import { getEffectiveMonth } from "./_utils/stats";
 
 interface SelectedData {
   title?: string;
