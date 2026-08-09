@@ -105,7 +105,7 @@ function StormGridCard({ storm }: { storm: Storm }) {
         </div>
         <div className="flex items-center gap-1.5 text-xs text-foreground">
           <Calendar size={12} className="shrink-0" />
-          {dateRange || "Date unknown"}
+          {dateRange}
         </div>
         <a
           href={getZoomEarthUrl(storm.name, storm.year)}

@@ -3,7 +3,7 @@ import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
 import type { DashboardParams, IntensityType, Storm } from "@/lib/types";
-import { parseDateParts } from "@/lib/utils/date";
+import { parseStormDate } from "@/lib/utils/date";
 import { getPositionTitle } from "@/lib/utils/position";
 import type { ColumnsType } from "antd/es/table";
 import HighlightsGrid from "../_grids/HighlightsGrid";
@@ -20,13 +20,12 @@ interface HighlightRow {
   intensity: IntensityType;
   position: number;
   country: string;
-  startMonth?: number;
-  startYear?: number;
+  startMonth: number;
+  startYear: number;
 }
 
 // A storm carried over from the previous season sorts before every January storm.
-const monthSortKey = (row: HighlightRow): number =>
-  row.startYear !== undefined && row.startYear < row.year ? 0 : (row.startMonth ?? 0);
+const monthSortKey = (row: HighlightRow): number => (row.startYear < row.year ? 0 : row.startMonth);
 
 const columns: ColumnsType<HighlightRow> = [
   {
@@ -57,14 +56,11 @@ const columns: ColumnsType<HighlightRow> = [
     title: "Month",
     key: "month",
     sorter: (a, b) => monthSortKey(a) - monthSortKey(b),
-    render: (_: unknown, row: HighlightRow) => {
-      if (!row.startMonth || !row.startYear) return null;
-      return (
-        <span>
-          {row.startMonth}/{row.startYear}
-        </span>
-      );
-    },
+    render: (_: unknown, row: HighlightRow) => (
+      <span>
+        {row.startMonth}/{row.startYear}
+      </span>
+    ),
   },
   {
     title: "Intensity",
@@ -103,15 +99,15 @@ const HighlightsView = ({ params, stormsData }: HighlightsViewProps) => {
   }
 
   const highlightData: HighlightRow[] = highlights.map((s) => {
-    const start = parseDateParts(s.dateStart);
+    const start = parseStormDate(s.dateStart);
     return {
       name: s.name,
       year: s.year,
       intensity: s.intensity,
       position: s.position,
       country: s.country,
-      startMonth: start?.month,
-      startYear: start?.year,
+      startMonth: start.month,
+      startYear: start.year,
     };
   });
 

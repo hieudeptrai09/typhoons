@@ -77,8 +77,7 @@ describe("getEffectiveMonth", () => {
     expect(getEffectiveMonth(storm({ year: 2001, dateStart: "2000-12-28" }))).toBe(1);
   });
 
-  it("ignores seasons before the 2000 cutoff and storms with no start date", () => {
+  it("ignores seasons before the 2000 cutoff", () => {
     expect(getEffectiveMonth(storm({ year: 1999, dateStart: "1999-08-31" }))).toBeNull();
-    expect(getEffectiveMonth(storm({ year: 2024 }))).toBeNull();
   });
 });

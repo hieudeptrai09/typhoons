@@ -1,4 +1,9 @@
-import { daysBetween, formatStormDateRange, parseDateParts } from "@/lib/utils/date";
+import {
+  daysBetween,
+  formatStormDateRange,
+  parseDateParts,
+  parseStormDate,
+} from "@/lib/utils/date";
 
 describe("parseDateParts", () => {
   it("splits a YYYY-MM-DD string", () => {
@@ -36,7 +41,6 @@ describe("daysBetween", () => {
 
   it("returns null while a storm is still ongoing", () => {
     expect(daysBetween("2024-08-31", undefined)).toBeNull();
-    expect(daysBetween(undefined, "2024-09-09")).toBeNull();
   });
 
   it("goes negative for a reversed range rather than clamping", () => {
@@ -56,8 +60,10 @@ describe("formatStormDateRange", () => {
   it("marks an ongoing storm as running to now", () => {
     expect(formatStormDateRange("2024-08-31", undefined)).toBe("31/8 - now");
   });
+});
 
-  it("returns null when there is no start date at all", () => {
-    expect(formatStormDateRange(undefined, "2024-09-09")).toBeNull();
+describe("parseStormDate", () => {
+  it("splits a start date without the null case an optional end date needs", () => {
+    expect(parseStormDate("2024-08-31")).toEqual({ year: 2024, month: 8, day: 31 });
   });
 });

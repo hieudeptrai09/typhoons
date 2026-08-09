@@ -7,5 +7,6 @@ export const storm = (overrides: Partial<Storm> = {}): Storm => ({
   position: 19,
   country: "Japan",
   map: "",
+  dateStart: "2024-08-31",
   ...overrides,
 });

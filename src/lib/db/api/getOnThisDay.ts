@@ -7,7 +7,7 @@ export interface OnThisDayStorm {
   intensity: IntensityType;
   position: number;
   year: number;
-  dateStart: string | null;
+  dateStart: string;
   dateEnd: string | null;
   reason: "started" | "ended" | "both";
 }
@@ -17,7 +17,7 @@ interface OnThisDayRow {
   intensity: string;
   position: number;
   year: number;
-  dateStart: string | null;
+  dateStart: string;
   dateEnd: string | null;
 }
 
@@ -43,7 +43,7 @@ async function queryOnThisDay(
   const monthDay = `${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   const data: OnThisDayStorm[] = rows.map((row) => {
-    const startedToday = row.dateStart?.slice(5) === monthDay;
+    const startedToday = row.dateStart.slice(5) === monthDay;
     const endedToday = row.dateEnd?.slice(5) === monthDay;
     const reason: "started" | "ended" | "both" =
       startedToday && endedToday ? "both" : startedToday ? "started" : "ended";

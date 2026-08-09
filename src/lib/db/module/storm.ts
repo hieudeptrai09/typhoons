@@ -11,7 +11,7 @@ export interface StormRow {
   correctSpelling: string | null;
   year: number;
   isStrongest: boolean;
-  dateStart: string | null;
+  dateStart: string;
   dateEnd: string | null;
   jtwcDesignation: string | null;
   isFirst: boolean;
@@ -45,7 +45,7 @@ export const toStorm = (row: StormRow): Storm => ({
   correctSpelling: row.correctSpelling ?? undefined,
   year: row.year,
   isStrongest: row.isStrongest,
-  dateStart: row.dateStart ?? undefined,
+  dateStart: row.dateStart,
   dateEnd: row.dateEnd ?? undefined,
   jtwcDesignation: row.jtwcDesignation ?? undefined,
   isFirst: row.isFirst,

@@ -2,7 +2,7 @@ import DefModal from "@/lib/components/DefModal";
 import { MONTH_NAMES } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
-import { formatStormDateRange, parseDateParts } from "@/lib/utils/date";
+import { formatStormDateRange, parseStormDate } from "@/lib/utils/date";
 import { Popover } from "antd";
 import {
   calculateAvgDates,
@@ -17,16 +17,16 @@ interface AvgDateModalProps extends BaseModalProps {
 }
 
 interface MonthGroup {
-  month: number | null; // null → start date unknown
+  month: number;
   label: string;
   count: number;
   storms: Storm[];
 }
 
 const groupByStartMonth = (storms: Storm[]): MonthGroup[] => {
-  const buckets = new Map<number | null, Storm[]>();
+  const buckets = new Map<number, Storm[]>();
   storms.forEach((storm) => {
-    const month = parseDateParts(storm.dateStart)?.month ?? null;
+    const { month } = parseStormDate(storm.dateStart);
     if (!buckets.has(month)) buckets.set(month, []);
     buckets.get(month)!.push(storm);
   });
@@ -34,11 +34,11 @@ const groupByStartMonth = (storms: Storm[]): MonthGroup[] => {
   return [...buckets.entries()]
     .map(([month, groupStorms]) => ({
       month,
-      label: month === null ? "Unknown" : MONTH_NAMES[month],
+      label: MONTH_NAMES[month],
       count: groupStorms.length,
       storms: [...groupStorms].sort((a, b) => a.year - b.year),
     }))
-    .sort((a, b) => (a.month ?? 13) - (b.month ?? 13));
+    .sort((a, b) => a.month - b.month);
 };
 
 const StatBlock = ({ label, value, color }: { label: string; value: string; color: string }) => (
@@ -89,26 +89,26 @@ const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => 
           ) : (
             <div className="space-y-2">
               {monthGroups.map((group) => {
-                const monthColor = getAvgDateColor(group.month ?? -1);
+                const monthColor = getAvgDateColor(group.month);
                 return (
                   <Popover
                     key={group.label}
                     styles={{ container: { backgroundColor: "#f3f4f6" } }}
                     content={
                       <div className="flex flex-col gap-1.5">
-                        {group.storms.map((storm) => {
-                          const range = formatStormDateRange(storm.dateStart, storm.dateEnd);
-                          return (
-                            <div
-                              key={`${storm.name}-${storm.year}`}
-                              className="text-sm text-foreground"
-                            >
-                              <span className="font-semibold text-sky-800">{storm.name}</span>{" "}
-                              {storm.year}
-                              {range && <span className="text-xs text-gray-500"> · {range}</span>}
-                            </div>
-                          );
-                        })}
+                        {group.storms.map((storm) => (
+                          <div
+                            key={`${storm.name}-${storm.year}`}
+                            className="text-sm text-foreground"
+                          >
+                            <span className="font-semibold text-sky-800">{storm.name}</span>{" "}
+                            {storm.year}
+                            <span className="text-xs text-gray-500">
+                              {" "}
+                              · {formatStormDateRange(storm.dateStart, storm.dateEnd)}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     }
                     trigger={["hover", "click"]}

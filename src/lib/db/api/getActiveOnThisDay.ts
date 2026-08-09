@@ -33,7 +33,7 @@ async function queryActiveOnThisDay(
       s.enddate::text AS "dateEnd"
     FROM storms s
     WHERE (s.enddate IS NULL AND s.startdate <= CURRENT_DATE)
-      OR (s.startdate IS NOT NULL AND s.enddate IS NOT NULL
+      OR (s.enddate IS NOT NULL
         AND CASE WHEN EXTRACT(YEAR FROM s.enddate) = EXTRACT(YEAR FROM s.startdate)
           THEN to_char(s.startdate, 'MMDD')::int <= $1::int * 100 + $2::int
            AND to_char(s.enddate, 'MMDD')::int >= $1::int * 100 + $2::int

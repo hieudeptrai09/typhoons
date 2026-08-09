@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import { parseDateParts } from "@/lib/utils/date";
+import { parseStormDate } from "@/lib/utils/date";
 import { getGroupedStorms } from "@/lib/utils/storms";
 
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
@@ -43,8 +43,8 @@ export const calculateDistances = (
 export const formatDistance = (dist: number): string => (dist < 0 ? "N/A" : dist.toFixed(2));
 
 export const getEffectiveMonth = (storm: Storm): number | null => {
-  const start = parseDateParts(storm.dateStart);
-  if (!start || storm.year < 2000) return null;
+  if (storm.year < 2000) return null;
+  const start = parseStormDate(storm.dateStart);
   // A storm carried over from the previous season counts toward January.
   return start.year < storm.year ? 1 : start.month;
 };

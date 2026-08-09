@@ -33,14 +33,12 @@ const StormCard = ({ storm }: { storm: Storm }) => {
             </span>
           </div>
         )}
-        {dateRange && (
-          <div className="mt-1 flex items-center gap-1.5">
-            <Calendar size={12} style={{ color: textColor }} />
-            <span className="text-xs font-semibold" style={{ color: textColor }}>
-              {dateRange}
-            </span>
-          </div>
-        )}
+        <div className="mt-1 flex items-center gap-1.5">
+          <Calendar size={12} style={{ color: textColor }} />
+          <span className="text-xs font-semibold" style={{ color: textColor }}>
+            {dateRange}
+          </span>
+        </div>
       </div>
       <div className="relative h-44 w-full bg-slate-50">
         {hasMap ? (

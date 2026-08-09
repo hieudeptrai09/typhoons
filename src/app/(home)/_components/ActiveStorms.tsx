@@ -111,23 +111,19 @@ const ActiveStorms = () => {
                           >
                             {storm.name}
                           </Link>
-                          {range ? (
-                            <>
-                              <span className="text-foreground"> ({range})</span>
-                              <br />
-                              <span className="text-sm text-foreground">
-                                Day{" "}
-                                {totalDays !== null ? (
-                                  <>
-                                    <span className="font-semibold">{dayOfStorm}</span>/
-                                    <span className="font-semibold">{totalDays}</span>
-                                  </>
-                                ) : (
-                                  <span className="font-semibold">{dayOfStorm}</span>
-                                )}
-                              </span>
-                            </>
-                          ) : null}
+                          <span className="text-foreground"> ({range})</span>
+                          <br />
+                          <span className="text-sm text-foreground">
+                            Day{" "}
+                            {totalDays !== null ? (
+                              <>
+                                <span className="font-semibold">{dayOfStorm}</span>/
+                                <span className="font-semibold">{totalDays}</span>
+                              </>
+                            ) : (
+                              <span className="font-semibold">{dayOfStorm}</span>
+                            )}
+                          </span>
                         </li>
                       );
                     })}

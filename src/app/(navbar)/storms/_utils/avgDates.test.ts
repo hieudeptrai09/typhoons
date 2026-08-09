@@ -41,18 +41,19 @@ describe("average storm dates", () => {
     expect(formatDayOfYear(endDoy)).toBe("4/1");
   });
 
-  it("reports -1 when no storm in the group carries a date", () => {
-    const { startDoy, endDoy } = calculateAvgDates([storm()]);
+  it("ends an active storm today, since its real end is still ahead", () => {
+    jest.useFakeTimers().setSystemTime(new Date(2024, 8, 9)); // 9/9/2024, local time
+    const { endDoy } = calculateAvgDates([storm({ dateStart: "2024-08-31" })]);
+    expect(formatDayOfYear(endDoy)).toBe("9/9");
+    jest.useRealTimers();
+  });
+
+  it("reports -1 for an empty group", () => {
+    const { startDoy, endDoy } = calculateAvgDates([]);
     expect(startDoy).toBe(-1);
     expect(endDoy).toBe(-1);
     expect(formatDayOfYear(-1)).toBe("N/A");
     expect(getDoyMonth(-1)).toBe(-1);
-  });
-
-  it("ignores the storms with no date when averaging the rest", () => {
-    const withDate = calculateAvgDates([storm({ dateStart: "2024-08-31" })]);
-    const mixed = calculateAvgDates([storm({ dateStart: "2024-08-31" }), storm()]);
-    expect(mixed.startDoy).toBe(withDate.startDoy);
   });
 
   it("averages each group independently", () => {
@@ -78,16 +79,18 @@ describe("calculateAvgDuration", () => {
     ).toBe(7);
   });
 
-  it("skips storms that are still ongoing", () => {
+  it("counts an ongoing storm's days so far, measured to today", () => {
+    jest.useFakeTimers().setSystemTime(new Date(2024, 8, 9)); // 9/9/2024, local time
     expect(
       calculateAvgDuration([
-        storm({ dateStart: "2024-08-31", dateEnd: "2024-09-09" }),
-        storm({ dateStart: "2024-08-31" }),
+        storm({ dateStart: "2024-08-31", dateEnd: "2024-09-09" }), // 9 days
+        storm({ dateStart: "2024-09-04" }), // ongoing, 5 days so far
       ]),
-    ).toBe(9);
+    ).toBe(7);
+    jest.useRealTimers();
   });
 
-  it("returns -1 when nothing has a full date range", () => {
-    expect(calculateAvgDuration([storm()])).toBe(-1);
+  it("returns -1 for an empty group", () => {
+    expect(calculateAvgDuration([])).toBe(-1);
   });
 });

@@ -82,7 +82,7 @@ const DistanceModal = ({ isOpen, onClose, title, storms, average }: DistanceModa
                     </span>
                     <span className="font-semibold tabular-nums">{storm.year}</span>
                     <span className="font-semibold">{storm.name}</span>
-                    {dateRange && <span className="text-xs">{dateRange}</span>}
+                    <span className="text-xs">{dateRange}</span>
                   </div>
                 </li>
               );
