@@ -91,3 +91,9 @@ export const calculateAvgDuration = (storms: Storm[]): number => {
     .filter((v): v is number => v !== null);
   return average(durations);
 };
+
+export const formatDuration = (days: number): string => {
+  if (days < 0) return "N/A";
+  const rounded = Math.round(days);
+  return `${rounded} ${rounded === 1 ? "day" : "days"}`;
+};

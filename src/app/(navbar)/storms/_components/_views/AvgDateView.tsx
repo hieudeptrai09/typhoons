@@ -11,7 +11,9 @@ import AvgDateGrid from "../_grids/AvgDateGrid";
 import SpecialButtons from "../_widgets/SpecialButtons";
 import {
   calculateAvgDatesByGroup,
+  calculateAvgDuration,
   formatDayOfYear,
+  formatDuration,
   getDoyMonth,
   type AvgDates,
 } from "../../_utils/avgDates";
@@ -30,6 +32,7 @@ interface AvgDateRow {
   count: number;
   startDoy: number;
   endDoy: number;
+  avgDuration: number;
 }
 
 const DateCell = ({ doy }: { doy: number }) => (
@@ -37,6 +40,13 @@ const DateCell = ({ doy }: { doy: number }) => (
     {formatDayOfYear(doy)}
   </span>
 );
+
+// Widths track the column sets below: the name table carries an extra Name
+// column, so it needs one size more room than the position table.
+const TABLE_MAX_WIDTH: Record<"position" | "name", string> = {
+  position: "max-w-4xl",
+  name: "max-w-5xl",
+};
 
 const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> => {
   const orderCol: ColumnsType<AvgDateRow>[number] = {
@@ -88,6 +98,18 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> =
     render: (_: unknown, row: AvgDateRow) => <DateCell doy={row.endDoy} />,
   };
 
+  const durationCol: ColumnsType<AvgDateRow>[number] = {
+    title: "Avg. Duration",
+    dataIndex: "avgDuration",
+    key: "duration",
+    sorter: (a, b) => a.avgDuration - b.avgDuration,
+    render: (_: unknown, row: AvgDateRow) => (
+      <span className="font-semibold tabular-nums text-slate-700">
+        {formatDuration(row.avgDuration)}
+      </span>
+    ),
+  };
+
   if (filterType === "name") {
     return [
       orderCol,
@@ -105,6 +127,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> =
       countCol,
       startCol,
       endCol,
+      durationCol,
     ];
   }
 
@@ -115,6 +138,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> =
     countCol,
     startCol,
     endCol,
+    durationCol,
   ];
 };
 
@@ -130,6 +154,7 @@ const buildRows = (
       count: storms.length,
       startDoy: dates.startDoy,
       endDoy: dates.endDoy,
+      avgDuration: calculateAvgDuration(storms),
     };
     return filterType === "name"
       ? { name: key, position: storms[0]?.position ?? 0, ...base }
@@ -182,7 +207,7 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
 
   return (
     <DefTable<AvgDateRow>
-      maxWidth="max-w-3xl"
+      maxWidth={TABLE_MAX_WIDTH[filterType]}
       tableKey={filterType}
       dataSource={data}
       columns={makeColumns(filterType)}

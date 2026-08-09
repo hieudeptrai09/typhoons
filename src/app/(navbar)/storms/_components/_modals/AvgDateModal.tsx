@@ -8,6 +8,7 @@ import {
   calculateAvgDates,
   calculateAvgDuration,
   formatDayOfYear,
+  formatDuration,
   getDoyMonth,
 } from "../../_utils/avgDates";
 
@@ -77,7 +78,7 @@ const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => 
           />
           <StatBlock
             label="Avg. Duration"
-            value={avgDuration < 0 ? "N/A" : `${Math.round(avgDuration)}d`}
+            value={formatDuration(avgDuration)}
             color="#334155"
           />
         </div>
