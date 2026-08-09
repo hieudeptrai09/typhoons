@@ -1,4 +1,5 @@
 import DefModal from "@/lib/components/DefModal";
+import StatTile from "@/lib/components/StatTile";
 import { MONTH_NAMES } from "@/lib/constants";
 import type { BaseModalProps, Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
@@ -42,15 +43,6 @@ const groupByStartMonth = (storms: Storm[]): MonthGroup[] => {
     .sort((a, b) => a.month - b.month);
 };
 
-const StatBlock = ({ label, value, color }: { label: string; value: string; color: string }) => (
-  <div className="flex flex-col rounded-md bg-slate-50 px-3 py-2">
-    <span className="text-xs text-foreground">{label}</span>
-    <span className="text-lg font-bold tabular-nums" style={{ color }}>
-      {value}
-    </span>
-  </div>
-);
-
 const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => {
   const { startDoy, endDoy } = calculateAvgDates(storms);
   const avgDuration = calculateAvgDuration(storms);
@@ -66,17 +58,19 @@ const AvgDateModal = ({ isOpen, onClose, title, storms }: AvgDateModalProps) => 
     >
       <div className="space-y-4 pt-3">
         <div className="grid grid-cols-3 gap-2">
-          <StatBlock
-            label="Avg. Start"
-            value={formatDayOfYear(startDoy)}
-            color={getAvgDateColor(getDoyMonth(startDoy))}
-          />
-          <StatBlock
-            label="Avg. End"
-            value={formatDayOfYear(endDoy)}
-            color={getAvgDateColor(getDoyMonth(endDoy))}
-          />
-          <StatBlock label="Avg. Duration" value={formatDuration(avgDuration)} color="#334155" />
+          <StatTile label="Avg. Start" title="Average start date">
+            <span style={{ color: getAvgDateColor(getDoyMonth(startDoy)) }}>
+              {formatDayOfYear(startDoy)}
+            </span>
+          </StatTile>
+          <StatTile label="Avg. End" title="Average end date">
+            <span style={{ color: getAvgDateColor(getDoyMonth(endDoy)) }}>
+              {formatDayOfYear(endDoy)}
+            </span>
+          </StatTile>
+          <StatTile label="Avg. Duration" title="Average days from start to end">
+            <span className="text-slate-700">{formatDuration(avgDuration)}</span>
+          </StatTile>
         </div>
 
         <div>

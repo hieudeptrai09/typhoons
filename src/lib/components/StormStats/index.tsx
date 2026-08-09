@@ -1,3 +1,4 @@
+import StatTile from "@/lib/components/StatTile";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor, getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
@@ -14,27 +15,9 @@ import {
   formatDistance,
   getIntensityFromNumber,
 } from "@/lib/utils/storms";
-import type { ReactNode } from "react";
 
 // The four dashboard statistics — average intensity, recurrence, season window and
 // duration — measured over one group of storms: a single name, or a single position.
-
-const StatTile = ({
-  label,
-  title,
-  valueClassName = "text-lg",
-  children,
-}: {
-  label: string;
-  title?: string;
-  valueClassName?: string;
-  children: ReactNode;
-}) => (
-  <div className="flex flex-col rounded-md bg-slate-50 px-3 py-2" title={title}>
-    <span className="text-xs text-foreground">{label}</span>
-    <span className={`font-bold whitespace-nowrap tabular-nums ${valueClassName}`}>{children}</span>
-  </div>
-);
 
 const DatePart = ({ doy }: { doy: number }) => (
   <span style={{ color: getAvgDateColor(getDoyMonth(doy)) }}>{formatDayOfYear(doy)}</span>
