@@ -48,7 +48,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
         </div>
       )}
       <div className="text-sm font-bold" style={{ color: textColor }}>
-        {label} {storm.year}
+        {label} {storm.name}
         {storm.jtwcDesignation && ` (${storm.jtwcDesignation})`}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-x-2">
