@@ -86,10 +86,13 @@ export const getDashboardDescription = (
       position:
         "See the average start and end dates of storms at each naming position. Discover which slots tend to be active earlier or later in the typhoon season.",
       name: "Explore the average start and end dates of storms sharing the same typhoon name. Compare when each name typically becomes active during the year.",
+      country:
+        "Compare the average seasonal start and end dates of storms named by each contributing country. See whose names tend to be used earlier or later in the season.",
+      year: "Track the average start and end dates of each typhoon season. See which years ran early, late, or longer than usual in the Western Pacific.",
     };
     return (
       avgDateDescriptions[filterStr] ||
-      "Analyze the average seasonal start and end dates of storms grouped by position or name."
+      "Analyze the average seasonal start and end dates of storms grouped by position, name, country, or year."
     );
   }
 

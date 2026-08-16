@@ -25,10 +25,13 @@ interface AvgDateViewProps {
   onCellClick: (data: number | string, key: string) => void;
 }
 
+type AvgDateFilter = "position" | "name" | "country" | "year";
+
 interface AvgDateRow {
-  position: number;
+  position?: number;
   name?: string;
-  country: string;
+  country?: string;
+  year?: number;
   count: number;
   startDoy: number;
   endDoy: number;
@@ -41,14 +44,15 @@ const DateCell = ({ doy }: { doy: number }) => (
   </span>
 );
 
-// Widths track the column sets below: the name table carries an extra Name
-// column, so it needs one size more room than the position table.
-const TABLE_MAX_WIDTH: Record<"position" | "name", string> = {
+// Widths track the column sets below: every extra column earns one more size.
+const TABLE_MAX_WIDTH: Record<AvgDateFilter, string> = {
   position: "max-w-4xl",
   name: "max-w-5xl",
+  country: "max-w-3xl",
+  year: "max-w-3xl",
 };
 
-const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> => {
+const makeColumns = (filterType: AvgDateFilter): ColumnsType<AvgDateRow> => {
   const orderCol: ColumnsType<AvgDateRow>[number] = {
     title: "#",
     key: "order",
@@ -63,16 +67,18 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> =
     title: "Position",
     dataIndex: "position",
     key: "position",
-    sorter: (a, b) => a.position - b.position,
-    render: (_: unknown, row: AvgDateRow) => <span>{getPositionTitle(row.position)}</span>,
+    sorter: (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    render: (_: unknown, row: AvgDateRow) => (
+      <span>{row.position !== undefined ? getPositionTitle(row.position) : ""}</span>
+    ),
   };
 
   const countryCol: ColumnsType<AvgDateRow>[number] = {
     title: "Contributed By",
     dataIndex: "country",
     key: "country",
-    sorter: (a, b) => a.country.localeCompare(b.country),
-    render: (_: unknown, row: AvgDateRow) => <CountryFlag country={row.country} />,
+    sorter: (a, b) => (a.country ?? "").localeCompare(b.country ?? ""),
+    render: (_: unknown, row: AvgDateRow) => <CountryFlag country={row.country ?? ""} />,
   };
 
   const countCol: ColumnsType<AvgDateRow>[number] = {
@@ -110,68 +116,139 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<AvgDateRow> =
     ),
   };
 
-  if (filterType === "name") {
-    return [
-      orderCol,
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        width: 100,
-        fixed: "left" as const,
-        sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
-        render: (_: unknown, row: AvgDateRow) => <span className="font-semibold">{row.name}</span>,
-      },
-      countryCol,
-      positionCol,
-      countCol,
-      startCol,
-      endCol,
-      durationCol,
-    ];
-  }
+  switch (filterType) {
+    case "name":
+      return [
+        orderCol,
+        {
+          title: "Name",
+          dataIndex: "name",
+          key: "name",
+          width: 100,
+          fixed: "left" as const,
+          sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
+          render: (_: unknown, row: AvgDateRow) => (
+            <span className="font-semibold">{row.name}</span>
+          ),
+        },
+        countryCol,
+        positionCol,
+        countCol,
+        startCol,
+        endCol,
+        durationCol,
+      ];
 
-  return [
-    orderCol,
-    { ...positionCol, width: 100, fixed: "left" as const },
-    countryCol,
-    countCol,
-    startCol,
-    endCol,
-    durationCol,
-  ];
+    case "country":
+      return [
+        orderCol,
+        { ...countryCol, width: 150, fixed: "left" as const },
+        countCol,
+        startCol,
+        endCol,
+        durationCol,
+      ];
+
+    case "year":
+      return [
+        orderCol,
+        {
+          title: "Year",
+          dataIndex: "year",
+          key: "year",
+          width: 80,
+          fixed: "left" as const,
+          sorter: (a, b) => (a.year ?? 0) - (b.year ?? 0),
+        },
+        countCol,
+        startCol,
+        endCol,
+        durationCol,
+      ];
+
+    case "position":
+    default:
+      return [
+        orderCol,
+        { ...positionCol, width: 100, fixed: "left" as const },
+        countryCol,
+        countCol,
+        startCol,
+        endCol,
+        durationCol,
+      ];
+  }
 };
 
 const buildRows = (
-  filterType: "position" | "name",
+  filterType: AvgDateFilter,
   avgDateMap: Record<string, AvgDates>,
   groupedStorms: Record<string, Storm[]>,
 ): AvgDateRow[] =>
   Object.entries(avgDateMap).map(([key, dates]) => {
     const storms = groupedStorms[key] || [];
     const base = {
-      country: storms[0]?.country ?? "",
       count: storms.length,
       startDoy: dates.startDoy,
       endDoy: dates.endDoy,
       avgDuration: calculateAvgDuration(storms),
     };
-    return filterType === "name"
-      ? { name: key, position: storms[0]?.position ?? 0, ...base }
-      : { position: parseInt(key), ...base };
+
+    switch (filterType) {
+      case "name":
+        return {
+          name: key,
+          country: storms[0]?.country ?? "",
+          position: storms[0]?.position ?? 0,
+          ...base,
+        };
+      case "country":
+        return { country: key, ...base };
+      case "year":
+        return { year: parseInt(key), ...base };
+      case "position":
+      default:
+        return { position: parseInt(key), country: storms[0]?.country ?? "", ...base };
+    }
   });
 
-const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
-  const filterType = (params.filter || "position") as "position" | "name";
+// The naming list only starts in 2000, so earlier seasons would list years with
+// a handful of storms apiece — the same cutoff the average-by-year list uses.
+const YEAR_CUTOFF = 2000;
 
-  const avgDateMap = useMemo(
-    () => calculateAvgDatesByGroup(stormsData, filterType),
+const rowKeyOf = (filterType: AvgDateFilter, row: AvgDateRow): string => {
+  switch (filterType) {
+    case "name":
+      return row.name ?? "";
+    case "country":
+      return row.country ?? "";
+    case "year":
+      return String(row.year);
+    case "position":
+    default:
+      return String(row.position);
+  }
+};
+
+const rowLabelOf = (filterType: AvgDateFilter, row: AvgDateRow): string =>
+  filterType === "position" ? getPositionTitle(row.position ?? 0) : rowKeyOf(filterType, row);
+
+const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
+  const filterType = (params.filter || "position") as AvgDateFilter;
+
+  const groupSource = useMemo(
+    () => (filterType === "year" ? stormsData.filter((s) => s.year >= YEAR_CUTOFF) : stormsData),
     [stormsData, filterType],
   );
 
+  const avgDateMap = useMemo(
+    () => calculateAvgDatesByGroup(groupSource, filterType),
+    [groupSource, filterType],
+  );
+
   const groupedStorms = useMemo(
-    () => getGroupedStorms(stormsData, filterType),
-    [stormsData, filterType],
+    () => getGroupedStorms(groupSource, filterType),
+    [groupSource, filterType],
   );
 
   const avgDateValuesForGrid = useMemo<Record<number, AvgDates>>(() => {
@@ -202,8 +279,9 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
     );
   }
 
-  // position / name list → sortable avg-date table
+  // every list mode → sortable avg-date table for the grouping
   const data = buildRows(filterType, avgDateMap, groupedStorms);
+  if (filterType === "year") data.sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
 
   return (
     <DefTable<AvgDateRow>
@@ -211,16 +289,14 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
       tableKey={filterType}
       dataSource={data}
       columns={makeColumns(filterType)}
-      rowKey={(row) => (filterType === "name" ? (row.name ?? "") : String(row.position))}
-      onRow={(row) =>
-        filterType === "name"
-          ? clickableRowProps(`View details for ${row.name}`, () =>
-              onCellClick(row.name ?? "", "name"),
-            )
-          : clickableRowProps(`View details for ${getPositionTitle(row.position)}`, () =>
-              onCellClick(row.position, "position"),
-            )
-      }
+      rowKey={(row) => rowKeyOf(filterType, row)}
+      onRow={(row) => {
+        const value = row[filterType];
+        if (value === undefined) return {};
+        return clickableRowProps(`View details for ${rowLabelOf(filterType, row)}`, () =>
+          onCellClick(value, filterType),
+        );
+      }}
     />
   );
 };

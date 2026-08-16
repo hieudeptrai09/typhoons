@@ -80,5 +80,7 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
   avgdate: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
+    { label: icon(Globe, "Country"), value: "country" },
+    { label: icon(Sun, "Year"), value: "year" },
   ],
 };

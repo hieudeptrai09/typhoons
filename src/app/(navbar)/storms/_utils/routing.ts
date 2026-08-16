@@ -5,7 +5,13 @@ const VALID_FILTERS: Record<string, string[]> = {
   highlights: ["strongest", "first", "last", "untracked"],
   average: ["position", "name", "country", "year", "month"],
   recurrence: ["position", "name"],
-  avgdate: ["position", "name"],
+  avgdate: ["position", "name", "country", "year"],
+};
+
+// Filters with no grid of their own: they only ever render as a list.
+const LIST_ONLY_FILTERS: Record<string, string[]> = {
+  average: ["country", "month", "year"],
+  avgdate: ["country", "year"],
 };
 
 export const DEFAULT_FILTER: Record<string, string> = {
@@ -34,7 +40,7 @@ export const isValidStormsSlug = (slug: string[]): boolean => {
 };
 
 export const isListOnly = (view: string, filter: string): boolean =>
-  view === "average" && ["country", "month", "year"].includes(filter);
+  LIST_ONLY_FILTERS[view]?.includes(filter) ?? false;
 
 export const isGridOnly = (view: string, filter: string): boolean =>
   view === "all" && filter === "position";

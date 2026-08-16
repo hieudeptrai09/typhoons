@@ -118,10 +118,13 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Avg. Date view: clicking a position or name opens the seasonal date modal
+    // Avg. Date view: clicking any grouping row opens the seasonal date modal
     if (view === "avgdate") {
-      const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
-      setSelectedData({ title, storms });
+      const avgDateTitles: Record<string, string> = {
+        position: getPositionTitle(Number(data)),
+        year: `Year ${data}`,
+      };
+      setSelectedData({ title: avgDateTitles[key] ?? String(data), storms });
       setIsAvgDateModalOpen(true);
       return;
     }
