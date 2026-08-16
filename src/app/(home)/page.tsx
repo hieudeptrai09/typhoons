@@ -1,18 +1,21 @@
 import { getNameList } from "@/lib/db/api/getNameList";
+import { getStormHighlights } from "@/lib/db/api/getStormHighlights";
 import Footer from "@/lib/layout/Footer";
 import Image from "next/image";
-import { Suspense } from "react";
 import Menu from "./_components/Menu";
 import QuickActionsMenu from "./_components/QuickActionsMenu";
-import StormHighlightBadge, {
-  StormHighlightBadgeSkeleton,
-} from "./_components/StormHighlightBadge";
+import StormHighlightBadge from "./_components/StormHighlightBadge";
 
 const HomePage = async () => {
-  // Search is a nav aid: a database hiccup should empty it, not fail the homepage.
-  const allNames = await getNameList()
-    .then((res) => res.data)
-    .catch(() => []);
+  // Search is a nav aid and the badge is decorative: a database hiccup should empty them, not fail the homepage.
+  const [allNames, highlights] = await Promise.all([
+    getNameList()
+      .then((res) => res.data)
+      .catch(() => []),
+    getStormHighlights()
+      .then((res) => res.data)
+      .catch(() => []),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col bg-sky-100">
@@ -30,9 +33,7 @@ const HomePage = async () => {
           Track typhoons and explore their names
         </p>
 
-        <Suspense fallback={<StormHighlightBadgeSkeleton />}>
-          <StormHighlightBadge />
-        </Suspense>
+        {highlights.length > 0 && <StormHighlightBadge initial={highlights} />}
 
         <QuickActionsMenu allNames={allNames} />
 

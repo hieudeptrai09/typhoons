@@ -3,6 +3,8 @@
 import { getActiveOnThisDay, type ActiveOnThisDayStorm } from "@/lib/db/api/getActiveOnThisDay";
 import { getOnThisDay, type OnThisDayStorm } from "@/lib/db/api/getOnThisDay";
 import { getRandomFact } from "@/lib/db/api/getRandomFact";
+import { getStormHighlights } from "@/lib/db/api/getStormHighlights";
+import type { StormHighlight } from "@/lib/types";
 
 // Callers reach these over the network, so a bad day/month falls back to the server's date rather
 // than reaching the query cache.
@@ -23,6 +25,11 @@ const resolveDate = (day: number, month: number) => {
 
 export async function fetchRandomFact(): Promise<string | null> {
   const result = await getRandomFact();
+  return result.data;
+}
+
+export async function fetchStormHighlights(): Promise<StormHighlight[]> {
+  const result = await getStormHighlights();
   return result.data;
 }
 

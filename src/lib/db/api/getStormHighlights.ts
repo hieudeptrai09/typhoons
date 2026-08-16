@@ -10,15 +10,17 @@ interface NameRow {
   name: string;
 }
 
-export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | null>> {
+export async function getStormHighlights(): Promise<ApiResponse<StormHighlight[]>> {
   const ongoing = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
-     WHERE enddate IS NULL`,
+     WHERE enddate IS NULL
+     ORDER BY startdate ASC, id ASC`,
   );
 
   if (ongoing.length > 0) {
-    const pick = ongoing[Math.floor(Math.random() * ongoing.length)];
-    return { data: { name: pick.name, position: pick.position, status: "active" } };
+    return {
+      data: ongoing.map(({ name, position }) => ({ name, position, status: "active" })),
+    };
   }
 
   const latestRows = await sql.query<StormPositionRow[]>(
@@ -30,7 +32,7 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
   const latest = latestRows[0];
 
   if (!latest) {
-    return { data: null };
+    return { data: [] };
   }
 
   const nextPosition = (latest.position % 140) + 1;
@@ -44,8 +46,8 @@ export async function getStormHighlight(): Promise<ApiResponse<StormHighlight | 
   const nextName = nextNameRows[0];
 
   if (!nextName) {
-    return { data: { name: latest.name, position: latest.position, status: "next" } };
+    return { data: [{ name: latest.name, position: latest.position, status: "next" }] };
   }
 
-  return { data: { name: nextName.name, position: nextPosition, status: "next" } };
+  return { data: [{ name: nextName.name, position: nextPosition, status: "next" }] };
 }
