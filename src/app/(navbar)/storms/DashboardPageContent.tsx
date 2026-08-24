@@ -18,6 +18,7 @@ import AverageView from "./_components/_views/AverageView";
 import AvgDateView from "./_components/_views/AvgDateView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
+import IntensityView from "./_components/_views/IntensityView";
 import StormsView from "./_components/_views/StormsView";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
 import { getDashboardTitle } from "./_utils/metadata";
@@ -165,6 +166,8 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
             );
           case "highlights":
             return <HighlightsView params={currentParams} stormsData={stormsData} />;
+          case "intensity":
+            return <IntensityView params={currentParams} stormsData={stormsData} />;
           case "average":
             return (
               <AverageView

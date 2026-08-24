@@ -1,17 +1,19 @@
 import PositionGrid from "@/lib/components/PositionGrid";
 import type { Storm } from "@/lib/types";
 import { onEnterKeyDown } from "@/lib/utils/a11y";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 export interface CellRender {
   content: ReactNode;
   className: string;
   clickable: boolean;
+  // Intensity cells are painted from the badge palette, which lives outside Tailwind's classes.
+  style?: CSSProperties;
 }
 
 interface PositionCellGridProps {
   stormsData: Storm[];
-  gridCellViewType: "storms" | "average" | "highlights";
+  gridCellViewType: "storms" | "average" | "highlights" | "intensity";
   renderCell: (position: number) => CellRender;
   onPositionClick?: (position: number) => void;
 }
@@ -31,9 +33,11 @@ const PositionCellGrid = ({
   <PositionGrid
     showHeader={false}
     renderCell={(position, _row, col) => {
-      const { content, className, clickable } = renderCell(position);
+      const { content, className, clickable, style } = renderCell(position);
       const stormNames = getStormNamesForPosition(stormsData, position);
-      const showOverlay = gridCellViewType !== "highlights" && stormNames.length > 0;
+      // Only the grids that show every storm at a position get the hover list of names.
+      const showOverlay =
+        (gridCellViewType === "storms" || gridCellViewType === "average") && stormNames.length > 0;
 
       const handleClick = () => {
         if (clickable) onPositionClick?.(position);
@@ -45,6 +49,7 @@ const PositionCellGrid = ({
           className={`group relative border-2 border-stone-200 p-2 ${
             clickable ? "cursor-pointer hover:bg-stone-200" : "cursor-default"
           } ${className}`}
+          style={style}
           onClick={handleClick}
           onKeyDown={clickable ? onEnterKeyDown(handleClick) : undefined}
           role={clickable ? "button" : undefined}

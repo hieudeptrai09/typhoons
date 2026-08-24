@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import { getHighlightCellClass, HIGHLIGHT_EMPTY_CELL_CLASS } from "@/lib/utils/colors";
+import { EMPTY_POSITION_CELL_CLASS, getHighlightCellClass } from "@/lib/utils/colors";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface HighlightsGridProps {
@@ -17,7 +17,7 @@ const HighlightsGrid = ({ stormsData, highlightedStorms, highlightType }: Highli
       if (positionStorms.length === 0) {
         return {
           content: <span className="text-sm text-gray-300">—</span>,
-          className: HIGHLIGHT_EMPTY_CELL_CLASS,
+          className: EMPTY_POSITION_CELL_CLASS,
           clickable: false,
         };
       }

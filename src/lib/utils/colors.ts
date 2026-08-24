@@ -21,7 +21,7 @@ export const TEXT_COLOR_BADGE: Record<IntensityType, string> = {
   STS: "#004D26",
   1: "#666600",
   2: "#663300",
-  3: "#3D1800",
+  3: "#FFFFFF",
   4: "#FFFFFF",
   5: "#FFFFFF",
 };
@@ -67,16 +67,16 @@ export const AVG_DATE_FALLBACK_COLOR = "#374151";
 export const getAvgDateColor = (month: number): string =>
   AVG_DATE_MONTH_COLOR[month] ?? AVG_DATE_FALLBACK_COLOR;
 
-// --- Highlights grid colors ---
+// --- Position grid colors ---
+
+// Shared by every grid that leaves a position blank: highlights and intensity alike.
+export const EMPTY_POSITION_CELL_CLASS = "bg-gray-100";
 
 export const HIGHLIGHT_CELL_CLASS: Record<string, string> = {
   strongest: "bg-rose-300",
   first: "bg-blue-300",
   last: "bg-orange-300",
-  untracked: "bg-slate-300",
 };
-
-export const HIGHLIGHT_EMPTY_CELL_CLASS = "bg-gray-100";
 
 export const getHighlightCellClass = (highlightType: string): string =>
   HIGHLIGHT_CELL_CLASS[highlightType] ?? "bg-green-300";

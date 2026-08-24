@@ -1,7 +1,12 @@
 import type { DashboardParams } from "@/lib/types";
 import { Segmented } from "antd";
 import Link from "next/link";
-import { DASHBOARD_ICON_MAP, FILTER_OPTIONS, MODE_OPTIONS } from "../../_utils/dashboardOptions";
+import {
+  DASHBOARD_ICON_MAP,
+  FILTER_OPTIONS,
+  getFilterLabel,
+  MODE_OPTIONS,
+} from "../../_utils/dashboardOptions";
 import {
   isGridOnly,
   isListOnly,
@@ -13,6 +18,7 @@ import {
 const VIEW_TABS: { key: string; label: string }[] = [
   { key: "all", label: "Storms" },
   { key: "highlights", label: "Highlights" },
+  { key: "intensity", label: "Intensity" },
   { key: "average", label: "Average" },
   { key: "recurrence", label: "Recurrence" },
   { key: "avgdate", label: "Avg. Date" },
@@ -31,7 +37,7 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
     <div className="mx-auto mb-6 flex max-w-4xl flex-col gap-4">
       <nav
         aria-label="Dashboard view"
-        className="mx-auto grid w-full max-w-2xl grid-cols-5 border-b border-gray-200"
+        className="mx-auto grid w-full max-w-2xl grid-cols-6 border-b border-gray-200"
       >
         {VIEW_TABS.map(({ key, label }) => {
           const Icon = DASHBOARD_ICON_MAP.view[key];
@@ -57,7 +63,7 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-8 sm:gap-y-3">
         <div className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:gap-2.5">
           <span className="shrink-0 text-xs font-semibold tracking-widest text-foreground uppercase">
-            Group by
+            {getFilterLabel(view)}
           </span>
           <div className="max-w-full overflow-x-auto sm:min-w-0">
             <Segmented

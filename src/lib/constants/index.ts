@@ -53,6 +53,19 @@ export const INTENSITY_LABEL: Record<IntensityType, string> = {
   MD: "Monsoon Depression",
 };
 
+// Segmented controls and chips have room for the code only, and a bare "1" beside MD/TD/TS reads as a rank.
+export const INTENSITY_SHORT_LABEL: Record<IntensityType, string> = {
+  5: "C5",
+  4: "C4",
+  3: "C3",
+  2: "C2",
+  1: "C1",
+  STS: "STS",
+  TS: "TS",
+  TD: "TD",
+  MD: "MD",
+};
+
 export const defaultTyphoonName: TyphoonName = {
   id: 0,
   position: 0,

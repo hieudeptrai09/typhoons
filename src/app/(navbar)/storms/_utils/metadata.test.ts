@@ -1,5 +1,6 @@
 import { getDashboardDescription, getDashboardTitle } from "@/app/(navbar)/storms/_utils/metadata";
 import { getCanonicalStormsSlugs, slugToParams } from "@/app/(navbar)/storms/_utils/routing";
+import { INTENSITY_SLUGS_BY_STRENGTH } from "@/lib/utils/intensity";
 
 describe("getDashboardTitle", () => {
   it("titles the storms view by its filter", () => {
@@ -22,6 +23,21 @@ describe("getDashboardTitle", () => {
     expect(getDashboardTitle("avgdate", "table", "position")).toBe(
       "Average Storm Dates by Position",
     );
+  });
+
+  it("names the intensity in full rather than echoing the slug", () => {
+    expect(getDashboardTitle("intensity", "table", "md")).toBe("Monsoon Depressions by Position");
+    expect(getDashboardTitle("intensity", "list", "cat5")).toBe(
+      "Category 5 Super Typhoons by Position",
+    );
+    expect(getDashboardTitle("intensity", "table", "bogus")).toBe("Storms by Intensity");
+  });
+
+  it("gives every intensity page its own description", () => {
+    const descriptions = INTENSITY_SLUGS_BY_STRENGTH.map((slug) =>
+      getDashboardDescription("intensity", "table", slug),
+    );
+    expect(new Set(descriptions).size).toBe(descriptions.length);
   });
 
   it("takes the first value of a repeated query param", () => {

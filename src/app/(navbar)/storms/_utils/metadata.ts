@@ -1,5 +1,26 @@
+import { INTENSITY_LABEL } from "@/lib/constants";
 import { capitalize } from "@/lib/utils/format";
+import { intensityFromSlug } from "@/lib/utils/intensity";
 import { normalizeParam } from "@/lib/utils/params";
+
+// Every intensity label pluralizes with a plain "s": "Category 5 Super Typhoons", "Monsoon Depressions".
+const intensityTitle = (filter: string): string => {
+  const intensity = intensityFromSlug(filter);
+  return intensity ? `${INTENSITY_LABEL[intensity]}s by Position` : "Storms by Intensity";
+};
+
+// Hand-written per intensity: nine pages off one template would read as the same page nine times.
+const INTENSITY_DESCRIPTIONS: Record<string, string> = {
+  md: "Browse the named monsoon depressions of the Western Pacific - systems that grew out of the monsoon trough rather than as classic tropical cyclones - and the naming positions they landed on.",
+  td: "See the storms that never grew past tropical depression strength before dissipating, and which naming positions have collected the most of them.",
+  ts: "Browse the storms that peaked as tropical storms, the most common fate of a Western Pacific name, mapped across the whole naming list.",
+  sts: "Find the storms that stalled at severe tropical storm strength, one step short of becoming a typhoon, and where they sit in the naming sequence.",
+  cat1: "Browse the storms that peaked at Category 1 typhoon strength, the entry rung of the typhoon scale, by naming position and season.",
+  cat2: "See every storm that topped out as a Category 2 typhoon, with the year, month, and naming position of each.",
+  cat3: "Browse the Category 3 typhoons of the Western Pacific - the first rung of major typhoon strength - grouped by their position in the naming list.",
+  cat4: "Find the storms that reached Category 4 typhoon strength, and see which names and positions recur among the basin's most violent systems.",
+  cat5: "Browse every Category 5 super typhoon in the record - the strongest storms the Western Pacific has produced - and the names they carried.",
+};
 
 export const getDashboardTitle = (
   view: string | string[] | undefined,
@@ -12,6 +33,7 @@ export const getDashboardTitle = (
   const viewTitles: Record<string, string> = {
     all: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
     highlights: `${capitalize(filterStr)} Typhoons by Position`,
+    intensity: intensityTitle(filterStr),
     average: `Average Intensity by ${capitalize(filterStr)}`,
     recurrence: `Average Storm Recurrence by ${capitalize(filterStr)}`,
     avgdate: `Average Storm Dates by ${capitalize(filterStr)}`,
@@ -43,12 +65,17 @@ export const getDashboardDescription = (
       first:
         "View the first typhoons of each season by position - track the earliest storms to receive each name in the typhoon naming sequence.",
       last: "Browse the last typhoons of each season by position - see which storms closed out their respective seasons for each name position.",
-      untracked:
-        "Discover monsoon depressions by position - named systems that formed from the monsoon trough rather than as classic tropical cyclones.",
     };
     return (
       highlightDescriptions[filterStr] ||
       "Discover highlighted typhoons with special characteristics organized by their position in the naming sequence."
+    );
+  }
+
+  if (viewStr === "intensity") {
+    return (
+      INTENSITY_DESCRIPTIONS[filterStr] ||
+      "Browse Western Pacific storms by the intensity they peaked at, from monsoon depressions up to Category 5 super typhoons."
     );
   }
 

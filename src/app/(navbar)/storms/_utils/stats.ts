@@ -1,4 +1,4 @@
-import type { Storm } from "@/lib/types";
+import type { IntensityType, Storm } from "@/lib/types";
 import { parseStormDate } from "@/lib/utils/date";
 
 export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
@@ -8,11 +8,15 @@ export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
     return stormsData.filter((storm) => storm.isFirst);
   } else if (type === "last") {
     return stormsData.filter((storm) => storm.isLast);
-  } else if (type === "untracked") {
-    return stormsData.filter((storm) => storm.intensity === "MD");
   }
   return [];
 };
+
+export const getStormsByIntensity = (
+  stormsData: Storm[],
+  intensity: IntensityType | null,
+): Storm[] =>
+  intensity === null ? [] : stormsData.filter((storm) => storm.intensity === intensity);
 
 export const getEffectiveMonth = (storm: Storm): number | null => {
   if (storm.year < 2000) return null;
