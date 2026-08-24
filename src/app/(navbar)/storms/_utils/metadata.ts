@@ -44,7 +44,7 @@ export const getDashboardDescription = (
         "View the first typhoons of each season by position - track the earliest storms to receive each name in the typhoon naming sequence.",
       last: "Browse the last typhoons of each season by position - see which storms closed out their respective seasons for each name position.",
       untracked:
-        "Discover typhoons not tracked by the JTWC, organized by position - storms that were named but fell outside the Joint Typhoon Warning Center's official monitoring.",
+        "Discover monsoon depressions by position - named systems that formed from the monsoon trough rather than as classic tropical cyclones.",
     };
     return (
       highlightDescriptions[filterStr] ||

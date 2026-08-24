@@ -32,7 +32,7 @@ const INTENSITY_SHORT: Record<IntensityType, string> = {
   STS: "STS",
   TS: "TS",
   TD: "TD",
-  NT: "Not tracked",
+  MD: "MD",
 };
 
 // Strongest storm by intensity; among equals the most recent one.

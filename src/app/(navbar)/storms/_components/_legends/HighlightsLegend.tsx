@@ -5,7 +5,7 @@ const HIGHLIGHT_LABEL: Record<string, string> = {
   strongest: "Strongest storm at this position",
   first: "First storm at this position",
   last: "Last storm at this position",
-  untracked: "Storm not tracked by the JTWC",
+  untracked: "Monsoon depression",
 };
 
 interface HighlightsLegendProps {

@@ -9,7 +9,7 @@ export const getHighlights = (stormsData: Storm[], type: string): Storm[] => {
   } else if (type === "last") {
     return stormsData.filter((storm) => storm.isLast);
   } else if (type === "untracked") {
-    return stormsData.filter((storm) => storm.intensity === "NT");
+    return stormsData.filter((storm) => storm.intensity === "MD");
   }
   return [];
 };

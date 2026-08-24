@@ -6,7 +6,7 @@ describe("getHighlights", () => {
     storm({ name: "Yagi", isStrongest: true }),
     storm({ name: "Haiyan", isFirst: true }),
     storm({ name: "Nakri", isLast: true }),
-    storm({ name: "Krathon", intensity: "NT" }),
+    storm({ name: "Krathon", intensity: "MD" }),
   ];
 
   it("selects by the requested flag", () => {
