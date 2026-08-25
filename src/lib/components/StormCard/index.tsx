@@ -1,11 +1,11 @@
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
+import ZoomEarth from "@/lib/components/ZoomEarth";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
-import { getZoomEarthUrl } from "@/lib/utils/format";
-import { Calendar, ExternalLink, Hash, ImageOff } from "lucide-react";
+import { Calendar, Hash, ImageOff } from "lucide-react";
 
 const StormCard = ({ storm }: { storm: Storm }) => {
   const bgColor = BACKGROUND_BADGE[storm.intensity];
@@ -63,16 +63,7 @@ const StormCard = ({ storm }: { storm: Storm }) => {
         )}
       </div>
       <div className="border-t border-slate-100 px-4 py-2">
-        <a
-          href={getZoomEarthUrl(storm.name, storm.year)}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
-        >
-          Zoom Earth
-          <ExternalLink size={12} />
-        </a>
+        <ZoomEarth storm={storm} />
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ const VIEW_TABS: { key: string; label: string }[] = [
   { key: "average", label: "Average" },
   { key: "recurrence", label: "Recurrence" },
   { key: "avgdate", label: "Avg. Date" },
+  { key: "calendar", label: "Calendar" },
 ];
 
 interface DashboardControlBarProps {
@@ -37,7 +38,7 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
     <div className="mx-auto mb-6 flex max-w-4xl flex-col gap-4">
       <nav
         aria-label="Dashboard view"
-        className="mx-auto grid w-full max-w-2xl grid-cols-6 border-b border-gray-200"
+        className="mx-auto grid w-full max-w-3xl grid-cols-4 border-b border-gray-200 sm:grid-cols-7"
       >
         {VIEW_TABS.map(({ key, label }) => {
           const Icon = DASHBOARD_ICON_MAP.view[key];

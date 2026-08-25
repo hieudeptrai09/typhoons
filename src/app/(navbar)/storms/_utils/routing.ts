@@ -8,12 +8,14 @@ const VALID_FILTERS: Record<string, string[]> = {
   average: ["position", "name", "country", "year", "month"],
   recurrence: ["position", "name"],
   avgdate: ["position", "name", "country", "year"],
+  calendar: ["started", "ended", "active", "todate"],
 };
 
 // Filters with no grid of their own: they only ever render as a list.
 const LIST_ONLY_FILTERS: Record<string, string[]> = {
   average: ["country", "month", "year"],
   avgdate: ["country", "year"],
+  calendar: ["started", "ended", "active", "todate"],
 };
 
 export const DEFAULT_FILTER: Record<string, string> = {
@@ -23,6 +25,7 @@ export const DEFAULT_FILTER: Record<string, string> = {
   average: "position",
   recurrence: "position",
   avgdate: "position",
+  calendar: "started",
 };
 
 // Every URL is /storms/<view>/<filter>/[list]/
@@ -100,6 +103,8 @@ export const getLegendKind = ({ view, mode, filter }: DashboardParams): LegendKi
       return "recurrence";
     case "avgdate":
       return "avgdate";
+    case "calendar":
+      return filter === "todate" ? null : "intensity";
     case "highlights":
       return mode === "list" ? "intensity" : "highlight";
     case "intensity":

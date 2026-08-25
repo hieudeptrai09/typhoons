@@ -1,3 +1,4 @@
+import ComparisonBarList, { type ComparisonBarRow } from "@/lib/components/ComparisonBarList";
 import DefModal from "@/lib/components/DefModal";
 import { INTENSITY_LABEL, INTENSITY_RANK, SORTING_RANK } from "@/lib/constants";
 import type { BaseModalProps, IntensityType, Storm } from "@/lib/types";
@@ -103,7 +104,28 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
       storms: [...groupStorms].sort((a, b) => a.year - b.year),
     }))
     .sort((a, b) => SORTING_RANK[b.intensity] - SORTING_RANK[a.intensity]);
-  const maxCount = intensityData.reduce((max, data) => Math.max(max, data.count), 0);
+  const rows: ComparisonBarRow[] = intensityData.map((data) => ({
+    key: data.intensity,
+    label: INTENSITY_LABEL[data.intensity],
+    labelColor: TEXT_COLOR_WHITE_BACKGROUND[data.intensity],
+    color: BACKGROUND_BADGE[data.intensity],
+    count: data.count,
+    details: (
+      <div className="flex flex-col gap-1.5">
+        {data.storms.map((storm) => (
+          <div key={`${storm.name}-${storm.year}`} className="text-sm text-foreground">
+            <span
+              className="font-semibold"
+              style={{ color: TEXT_COLOR_WHITE_BACKGROUND[data.intensity] }}
+            >
+              {storm.name}
+            </span>{" "}
+            {storm.year}
+          </div>
+        ))}
+      </div>
+    ),
+  }));
 
   return (
     <DefModal
@@ -149,69 +171,7 @@ const AverageModal = ({ isOpen, onClose, title, average, storms, criteria }: Ave
               </Popover>
             )}
           </div>
-          <div>
-            <div className="mb-2 text-foreground">{heading(title)}</div>
-            {intensityData.length === 0 && (
-              <div className="text-sm text-foreground">{empty(title)}</div>
-            )}
-            <div className="space-y-2">
-              {intensityData.map((data, idx) => {
-                const bgColor = BACKGROUND_BADGE[data.intensity];
-                const textColor = TEXT_COLOR_WHITE_BACKGROUND[data.intensity];
-
-                return (
-                  <Popover
-                    key={data.intensity}
-                    styles={{ container: { backgroundColor: "#f3f4f6" } }}
-                    content={
-                      <div className="flex flex-col gap-1.5">
-                        {data.storms.map((storm) => (
-                          <div
-                            key={`${storm.name}-${storm.year}`}
-                            className="text-sm text-foreground"
-                          >
-                            <span className="font-semibold" style={{ color: textColor }}>
-                              {storm.name}
-                            </span>{" "}
-                            {storm.year}
-                          </div>
-                        ))}
-                      </div>
-                    }
-                    trigger={["hover", "click"]}
-                    placement="bottom"
-                  >
-                    <div
-                      className="flex cursor-pointer items-center justify-between rounded-md bg-white px-3 py-2 transition-colors hover:bg-gray-200"
-                      style={{ borderLeft: `4px solid ${bgColor}` }}
-                    >
-                      <span
-                        className="font-semibold"
-                        style={{ color: textColor }}
-                        aria-describedby={`avg-stats-${idx}`}
-                      >
-                        {INTENSITY_LABEL[data.intensity]}
-                      </span>
-                      <div id={`avg-stats-${idx}`} className="flex shrink-0 items-center gap-2">
-                        <span
-                          className="h-2 shrink-0 rounded-full"
-                          style={{
-                            width: `${maxCount > 0 ? Math.max(8, (data.count / maxCount) * 96) : 8}px`,
-                            backgroundColor: bgColor,
-                          }}
-                          aria-hidden="true"
-                        />
-                        <span className="text-sm font-semibold text-foreground tabular-nums">
-                          <span className="sr-only">Count: </span>
-                          {data.count}
-                        </span>
-                      </div>
-                    </div>
-                  </Popover>
-                );
-              })}
-            </div>
-          </div>
+          <ComparisonBarList heading={heading(title)} emptyText={empty(title)} rows={rows} />
         </div>
       </div>
     </DefModal>

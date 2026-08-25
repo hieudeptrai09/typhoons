@@ -29,6 +29,11 @@ describe("isValidStormsSlug", () => {
     expect(isValidStormsSlug(["average", "country"])).toBe(true);
     expect(isValidStormsSlug(["all", "position"])).toBe(true);
     expect(isValidStormsSlug(["all", "country"])).toBe(false); // country is average-only
+    expect(isValidStormsSlug(["calendar", "started"])).toBe(true);
+    expect(isValidStormsSlug(["calendar", "ended"])).toBe(true);
+    expect(isValidStormsSlug(["calendar", "todate"])).toBe(true);
+    expect(isValidStormsSlug(["calendar", "starts"])).toBe(false); // the labels read as past tense
+    expect(isValidStormsSlug(["calendar", "year"])).toBe(false); // the date is not a grouping
     expect(isValidStormsSlug(["intensity", "md"])).toBe(true);
     expect(isValidStormsSlug(["intensity", "cat5"])).toBe(true);
     expect(isValidStormsSlug(["intensity", "untracked"])).toBe(false); // not an intensity slug
@@ -74,6 +79,8 @@ describe("slugToParams", () => {
     expect(slugToParams(["avgdate", "country"]).mode).toBe("list");
     expect(slugToParams(["avgdate", "year"]).mode).toBe("list");
     expect(slugToParams(["avgdate", "position"]).mode).toBe("table");
+    expect(slugToParams(["calendar", "started"]).mode).toBe("list");
+    expect(slugToParams(["calendar", "todate"]).mode).toBe("list");
   });
 });
 
@@ -93,6 +100,13 @@ describe("isListOnly / isGridOnly", () => {
     expect(isListOnly("avgdate", "name")).toBe(false);
   });
 
+  it("marks every calendar filter as list only — a date fills no grid", () => {
+    expect(isListOnly("calendar", "started")).toBe(true);
+    expect(isListOnly("calendar", "ended")).toBe(true);
+    expect(isListOnly("calendar", "active")).toBe(true);
+    expect(isListOnly("calendar", "todate")).toBe(true);
+  });
+
   it("marks all-storms-by-position as grid only", () => {
     expect(isGridOnly("all", "position")).toBe(true);
     expect(isGridOnly("all", "name")).toBe(false);
@@ -106,6 +120,11 @@ describe("paramsForView / paramsForFilter", () => {
       view: "intensity",
       filter: "md",
       mode: "table",
+    });
+    expect(paramsForView("calendar")).toEqual({
+      view: "calendar",
+      filter: "started",
+      mode: "list",
     });
     expect(paramsForView("average")).toEqual({
       view: "average",
@@ -185,6 +204,15 @@ describe("getCanonicalStormsSlugs", () => {
     expect(canonical).toContainEqual(["all", "name", "list"]);
   });
 
+  it("gives each calendar filter one page, at its list path", () => {
+    expect(canonical).toContainEqual(["calendar", "started", "list"]);
+    expect(canonical).toContainEqual(["calendar", "ended", "list"]);
+    expect(canonical).toContainEqual(["calendar", "active", "list"]);
+    expect(canonical).toContainEqual(["calendar", "todate", "list"]);
+    expect(canonical).not.toContainEqual(["calendar", "started"]);
+    expect(canonical.filter(([view]) => view === "calendar")).toHaveLength(4);
+  });
+
   it("gives every intensity both a grid and a list page", () => {
     expect(canonical).toContainEqual(["intensity", "md"]);
     expect(canonical).toContainEqual(["intensity", "md", "list"]);
@@ -216,6 +244,13 @@ describe("getLegendKind", () => {
   it("gives the categorical cell tints their own mini-key", () => {
     expect(kind("highlights", "strongest", "table")).toBe("highlight");
     expect(kind("highlights", "last", "table")).toBe("highlight");
+  });
+
+  it("keys the calendar storm lists on intensity, but not its bare counts", () => {
+    expect(kind("calendar", "started", "list")).toBe("intensity");
+    expect(kind("calendar", "ended", "list")).toBe("intensity");
+    expect(kind("calendar", "active", "list")).toBe("intensity");
+    expect(kind("calendar", "todate", "list")).toBeNull();
   });
 
   it("keeps the gap and month legends on their own views", () => {

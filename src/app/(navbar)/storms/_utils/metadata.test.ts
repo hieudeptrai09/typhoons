@@ -33,6 +33,21 @@ describe("getDashboardTitle", () => {
     expect(getDashboardTitle("intensity", "table", "bogus")).toBe("Storms by Intensity");
   });
 
+  it("names the question a calendar page asks instead of capitalizing its filter", () => {
+    expect(getDashboardTitle("calendar", "list", "started")).toBe("Seasons by Storm Start Date");
+    expect(getDashboardTitle("calendar", "list", "ended")).toBe("Seasons by Storm End Date");
+    expect(getDashboardTitle("calendar", "list", "active")).toBe("Seasons by Active Storm Date");
+    expect(getDashboardTitle("calendar", "list", "todate")).toBe("Season Pace by Date");
+    expect(getDashboardTitle("calendar", "list", "bogus")).toBe("Storms by Calendar Date");
+  });
+
+  it("gives every calendar page its own description", () => {
+    const descriptions = ["started", "ended", "active", "todate"].map((slug) =>
+      getDashboardDescription("calendar", "list", slug),
+    );
+    expect(new Set(descriptions).size).toBe(descriptions.length);
+  });
+
   it("gives every intensity page its own description", () => {
     const descriptions = INTENSITY_SLUGS_BY_STRENGTH.map((slug) =>
       getDashboardDescription("intensity", "table", slug),

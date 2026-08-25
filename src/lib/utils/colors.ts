@@ -67,6 +67,20 @@ export const AVG_DATE_FALLBACK_COLOR = "#374151";
 export const getAvgDateColor = (month: number): string =>
   AVG_DATE_MONTH_COLOR[month] ?? AVG_DATE_FALLBACK_COLOR;
 
+// --- Season pace colors ---
+
+// A season ahead of the average pace runs warm, one behind it runs cool. Neither is
+// good or bad, so this deliberately avoids the green/red of a status color.
+export const SEASON_PACE_AHEAD_COLOR = "#c2410c";
+export const SEASON_PACE_BEHIND_COLOR = "#1d4ed8";
+export const SEASON_PACE_EVEN_COLOR = "#475569";
+
+export const getSeasonPaceColor = (delta: number): string => {
+  if (delta > 0) return SEASON_PACE_AHEAD_COLOR;
+  if (delta < 0) return SEASON_PACE_BEHIND_COLOR;
+  return SEASON_PACE_EVEN_COLOR;
+};
+
 // --- Position grid colors ---
 
 // Shared by every grid that leaves a position blank: highlights and intensity alike.

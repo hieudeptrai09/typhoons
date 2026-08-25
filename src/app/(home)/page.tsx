@@ -2,8 +2,8 @@ import { getNameList } from "@/lib/db/api/getNameList";
 import { getStormHighlights } from "@/lib/db/api/getStormHighlights";
 import Footer from "@/lib/layout/Footer";
 import Image from "next/image";
+import HomeToolbar from "./_components/HomeToolbar";
 import Menu from "./_components/Menu";
-import QuickActionsMenu from "./_components/QuickActionsMenu";
 import StormHighlightBadge from "./_components/StormHighlightBadge";
 
 const HomePage = async () => {
@@ -35,7 +35,7 @@ const HomePage = async () => {
 
         {highlights.length > 0 && <StormHighlightBadge initial={highlights} />}
 
-        <QuickActionsMenu allNames={allNames} />
+        <HomeToolbar allNames={allNames} />
 
         <div className="flex w-full max-w-sm flex-col gap-4">
           <Menu

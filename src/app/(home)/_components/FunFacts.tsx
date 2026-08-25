@@ -38,19 +38,19 @@ const FunFacts = () => {
   return (
     <Button
       type="text"
+      aria-label="Show a random typhoon fact"
+      title="Useless facts"
       icon={
         loading ? (
           <TyphoonSpinner size="small" colorClass="text-amber-700" />
         ) : (
-          <Lightbulb size={16} />
+          <Lightbulb size={20} />
         )
       }
       onClick={showFact}
       disabled={loading}
-      className="w-full! justify-start! text-sm! font-semibold! text-amber-700! hover:text-amber-800!"
-    >
-      Useless Facts
-    </Button>
+      className="h-11! w-11! shrink-0! rounded-lg! border! border-amber-600/70! text-amber-700! hover:bg-amber-50!"
+    />
   );
 };
 

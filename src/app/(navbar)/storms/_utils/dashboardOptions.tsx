@@ -6,6 +6,7 @@ import {
   Activity,
   ArrowDownToLine,
   CalendarRange,
+  CalendarSearch,
   CloudLightning,
   Gauge,
   Globe,
@@ -14,10 +15,14 @@ import {
   MapPin,
   Medal,
   Moon,
+  Play,
   Repeat,
+  Sigma,
+  Square,
   Star,
   Sun,
   Tag,
+  Waves,
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -30,6 +35,7 @@ export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
     average: Activity,
     recurrence: Repeat,
     avgdate: CalendarRange,
+    calendar: CalendarSearch,
   },
   filter: {
     strongest: Zap,
@@ -40,6 +46,10 @@ export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
     country: Globe,
     year: Sun,
     month: Moon,
+    started: Play,
+    ended: Square,
+    active: Waves,
+    todate: Sigma,
   },
   mode: {
     table: Grid3x3,
@@ -101,11 +111,18 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
     { label: icon(Globe, "Country"), value: "country" },
     { label: icon(Sun, "Year"), value: "year" },
   ],
+  calendar: [
+    { label: icon(Play, "Started"), value: "started" },
+    { label: icon(Square, "Ended"), value: "ended" },
+    { label: icon(Waves, "Active"), value: "active" },
+    { label: icon(Sigma, "So Far"), value: "todate" },
+  ],
 };
 
 // "Group by" is wrong where the chips pick one slice of the data rather than a grouping.
 const FILTER_LABELS: Record<string, string> = {
   intensity: "Intensity",
+  calendar: "Show",
 };
 
 export const getFilterLabel = (view: string): string => FILTER_LABELS[view] ?? "Group by";

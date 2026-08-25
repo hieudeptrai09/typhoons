@@ -2,12 +2,13 @@
 
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
+import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { MONTH_NAMES } from "@/lib/constants";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/position";
 import { calculateAverage, calculateGapAverage, getGroupedStorms } from "@/lib/utils/storms";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import DashboardLegend from "./_components/_legends/DashboardLegend";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import AvgDateModal from "./_components/_modals/AvgDateModal";
@@ -16,6 +17,7 @@ import NameListModal from "./_components/_modals/NameListModal";
 import StormDetailModal from "./_components/_modals/StormDetailModal";
 import AverageView from "./_components/_views/AverageView";
 import AvgDateView from "./_components/_views/AvgDateView";
+import CalendarView from "./_components/_views/CalendarView";
 import DistanceView from "./_components/_views/DistanceView";
 import HighlightsView from "./_components/_views/HighlightsView";
 import IntensityView from "./_components/_views/IntensityView";
@@ -62,7 +64,8 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       : null;
 
   const handleApplyFilter = (newParams: DashboardParams) => {
-    router.push(paramsToPath(newParams));
+    const query = newParams.view === "calendar" ? window.location.search : "";
+    router.push(`${paramsToPath(newParams)}${query}`);
   };
 
   const handleCellClick = (data: number | string, key: string) => {
@@ -192,6 +195,18 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 stormsData={stormsData}
                 onCellClick={handleCellClick}
               />
+            );
+          case "calendar":
+            return (
+              <Suspense
+                fallback={
+                  <div className="flex justify-center py-16">
+                    <TyphoonSpinner size="large" />
+                  </div>
+                }
+              >
+                <CalendarView params={currentParams} stormsData={stormsData} />
+              </Suspense>
             );
           default:
             return <div className="text-center text-foreground">Select filters to view data</div>;

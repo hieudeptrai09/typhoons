@@ -5,14 +5,14 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormHighlightBadges, { hasHighlight } from "@/lib/components/StormHighlightBadges";
 import StormStats from "@/lib/components/StormStats";
+import ZoomEarth from "@/lib/components/ZoomEarth";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
-import { getZoomEarthUrl } from "@/lib/utils/format";
 import { isExternalPosition } from "@/lib/utils/position";
 import { Switch } from "antd";
-import { ExternalLink, Inbox } from "lucide-react";
+import { Inbox } from "lucide-react";
 import { useState } from "react";
 
 export interface StormListContentProps {
@@ -53,16 +53,7 @@ function StormRow({ storm, showMap }: { storm: Storm; showMap: boolean }) {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-x-2">
         <span className="text-xs text-foreground">{dateRange}</span>
-        <a
-          href={getZoomEarthUrl(storm.name, storm.year)}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
-        >
-          Zoom Earth
-          <ExternalLink size={12} />
-        </a>
+        <ZoomEarth storm={storm} />
       </div>
     </div>
   );

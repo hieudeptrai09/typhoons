@@ -8,6 +8,7 @@ import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
 import StormStats from "@/lib/components/StormStats";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
+import ZoomEarth from "@/lib/components/ZoomEarth";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
 import {
@@ -17,7 +18,6 @@ import {
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
-import { getZoomEarthUrl } from "@/lib/utils/format";
 import { getPositionTitle } from "@/lib/utils/position";
 import {
   calculateAverage,
@@ -28,7 +28,7 @@ import {
   sortNamesByFirstYear,
 } from "@/lib/utils/storms";
 import { Carousel as AntCarousel } from "antd";
-import { Calendar, ExternalLink, ImageOff, SearchX } from "lucide-react";
+import { Calendar, ImageOff, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
@@ -111,16 +111,7 @@ function StormGridCard({ storm }: { storm: Storm }) {
           <Calendar size={12} className="shrink-0" />
           {dateRange}
         </div>
-        <a
-          href={getZoomEarthUrl(storm.name, storm.year)}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={`View ${storm.name} ${storm.year} on Zoom Earth`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
-        >
-          Zoom Earth
-          <ExternalLink size={12} />
-        </a>
+        <ZoomEarth storm={storm} />
       </div>
     </div>
   );

@@ -22,6 +22,15 @@ const INTENSITY_DESCRIPTIONS: Record<string, string> = {
   cat5: "Browse every Category 5 super typhoon in the record - the strongest storms the Western Pacific has produced - and the names they carried.",
 };
 
+// The calendar pages are one date apart, not one grouping apart, so their titles name the
+// question each asks rather than capitalizing the filter.
+const CALENDAR_TITLES: Record<string, string> = {
+  started: "Seasons by Storm Start Date",
+  ended: "Seasons by Storm End Date",
+  active: "Seasons by Active Storm Date",
+  todate: "Season Pace by Date",
+};
+
 export const getDashboardTitle = (
   view: string | string[] | undefined,
   mode: string | string[] | undefined,
@@ -37,6 +46,7 @@ export const getDashboardTitle = (
     average: `Average Intensity by ${capitalize(filterStr)}`,
     recurrence: `Average Storm Recurrence by ${capitalize(filterStr)}`,
     avgdate: `Average Storm Dates by ${capitalize(filterStr)}`,
+    calendar: CALENDAR_TITLES[filterStr] ?? "Storms by Calendar Date",
   };
 
   return viewTitles[viewStr] ?? viewTitles.all;
@@ -120,6 +130,23 @@ export const getDashboardDescription = (
     return (
       avgDateDescriptions[filterStr] ||
       "Analyze the average seasonal start and end dates of storms grouped by position, name, country, or year."
+    );
+  }
+
+  if (viewStr === "calendar") {
+    const calendarDescriptions: Record<string, string> = {
+      started:
+        "Pick any day of the year and see which seasons had a Western Pacific storm form on it, then open a season to read off the storms themselves.",
+      ended:
+        "Pick any day of the year and see which seasons had a Western Pacific storm dissipate on it, season by season across the whole record.",
+      active:
+        "Pick any day of the year and see which seasons still had a storm out over the Western Pacific on it, and how far into each storm the day fell.",
+      todate:
+        "Pick any day of the year and compare how many storms each Western Pacific season had already produced by that point, against the average pace and month by month.",
+    };
+    return (
+      calendarDescriptions[filterStr] ||
+      "Pick a day of the year and see the Western Pacific storms that touched it, season by season."
     );
   }
 
