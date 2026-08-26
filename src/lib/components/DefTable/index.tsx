@@ -94,7 +94,7 @@ const DefTable = <T extends object>({
   };
 
   return (
-    <div className={`mx-auto ${maxWidth}`}>
+    <div className={`mx-auto w-full min-w-0 ${maxWidth}`}>
       {activeCriteria.length > 0 && (
         <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
           <span className="font-semibold text-foreground">Sorted by:</span>
