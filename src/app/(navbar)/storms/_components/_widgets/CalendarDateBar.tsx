@@ -4,8 +4,8 @@ import dayjs, { type Dayjs } from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 
-// A calendar slot has no year, but the picker needs a whole date to work with. It runs in a fixed leap year so 29/2 stays selectable,
-const REFERENCE_YEAR = 2000;
+const REFERENCE_START = dayjs("2000-01-01");
+const REFERENCE_END = dayjs("2000-12-31");
 
 interface CalendarDateBarProps {
   monthDay: string; // "MM-DD"
@@ -33,8 +33,10 @@ const CalendarDateBar = ({ monthDay, today, onChange, summary }: CalendarDateBar
         />
 
         <DatePicker
-          value={dayjs(`${REFERENCE_YEAR}-${monthDay}`)}
+          value={dayjs(`${REFERENCE_START.year()}-${monthDay}`)}
           onChange={handlePick}
+          minDate={REFERENCE_START}
+          maxDate={REFERENCE_END}
           format="D MMMM"
           allowClear={false}
           inputReadOnly
