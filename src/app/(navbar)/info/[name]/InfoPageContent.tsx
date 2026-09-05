@@ -6,6 +6,7 @@ import StormCard from "@/lib/components/StormCard";
 import StormStats from "@/lib/components/StormStats";
 import type { RetiredName, RetirementReason, SearchDetail, Storm, TyphoonName } from "@/lib/types";
 import { getNameStatusBgClass, getNameStatusColorClass } from "@/lib/utils/colors";
+import { infoHref } from "@/lib/utils/links";
 import { isExternalPosition } from "@/lib/utils/position";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -74,12 +75,12 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
       className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
       aria-label="Name pagination"
     >
-      <a href={`/info/${prevName.toLowerCase()}`} className={linkClass}>
+      <a href={infoHref(prevName)} className={linkClass}>
         <ChevronLeft className="h-4 w-4" />
         <span className="capitalize">{prevName.toLowerCase()}</span>
       </a>
       <span className="text-sm text-foreground">{names[currentIndex]}</span>
-      <a href={`/info/${nextName.toLowerCase()}`} className={linkClass}>
+      <a href={infoHref(nextName)} className={linkClass}>
         <span className="capitalize">{nextName.toLowerCase()}</span>
         <ChevronRight className="h-4 w-4" />
       </a>

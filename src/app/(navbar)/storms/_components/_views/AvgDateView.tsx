@@ -4,11 +4,6 @@ import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import { getPositionTitle } from "@/lib/utils/position";
-import { getGroupedStorms } from "@/lib/utils/storms";
-import type { ColumnsType } from "antd/es/table";
-import { useMemo } from "react";
-import AvgDateGrid from "../_grids/AvgDateGrid";
-import SpecialButtons from "../_widgets/SpecialButtons";
 import {
   calculateAvgDatesByGroup,
   calculateAvgDuration,
@@ -17,6 +12,11 @@ import {
   getDoyMonth,
   type AvgDates,
 } from "@/lib/utils/stormDates";
+import { getGroupedStorms } from "@/lib/utils/storms";
+import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
+import AvgDateGrid from "../_grids/AvgDateGrid";
+import SpecialButtons from "../_widgets/SpecialButtons";
 import AvgDateNameGrid from "./AvgDateNameGrid";
 
 interface AvgDateViewProps {

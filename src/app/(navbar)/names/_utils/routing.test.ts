@@ -1,6 +1,5 @@
 import {
   getCanonicalNamesSlugs,
-  isHistoryScope,
   isValidNamesSlug,
   paramsToPath,
   slugToParams,
@@ -36,19 +35,6 @@ describe("slugToParams", () => {
 
   it("falls back to the default grid for an unrecognised slug", () => {
     expect(slugToParams(["bogus"])).toEqual({ view: "grid", showName: true, showHistory: false });
-  });
-});
-
-describe("isHistoryScope", () => {
-  it("reads the flag off the views that carry one", () => {
-    expect(isHistoryScope({ view: "grid", showName: true, showHistory: true })).toBe(true);
-    expect(isHistoryScope({ view: "list", showHistory: true })).toBe(true);
-    expect(isHistoryScope({ view: "grid", showName: true, showHistory: false })).toBe(false);
-    expect(isHistoryScope({ view: "list", showHistory: false })).toBe(false);
-  });
-
-  it("puts retired outside the history scope", () => {
-    expect(isHistoryScope({ view: "retired" })).toBe(false);
   });
 });
 

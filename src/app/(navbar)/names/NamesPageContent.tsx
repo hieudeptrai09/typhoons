@@ -2,7 +2,7 @@
 
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
-import type { RetiredName, StormHistoryEntry, SuggestionWithNameId } from "@/lib/types";
+import type { RetiredName, SuggestionWithNameId } from "@/lib/types";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import NamesView from "./_components/_views/NamesView";
@@ -15,17 +15,11 @@ import { paramsToPath, slugToParams } from "./_utils/routing";
 
 interface NamesPageContentProps {
   allNames: RetiredName[] | null;
-  stormHistory: StormHistoryEntry[];
   suggestedNames: SuggestionWithNameId[];
   displayPrefs: NamesDisplayPrefs;
 }
 
-const NamesPageContent = ({
-  allNames,
-  stormHistory,
-  suggestedNames,
-  displayPrefs,
-}: NamesPageContentProps) => {
+const NamesPageContent = ({ allNames, suggestedNames, displayPrefs }: NamesPageContentProps) => {
   const { slug } = useParams<{ slug: string[] }>();
   const params = slugToParams(slug);
 
@@ -69,7 +63,6 @@ const NamesPageContent = ({
       ) : (
         <NamesView
           allNames={allNames}
-          stormHistory={stormHistory}
           viewMode={params.view}
           showName={params.view === "grid" && params.showName}
           showHistory={params.showHistory}

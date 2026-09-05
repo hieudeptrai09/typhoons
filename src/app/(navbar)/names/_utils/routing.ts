@@ -30,10 +30,6 @@ export const slugToParams = (slug: string[]): NamesSlugParams => {
   return { view: "grid", showName: true, showHistory: false };
 };
 
-// Retired has no scope of its own, so the tabs treat it as neither current nor history.
-export const isHistoryScope = (params: NamesSlugParams): boolean =>
-  params.view !== "retired" && params.showHistory;
-
 export const paramsToPath = (params: NamesSlugParams): string => {
   if (params.view === "retired") return "/names/retired/";
 

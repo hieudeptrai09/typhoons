@@ -1,5 +1,7 @@
 import type { IntensityType, Storm } from "@/lib/types";
 import { BACKGROUND_BADGE, EMPTY_POSITION_CELL_CLASS, TEXT_COLOR_BADGE } from "@/lib/utils/colors";
+import { infoHref } from "@/lib/utils/links";
+import Link from "next/link";
 import PositionCellGrid from "./PositionCellGrid";
 
 interface IntensityGridProps {
@@ -37,10 +39,17 @@ const IntensityGrid = ({ stormsData, intensityStorms, intensity }: IntensityGrid
         content: (
           <div className="flex flex-col items-center gap-1">
             {groupYearsByName(positionStorms).map(({ name, years }) => (
-              <div key={name} className="flex flex-col items-center">
-                <div className="text-xs font-bold text-center">{name}</div>
-                <div className="text-[11px] text-center">({years.join(", ")})</div>
-              </div>
+              <Link
+                key={name}
+                href={infoHref(name)}
+                scroll={false}
+                aria-label={`View details for ${name}`}
+                // The cell paints the badge colour; the link keeps it rather than Ant's link blue.
+                className="flex min-h-11 flex-col items-center justify-center text-center text-inherit md:min-h-0"
+              >
+                <span className="text-xs font-bold">{name}</span>
+                <span className="text-[11px]">({years.join(", ")})</span>
+              </Link>
             ))}
           </div>
         ),

@@ -168,7 +168,7 @@ interface PositionNameGridProps {
   showHistory: boolean;
   colorfulHistory?: boolean;
   onNameClick: (name: TyphoonName) => void;
-  onCellClick: (position: number, names: TyphoonName[]) => void;
+  onCellClick: (position: number) => void;
 }
 
 const PositionNameGrid = ({
@@ -192,6 +192,9 @@ const PositionNameGrid = ({
         renderCell={(position, _row, col) => {
           const positionNames = namesByPosition[position] ?? [];
           const isEmpty = positionNames.length === 0;
+          const openPosition = () => {
+            if (!isEmpty) onCellClick(position);
+          };
 
           return (
             <td
@@ -202,14 +205,8 @@ const PositionNameGrid = ({
               role={!isEmpty ? "button" : ""}
               tabIndex={!isEmpty ? 0 : -1}
               aria-label={`Position ${position}`}
-              onClick={() => {
-                if (positionNames.length === 0) return;
-                onCellClick(position, positionNames);
-              }}
-              onKeyDown={onEnterKeyDown(() => {
-                if (positionNames.length === 0) return;
-                onCellClick(position, positionNames);
-              })}
+              onClick={openPosition}
+              onKeyDown={onEnterKeyDown(openPosition)}
             >
               <CellContent
                 names={positionNames}

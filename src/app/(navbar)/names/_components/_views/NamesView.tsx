@@ -1,14 +1,12 @@
 import LetterNavigation from "@/lib/components/LetterNavigation";
-import { defaultTyphoonName } from "@/lib/constants";
-import type { FilterParams, StormHistoryEntry, TyphoonName } from "@/lib/types";
+import type { FilterParams, TyphoonName } from "@/lib/types";
+import { infoHref, positionHref } from "@/lib/utils/links";
 import { toArr } from "@/lib/utils/params";
 import { Badge, Button, Segmented } from "antd";
 import { CaseUpper, Filter, LayoutGrid, List, Tag } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import HistoryModal from "../_modals/HistoryModal";
 import ListFilterModal from "../_modals/ListFilterModal";
-import NameDetailsModal from "../_modals/NameDetailsModal";
 import FilteredNamesTable from "../_widgets/FilteredNamesTable";
 import PositionNameGrid from "../_widgets/PositionNameGrid";
 import SlashToggleButton from "../_widgets/SlashToggleButton";
@@ -48,7 +46,6 @@ interface NameFilterValues {
 
 interface NamesViewProps {
   allNames: TyphoonName[];
-  stormHistory: StormHistoryEntry[];
   viewMode: "grid" | "list";
   showName: boolean;
   showHistory: boolean;
@@ -108,14 +105,7 @@ const getFirstAvailableLetter = (letterStatusMap: Record<string, [boolean, boole
   return allLetters.find((letter) => letterStatusMap[letter]?.[0]) ?? "A";
 };
 
-const NamesView = ({
-  allNames,
-  stormHistory,
-  viewMode,
-  showName,
-  showHistory,
-  displayPrefs,
-}: NamesViewProps) => {
+const NamesView = ({ allNames, viewMode, showName, showHistory, displayPrefs }: NamesViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -138,23 +128,8 @@ const NamesView = ({
 
   const [prefs, setPrefs] = useState<NamesDisplayPrefs>(displayPrefs);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [selectedName, setSelectedName] = useState<TyphoonName>(defaultTyphoonName);
-  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
-  const [historyPosition, setHistoryPosition] = useState<number>(0);
-  const [historyPositionNames, setHistoryPositionNames] = useState<TyphoonName[]>([]);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
   const selectedStatus = showHistory ? searchParams.get("status") || "" : "current";
-
-  const stormsByPosition = useMemo(
-    () =>
-      stormHistory.reduce<Record<number, StormHistoryEntry[]>>((acc, storm) => {
-        if (!acc[storm.position]) acc[storm.position] = [];
-        acc[storm.position].push(storm);
-        return acc;
-      }, {}),
-    [stormHistory],
-  );
 
   const countries = useMemo(() => [...new Set(allNames.map((n) => n.country))].sort(), [allNames]);
   const languages = useMemo(
@@ -291,19 +266,15 @@ const NamesView = ({
     router.push(paramsToPath({ view: "grid", showName: !showName, showHistory }));
   };
 
+  // Both drill-downs are routes rather than local modals: /info and /positions render as
+  // intercepted modals over this page, so a name reads the same here as it does from search.
   const handleNameClick = (name: TyphoonName) => {
-    setSelectedName(name);
-    setIsNameModalOpen(true);
+    router.push(infoHref(name.name), { scroll: false });
   };
 
-  const handleCellClick = (position: number, names: TyphoonName[]) => {
-    if (showHistory) {
-      setHistoryPosition(position);
-      setHistoryPositionNames(names);
-      setIsHistoryModalOpen(true);
-    } else {
-      if (names.length > 0) handleNameClick(names[0]);
-    }
+  // The cell is the position, whichever scope is showing — the names inside it are their own targets.
+  const handleCellClick = (position: number) => {
+    router.push(positionHref(position), { scroll: false });
   };
 
   const getLetterConfig = (letter: string) => {
@@ -398,21 +369,6 @@ const NamesView = ({
           status: selectedStatus,
           letter: "",
         }}
-      />
-
-      <NameDetailsModal
-        isOpen={isNameModalOpen}
-        name={selectedName}
-        hideReplacedBy
-        onClose={() => setIsNameModalOpen(false)}
-      />
-
-      <HistoryModal
-        isOpen={isHistoryModalOpen}
-        position={historyPosition}
-        positionNames={historyPositionNames}
-        storms={stormsByPosition[historyPosition] ?? []}
-        onClose={() => setIsHistoryModalOpen(false)}
       />
     </>
   );

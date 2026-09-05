@@ -3,9 +3,12 @@ import DefTable from "@/lib/components/DefTable";
 import IntensityBadge from "@/lib/components/IntensityBadge";
 import { SORTING_RANK } from "@/lib/constants";
 import type { IntensityType, Storm } from "@/lib/types";
+import { clickableRowProps } from "@/lib/utils/a11y";
 import { parseStormDate } from "@/lib/utils/date";
+import { infoHref } from "@/lib/utils/links";
 import { getPositionTitle } from "@/lib/utils/position";
 import type { ColumnsType } from "antd/es/table";
+import { useRouter } from "next/navigation";
 
 interface StormRow {
   name: string;
@@ -100,14 +103,23 @@ interface StormRowsTableProps {
   showIntensity?: boolean;
 }
 
-const StormRowsTable = ({ storms, tableKey, showIntensity = true }: StormRowsTableProps) => (
-  <DefTable<StormRow>
-    maxWidth={showIntensity ? "max-w-2xl" : "max-w-xl"}
-    tableKey={tableKey}
-    dataSource={storms.map(toRow)}
-    columns={buildColumns(showIntensity)}
-    rowKey={(r) => `${r.name}-${r.year}`}
-  />
-);
+const StormRowsTable = ({ storms, tableKey, showIntensity = true }: StormRowsTableProps) => {
+  const router = useRouter();
+
+  return (
+    <DefTable<StormRow>
+      maxWidth={showIntensity ? "max-w-2xl" : "max-w-xl"}
+      tableKey={tableKey}
+      dataSource={storms.map(toRow)}
+      columns={buildColumns(showIntensity)}
+      rowKey={(r) => `${r.name}-${r.year}`}
+      onRow={(row) =>
+        clickableRowProps(`View details for ${row.name}`, () =>
+          router.push(infoHref(row.name), { scroll: false }),
+        )
+      }
+    />
+  );
+};
 
 export default StormRowsTable;

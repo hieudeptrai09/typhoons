@@ -10,6 +10,7 @@ import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import PageHeader from "@/lib/components/PageHeader";
 import type { SearchResult } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
+import { infoHref } from "@/lib/utils/links";
 import { Empty } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, SearchX } from "lucide-react";
@@ -138,9 +139,7 @@ export default function SearchPageContent({
                 }
                 onRow={(record) =>
                   clickableRowProps(`View details for ${record.name}`, () =>
-                    router.push(`/info/${encodeURIComponent(record.name.toLowerCase())}/`, {
-                      scroll: false,
-                    }),
+                    router.push(infoHref(record.name), { scroll: false }),
                   )
                 }
               />
