@@ -1,9 +1,9 @@
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
+import { calculateAvgDatesByGroup, formatDayOfYear, getDoyMonth } from "@/lib/utils/stormDates";
 import { useMemo, type ReactNode } from "react";
 import NamesGrid from "../_grids/NamesGrid";
 import SpecialNamesListDiv from "../_widgets/SpecialNamesListDiv";
-import { calculateAvgDatesByGroup, formatDayOfYear, getDoyMonth } from "@/lib/utils/stormDates";
 
 interface AvgDateNameGridProps {
   stormsData: Storm[];
