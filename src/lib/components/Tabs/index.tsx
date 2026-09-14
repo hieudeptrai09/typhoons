@@ -56,10 +56,8 @@ const Tabs = <T extends string = string>({
               role="tabpanel"
               aria-hidden={!isActive}
               className="col-start-1 row-start-1"
-              style={{
-                visibility: isActive ? "visible" : "hidden",
-                pointerEvents: isActive ? "auto" : "none",
-              }}
+              // Active panels inherit so a nested Tabs stays hidden inside an inactive outer panel.
+              style={isActive ? undefined : { visibility: "hidden", pointerEvents: "none" }}
             >
               {tab.content}
             </div>
