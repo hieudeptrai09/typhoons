@@ -1,11 +1,11 @@
 import EmptyResults from "@/lib/components/EmptyResults";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
+import { NAMING_LIST_FIRST_YEAR } from "@/lib/constants";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { formatMonthDay, monthDayOf, parseMonthDay, todayISO } from "@/lib/utils/date";
 import { CalendarSearch } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
-import CalendarSeasonModal, { type CalendarSeasonKind } from "../_modals/CalendarSeasonModal";
 import SeasonMonthsModal from "../_modals/SeasonMonthsModal";
 import CalendarDateBar from "../_widgets/CalendarDateBar";
 import {
@@ -14,11 +14,10 @@ import {
   getStormEnds,
   getStormStarts,
   groupBySeason,
-  NAMING_LIST_FIRST_YEAR,
-  type SeasonGroup,
+  type CalendarSeasonKind,
   type SeasonToDateRow,
 } from "../../_utils/calendar";
-import CalendarSeasonTable from "./CalendarSeasonTable";
+import CalendarSeasonList from "./CalendarSeasonList";
 import SeasonToDateTable from "./SeasonToDateTable";
 
 interface CalendarViewProps {
@@ -50,7 +49,6 @@ const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
   const today = useSyncExternalStore(subscribeToToday, getTodayMonthDay, getNoServerDate);
   const monthDay = urlMonthDay ?? today;
 
-  const [openSeason, setOpenSeason] = useState<SeasonGroup | null>(null);
   const [openPace, setOpenPace] = useState<SeasonToDateRow | null>(null);
 
   const seasons = useMemo(() => {
@@ -95,16 +93,10 @@ const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
     if (params.filter === "todate") {
       return <SeasonToDateTable rows={paceRows} onSeasonClick={setOpenPace} />;
     }
-    if (seasons.length === 0) {
+    if (seasons.length === 0 || !isSeasonKind(params.filter)) {
       return <EmptyResults description={emptyDescriptions[params.filter]} icon={CalendarSearch} />;
     }
-    return (
-      <CalendarSeasonTable
-        seasons={seasons}
-        tableKey={`calendar-${params.filter}`}
-        onSeasonClick={setOpenSeason}
-      />
-    );
+    return <CalendarSeasonList seasons={seasons} kind={params.filter} monthDay={monthDay} />;
   };
 
   return (
@@ -117,14 +109,6 @@ const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
       />
 
       {renderResults()}
-
-      <CalendarSeasonModal
-        isOpen={openSeason !== null}
-        onClose={() => setOpenSeason(null)}
-        season={openSeason}
-        kind={isSeasonKind(params.filter) ? params.filter : "started"}
-        monthDay={monthDay}
-      />
 
       <SeasonMonthsModal
         isOpen={openPace !== null}

@@ -1,4 +1,5 @@
 import { BookText, CloudLightning } from "lucide-react";
+import BrowseDropdown from "./BrowseDropdown";
 import NavLink from "./NavLink";
 
 interface DesktopNavProps {
@@ -20,6 +21,7 @@ const DesktopNav = ({ currentPath }: DesktopNavProps) => {
         label="Names"
         isActive={currentPath.startsWith("/names")}
       />
+      <BrowseDropdown currentPath={currentPath} />
     </div>
   );
 };

@@ -83,6 +83,8 @@ export interface RetiredFilterParams {
 
 export interface DashboardParams {
   view: string;
+  // "" for the views without tabs (all, calendar).
+  tab: string;
   mode: string;
   filter: string;
 }

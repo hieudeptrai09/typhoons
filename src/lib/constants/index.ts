@@ -2,6 +2,9 @@ import type { IntensityType, RetiredName, TyphoonName } from "@/lib/types";
 
 export const TITLE_COMMON = "Cá Tra's Typhoons App";
 
+// The shared naming list, and so the reliably dated seasons, start here.
+export const NAMING_LIST_FIRST_YEAR = 2000;
+
 export const SORTING_RANK: Record<IntensityType, number> = {
   5: 5,
   4: 4,

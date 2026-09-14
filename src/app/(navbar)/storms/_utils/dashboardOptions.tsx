@@ -7,6 +7,7 @@ import {
   ArrowDownToLine,
   CalendarRange,
   CalendarSearch,
+  ChartColumn,
   CloudLightning,
   Gauge,
   Globe,
@@ -15,46 +16,43 @@ import {
   MapPin,
   Medal,
   Moon,
+  Pause,
   Play,
   Repeat,
   Sigma,
-  Square,
   Star,
   Sun,
   Tag,
+  Trophy,
   Waves,
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-export const DASHBOARD_ICON_MAP: Record<string, Record<string, LucideIcon>> = {
-  view: {
-    all: CloudLightning,
-    highlights: Star,
-    intensity: Gauge,
-    average: Activity,
-    recurrence: Repeat,
-    avgdate: CalendarRange,
-    calendar: CalendarSearch,
-  },
-  filter: {
-    strongest: Zap,
-    first: Medal,
-    last: ArrowDownToLine,
-    position: MapPin,
-    name: Tag,
-    country: Globe,
-    year: Sun,
-    month: Moon,
-    started: Play,
-    ended: Square,
-    active: Waves,
-    todate: Sigma,
-  },
-  mode: {
-    table: Grid3x3,
-    list: List,
-  },
+export interface NavOption {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+export const VIEW_OPTIONS: NavOption[] = [
+  { key: "all", label: "Storms", icon: CloudLightning },
+  { key: "records", label: "Records", icon: Trophy },
+  { key: "stats", label: "Stats", icon: ChartColumn },
+  { key: "calendar", label: "Calendar", icon: CalendarSearch },
+];
+
+// Stats reuses the Avg. Intensity / Avg. Dates / Avg. Gap wording of the detail pages' Stats tab.
+export const TAB_OPTIONS: Record<string, NavOption[]> = {
+  records: [
+    { key: "season", label: "Season Records", icon: Star },
+    { key: "category", label: "By Category", icon: Gauge },
+  ],
+  stats: [
+    { key: "intensity", label: "Avg. Intensity", icon: Activity },
+    { key: "dates", label: "Avg. Dates", icon: CalendarRange },
+    { key: "gap", label: "Avg. Gap", icon: Repeat },
+  ],
 };
 
 const icon = (Icon: LucideIcon, label: string) => (
@@ -80,32 +78,33 @@ export const MODE_OPTIONS = [
   { label: icon(List, "List"), value: "list" },
 ];
 
+// Keyed by panel (see getPanel): the tab where the view has tabs, else the view.
 export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: string }[]> = {
   all: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],
-  highlights: [
+  season: [
     { label: icon(Zap, "Strongest"), value: "strongest" },
     { label: icon(Medal, "First"), value: "first" },
     { label: icon(ArrowDownToLine, "Last"), value: "last" },
   ],
-  intensity: INTENSITIES_BY_STRENGTH.map((intensity) => ({
+  category: INTENSITIES_BY_STRENGTH.map((intensity) => ({
     label: intensityChip(intensity),
     value: getIntensitySlug(intensity),
   })),
-  average: [
+  intensity: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
     { label: icon(Globe, "Country"), value: "country" },
     { label: icon(Sun, "Year"), value: "year" },
     { label: icon(Moon, "Month"), value: "month" },
   ],
-  recurrence: [
+  gap: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
   ],
-  avgdate: [
+  dates: [
     { label: icon(MapPin, "Position"), value: "position" },
     { label: icon(Tag, "Name"), value: "name" },
     { label: icon(Globe, "Country"), value: "country" },
@@ -113,7 +112,7 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
   ],
   calendar: [
     { label: icon(Play, "Started"), value: "started" },
-    { label: icon(Square, "Ended"), value: "ended" },
+    { label: icon(Pause, "Ended"), value: "ended" },
     { label: icon(Waves, "Active"), value: "active" },
     { label: icon(Sigma, "So Far"), value: "todate" },
   ],
@@ -121,8 +120,8 @@ export const FILTER_OPTIONS: Record<string, { label: React.ReactNode; value: str
 
 // "Group by" is wrong where the chips pick one slice of the data rather than a grouping.
 const FILTER_LABELS: Record<string, string> = {
-  intensity: "Intensity",
+  category: "Intensity",
   calendar: "Show",
 };
 
-export const getFilterLabel = (view: string): string => FILTER_LABELS[view] ?? "Group by";
+export const getFilterLabel = (panel: string): string => FILTER_LABELS[panel] ?? "Group by";

@@ -3,26 +3,25 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
+import NameGroupHeader from "@/lib/components/NameGroupHeader";
+import PagePagination from "@/lib/components/PagePagination";
+import StatisticsSection from "@/lib/components/StatisticsSection";
 import StormCard from "@/lib/components/StormCard";
-import StormStats from "@/lib/components/StormStats";
 import type { PositionDetail, RetiredName, Storm, TyphoonName } from "@/lib/types";
 import {
-  BACKGROUND_BADGE,
-  getDistanceColor,
   getNameStatusColor,
   getNameStatusColorClass,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
+import { getCountrySlug } from "@/lib/utils/country";
 import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
 import {
   calculateAverage,
-  calculateGapAverage,
-  formatDistance,
   getGroupedStorms,
   getIntensityFromNumber,
   sortNamesByFirstYear,
 } from "@/lib/utils/storms";
-import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
 
 interface PositionPageContentProps {
   detail: PositionDetail | null;
@@ -38,30 +37,21 @@ function PositionPagination({ position }: { position: number }) {
   const prevPosition = isFirst ? TOTAL_POSITIONS : position - 1;
   const nextPosition = isLast ? 1 : position + 1;
 
-  const linkClass = (isWrap: boolean) =>
-    `flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-semibold text-white transition-colors ${
-      isWrap
-        ? "border-gray-500 bg-gray-500 hover:border-slate-600 hover:bg-slate-600"
-        : "border-sky-700 bg-sky-700 hover:border-sky-800 hover:bg-sky-800"
-    }`;
-
   return (
-    <nav
-      className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
-      aria-label="Position pagination"
-    >
-      <a href={`/positions/${getPositionSlug(prevPosition)}`} className={linkClass(isFirst)}>
-        <ChevronLeft className="h-4 w-4" />
-        {getPositionTitle(prevPosition)}
-      </a>
-      <span className="text-sm text-foreground">
-        {position} / {TOTAL_POSITIONS}
-      </span>
-      <a href={`/positions/${getPositionSlug(nextPosition)}`} className={linkClass(isLast)}>
-        {getPositionTitle(nextPosition)}
-        <ChevronRight className="h-4 w-4" />
-      </a>
-    </nav>
+    <PagePagination
+      ariaLabel="Position pagination"
+      prev={{
+        href: `/positions/${getPositionSlug(prevPosition)}`,
+        label: getPositionTitle(prevPosition),
+        isWrap: isFirst,
+      }}
+      next={{
+        href: `/positions/${getPositionSlug(nextPosition)}`,
+        label: getPositionTitle(nextPosition),
+        isWrap: isLast,
+      }}
+      current={`${position} / ${TOTAL_POSITIONS}`}
+    />
   );
 }
 
@@ -183,69 +173,25 @@ function StormsSection({ storms }: { storms: Storm[] }) {
   }
 
   const nameGroups = sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
-    ([name, group]) => {
-      const sorted = [...group].sort((a, b) => a.year - b.year);
-      return {
-        name,
-        storms: sorted,
-        average: calculateAverage(sorted),
-        count: sorted.length,
-        recurrence: calculateGapAverage(sorted),
-      };
-    },
+    ([name, group]) => ({ name, storms: [...group].sort((a, b) => a.year - b.year) }),
   );
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
       <div className="space-y-6">
-        <StormStats storms={storms} />
-
-        {nameGroups.map((group) => {
-          const intensityLabel = getIntensityFromNumber(group.average);
-          return (
-            <div key={group.name}>
-              <div
-                className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-md bg-slate-50 px-3 py-2"
-                style={{ borderLeft: `4px solid ${BACKGROUND_BADGE[intensityLabel]}` }}
-              >
-                <span className="font-semibold text-foreground">{group.name}</span>
-                <div className="flex flex-wrap gap-3 text-sm text-foreground">
-                  <span>
-                    Count: <span className="font-semibold text-foreground">{group.count}</span>
-                  </span>
-                  <span>
-                    Avg:{" "}
-                    <span
-                      className="font-semibold"
-                      style={{ color: TEXT_COLOR_WHITE_BACKGROUND[intensityLabel] }}
-                    >
-                      {group.average.toFixed(2)}
-                    </span>
-                  </span>
-                  {/* A lone storm leaves no gap to measure, so the stat is left off entirely. */}
-                  {group.recurrence >= 0 && (
-                    <span>
-                      Every:{" "}
-                      <span
-                        className="font-semibold"
-                        style={{ color: getDistanceColor(group.recurrence) }}
-                      >
-                        {formatDistance(group.recurrence)}
-                      </span>{" "}
-                      yrs
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {group.storms.map((storm, idx) => (
-                  <StormCard key={idx} storm={storm} />
-                ))}
-              </div>
+        {nameGroups.map((group) => (
+          <div key={group.name}>
+            <div className="mb-3">
+              <NameGroupHeader label={group.name} storms={group.storms} />
             </div>
-          );
-        })}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {group.storms.map((storm, idx) => (
+                <StormCard key={idx} storm={storm} />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -277,11 +223,19 @@ export default function PositionPageContent({
         <h1 className="text-3xl font-bold" style={{ color: titleColor }}>
           {positionTitle}
         </h1>
-        {position <= 140 && <span className="text-base text-foreground">{country}</span>}
+        {position <= 140 && (
+          <a
+            href={`/countries/${getCountrySlug(country)}`}
+            className="text-base text-foreground hover:text-sky-700 hover:underline"
+          >
+            {country}
+          </a>
+        )}
       </div>
 
       <div className="space-y-6">
         {position <= 140 && <NamesSection names={names} storms={storms} />}
+        <StatisticsSection storms={storms} />
         <StormsSection storms={storms} />
       </div>
 

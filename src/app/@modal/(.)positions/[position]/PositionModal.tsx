@@ -6,23 +6,17 @@ import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
 import ImageCredit from "@/lib/components/ImageCredit";
 import ImageWithLoader from "@/lib/components/ImageWithLoader";
-import StormStats from "@/lib/components/StormStats";
+import NameGroupHeader from "@/lib/components/NameGroupHeader";
+import StormStatistics from "@/lib/components/StormStatistics";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import ZoomEarth from "@/lib/components/ZoomEarth";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { PositionDetail, Storm, TyphoonName } from "@/lib/types";
-import {
-  BACKGROUND_BADGE,
-  getDistanceColor,
-  getNameStatusColorClass,
-  TEXT_COLOR_WHITE_BACKGROUND,
-} from "@/lib/utils/colors";
+import { getNameStatusColorClass, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { formatStormDateRange } from "@/lib/utils/date";
 import { getPositionTitle } from "@/lib/utils/position";
 import {
   calculateAverage,
-  calculateGapAverage,
-  formatDistance,
   getGroupedStorms,
   getIntensityFromNumber,
   sortNamesByFirstYear,
@@ -38,7 +32,7 @@ interface PositionModalProps {
   isError?: boolean;
 }
 
-type TabType = "names" | "storms";
+type TabType = "names" | "storms" | "stats";
 
 function Carousel({ slides }: { slides: ReactNode[] }) {
   if (slides.length === 0) return null;
@@ -145,12 +139,6 @@ export default function PositionModal({ detail, position, isError = false }: Pos
 
   const stormsPanel = (
     <div>
-      {storms.length > 0 && (
-        <div className="mb-4 space-y-3">
-          <span className="text-lg font-bold text-foreground">All Storms ({storms.length})</span>
-          <StormStats storms={storms} />
-        </div>
-      )}
       {storms.length === 0 ? (
         <p className="py-4 text-center text-foreground">No storms recorded at this position.</p>
       ) : (
@@ -158,47 +146,10 @@ export default function PositionModal({ detail, position, isError = false }: Pos
           {sortNamesByFirstYear(Object.entries(getGroupedStorms(storms, "name"))).map(
             ([name, group]) => {
               const sorted = [...group].sort((a, b) => a.year - b.year);
-              const average = calculateAverage(sorted);
-              const groupIntensity = getIntensityFromNumber(average);
-              const recurrence = calculateGapAverage(sorted);
               return (
                 <div key={name}>
-                  <div
-                    className="mb-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 rounded-md bg-slate-50 py-2 pr-4 pl-3"
-                    style={{
-                      borderLeftWidth: 4,
-                      borderLeftColor: BACKGROUND_BADGE[groupIntensity],
-                    }}
-                  >
-                    <span className="font-semibold text-foreground">{name}</span>
-                    <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground">
-                      <span>
-                        Count:{" "}
-                        <span className="font-semibold text-foreground">{sorted.length}</span>
-                      </span>
-                      <span title={INTENSITY_LABEL[groupIntensity]}>
-                        Avg:{" "}
-                        <span
-                          className="font-bold"
-                          style={{ color: TEXT_COLOR_WHITE_BACKGROUND[groupIntensity] }}
-                        >
-                          {average.toFixed(2)}
-                        </span>
-                      </span>
-                      {/* A lone storm leaves no gap to measure, so the stat is left off entirely. */}
-                      {recurrence >= 0 && (
-                        <span>
-                          Every:{" "}
-                          <span
-                            className="font-bold"
-                            style={{ color: getDistanceColor(recurrence) }}
-                          >
-                            {formatDistance(recurrence)}
-                          </span>{" "}
-                          yrs
-                        </span>
-                      )}
-                    </span>
+                  <div className="mb-2">
+                    <NameGroupHeader label={name} storms={sorted} />
                   </div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {sorted.map((storm, idx) => (
@@ -243,6 +194,13 @@ export default function PositionModal({ detail, position, isError = false }: Pos
       },
       { key: "storms", label: `Storms (${storms.length})`, content: stormsPanel },
     ];
+    if (storms.length > 0) {
+      tabs.push({
+        key: "stats",
+        label: "Stats",
+        content: <StormStatistics storms={storms} idPrefix="position-modal-stats" />,
+      });
+    }
 
     content = (
       <div className="pt-4">

@@ -7,6 +7,7 @@ import {
   getSeasonMonths,
   getSeasonToDate,
   getStormEnds,
+  getStormEvent,
   getStormStarts,
   groupBySeason,
   hasStartedBy,
@@ -150,6 +151,27 @@ describe("getDayOfStorm", () => {
 
   it("leaves an ongoing storm without a total", () => {
     expect(getDayOfStorm(storm({ dateStart: "2024-08-31" }), "09-02").total).toBeNull();
+  });
+});
+
+describe("getStormEvent", () => {
+  const yagi = storm({ year: 2024, dateStart: "2024-08-31", dateEnd: "2024-09-09" });
+
+  it("reads what the storm did that day, not which tab lists it", () => {
+    expect(getStormEvent(yagi, "active", "08-31")).toBe("started");
+    expect(getStormEvent(yagi, "active", "09-09")).toBe("ended");
+    expect(getStormEvent(yagi, "active", "09-04")).toBe("ongoing");
+  });
+
+  it("never marks an ongoing storm as ended", () => {
+    expect(getStormEvent(storm({ dateStart: "2024-08-31" }), "active", "09-02")).toBe("ongoing");
+  });
+
+  it("lets the tab break the tie for a storm that formed and dissipated the same day", () => {
+    const oneDay = storm({ dateStart: "2024-08-31", dateEnd: "2024-08-31" });
+    expect(getStormEvent(oneDay, "started", "08-31")).toBe("started");
+    expect(getStormEvent(oneDay, "active", "08-31")).toBe("started");
+    expect(getStormEvent(oneDay, "ended", "08-31")).toBe("ended");
   });
 });
 

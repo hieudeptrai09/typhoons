@@ -2,12 +2,13 @@ import CountryFlag from "@/lib/components/CountryFlag";
 import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
+import PagePagination from "@/lib/components/PagePagination";
+import StatisticsSection from "@/lib/components/StatisticsSection";
 import StormCard from "@/lib/components/StormCard";
-import StormStats from "@/lib/components/StormStats";
 import type { RetiredName, RetirementReason, SearchDetail, Storm, TyphoonName } from "@/lib/types";
 import { getNameStatusBgClass, getNameStatusColorClass } from "@/lib/utils/colors";
+import { getCountrySlug } from "@/lib/utils/country";
 import { isExternalPosition } from "@/lib/utils/position";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface InfoPageContentProps {
   detail: SearchDetail | null;
@@ -66,24 +67,19 @@ function InfoPagination({ names, currentIndex }: { names: string[]; currentIndex
   const prevName = names[isFirst ? names.length - 1 : currentIndex - 1];
   const nextName = names[isLast ? 0 : currentIndex + 1];
 
-  const linkClass =
-    "flex items-center gap-1 rounded-lg border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-sky-800 hover:bg-sky-800";
-
   return (
-    <nav
-      className="mt-6 flex items-center justify-between border-t border-slate-200 pt-6"
-      aria-label="Name pagination"
-    >
-      <a href={`/info/${prevName.toLowerCase()}`} className={linkClass}>
-        <ChevronLeft className="h-4 w-4" />
-        <span className="capitalize">{prevName.toLowerCase()}</span>
-      </a>
-      <span className="text-sm text-foreground">{names[currentIndex]}</span>
-      <a href={`/info/${nextName.toLowerCase()}`} className={linkClass}>
-        <span className="capitalize">{nextName.toLowerCase()}</span>
-        <ChevronRight className="h-4 w-4" />
-      </a>
-    </nav>
+    <PagePagination
+      ariaLabel="Name pagination"
+      prev={{
+        href: `/info/${prevName.toLowerCase()}`,
+        label: <span className="capitalize">{prevName.toLowerCase()}</span>,
+      }}
+      next={{
+        href: `/info/${nextName.toLowerCase()}`,
+        label: <span className="capitalize">{nextName.toLowerCase()}</span>,
+      }}
+      current={names[currentIndex]}
+    />
   );
 }
 
@@ -95,14 +91,10 @@ function StormsSection({ storms }: { storms: Storm[] }) {
       {storms.length === 0 ? (
         <p className="py-4 text-center text-foreground">No storms found for this name.</p>
       ) : (
-        <div className="space-y-6">
-          <StormStats storms={storms} />
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {storms.map((storm, idx) => (
-              <StormCard key={idx} storm={storm} />
-            ))}
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {storms.map((storm, idx) => (
+            <StormCard key={idx} storm={storm} />
+          ))}
         </div>
       )}
     </section>
@@ -151,7 +143,9 @@ export default function InfoPageContent({
       <div className="mb-8 flex flex-wrap items-center gap-3">
         {metaCountry &&
           (isInPosition ? (
-            <CountryFlag country={metaCountry} className="h-5 w-8" />
+            <a href={`/countries/${getCountrySlug(metaCountry)}`} aria-label={metaCountry}>
+              <CountryFlag country={metaCountry} className="h-5 w-8" />
+            </a>
           ) : (
             <span className="text-base font-semibold text-foreground">{metaCountry}</span>
           ))}
@@ -169,6 +163,7 @@ export default function InfoPageContent({
         {isInPosition && nameData && (
           <NameDetailsSection name={nameData} correctSpelling={correctSpelling} />
         )}
+        <StatisticsSection storms={storms} />
         <StormsSection storms={storms} />
       </div>
 

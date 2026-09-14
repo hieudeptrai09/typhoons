@@ -1,3 +1,4 @@
+import { NAMING_LIST_FIRST_YEAR } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
 import { daysBetween, isLeapYear, monthDayOf, parseStormDate, todayISO } from "@/lib/utils/date";
 
@@ -64,6 +65,27 @@ export const getDayOfStorm = (storm: Storm, monthDay: string): DayOfStorm => ({
   total: storm.dateEnd ? (daysBetween(storm.dateStart, storm.dateEnd) ?? 0) + 1 : null,
 });
 
+export type CalendarSeasonKind = "started" | "ended" | "active";
+
+export type StormEvent = "started" | "ended" | "ongoing";
+
+// What this storm did on the chosen date, whichever tab lists it: an active storm can have
+// formed or dissipated that very day. A one-day storm did both, so the tab breaks the tie.
+export const getStormEvent = (
+  storm: Storm,
+  kind: CalendarSeasonKind,
+  monthDay: string,
+): StormEvent => {
+  const { day, total } = getDayOfStorm(storm, monthDay);
+  const startedToday = day === 1;
+  const endedToday = total !== null && day === total;
+
+  if (startedToday && endedToday) return kind === "ended" ? "ended" : "started";
+  if (startedToday) return "started";
+  if (endedToday) return "ended";
+  return "ongoing";
+};
+
 export const hasStartedBy = (storm: Storm, monthDay: string): boolean =>
   parseStormDate(storm.dateStart).year < storm.year || monthDayOf(storm.dateStart) <= monthDay;
 
@@ -106,8 +128,6 @@ export interface SeasonToDateRow {
   total: number;
   storms: Storm[];
 }
-
-export const NAMING_LIST_FIRST_YEAR = 2000;
 
 const isJmaNumbered = (storm: Storm): boolean => storm.jmaNumber !== undefined;
 

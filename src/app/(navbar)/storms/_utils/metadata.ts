@@ -1,7 +1,8 @@
 import { INTENSITY_LABEL } from "@/lib/constants";
+import type { DashboardParams } from "@/lib/types";
 import { capitalize } from "@/lib/utils/format";
 import { intensityFromSlug } from "@/lib/utils/intensity";
-import { normalizeParam } from "@/lib/utils/params";
+import { getPanel } from "./routing";
 
 // Every intensity label pluralizes with a plain "s": "Category 5 Super Typhoons", "Monsoon Depressions".
 const intensityTitle = (filter: string): string => {
@@ -31,44 +32,34 @@ const CALENDAR_TITLES: Record<string, string> = {
   todate: "Season Pace by Date",
 };
 
-export const getDashboardTitle = (
-  view: string | string[] | undefined,
-  mode: string | string[] | undefined,
-  filter: string | string[] | undefined,
-): string => {
-  const viewStr = normalizeParam(view) || "all";
-  const filterStr = normalizeParam(filter);
+export const getDashboardTitle = (params: DashboardParams): string => {
+  const { filter } = params;
 
-  const viewTitles: Record<string, string> = {
-    all: filterStr === "position" ? "All Storms by Position" : "All Storms by Name",
-    highlights: `${capitalize(filterStr)} Typhoons by Position`,
-    intensity: intensityTitle(filterStr),
-    average: `Average Intensity by ${capitalize(filterStr)}`,
-    recurrence: `Average Storm Recurrence by ${capitalize(filterStr)}`,
-    avgdate: `Average Storm Dates by ${capitalize(filterStr)}`,
-    calendar: CALENDAR_TITLES[filterStr] ?? "Storms by Calendar Date",
+  const panelTitles: Record<string, string> = {
+    all: filter === "position" ? "All Storms by Position" : "All Storms by Name",
+    season: `${capitalize(filter)} Typhoons by Position`,
+    category: intensityTitle(filter),
+    intensity: `Average Intensity by ${capitalize(filter)}`,
+    gap: `Average Storm Recurrence by ${capitalize(filter)}`,
+    dates: `Average Storm Dates by ${capitalize(filter)}`,
+    calendar: CALENDAR_TITLES[filter] ?? "Storms by Calendar Date",
   };
 
-  return viewTitles[viewStr] ?? viewTitles.all;
+  return panelTitles[getPanel(params)] ?? panelTitles.all;
 };
 
-export const getDashboardDescription = (
-  view: string | string[] | undefined,
-  mode: string | string[] | undefined,
-  filter: string | string[] | undefined,
-): string => {
-  const viewStr = normalizeParam(view) || "all";
-  const modeStr = normalizeParam(mode) || "table";
-  const filterStr = normalizeParam(filter);
+export const getDashboardDescription = (params: DashboardParams): string => {
+  const panel = getPanel(params);
+  const { mode, filter: filterStr } = params;
 
-  if (viewStr === "all") {
-    if (modeStr === "list") {
+  if (panel === "all") {
+    if (mode === "list") {
       return "Browse all typhoon names used in the Western Pacific basin. Click any name to see detailed storm history, including years, intensities, and track maps.";
     }
     return "View comprehensive typhoon storm data organized by position in the naming list. Track all typhoons that have occurred in the Western Pacific basin.";
   }
 
-  if (viewStr === "highlights") {
+  if (panel === "season") {
     const highlightDescriptions: Record<string, string> = {
       strongest:
         "Explore the strongest typhoons by position - discover which names have been associated with the most powerful storms in history.",
@@ -82,14 +73,14 @@ export const getDashboardDescription = (
     );
   }
 
-  if (viewStr === "intensity") {
+  if (panel === "category") {
     return (
       INTENSITY_DESCRIPTIONS[filterStr] ||
       "Browse Western Pacific storms by the intensity they peaked at, from monsoon depressions up to Category 5 super typhoons."
     );
   }
 
-  if (viewStr === "average") {
+  if (panel === "intensity") {
     const averageDescriptions: Record<string, string> = {
       position:
         "Analyze average typhoon intensity by position in the naming list. Compare which positions tend to produce stronger or weaker storms.",
@@ -106,7 +97,7 @@ export const getDashboardDescription = (
     );
   }
 
-  if (viewStr === "recurrence") {
+  if (panel === "gap") {
     const recurrenceDescriptions: Record<string, string> = {
       position:
         "View the average number of years between consecutive storms at each naming position. Identify which slots see more or less frequent activity.",
@@ -118,7 +109,7 @@ export const getDashboardDescription = (
     );
   }
 
-  if (viewStr === "avgdate") {
+  if (panel === "dates") {
     const avgDateDescriptions: Record<string, string> = {
       position:
         "See the average start and end dates of storms at each naming position. Discover which slots tend to be active earlier or later in the typhoon season.",
@@ -133,7 +124,7 @@ export const getDashboardDescription = (
     );
   }
 
-  if (viewStr === "calendar") {
+  if (panel === "calendar") {
     const calendarDescriptions: Record<string, string> = {
       started:
         "Pick any day of the year and see which seasons had a Western Pacific storm form on it, then open a season to read off the storms themselves.",

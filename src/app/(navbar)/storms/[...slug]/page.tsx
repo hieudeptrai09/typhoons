@@ -27,11 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const dashboardParams = slugToParams(slug);
-  const { view, mode, filter } = dashboardParams;
 
-  const titleParts = getDashboardTitle(view, mode, filter);
+  const titleParts = getDashboardTitle(dashboardParams);
   const title = titleParts ? `${titleParts} | Dashboard` : "Dashboard";
-  const description = getDashboardDescription(view, mode, filter);
+  const description = getDashboardDescription(dashboardParams);
 
   return {
     title: title,

@@ -24,7 +24,7 @@ import IntensityView from "./_components/_views/IntensityView";
 import StormsView from "./_components/_views/StormsView";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
 import { getDashboardTitle } from "./_utils/metadata";
-import { paramsToPath, slugToParams } from "./_utils/routing";
+import { getPanel, paramsToPath, slugToParams } from "./_utils/routing";
 import { getEffectiveMonth } from "./_utils/stats";
 
 interface SelectedData {
@@ -52,10 +52,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const [selectedData, setSelectedData] = useState<SelectedData | null>(null);
 
   const currentParams: DashboardParams = slugToParams(slug);
-  const { view, mode, filter } = currentParams;
+  const { filter } = currentParams;
+  const panel = getPanel(currentParams);
 
   const averageValues =
-    view === "average" || view === "all"
+    panel === "intensity" || panel === "all"
       ? Object.fromEntries(
           Object.entries(getGroupedStorms(stormsData || [], "position")).map(
             ([position, storms]) => [Number(position), calculateAverage(storms)],
@@ -72,7 +73,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     const storms = (stormsData || []).filter((s) => s[key as keyof Storm] === data);
 
     // Storms view — name list mode: clicking a name row
-    if (view === "all" && key === "name") {
+    if (panel === "all" && key === "name") {
       const avgIntensity = calculateAverage(storms);
       setSelectedData({ name: data as string, storms, avgIntensity });
       setIsNameListModalOpen(true);
@@ -80,14 +81,14 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
     }
 
     // Storms view — any table mode (position or name grid): clicking a cell
-    if (view === "all" && key === "position") {
+    if (panel === "all" && key === "position") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
       setSelectedData({ title, storms });
       setIsDetailModalOpen(true);
       return;
     }
 
-    if (view === "average" && filter === "name") {
+    if (panel === "intensity" && filter === "name") {
       setSelectedData({
         title: String(data),
         average: calculateAverage(storms),
@@ -98,8 +99,8 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Average / month: clicking a month row opens storm detail modal
-    if (view === "average" && filter === "month") {
+    // Avg. Intensity / month: clicking a month row opens storm detail modal
+    if (panel === "intensity" && filter === "month") {
       const monthName = MONTH_NAMES[data as number];
       const monthStorms = (stormsData || []).filter(
         (s) => getEffectiveMonth(s) === (data as number),
@@ -114,16 +115,16 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
       return;
     }
 
-    // Recurrence view: clicking a position or name opens the recurrence timeline
-    if (view === "recurrence") {
+    // Avg. Gap: clicking a position or name opens the recurrence timeline
+    if (panel === "gap") {
       const title = key === "position" ? getPositionTitle(Number(data)) : String(data);
       setSelectedData({ title, storms, average: calculateGapAverage(storms) });
       setIsDistanceModalOpen(true);
       return;
     }
 
-    // Avg. Date view: clicking any grouping row opens the seasonal date modal
-    if (view === "avgdate") {
+    // Avg. Dates: clicking any grouping row opens the seasonal date modal
+    if (panel === "dates") {
       const avgDateTitles: Record<string, string> = {
         position: getPositionTitle(Number(data)),
         year: `Year ${data}`,
@@ -153,11 +154,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   }
 
   return (
-    <PageHeader title={getDashboardTitle(view, mode, filter)}>
+    <PageHeader title={getDashboardTitle(currentParams)}>
       <DashboardControlBar params={currentParams} onChange={handleApplyFilter} />
 
       {(() => {
-        switch (view) {
+        switch (panel) {
           case "all":
             return (
               <StormsView
@@ -167,11 +168,11 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 onCellClick={handleCellClick}
               />
             );
-          case "highlights":
+          case "season":
             return <HighlightsView params={currentParams} stormsData={stormsData} />;
-          case "intensity":
+          case "category":
             return <IntensityView params={currentParams} stormsData={stormsData} />;
-          case "average":
+          case "intensity":
             return (
               <AverageView
                 params={currentParams}
@@ -180,7 +181,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 onCellClick={handleCellClick}
               />
             );
-          case "recurrence":
+          case "gap":
             return (
               <DistanceView
                 params={currentParams}
@@ -188,7 +189,7 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
                 onCellClick={handleCellClick}
               />
             );
-          case "avgdate":
+          case "dates":
             return (
               <AvgDateView
                 params={currentParams}
@@ -224,7 +225,6 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
         isOpen={isAverageModalOpen}
         onClose={() => setIsAverageModalOpen(false)}
         title={selectedData?.title || ""}
-        average={selectedData?.average || 0}
         storms={selectedData?.storms || []}
         criteria={selectedData?.criteria || "position"}
       />

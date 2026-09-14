@@ -2,28 +2,21 @@ import type { DashboardParams } from "@/lib/types";
 import { Segmented } from "antd";
 import Link from "next/link";
 import {
-  DASHBOARD_ICON_MAP,
   FILTER_OPTIONS,
   getFilterLabel,
   MODE_OPTIONS,
+  TAB_OPTIONS,
+  VIEW_OPTIONS,
 } from "../../_utils/dashboardOptions";
 import {
+  getPanel,
   isGridOnly,
   isListOnly,
   paramsForFilter,
+  paramsForTab,
   paramsForView,
   paramsToPath,
 } from "../../_utils/routing";
-
-const VIEW_TABS: { key: string; label: string }[] = [
-  { key: "all", label: "Storms" },
-  { key: "highlights", label: "Highlights" },
-  { key: "intensity", label: "Intensity" },
-  { key: "average", label: "Average" },
-  { key: "recurrence", label: "Recurrence" },
-  { key: "avgdate", label: "Avg. Date" },
-  { key: "calendar", label: "Calendar" },
-];
 
 interface DashboardControlBarProps {
   params: DashboardParams;
@@ -31,17 +24,18 @@ interface DashboardControlBarProps {
 }
 
 const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => {
-  const { view, filter, mode } = params;
-  const filterOptions = FILTER_OPTIONS[view] ?? [];
+  const { view, tab, filter, mode } = params;
+  const panel = getPanel(params);
+  const filterOptions = FILTER_OPTIONS[panel] ?? [];
+  const tabOptions = TAB_OPTIONS[view] ?? [];
 
   return (
     <div className="mx-auto mb-6 flex max-w-4xl flex-col gap-4">
       <nav
         aria-label="Dashboard view"
-        className="mx-auto grid w-full max-w-3xl grid-cols-4 border-b border-gray-200 sm:grid-cols-7"
+        className="mx-auto grid w-full max-w-2xl grid-cols-4 border-b border-gray-200"
       >
-        {VIEW_TABS.map(({ key, label }) => {
-          const Icon = DASHBOARD_ICON_MAP.view[key];
+        {VIEW_OPTIONS.map(({ key, label, icon: Icon }) => {
           const isActive = view === key;
           return (
             <Link
@@ -61,16 +55,43 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
         })}
       </nav>
 
+      {/* Records and Stats split into tabs; a lighter pill row keeps them a level below the views. */}
+      {tabOptions.length > 0 && (
+        <nav
+          aria-label={`${VIEW_OPTIONS.find((option) => option.key === view)?.label} tabs`}
+          className="flex flex-wrap justify-center gap-2"
+        >
+          {tabOptions.map(({ key, label, icon: Icon }) => {
+            const isActive = tab === key;
+            return (
+              <Link
+                key={key}
+                href={paramsToPath(paramsForTab(view, key))}
+                aria-current={isActive ? "page" : undefined}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm ${
+                  isActive
+                    ? "border-sky-700 bg-sky-700 text-white"
+                    : "border-slate-300 bg-white text-foreground hover:border-sky-700 hover:text-sky-700"
+                }`}
+              >
+                <Icon size={14} className="shrink-0" aria-hidden />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-8 sm:gap-y-3">
         <div className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:gap-2.5">
           <span className="shrink-0 text-xs font-semibold tracking-widest text-foreground uppercase">
-            {getFilterLabel(view)}
+            {getFilterLabel(panel)}
           </span>
           <div className="max-w-full overflow-x-auto sm:min-w-0">
             <Segmented
               options={filterOptions}
               value={filter || filterOptions[0]?.value}
-              onChange={(v) => onChange(paramsForFilter(view, String(v), mode))}
+              onChange={(v) => onChange(paramsForFilter(params, String(v)))}
               aria-label="Select grouping option"
             />
           </div>
@@ -85,11 +106,11 @@ const DashboardControlBar = ({ params, onChange }: DashboardControlBarProps) => 
               options={MODE_OPTIONS.map((opt) => ({
                 ...opt,
                 disabled:
-                  (opt.value === "table" && isListOnly(view, filter)) ||
-                  (opt.value === "list" && isGridOnly(view, filter)),
+                  (opt.value === "table" && isListOnly(panel, filter)) ||
+                  (opt.value === "list" && isGridOnly(panel, filter)),
               }))}
               value={mode}
-              onChange={(v) => onChange({ view, filter, mode: String(v) })}
+              onChange={(v) => onChange({ ...params, mode: String(v) })}
               aria-label="Select display mode"
             />
           </div>

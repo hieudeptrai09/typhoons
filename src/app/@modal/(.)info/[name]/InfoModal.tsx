@@ -6,6 +6,7 @@ import FrownError from "@/lib/components/FrownError";
 import NameDetailsContent from "@/lib/components/NameDetailsContent";
 import NameStatusIcon from "@/lib/components/NameStatusIcon";
 import StormListContent from "@/lib/components/StormListContent";
+import StormStatistics from "@/lib/components/StormStatistics";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import type { SearchDetail } from "@/lib/types";
 import { getNameStatusColor } from "@/lib/utils/colors";
@@ -20,7 +21,7 @@ interface InfoModalProps {
   isError?: boolean;
 }
 
-type TabType = "details" | "storms";
+type TabType = "details" | "storms" | "stats";
 
 export default function InfoModal({ detail, name, isError = false }: InfoModalProps) {
   const router = useRouter();
@@ -62,6 +63,13 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
         ),
       },
     ];
+    if (storms.length > 0) {
+      tabs.push({
+        key: "stats",
+        label: "Stats",
+        content: <StormStatistics storms={storms} idPrefix="info-modal-stats" />,
+      });
+    }
 
     title = (
       <div className="flex items-center gap-2">

@@ -7,8 +7,12 @@ import {
   paramsToPath,
   slugToParams,
 } from "@/app/(navbar)/storms/_utils/routing";
+import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
 import { getNameList } from "@/lib/db/api/getNameList";
+import { getStorms } from "@/lib/db/api/getStorms";
+import { getCountrySlug } from "@/lib/utils/country";
 import { getPositionSlug } from "@/lib/utils/position";
+import { getSeasonYears } from "@/lib/utils/storms";
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://typhoons.vercel.app";
@@ -17,7 +21,7 @@ const pathDepth = (path: string): number => path.split("/").filter(Boolean).leng
 const priorityForPath = (path: string): number => (10 - pathDepth(path)) / 10;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const nameList = await getNameList();
+  const [nameList, stormList] = await Promise.all([getNameList(), getStorms()]);
 
   const stormsPages: MetadataRoute.Sitemap = getCanonicalStormsSlugs().map((slug) => {
     const path = paramsToPath(slugToParams(slug));
@@ -59,6 +63,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
+  const indexPages: MetadataRoute.Sitemap = ["/info/", "/positions/", "/countries/", "/years/"].map(
+    (path) => ({
+      url: `${BASE_URL}${path}`,
+      lastModified: new Date("2026-09-14"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }),
+  );
+
+  const countryPages: MetadataRoute.Sitemap = COUNTRY_NAMES.map((country) => ({
+    url: `${BASE_URL}/countries/${getCountrySlug(country)}/`,
+    lastModified: new Date("2026-09-14"),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const yearPages: MetadataRoute.Sitemap = getSeasonYears(stormList?.data ?? []).map((year) => ({
+    url: `${BASE_URL}/years/${year}/`,
+    lastModified: new Date("2026-09-14"),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   return [
     {
       url: BASE_URL,
@@ -67,8 +94,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     ...stormsPages,
+    ...indexPages,
     ...namesPages,
     ...infoPages,
     ...positionPages,
+    ...countryPages,
+    ...yearPages,
   ];
 }

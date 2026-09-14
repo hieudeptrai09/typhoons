@@ -1,3 +1,4 @@
+import AverageFormulaPopover from "@/lib/components/AverageFormulaPopover";
 import StatTile from "@/lib/components/StatTile";
 import { INTENSITY_LABEL } from "@/lib/constants";
 import type { Storm } from "@/lib/types";
@@ -20,7 +21,13 @@ const DatePart = ({ doy }: { doy: number }) => (
   <span style={{ color: getAvgDateColor(getDoyMonth(doy)) }}>{formatDayOfYear(doy)}</span>
 );
 
-const StormStats = ({ storms }: { storms: Storm[] }) => {
+interface StormStatsProps {
+  storms: Storm[];
+  // Recurrence only means something for one name or slot; a season or a country has many storms a year.
+  showRecurrence?: boolean;
+}
+
+const StormStats = ({ storms, showRecurrence = true }: StormStatsProps) => {
   if (storms.length === 0) return null;
 
   const average = calculateAverage(storms);
@@ -31,24 +38,33 @@ const StormStats = ({ storms }: { storms: Storm[] }) => {
 
   return (
     <div className="@container">
-      <div className="grid grid-cols-2 gap-2 @3xl:grid-cols-4">
+      <div
+        className={`grid grid-cols-2 gap-2 ${showRecurrence ? "@3xl:grid-cols-4" : "@3xl:grid-cols-3"}`}
+      >
         <StatTile label="Avg. intensity" title={`${INTENSITY_LABEL[intensity]} on a −2 to 5 scale`}>
-          <span style={{ color: TEXT_COLOR_WHITE_BACKGROUND[intensity] }}>
-            {average.toFixed(2)}
+          <span className="inline-flex items-center gap-1.5">
+            <span style={{ color: TEXT_COLOR_WHITE_BACKGROUND[intensity] }}>
+              {average.toFixed(2)}
+            </span>
+            <AverageFormulaPopover storms={storms} />
           </span>
         </StatTile>
 
-        <StatTile
-          label="Recurrence"
-          title={
-            recurrence < 0
-              ? "Only one storm, so no recurrence can be measured"
-              : "Average years between appearances"
-          }
-        >
-          <span style={{ color: getDistanceColor(recurrence) }}>{formatDistance(recurrence)}</span>
-          {recurrence >= 0 && <span className="ml-1 text-xs text-foreground">yrs</span>}
-        </StatTile>
+        {showRecurrence && (
+          <StatTile
+            label="Recurrence"
+            title={
+              recurrence < 0
+                ? "Only one storm, so no recurrence can be measured"
+                : "Average years between appearances"
+            }
+          >
+            <span style={{ color: getDistanceColor(recurrence) }}>
+              {formatDistance(recurrence)}
+            </span>
+            {recurrence >= 0 && <span className="ml-1 text-xs text-foreground">yrs</span>}
+          </StatTile>
+        )}
 
         <StatTile label="Avg. date" title="Average start and end date">
           <DatePart doy={startDoy} />

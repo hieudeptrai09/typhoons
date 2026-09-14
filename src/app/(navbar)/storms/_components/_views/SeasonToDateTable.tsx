@@ -1,6 +1,7 @@
 import DefTable from "@/lib/components/DefTable";
 import EmptyResults from "@/lib/components/EmptyResults";
 import StatTile from "@/lib/components/StatTile";
+import { NAMING_LIST_FIRST_YEAR } from "@/lib/constants";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getSeasonPaceColor } from "@/lib/utils/colors";
 import type { ColumnsType } from "antd/es/table";
@@ -10,7 +11,6 @@ import {
   averageToDate,
   averageTotal,
   isSeasonOngoing,
-  NAMING_LIST_FIRST_YEAR,
   type SeasonToDateRow,
 } from "../../_utils/calendar";
 

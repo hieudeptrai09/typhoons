@@ -1,10 +1,11 @@
 "use client";
 
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { App, Button } from "antd";
+import { App } from "antd";
 import { Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { fetchRandomFact } from "../_actions";
+import GameButton from "./GameButton";
 
 const FunFacts = () => {
   const [loading, setLoading] = useState(false);
@@ -36,21 +37,20 @@ const FunFacts = () => {
   };
 
   return (
-    <Button
-      type="text"
-      aria-label="Show a random typhoon fact"
-      title="Useless facts"
-      icon={
-        loading ? (
-          <TyphoonSpinner size="small" colorClass="text-amber-700" />
-        ) : (
-          <Lightbulb size={20} />
-        )
-      }
+    <GameButton
       onClick={showFact}
       disabled={loading}
-      className="h-11! w-11! shrink-0! rounded-lg! border! border-amber-600/70! text-amber-700! hover:bg-amber-50!"
-    />
+      aria-busy={loading}
+      title="Useless facts"
+      colorClass="bg-amber-400 border-amber-600 text-amber-950 hover:bg-amber-500"
+    >
+      {loading ? (
+        <TyphoonSpinner size="small" colorClass="text-amber-950" />
+      ) : (
+        <Lightbulb size={24} aria-hidden />
+      )}
+      Facts
+    </GameButton>
   );
 };
 

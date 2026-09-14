@@ -1,13 +1,13 @@
 import { getNameList } from "@/lib/db/api/getNameList";
 import { getStormHighlights } from "@/lib/db/api/getStormHighlights";
 import Footer from "@/lib/layout/Footer";
+import Navbar from "@/lib/layout/NavBar";
 import Image from "next/image";
-import HomeToolbar from "./_components/HomeToolbar";
-import Menu from "./_components/Menu";
-import StormHighlightBadge from "./_components/StormHighlightBadge";
+import ActiveStormsButton from "./_components/ActiveStormsButton";
+import FunFacts from "./_components/FunFacts";
 
 const HomePage = async () => {
-  // Search is a nav aid and the badge is decorative: a database hiccup should empty them, not fail the homepage.
+  // Search is a nav aid and the storms button is a glance: a database hiccup should empty them, not fail the homepage.
   const [allNames, highlights] = await Promise.all([
     getNameList()
       .then((res) => res.data)
@@ -19,7 +19,10 @@ const HomePage = async () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-sky-100">
-      <div className="flex flex-1 flex-col items-center justify-center p-8">
+      {/* Rendered here rather than via the (navbar) layout, whose content wrapper would cap the sky's height. */}
+      <Navbar allNames={allNames} />
+
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-8">
         <a
           href="https://www.facebook.com/profile.php?id=61586585781960"
           target="_blank"
@@ -29,29 +32,15 @@ const HomePage = async () => {
           <Image src="/logo.png" alt="web logo" loading="eager" width={400} height={134} />
         </a>
 
-        <p className="mb-4 max-w-md text-center text-lg font-semibold text-foreground">
+        <p className="mb-8 max-w-md text-center text-lg font-semibold text-foreground">
           Track typhoons and explore their names
         </p>
 
-        {highlights.length > 0 && <StormHighlightBadge initial={highlights} />}
-
-        <HomeToolbar allNames={allNames} />
-
         <div className="flex w-full max-w-sm flex-col gap-4">
-          <Menu
-            href="/storms/all/name/"
-            label="Browse Storms"
-            bgColor="#2563eb"
-            hoverBgColor="#1d4ed8"
-          />
-          <Menu
-            href="/names/current/"
-            label="Explore Names"
-            bgColor="#0d9488"
-            hoverBgColor="#0f766e"
-          />
+          <ActiveStormsButton highlights={highlights} />
+          <FunFacts />
         </div>
-      </div>
+      </main>
 
       <Footer />
     </div>
