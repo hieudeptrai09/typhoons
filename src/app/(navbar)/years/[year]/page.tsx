@@ -1,5 +1,6 @@
 import { getStorms } from "@/lib/db/api/getStorms";
-import { getSeasonStorms, getSeasonYears } from "@/lib/utils/storms";
+import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
+import { getSeasonDebuts, getSeasonStorms, getSeasonYears } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import YearPageContent from "./YearPageContent";
@@ -43,9 +44,11 @@ export default async function YearPage({ params }: YearPageProps) {
     permanentRedirect(`/years/${yearNum}/`);
   }
 
-  const result = await getStorms();
-  if (!result?.data) {
-    return <YearPageContent year={yearNum} storms={null} years={[]} />;
+  const [result, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
+  if (!result?.data || !namesResult?.data) {
+    return (
+      <YearPageContent year={yearNum} storms={null} years={[]} retiredNames={[]} debuts={[]} />
+    );
   }
 
   const years = getSeasonYears(result.data);
@@ -53,7 +56,14 @@ export default async function YearPage({ params }: YearPageProps) {
     notFound();
   }
 
-  const storms = getSeasonStorms(result.data, yearNum);
-
-  return <YearPageContent year={yearNum} storms={storms} years={years} />;
+  return (
+    <YearPageContent
+      year={yearNum}
+      storms={getSeasonStorms(result.data, yearNum)}
+      years={years}
+      // lastYear is set only once a name leaves the rotation.
+      retiredNames={namesResult.data.filter((name) => name.lastYear === yearNum)}
+      debuts={getSeasonDebuts(result.data, yearNum)}
+    />
+  );
 }

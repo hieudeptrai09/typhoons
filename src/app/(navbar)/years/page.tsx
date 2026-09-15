@@ -2,12 +2,12 @@ import FrownError from "@/lib/components/FrownError";
 import IndexTile from "@/lib/components/IndexTile";
 import PageHeader from "@/lib/components/PageHeader";
 import { getStorms } from "@/lib/db/api/getStorms";
-import { getGroupSummaries, getSeasonYears } from "@/lib/utils/storms";
+import { getGroupCounts, getSeasonYears } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Seasons",
-  description: "Every typhoon season on record, with its storm count and average intensity.",
+  description: "Every typhoon season on record, with its storm count.",
   alternates: { canonical: "/years/" },
 };
 
@@ -17,7 +17,7 @@ export default async function YearsPage() {
     return <FrownError />;
   }
 
-  const summaries = getGroupSummaries(result.data, "year");
+  const counts = getGroupCounts(result.data, "year");
   const decades = new Map<number, number[]>();
   getSeasonYears(result.data).forEach((year) => {
     const decade = Math.floor(year / 10) * 10;
@@ -38,7 +38,7 @@ export default async function YearsPage() {
                   <IndexTile
                     href={`/years/${year}/`}
                     label={<span className="tabular-nums">{year}</span>}
-                    summary={summaries[year]}
+                    count={counts[year]}
                   />
                 </li>
               ))}

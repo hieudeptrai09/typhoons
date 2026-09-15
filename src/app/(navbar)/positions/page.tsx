@@ -3,14 +3,14 @@ import IndexTile from "@/lib/components/IndexTile";
 import PageHeader from "@/lib/components/PageHeader";
 import { getStorms } from "@/lib/db/api/getStorms";
 import { getPositionSlug, SPECIAL_POSITIONS } from "@/lib/utils/position";
-import { getGroupSummaries } from "@/lib/utils/storms";
+import { getGroupCounts } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 import PositionIndexGrid from "./PositionIndexGrid";
 
 export const metadata: Metadata = {
   title: "Naming Positions",
   description:
-    "All 140 slots of the typhoon naming table, plus the neighbouring-basin agencies, with storm counts and average intensity.",
+    "All 140 slots of the typhoon naming table, plus the neighbouring-basin agencies, with storm counts.",
   alternates: { canonical: "/positions/" },
 };
 
@@ -20,12 +20,12 @@ export default async function PositionsPage() {
     return <FrownError />;
   }
 
-  const summaries = getGroupSummaries(result.data, "position");
+  const counts = getGroupCounts(result.data, "position");
 
   return (
     <PageHeader title="Naming Positions">
       <div className="mx-auto max-w-7xl space-y-6">
-        <PositionIndexGrid summaries={summaries} />
+        <PositionIndexGrid counts={counts} />
 
         <section aria-labelledby="agency-positions">
           <h2 id="agency-positions" className="mb-2 text-lg font-bold text-foreground">
@@ -37,7 +37,7 @@ export default async function PositionsPage() {
                 <IndexTile
                   href={`/positions/${getPositionSlug(id)}/`}
                   label={label}
-                  summary={summaries[id]}
+                  count={counts[id]}
                 />
               </li>
             ))}

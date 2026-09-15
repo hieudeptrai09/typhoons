@@ -1,10 +1,10 @@
 import CountryFlag, { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
+import CountryNames from "@/lib/components/CountryNames";
 import FrownError from "@/lib/components/FrownError";
-import NameGroupHeader from "@/lib/components/NameGroupHeader";
+import GroupedStormCards from "@/lib/components/GroupedStormCards";
 import PagePagination from "@/lib/components/PagePagination";
 import StatisticsSection from "@/lib/components/StatisticsSection";
-import StormCard from "@/lib/components/StormCard";
-import type { Storm } from "@/lib/types";
+import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getCountryPositionGroups, getCountrySlug } from "@/lib/utils/country";
 import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
@@ -13,6 +13,7 @@ import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
 interface CountryPageContentProps {
   country: string;
   storms: Storm[] | null;
+  names: RetiredName[] | null;
 }
 
 function CountryPagination({ country }: { country: string }) {
@@ -40,8 +41,36 @@ function CountryPagination({ country }: { country: string }) {
   );
 }
 
+const PositionLink = ({ position }: { position: number }) => (
+  <a href={`/positions/${getPositionSlug(position)}`} className="hover:underline">
+    {getPositionTitle(position)}
+  </a>
+);
+
+function NamesSection({
+  names,
+  positionGroups,
+}: {
+  names: RetiredName[];
+  positionGroups: [number, Storm[]][];
+}) {
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-lg font-bold text-foreground">Names ({names.length})</h2>
+      <CountryNames names={names} positionGroups={positionGroups} />
+    </section>
+  );
+}
+
 function StormsSection({ positionGroups }: { positionGroups: [number, Storm[]][] }) {
-  const total = positionGroups.reduce((sum, [, storms]) => sum + storms.length, 0);
+  const groups = positionGroups
+    .filter(([, storms]) => storms.length > 0)
+    .map(([position, storms]) => ({
+      key: String(position),
+      label: <PositionLink position={position} />,
+      storms,
+    }));
+  const total = groups.reduce((sum, group) => sum + group.storms.length, 0);
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -51,39 +80,14 @@ function StormsSection({ positionGroups }: { positionGroups: [number, Storm[]][]
           No storms recorded for this country&apos;s names.
         </p>
       ) : (
-        <div className="space-y-6">
-          {positionGroups
-            .filter(([, storms]) => storms.length > 0)
-            .map(([position, storms]) => (
-              <div key={position}>
-                <div className="mb-3">
-                  <NameGroupHeader
-                    label={
-                      <a
-                        href={`/positions/${getPositionSlug(position)}`}
-                        className="hover:underline"
-                      >
-                        {getPositionTitle(position)}
-                      </a>
-                    }
-                    storms={storms}
-                  />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {storms.map((storm, idx) => (
-                    <StormCard key={idx} storm={storm} />
-                  ))}
-                </div>
-              </div>
-            ))}
-        </div>
+        <GroupedStormCards groups={groups} />
       )}
     </section>
   );
 }
 
-export default function CountryPageContent({ country, storms }: CountryPageContentProps) {
-  if (!storms) {
+export default function CountryPageContent({ country, storms, names }: CountryPageContentProps) {
+  if (!storms || !names) {
     return <FrownError />;
   }
 
@@ -96,27 +100,15 @@ export default function CountryPageContent({ country, storms }: CountryPageConte
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-8">
-      <div className="mb-3 flex items-center gap-3">
+      <div className="mb-8 flex items-center gap-3">
         <CountryFlag country={country} className="h-6 w-9" />
         <h1 className="text-3xl font-bold" style={{ color: titleColor }}>
           {country}
         </h1>
       </div>
 
-      <nav className="mb-8 flex flex-wrap items-center gap-2" aria-label="Positions">
-        {positionGroups.map(([position, positionStorms]) => (
-          <a
-            key={position}
-            href={`/positions/${getPositionSlug(position)}`}
-            className="rounded-full border border-slate-300 bg-white px-3 py-1 text-sm font-semibold text-foreground transition-colors hover:border-sky-700 hover:text-sky-700"
-          >
-            {getPositionTitle(position)}
-            <span className="ml-1.5 font-normal text-slate-500">{positionStorms.length}</span>
-          </a>
-        ))}
-      </nav>
-
       <div className="space-y-6">
+        <NamesSection names={names} positionGroups={positionGroups} />
         <StatisticsSection storms={storms} showRecurrence={false} />
         <StormsSection positionGroups={positionGroups} />
       </div>

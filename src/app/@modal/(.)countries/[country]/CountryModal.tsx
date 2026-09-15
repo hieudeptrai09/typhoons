@@ -1,13 +1,14 @@
 "use client";
 
 import CountryFlag from "@/lib/components/CountryFlag";
+import CountryNames from "@/lib/components/CountryNames";
 import DefModal from "@/lib/components/DefModal";
 import EmptyResults from "@/lib/components/EmptyResults";
 import FrownError from "@/lib/components/FrownError";
-import GroupedStormList from "@/lib/components/GroupedStormList";
+import GroupedStormCards from "@/lib/components/GroupedStormCards";
 import StormStatistics from "@/lib/components/StormStatistics";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
-import type { Storm } from "@/lib/types";
+import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getCountryPositionGroups } from "@/lib/utils/country";
 import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
@@ -20,13 +21,14 @@ import { useState, type ReactNode } from "react";
 interface CountryModalProps {
   country: string;
   storms: Storm[] | null;
+  names: RetiredName[] | null;
 }
 
-type TabType = "storms" | "stats";
+type TabType = "names" | "storms" | "stats";
 
-export default function CountryModal({ country, storms }: CountryModalProps) {
+export default function CountryModal({ country, storms, names }: CountryModalProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabType>("storms");
+  const [activeTab, setActiveTab] = useState<TabType>("names");
 
   const titleColor =
     storms && storms.length > 0
@@ -44,14 +46,15 @@ export default function CountryModal({ country, storms }: CountryModalProps) {
 
   let content: ReactNode;
 
-  if (!storms) {
+  if (!storms || !names) {
     content = <FrownError />;
-  } else if (storms.length === 0) {
+  } else if (storms.length === 0 && names.length === 0) {
     content = (
       <EmptyResults icon={SearchX} description="No storms recorded for this country yet." />
     );
   } else {
-    const groups = getCountryPositionGroups(storms, country)
+    const positionGroups = getCountryPositionGroups(storms, country);
+    const groups = positionGroups
       .filter(([, positionStorms]) => positionStorms.length > 0)
       .map(([position, positionStorms]) => ({
         key: String(position),
@@ -65,16 +68,30 @@ export default function CountryModal({ country, storms }: CountryModalProps) {
 
     const tabs: Tab<TabType>[] = [
       {
-        key: "storms",
-        label: `Storms (${storms.length})`,
-        content: <GroupedStormList groups={groups} showRecurrence={false} />,
+        key: "names",
+        label: `Names (${names.length})`,
+        content: <CountryNames names={names} positionGroups={positionGroups} />,
       },
       {
+        key: "storms",
+        label: `Storms (${storms.length})`,
+        content:
+          storms.length === 0 ? (
+            <p className="py-4 text-center text-foreground">
+              No storms recorded for this country&apos;s names.
+            </p>
+          ) : (
+            <GroupedStormCards groups={groups} isCompact />
+          ),
+      },
+    ];
+    if (storms.length > 0) {
+      tabs.push({
         key: "stats",
         label: "Stats",
         content: <StormStatistics storms={storms} showGap={false} idPrefix="country-modal-stats" />,
-      },
-    ];
+      });
+    }
 
     content = (
       <div className="pt-4">

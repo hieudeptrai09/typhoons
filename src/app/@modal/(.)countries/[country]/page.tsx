@@ -1,4 +1,5 @@
 import { getStorms } from "@/lib/db/api/getStorms";
+import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
 import { getCountryFromSlug, getCountryStorms } from "@/lib/utils/country";
 import { notFound } from "next/navigation";
 import CountryModal from "./CountryModal";
@@ -15,8 +16,9 @@ export default async function CountryModalPage({ params }: CountryModalPageProps
     notFound();
   }
 
-  const result = await getStorms();
-  const storms = result?.data ? getCountryStorms(result.data, country) : null;
+  const [stormsResult, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
+  const storms = stormsResult?.data ? getCountryStorms(stormsResult.data, country) : null;
+  const names = namesResult?.data?.filter((name) => name.country === country) ?? null;
 
-  return <CountryModal country={country} storms={storms} />;
+  return <CountryModal country={country} storms={storms} names={names} />;
 }

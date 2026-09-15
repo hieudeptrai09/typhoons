@@ -2,11 +2,12 @@
 
 import DefModal from "@/lib/components/DefModal";
 import FrownError from "@/lib/components/FrownError";
-import GroupedStormList from "@/lib/components/GroupedStormList";
+import GroupedStormCards from "@/lib/components/GroupedStormCards";
+import SeasonNameChanges, { hasNameChanges } from "@/lib/components/SeasonNameChanges";
 import StormStatistics from "@/lib/components/StormStatistics";
 import Tabs, { type Tab } from "@/lib/components/Tabs";
 import { MONTH_NAMES } from "@/lib/constants";
-import type { Storm } from "@/lib/types";
+import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getSeasonMonthGroups } from "@/lib/utils/stormDates";
 import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
@@ -17,13 +18,19 @@ interface YearModalProps {
   year: number;
   // Already in start-date order.
   storms: Storm[] | null;
+  // Names whose last season this was.
+  retiredNames: RetiredName[];
+  // The storms that first carried their name, in start-date order.
+  debuts: Storm[];
 }
 
-type TabType = "storms" | "stats";
+type TabType = "names" | "storms" | "stats";
 
-export default function YearModal({ year, storms }: YearModalProps) {
+export default function YearModal({ year, storms, retiredNames, debuts }: YearModalProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabType>("storms");
+  const showNames = hasNameChanges({ retiredNames, debuts });
+  // Mirrors the page, where name changes lead when the season has any.
+  const [activeTab, setActiveTab] = useState<TabType>(showNames ? "names" : "storms");
 
   const titleColor =
     storms && storms.length > 0
@@ -55,7 +62,7 @@ export default function YearModal({ year, storms }: YearModalProps) {
       {
         key: "storms",
         label: `Storms (${storms.length})`,
-        content: <GroupedStormList groups={groups} showRecurrence={false} />,
+        content: <GroupedStormCards groups={groups} showRecurrence={false} isCompact />,
       },
       {
         key: "stats",
@@ -63,6 +70,13 @@ export default function YearModal({ year, storms }: YearModalProps) {
         content: <StormStatistics storms={storms} showGap={false} idPrefix="year-modal-stats" />,
       },
     ];
+    if (showNames) {
+      tabs.unshift({
+        key: "names",
+        label: "Name Changes",
+        content: <SeasonNameChanges retiredNames={retiredNames} debuts={debuts} />,
+      });
+    }
 
     content = (
       <div className="pt-4">

@@ -1,5 +1,6 @@
 import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
 import { getStorms } from "@/lib/db/api/getStorms";
+import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
 import { getCountryFromSlug, getCountrySlug, getCountryStorms } from "@/lib/utils/country";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -43,8 +44,9 @@ export default async function CountryPage({ params }: CountryPageProps) {
     permanentRedirect(`/countries/${getCountrySlug(country)}/`);
   }
 
-  const result = await getStorms();
-  const storms = result?.data ? getCountryStorms(result.data, country) : null;
+  const [stormsResult, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
+  const storms = stormsResult?.data ? getCountryStorms(stormsResult.data, country) : null;
+  const names = namesResult?.data?.filter((name) => name.country === country) ?? null;
 
-  return <CountryPageContent country={country} storms={storms} />;
+  return <CountryPageContent country={country} storms={storms} names={names} />;
 }

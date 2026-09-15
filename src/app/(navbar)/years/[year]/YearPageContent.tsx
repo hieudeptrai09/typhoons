@@ -1,10 +1,10 @@
 import FrownError from "@/lib/components/FrownError";
-import NameGroupHeader from "@/lib/components/NameGroupHeader";
+import GroupedStormCards from "@/lib/components/GroupedStormCards";
 import PagePagination from "@/lib/components/PagePagination";
+import SeasonNameChanges, { hasNameChanges } from "@/lib/components/SeasonNameChanges";
 import StatisticsSection from "@/lib/components/StatisticsSection";
-import StormCard from "@/lib/components/StormCard";
 import { MONTH_NAMES } from "@/lib/constants";
-import type { Storm } from "@/lib/types";
+import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { getSeasonMonthGroups } from "@/lib/utils/stormDates";
 import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
@@ -14,6 +14,10 @@ interface YearPageContentProps {
   // Already in start-date order.
   storms: Storm[] | null;
   years: number[];
+  // Names whose last season this was.
+  retiredNames: RetiredName[];
+  // The storms that first carried their name, in start-date order.
+  debuts: Storm[];
 }
 
 function YearPagination({ year, years }: { year: number; years: number[] }) {
@@ -35,34 +39,46 @@ function YearPagination({ year, years }: { year: number; years: number[] }) {
   );
 }
 
-function StormsSection({ storms }: { storms: Storm[] }) {
+function NameChangesSection({
+  retiredNames,
+  debuts,
+}: {
+  retiredNames: RetiredName[];
+  debuts: Storm[];
+}) {
+  if (!hasNameChanges({ retiredNames, debuts })) return null;
+
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
-      <div className="space-y-6">
-        {getSeasonMonthGroups(storms).map(([month, monthStorms], idx) => (
-          // A carried-over December and the season's own December are separate runs.
-          <div key={`${month}-${idx}`}>
-            <div className="mb-3">
-              <NameGroupHeader
-                label={MONTH_NAMES[month]}
-                storms={monthStorms}
-                showRecurrence={false}
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {monthStorms.map((storm, idx) => (
-                <StormCard key={idx} storm={storm} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <h2 className="mb-4 text-lg font-bold text-foreground">Name Changes</h2>
+      <SeasonNameChanges retiredNames={retiredNames} debuts={debuts} />
     </section>
   );
 }
 
-export default function YearPageContent({ year, storms, years }: YearPageContentProps) {
+function StormsSection({ storms }: { storms: Storm[] }) {
+  const groups = getSeasonMonthGroups(storms).map(([month, monthStorms], idx) => ({
+    // A carried-over December and the season's own December are separate runs.
+    key: `${month}-${idx}`,
+    label: MONTH_NAMES[month],
+    storms: monthStorms,
+  }));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
+      <GroupedStormCards groups={groups} showRecurrence={false} />
+    </section>
+  );
+}
+
+export default function YearPageContent({
+  year,
+  storms,
+  years,
+  retiredNames,
+  debuts,
+}: YearPageContentProps) {
   if (!storms) {
     return <FrownError />;
   }
@@ -79,6 +95,7 @@ export default function YearPageContent({ year, storms, years }: YearPageContent
       </div>
 
       <div className="space-y-6">
+        <NameChangesSection retiredNames={retiredNames} debuts={debuts} />
         <StatisticsSection storms={storms} showRecurrence={false} />
         <StormsSection storms={storms} />
       </div>
