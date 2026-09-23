@@ -42,7 +42,7 @@ const FunFacts = () => {
       disabled={loading}
       aria-busy={loading}
       title="Useless facts"
-      colorClass="bg-amber-400 border-amber-600 text-amber-950 hover:bg-amber-500"
+      colorClass="bg-amber-400 text-amber-950 hover:bg-amber-500"
     >
       {loading ? (
         <TyphoonSpinner size="small" colorClass="text-amber-950" />
