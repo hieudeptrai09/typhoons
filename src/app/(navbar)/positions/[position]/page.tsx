@@ -11,6 +11,10 @@ interface PositionPageProps {
 const isValidPosition = (position: number): boolean =>
   Number.isInteger(position) && position >= 1 && position <= 143;
 
+// Positions 1-143 are the whole set of valid pages; anything else 404s at the router
+// instead of rendering and landing in the ISR cache.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return Array.from({ length: 143 }, (_, i) => ({ position: getPositionSlug(i + 1) }));
 }

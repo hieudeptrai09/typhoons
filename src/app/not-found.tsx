@@ -3,7 +3,7 @@ import { Home, Tag, Wind } from "lucide-react";
 import Link from "next/link";
 import "./not-found.css";
 
-const NotFound = () => {
+const NotFound = async () => {
   return (
     <main className="flex h-dvh flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-sky-100 to-sky-200 px-6 text-center">
       {/* 404 — the typhoon swirl stands in for the middle "0" */}

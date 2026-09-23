@@ -10,6 +10,10 @@ interface CountryPageProps {
   params: Promise<{ country: string }>;
 }
 
+// COUNTRY_NAMES is the whole set of valid pages; anything else 404s at the router
+// instead of rendering and landing in the ISR cache.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return COUNTRY_NAMES.map((country) => ({ country: getCountrySlug(country) }));
 }
