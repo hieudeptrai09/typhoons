@@ -1,4 +1,5 @@
 import sql, { type ApiListResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import {
   toRetiredName,
   typhoonNameColumns,
@@ -22,5 +23,6 @@ async function queryTyphoonNames(): Promise<ApiListResponse<RetiredName[]>> {
 }
 
 export const getTyphoonNames = unstable_cache(queryTyphoonNames, ["getTyphoonNames"], {
-  revalidate: 3600,
+  revalidate: false,
+  tags: [CACHE_TAGS.names],
 });

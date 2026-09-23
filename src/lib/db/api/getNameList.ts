@@ -1,4 +1,5 @@
 import sql, { type ApiListResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import { unstable_cache } from "next/cache";
 
 interface NameRow {
@@ -18,4 +19,7 @@ async function queryNameList(): Promise<ApiListResponse<string[]>> {
   return { data, count: data.length };
 }
 
-export const getNameList = unstable_cache(queryNameList, ["getNameList"], { revalidate: 3600 });
+export const getNameList = unstable_cache(queryNameList, ["getNameList"], {
+  revalidate: false,
+  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+});

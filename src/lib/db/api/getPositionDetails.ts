@@ -1,4 +1,5 @@
 import sql, { type ApiResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import { stormColumns, stormJoin, toStorm, type StormRow } from "@/lib/db/module/storm";
 import {
   toRetiredName,
@@ -54,5 +55,6 @@ async function queryPositionDetails(position: number): Promise<ApiResponse<Posit
 }
 
 export const getPositionDetails = unstable_cache(queryPositionDetails, ["getPositionDetails"], {
-  revalidate: 3600,
+  revalidate: false,
+  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
 });

@@ -1,5 +1,6 @@
 import { MONTH_NAMES } from "@/lib/constants";
 import sql, { type QueryParam } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import { unstable_cache } from "next/cache";
 
 type Row = Record<string, unknown>;
@@ -772,7 +773,10 @@ async function generateFacts(): Promise<string[]> {
 
 // The fact list costs dozens of queries to build but only changes with the data, so it is cached
 // and the random pick happens per call — every click still gets a fresh fact.
-const getFacts = unstable_cache(generateFacts, ["generateFacts"], { revalidate: 3600 });
+const getFacts = unstable_cache(generateFacts, ["generateFacts"], {
+  revalidate: false,
+  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+});
 
 export async function getRandomFact(): Promise<{ data: string | null }> {
   const facts = await getFacts();
