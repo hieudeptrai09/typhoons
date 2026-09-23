@@ -1,4 +1,5 @@
 import sql, { type ApiListResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import {
   imageCreditColumns,
   imageCreditJoin,
@@ -47,5 +48,5 @@ async function queryAllSuggestedNames(): Promise<ApiListResponse<SuggestionWithN
 export const getAllSuggestedNames = unstable_cache(
   queryAllSuggestedNames,
   ["getAllSuggestedNames"],
-  { revalidate: 3600 },
+  { revalidate: false, tags: [CACHE_TAGS.names] },
 );

@@ -1,5 +1,7 @@
 import sql, { type ApiResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import type { StormHighlight } from "@/lib/types";
+import { unstable_cache } from "next/cache";
 
 interface StormPositionRow {
   name: string;
@@ -10,7 +12,7 @@ interface NameRow {
   name: string;
 }
 
-export async function getStormHighlights(): Promise<ApiResponse<StormHighlight[]>> {
+async function queryStormHighlights(): Promise<ApiResponse<StormHighlight[]>> {
   const ongoing = await sql.query<StormPositionRow[]>(
     `SELECT name, position FROM storms
      WHERE enddate IS NULL
@@ -51,3 +53,8 @@ export async function getStormHighlights(): Promise<ApiResponse<StormHighlight[]
 
   return { data: [{ name: nextName.name, position: nextPosition, status: "next" }] };
 }
+
+export const getStormHighlights = unstable_cache(queryStormHighlights, ["getStormHighlights"], {
+  revalidate: false,
+  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+});

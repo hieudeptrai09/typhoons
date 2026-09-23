@@ -1,4 +1,5 @@
 import sql, { type ApiResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import { stormColumns, stormJoin, toStorm, type StormRow } from "@/lib/db/module/storm";
 import {
   toRetiredName,
@@ -44,7 +45,7 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
 export const getTyphoonNameByName = unstable_cache(
   queryTyphoonNameByName,
   ["getTyphoonNameByName"],
-  { revalidate: 3600 },
+  { revalidate: false, tags: [CACHE_TAGS.storms, CACHE_TAGS.names] },
 );
 
 // The name exists nowhere: not in rotation, and never used by a storm.
