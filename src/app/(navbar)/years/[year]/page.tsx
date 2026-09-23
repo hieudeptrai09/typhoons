@@ -9,6 +9,10 @@ interface YearPageProps {
   params: Promise<{ year: string }>;
 }
 
+// The seasons with storms are the whole set of valid pages; anything else 404s at the
+// router instead of rendering and landing in the ISR cache.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const result = await getStorms();
   return getSeasonYears(result?.data ?? []).map((year) => ({ year: String(year) }));

@@ -1,9 +1,15 @@
+import NameSuggestions from "@/lib/components/DidYouMean/NameSuggestions";
 import TyphoonSymbol from "@/lib/components/TyphoonSpinner/TyphoonSymbol";
+import { getNameList } from "@/lib/db/api/getNameList";
 import { Home, Tag, Wind } from "lucide-react";
 import Link from "next/link";
 import "./not-found.css";
 
-const NotFound = () => {
+// Prerendered once for the whole site, so the name list that powers the /info/<name>
+// suggestions is paid for a single time rather than per bad URL.
+const NotFound = async () => {
+  const nameList = await getNameList();
+
   return (
     <main className="flex h-dvh flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-sky-100 to-sky-200 px-6 text-center">
       {/* 404 — the typhoon swirl stands in for the middle "0" */}
@@ -26,6 +32,8 @@ const NotFound = () => {
         <br />
         Let&rsquo;s get you back on course.
       </p>
+
+      <NameSuggestions allNames={nameList?.data ?? []} />
 
       {/* Lightweight links, not heavy buttons, so a dead end still feels calm */}
       <nav
