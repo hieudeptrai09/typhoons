@@ -47,7 +47,14 @@ export default async function YearPage({ params }: YearPageProps) {
   const [result, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
   if (!result?.data || !namesResult?.data) {
     return (
-      <YearPageContent year={yearNum} storms={null} years={[]} retiredNames={[]} debuts={[]} />
+      <YearPageContent
+        year={yearNum}
+        storms={null}
+        years={[]}
+        names={[]}
+        retiredNames={[]}
+        debuts={[]}
+      />
     );
   }
 
@@ -61,6 +68,7 @@ export default async function YearPage({ params }: YearPageProps) {
       year={yearNum}
       storms={getSeasonStorms(result.data, yearNum)}
       years={years}
+      names={namesResult.data}
       // lastYear is set only once a name leaves the rotation.
       retiredNames={namesResult.data.filter((name) => name.lastYear === yearNum)}
       debuts={getSeasonDebuts(result.data, yearNum)}

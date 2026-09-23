@@ -1,12 +1,10 @@
 import FrownError from "@/lib/components/FrownError";
-import GroupedStormCards from "@/lib/components/GroupedStormCards";
 import PagePagination from "@/lib/components/PagePagination";
 import SeasonNameChanges, { hasNameChanges } from "@/lib/components/SeasonNameChanges";
 import StatisticsSection from "@/lib/components/StatisticsSection";
-import { MONTH_NAMES } from "@/lib/constants";
+import StormNameTable from "@/lib/components/StormNameTable";
 import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getSeasonMonthGroups } from "@/lib/utils/stormDates";
 import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
 
 interface YearPageContentProps {
@@ -14,6 +12,8 @@ interface YearPageContentProps {
   // Already in start-date order.
   storms: Storm[] | null;
   years: number[];
+  // The full naming list, for the meaning each storm's name carries.
+  names: RetiredName[];
   // Names whose last season this was.
   retiredNames: RetiredName[];
   // The storms that first carried their name, in start-date order.
@@ -56,18 +56,12 @@ function NameChangesSection({
   );
 }
 
-function StormsSection({ storms }: { storms: Storm[] }) {
-  const groups = getSeasonMonthGroups(storms).map(([month, monthStorms], idx) => ({
-    // A carried-over December and the season's own December are separate runs.
-    key: `${month}-${idx}`,
-    label: MONTH_NAMES[month],
-    storms: monthStorms,
-  }));
-
+function StormsSection({ storms, names }: { storms: Storm[]; names: RetiredName[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
-      <GroupedStormCards groups={groups} showRecurrence={false} />
+      {/* A season is one year, so the year column would repeat the page title; the country varies. */}
+      <StormNameTable storms={storms} names={names} tableKey="season-storms" showYear={false} />
     </section>
   );
 }
@@ -76,6 +70,7 @@ export default function YearPageContent({
   year,
   storms,
   years,
+  names,
   retiredNames,
   debuts,
 }: YearPageContentProps) {
@@ -97,7 +92,7 @@ export default function YearPageContent({
       <div className="space-y-6">
         <NameChangesSection retiredNames={retiredNames} debuts={debuts} />
         <StatisticsSection storms={storms} showRecurrence={false} />
-        <StormsSection storms={storms} />
+        <StormsSection storms={storms} names={names} />
       </div>
 
       <YearPagination year={year} years={years} />

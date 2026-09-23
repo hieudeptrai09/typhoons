@@ -1,13 +1,11 @@
 import CountryFlag, { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import CountryNames from "@/lib/components/CountryNames";
 import FrownError from "@/lib/components/FrownError";
-import GroupedStormCards from "@/lib/components/GroupedStormCards";
 import PagePagination from "@/lib/components/PagePagination";
 import StatisticsSection from "@/lib/components/StatisticsSection";
+import StormNameTable from "@/lib/components/StormNameTable";
 import type { RetiredName, Storm } from "@/lib/types";
 import { TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
-import { getCountryPositionGroups, getCountrySlug } from "@/lib/utils/country";
-import { getPositionSlug, getPositionTitle } from "@/lib/utils/position";
+import { getCountrySlug } from "@/lib/utils/country";
 import { calculateAverage, getIntensityFromNumber } from "@/lib/utils/storms";
 
 interface CountryPageContentProps {
@@ -41,46 +39,22 @@ function CountryPagination({ country }: { country: string }) {
   );
 }
 
-const PositionLink = ({ position }: { position: number }) => (
-  <a href={`/positions/${getPositionSlug(position)}`} className="hover:underline">
-    {getPositionTitle(position)}
-  </a>
-);
-
-function NamesSection({
-  names,
-  positionGroups,
-}: {
-  names: RetiredName[];
-  positionGroups: [number, Storm[]][];
-}) {
+function StormsSection({ storms, names }: { storms: Storm[]; names: RetiredName[] }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-foreground">Names ({names.length})</h2>
-      <CountryNames names={names} positionGroups={positionGroups} />
-    </section>
-  );
-}
-
-function StormsSection({ positionGroups }: { positionGroups: [number, Storm[]][] }) {
-  const groups = positionGroups
-    .filter(([, storms]) => storms.length > 0)
-    .map(([position, storms]) => ({
-      key: String(position),
-      label: <PositionLink position={position} />,
-      storms,
-    }));
-  const total = groups.reduce((sum, group) => sum + group.storms.length, 0);
-
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({total})</h2>
-      {total === 0 ? (
+      <h2 className="mb-4 text-lg font-bold text-foreground">All Storms ({storms.length})</h2>
+      {storms.length === 0 ? (
         <p className="py-4 text-center text-foreground">
           No storms recorded for this country&apos;s names.
         </p>
       ) : (
-        <GroupedStormCards groups={groups} />
+        // Every row is this country, so the flag column would repeat the page title.
+        <StormNameTable
+          storms={storms}
+          names={names}
+          tableKey="country-storms"
+          showCountry={false}
+        />
       )}
     </section>
   );
@@ -90,8 +64,6 @@ export default function CountryPageContent({ country, storms, names }: CountryPa
   if (!storms || !names) {
     return <FrownError />;
   }
-
-  const positionGroups = getCountryPositionGroups(storms, country);
 
   const titleColor =
     storms.length > 0
@@ -108,9 +80,8 @@ export default function CountryPageContent({ country, storms, names }: CountryPa
       </div>
 
       <div className="space-y-6">
-        <NamesSection names={names} positionGroups={positionGroups} />
         <StatisticsSection storms={storms} showRecurrence={false} />
-        <StormsSection positionGroups={positionGroups} />
+        <StormsSection storms={storms} names={names} />
       </div>
 
       <CountryPagination country={country} />
