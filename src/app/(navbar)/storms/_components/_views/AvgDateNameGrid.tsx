@@ -1,3 +1,4 @@
+import { useToday } from "@/lib/hooks/useToday";
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import { calculateAvgDatesByGroup, formatDayOfYear, getDoyMonth } from "@/lib/utils/stormDates";
@@ -15,9 +16,10 @@ const DatePart = ({ doy }: { doy: number }) => (
 );
 
 const AvgDateNameGrid = ({ stormsData, onCellClick }: AvgDateNameGridProps) => {
+  const today = useToday();
   const nameSubtitles = useMemo<Record<string, ReactNode>>(() => {
     const result: Record<string, ReactNode> = {};
-    Object.entries(calculateAvgDatesByGroup(stormsData, "name")).forEach(
+    Object.entries(calculateAvgDatesByGroup(stormsData, "name", today)).forEach(
       ([name, { startDoy, endDoy }]) => {
         if (startDoy < 0 && endDoy < 0) return;
         result[name] = (
@@ -30,7 +32,7 @@ const AvgDateNameGrid = ({ stormsData, onCellClick }: AvgDateNameGridProps) => {
       },
     );
     return result;
-  }, [stormsData]);
+  }, [stormsData, today]);
 
   return (
     <div className="flex flex-col gap-6">

@@ -1,11 +1,12 @@
 import EmptyResults from "@/lib/components/EmptyResults";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
 import { NAMING_LIST_FIRST_YEAR } from "@/lib/constants";
+import { useToday } from "@/lib/hooks/useToday";
 import type { DashboardParams, Storm } from "@/lib/types";
-import { formatMonthDay, monthDayOf, parseMonthDay, todayISO } from "@/lib/utils/date";
+import { formatMonthDay, monthDayOf, parseMonthDay } from "@/lib/utils/date";
 import { CalendarSearch } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import SeasonMonthsModal from "../_modals/SeasonMonthsModal";
 import CalendarDateBar from "../_widgets/CalendarDateBar";
 import {
@@ -27,13 +28,6 @@ interface CalendarViewProps {
 
 const plural = (count: number, noun: string) => `${count} ${noun}${count === 1 ? "" : "s"}`;
 
-// Today is read as an external value rather than during render: a page prerendered at build
-// time would otherwise bake in the build's date and disagree with the browser on hydration.
-// The date never changes mid-session, so there is nothing to subscribe to.
-const subscribeToToday = () => () => {};
-const getTodayMonthDay = () => monthDayOf(todayISO());
-const getNoServerDate = () => null;
-
 const isSeasonKind = (filter: string): filter is CalendarSeasonKind =>
   filter === "started" || filter === "ended" || filter === "active";
 
@@ -46,7 +40,8 @@ const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
   const dateParam = searchParams.get("date");
   const urlMonthDay = parseMonthDay(dateParam) ? dateParam : null;
 
-  const today = useSyncExternalStore(subscribeToToday, getTodayMonthDay, getNoServerDate);
+  const todayDate = useToday();
+  const today = todayDate && monthDayOf(todayDate);
   const monthDay = urlMonthDay ?? today;
 
   const [openPace, setOpenPace] = useState<SeasonToDateRow | null>(null);

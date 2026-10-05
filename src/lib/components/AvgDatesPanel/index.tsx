@@ -1,5 +1,6 @@
 import StartMonthBreakdown from "@/lib/components/StartMonthBreakdown";
 import StatTile from "@/lib/components/StatTile";
+import { useToday } from "@/lib/hooks/useToday";
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor } from "@/lib/utils/colors";
 import {
@@ -12,8 +13,9 @@ import {
 
 /** Average start, end and duration, above the storms grouped by start month. */
 const AvgDatesPanel = ({ storms }: { storms: Storm[] }) => {
-  const { startDoy, endDoy } = calculateAvgDates(storms);
-  const avgDuration = calculateAvgDuration(storms);
+  const today = useToday();
+  const { startDoy, endDoy } = calculateAvgDates(storms, today);
+  const avgDuration = calculateAvgDuration(storms, today);
 
   return (
     <div className="space-y-4">

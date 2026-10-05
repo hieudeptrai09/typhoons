@@ -1,5 +1,6 @@
 import CountryFlag from "@/lib/components/CountryFlag";
 import DefTable from "@/lib/components/DefTable";
+import { useToday } from "@/lib/hooks/useToday";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getAvgDateColor } from "@/lib/utils/colors";
@@ -184,6 +185,7 @@ const buildRows = (
   filterType: AvgDateFilter,
   avgDateMap: Record<string, AvgDates>,
   groupedStorms: Record<string, Storm[]>,
+  today: string | null,
 ): AvgDateRow[] =>
   Object.entries(avgDateMap).map(([key, dates]) => {
     const storms = groupedStorms[key] || [];
@@ -191,7 +193,7 @@ const buildRows = (
       count: storms.length,
       startDoy: dates.startDoy,
       endDoy: dates.endDoy,
-      avgDuration: calculateAvgDuration(storms),
+      avgDuration: calculateAvgDuration(storms, today),
     };
 
     switch (filterType) {
@@ -235,6 +237,7 @@ const rowLabelOf = (filterType: AvgDateFilter, row: AvgDateRow): string =>
 
 const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
   const filterType = (params.filter || "position") as AvgDateFilter;
+  const today = useToday();
 
   const groupSource = useMemo(
     () => (filterType === "year" ? stormsData.filter((s) => s.year >= YEAR_CUTOFF) : stormsData),
@@ -242,8 +245,8 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
   );
 
   const avgDateMap = useMemo(
-    () => calculateAvgDatesByGroup(groupSource, filterType),
-    [groupSource, filterType],
+    () => calculateAvgDatesByGroup(groupSource, filterType, today),
+    [groupSource, filterType, today],
   );
 
   const groupedStorms = useMemo(
@@ -280,7 +283,7 @@ const AvgDateView = ({ params, stormsData, onCellClick }: AvgDateViewProps) => {
   }
 
   // every list mode → sortable avg-date table for the grouping
-  const data = buildRows(filterType, avgDateMap, groupedStorms);
+  const data = buildRows(filterType, avgDateMap, groupedStorms, today);
   if (filterType === "year") data.sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
 
   return (
