@@ -43,18 +43,12 @@ function StatusBadge({
   );
 }
 
-function NameDetailsSection({
-  name,
-  correctSpelling,
-}: {
-  name: TyphoonName | RetiredName;
-  correctSpelling?: string;
-}) {
+function NameDetailsSection({ name }: { name: TyphoonName | RetiredName }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-bold text-foreground">Name Details</h2>
       {/* The page header already carries the status badge. */}
-      <NameDetailsContent name={name} correctSpelling={correctSpelling} hideStatus />
+      <NameDetailsContent name={name} hideStatus />
     </section>
   );
 }
@@ -121,7 +115,6 @@ export default function InfoPageContent({
     : "text-foreground";
   const isRetired = nameData?.isRetired ?? false;
 
-  const correctSpelling = storms[0]?.correctSpelling;
   const metaCountry = nameData?.country ?? storms[0]?.country;
   const metaPosition = nameData?.position ?? storms[0]?.position;
   const currentIndex = allNames.findIndex((n) => n.toLowerCase() === displayName.toLowerCase());
@@ -160,9 +153,7 @@ export default function InfoPageContent({
       </div>
 
       <div className="space-y-6">
-        {isInPosition && nameData && (
-          <NameDetailsSection name={nameData} correctSpelling={correctSpelling} />
-        )}
+        {isInPosition && nameData && <NameDetailsSection name={nameData} />}
         <StatisticsSection storms={storms} />
         <StormsSection storms={storms} />
       </div>

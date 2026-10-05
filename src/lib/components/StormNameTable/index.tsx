@@ -134,9 +134,7 @@ const StormNameTable = ({
   showYear = true,
 }: StormNameTableProps) => {
   const byName = new Map(names.map((name) => [name.name.toLowerCase(), name]));
-  // A storm issued under a misspelled name still reaches its list entry through correctSpelling.
-  const meaningOf = (storm: Storm): string =>
-    byName.get((storm.correctSpelling ?? storm.name).toLowerCase())?.meaning ?? "";
+  const meaningOf = (storm: Storm): string => byName.get(storm.name.toLowerCase())?.meaning ?? "";
 
   const rows: StormNameRow[] = storms.map((storm, index) => ({
     key: `${storm.year}-${storm.position}-${storm.name}-${index}`,
