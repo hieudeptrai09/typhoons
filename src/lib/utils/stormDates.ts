@@ -1,5 +1,5 @@
 import type { Storm } from "@/lib/types";
-import { daysBetween, parseStormDate, todayISO } from "@/lib/utils/date";
+import { daysBetween, parseStormDate } from "@/lib/utils/date";
 import { getGroupedStorms } from "@/lib/utils/storms";
 
 // Averaged storm timing: when a group's storms typically start, end, and how long they last.
@@ -24,9 +24,13 @@ const stormStartDoy = (s: Storm): number => {
 // 13": one full year later. This keeps a Dec→Jan storm's end after its start
 // when averaging and measuring span. A storm with no end date is still active, so
 // today stands in for the missing end rather than dropping it from the average.
-const stormEndDoy = (s: Storm): number => {
+// `today` comes from useToday() and is null on the server, so a prerendered page never
+// bakes in a date; active storms are left out until the browser fills it in.
+const stormEndDoy = (s: Storm, today: string | null): number | null => {
+  const endDate = s.dateEnd ?? today;
+  if (!endDate) return null;
   const start = parseStormDate(s.dateStart);
-  const end = parseStormDate(s.dateEnd ?? todayISO());
+  const end = parseStormDate(endDate);
   const doy = toDayOfYear(end.month, end.day);
   return end.year > start.year ? doy + DAYS_IN_YEAR : doy;
 };
@@ -51,19 +55,20 @@ export interface AvgDates {
 const average = (values: number[]): number =>
   values.length ? values.reduce((a, b) => a + b, 0) / values.length : -1;
 
-export const calculateAvgDates = (storms: Storm[]): AvgDates => ({
+export const calculateAvgDates = (storms: Storm[], today: string | null): AvgDates => ({
   startDoy: average(storms.map(stormStartDoy)),
-  endDoy: average(storms.map(stormEndDoy)),
+  endDoy: average(storms.map((s) => stormEndDoy(s, today)).filter((v): v is number => v !== null)),
 });
 
 export const calculateAvgDatesByGroup = (
   stormsData: Storm[],
   groupBy: string,
+  today: string | null,
 ): Record<string, AvgDates> => {
   const grouped = getGroupedStorms(stormsData, groupBy);
   const result: Record<string, AvgDates> = {};
   Object.entries(grouped).forEach(([key, groupStorms]) => {
-    result[key] = calculateAvgDates(groupStorms);
+    result[key] = calculateAvgDates(groupStorms, today);
   });
   return result;
 };
@@ -78,10 +83,10 @@ export const formatDayOfYear = (doy: number): string => {
 export const getDoyMonth = (doy: number): number => (doy < 0 ? -1 : fromDayOfYear(doy).month);
 
 // Average storm duration in whole days. An active storm counts its days so far,
-// measured to today, on the same basis as its stand-in end date.
-export const calculateAvgDuration = (storms: Storm[]): number => {
+// measured to today, on the same basis as its stand-in end date (left out while today is null).
+export const calculateAvgDuration = (storms: Storm[], today: string | null): number => {
   const durations = storms
-    .map((s) => daysBetween(s.dateStart, s.dateEnd ?? todayISO()))
+    .map((s) => daysBetween(s.dateStart, s.dateEnd ?? today ?? undefined))
     .filter((v): v is number => v !== null);
   return average(durations);
 };

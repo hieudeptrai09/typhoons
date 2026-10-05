@@ -1,6 +1,7 @@
 import AverageFormulaPopover from "@/lib/components/AverageFormulaPopover";
 import StatTile from "@/lib/components/StatTile";
 import { INTENSITY_LABEL } from "@/lib/constants";
+import { useToday } from "@/lib/hooks/useToday";
 import type { Storm } from "@/lib/types";
 import { getAvgDateColor, getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import {
@@ -28,13 +29,14 @@ interface StormStatsProps {
 }
 
 const StormStats = ({ storms, showRecurrence = true }: StormStatsProps) => {
+  const today = useToday();
   if (storms.length === 0) return null;
 
   const average = calculateAverage(storms);
   const intensity = getIntensityFromNumber(average);
   const recurrence = calculateGapAverage(storms);
-  const { startDoy, endDoy } = calculateAvgDates(storms);
-  const duration = calculateAvgDuration(storms);
+  const { startDoy, endDoy } = calculateAvgDates(storms, today);
+  const duration = calculateAvgDuration(storms, today);
 
   return (
     <div className="@container">

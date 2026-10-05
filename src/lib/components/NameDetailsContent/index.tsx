@@ -10,7 +10,6 @@ import type { ReactNode } from "react";
 export interface NameDetailsContentProps {
   name: TyphoonName | RetiredName | null;
   hideReplacedBy?: boolean;
-  correctSpelling?: string;
   /** Set where the surrounding page already carries a status badge, so it isn't shown twice. */
   hideStatus?: boolean;
 }
@@ -27,7 +26,6 @@ const InfoRow = ({ icon, children }: { icon: ReactNode; children: ReactNode }) =
 const NameDetailsContent = ({
   name,
   hideReplacedBy = false,
-  correctSpelling,
   hideStatus = false,
 }: NameDetailsContentProps) => {
   if (!name) {
@@ -36,15 +34,16 @@ const NameDetailsContent = ({
     );
   }
 
-  const replacementName =
-    !hideReplacedBy && "replacementName" in name ? name.replacementName : undefined;
+  const replacementName = "replacementName" in name ? name.replacementName : undefined;
   const lastYear = "lastYear" in name ? name.lastYear : undefined;
   const pronunciationFile = name.pronunciationFile?.trim();
-  const crossRef = correctSpelling
-    ? { icon: SpellCheck, label: "Correct spelling", value: correctSpelling }
-    : replacementName
-      ? { icon: Replace, label: "Replaced by", value: replacementName }
-      : undefined;
+  // A name retired for misspelling is "replaced" by its correct spelling, not by a new name.
+  const crossRef =
+    name.retirementReason === "misspell" && replacementName
+      ? { icon: SpellCheck, label: "Correct spelling", value: replacementName }
+      : !hideReplacedBy && replacementName
+        ? { icon: Replace, label: "Replaced by", value: replacementName }
+        : undefined;
 
   return (
     <div className="@container">

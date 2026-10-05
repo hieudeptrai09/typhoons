@@ -58,9 +58,7 @@ export default function InfoModal({ detail, name, isError = false }: InfoModalPr
       {
         key: "details",
         label: "Name Details",
-        content: (
-          <NameDetailsContent name={nameData} correctSpelling={storms[0]?.correctSpelling} />
-        ),
+        content: <NameDetailsContent name={nameData} />,
       },
     ];
     if (storms.length > 0) {

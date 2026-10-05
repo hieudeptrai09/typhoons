@@ -13,7 +13,8 @@ async function queryTyphoonNames(): Promise<ApiListResponse<RetiredName[]>> {
     `SELECT
       ${typhoonNameColumns()}
     FROM typhoonnames tn
-    ${typhoonNameJoin()}`,
+    ${typhoonNameJoin()}
+    ORDER BY tn.id`,
   );
 
   const data = rows.map(toRetiredName);

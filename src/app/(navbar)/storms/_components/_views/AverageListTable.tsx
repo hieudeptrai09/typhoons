@@ -247,9 +247,8 @@ const AverageListTable = ({ filter, stormsData, onCellClick }: AverageListTableP
           case "name":
             return `${row.name}-${row.country}`;
           case "position":
-            return String(row.position);
           default:
-            return String(Math.random());
+            return String(row.position);
         }
       }}
       onRow={(row) => {

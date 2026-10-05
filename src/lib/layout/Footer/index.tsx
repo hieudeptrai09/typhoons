@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-slate-900" aria-label="Site footer">
       <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-6 py-4 text-xs">
         <p className="text-xs text-slate-300">
-          © {new Date().getFullYear()}{" "}
+          © {process.env.BUILD_YEAR}{" "}
           <span className="font-semibold text-slate-200">{TITLE_COMMON}</span>
         </p>
 
