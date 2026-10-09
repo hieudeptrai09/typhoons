@@ -1,4 +1,5 @@
 import sql, { type ApiListResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import type { RetirementReason, SearchResult } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -73,4 +74,7 @@ async function querySearch(query: string): Promise<ApiListResponse<SearchResult[
   return { data, count: data.length };
 }
 
-export const search = unstable_cache(querySearch, ["search"], { revalidate: 3600 });
+export const search = unstable_cache(querySearch, ["search"], {
+  revalidate: false,
+  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+});

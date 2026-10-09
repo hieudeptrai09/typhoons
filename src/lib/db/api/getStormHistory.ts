@@ -1,4 +1,5 @@
 import sql, { type ApiListResponse } from "@/lib/db";
+import { CACHE_TAGS } from "@/lib/db/cacheTags";
 import type { StormHistoryEntry } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
@@ -28,5 +29,6 @@ async function queryAllStormHistory(): Promise<ApiListResponse<StormHistoryEntry
 }
 
 export const getAllStormHistory = unstable_cache(queryAllStormHistory, ["getAllStormHistory"], {
-  revalidate: 3600,
+  revalidate: false,
+  tags: [CACHE_TAGS.storms],
 });
