@@ -1,9 +1,8 @@
 import { TITLE_COMMON } from "@/lib/constants";
 import AntdProvider from "@/lib/layout/AntdProvider";
-import AntdRegistry from "@/lib/layout/AntdRegistry";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
-import "./antd.css";
 import "./globals.css";
 
 const font = Open_Sans({ subsets: ["latin"], variable: "--font-open-sans", weight: "400" });
