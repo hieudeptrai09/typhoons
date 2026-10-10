@@ -5,7 +5,7 @@ import { useToday } from "@/lib/hooks/useToday";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { formatMonthDay, monthDayOf, parseMonthDay } from "@/lib/utils/date";
 import { CalendarSearch } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import SeasonMonthsModal from "../_modals/SeasonMonthsModal";
 import CalendarDateBar from "../_widgets/CalendarDateBar";
@@ -32,7 +32,6 @@ const isSeasonKind = (filter: string): filter is CalendarSeasonKind =>
   filter === "started" || filter === "ended" || filter === "active";
 
 const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -99,7 +98,8 @@ const CalendarView = ({ params, stormsData }: CalendarViewProps) => {
       <CalendarDateBar
         monthDay={monthDay}
         today={today}
-        onChange={(next) => router.replace(`${pathname}?date=${next}`, { scroll: false })}
+        // The date is read client-side, so the server has nothing new to send for it.
+        onChange={(next) => window.history.replaceState(null, "", `${pathname}?date=${next}`)}
         summary={summaries[params.filter]}
       />
 

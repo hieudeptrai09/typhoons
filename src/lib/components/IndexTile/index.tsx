@@ -13,10 +13,12 @@ interface IndexTileProps {
  * One entry of an index page. A soft <Link> so the detail opens as an intercepted modal,
  * while refreshing or sharing its URL still lands on the full page.
  * Kept neutral: the index is a gateway, and the detail page is where the stats live.
+ * Not prefetched: an index holds dozens of tiles, and each prefetch is an ISR read.
  */
 const IndexTile = ({ href, label, count, icon }: IndexTileProps) => (
   <Link
     href={href}
+    prefetch={false}
     className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm transition-colors hover:bg-slate-50"
   >
     {icon}

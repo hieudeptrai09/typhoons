@@ -48,6 +48,11 @@ export const getDashboardTitle = (params: DashboardParams): string => {
   return panelTitles[getPanel(params)] ?? panelTitles.all;
 };
 
+// The page <title> before the site-wide suffix. Shared by generateMetadata and the client,
+// which retitles the tab itself because a view switch never goes back to the server.
+export const getDashboardPageTitle = (params: DashboardParams): string =>
+  `${getDashboardTitle(params)} | Dashboard`;
+
 export const getDashboardDescription = (params: DashboardParams): string => {
   const panel = getPanel(params);
   const { mode, filter: filterStr } = params;

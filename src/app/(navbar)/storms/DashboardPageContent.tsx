@@ -3,12 +3,12 @@
 import FrownError from "@/lib/components/FrownError";
 import PageHeader from "@/lib/components/PageHeader";
 import TyphoonSpinner from "@/lib/components/TyphoonSpinner";
-import { MONTH_NAMES } from "@/lib/constants";
+import { MONTH_NAMES, TITLE_COMMON } from "@/lib/constants";
 import type { DashboardParams, Storm } from "@/lib/types";
 import { getPositionTitle } from "@/lib/utils/position";
 import { calculateAverage, calculateGapAverage, getGroupedStorms } from "@/lib/utils/storms";
-import { useParams, useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import DashboardLegend from "./_components/_legends/DashboardLegend";
 import AverageModal, { type AverageModalCriteria } from "./_components/_modals/AverageModal";
 import AvgDateModal from "./_components/_modals/AvgDateModal";
@@ -23,7 +23,7 @@ import HighlightsView from "./_components/_views/HighlightsView";
 import IntensityView from "./_components/_views/IntensityView";
 import StormsView from "./_components/_views/StormsView";
 import DashboardControlBar from "./_components/_widgets/DashboardControlBar";
-import { getDashboardTitle } from "./_utils/metadata";
+import { getDashboardPageTitle, getDashboardTitle } from "./_utils/metadata";
 import { getPanel, paramsToPath, slugToParams } from "./_utils/routing";
 import { getEffectiveMonth } from "./_utils/stats";
 
@@ -41,8 +41,9 @@ interface DashboardPageContentProps {
 }
 
 export default function DashboardPageContent({ stormsData }: DashboardPageContentProps) {
-  const router = useRouter();
-  const { slug } = useParams<{ slug: string[] }>();
+  // Read off the path, not useParams: a view switch rewrites the URL with history.pushState,
+  // which Next keeps usePathname in sync with but leaves the route's params where they were.
+  const slug = usePathname().split("/").filter(Boolean).slice(1);
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAverageModalOpen, setIsAverageModalOpen] = useState(false);
@@ -54,6 +55,12 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
   const currentParams: DashboardParams = slugToParams(slug);
   const { filter } = currentParams;
   const panel = getPanel(currentParams);
+  const pageTitle = getDashboardPageTitle(currentParams);
+
+  // The server titled the page it rendered; every view switched to since then is retitled here.
+  useEffect(() => {
+    document.title = `${pageTitle} | ${TITLE_COMMON}`;
+  }, [pageTitle]);
 
   const averageValues =
     panel === "intensity" || panel === "all"
@@ -66,7 +73,10 @@ export default function DashboardPageContent({ stormsData }: DashboardPageConten
 
   const handleApplyFilter = (newParams: DashboardParams) => {
     const query = newParams.view === "calendar" ? window.location.search : "";
-    router.push(`${paramsToPath(newParams)}${query}`);
+    // Every view renders from the stormsData already here, so only the URL needs to change.
+    // A router navigation would fetch the next page's payload, the same ~260 KB dataset again,
+    // and each of those is billed as an ISR read.
+    window.history.pushState(null, "", `${paramsToPath(newParams)}${query}`);
   };
 
   const handleCellClick = (data: number | string, key: string) => {

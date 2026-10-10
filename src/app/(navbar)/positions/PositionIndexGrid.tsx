@@ -8,7 +8,8 @@ interface PositionIndexGridProps {
   counts: Record<string, number>;
 }
 
-// Soft links, so each cell opens the intercepted position modal.
+// Soft links, so each cell opens the intercepted position modal. Not prefetched: 143 cells on
+// screen at once would each cost an ISR read before anything is clicked.
 const PositionIndexGrid = ({ counts }: PositionIndexGridProps) => (
   <PositionGrid
     renderCell={(position, _row, col) => {
@@ -18,6 +19,7 @@ const PositionIndexGrid = ({ counts }: PositionIndexGridProps) => (
         <td key={col} className="border-2 border-stone-200 p-0">
           <Link
             href={`/positions/${getPositionSlug(position)}/`}
+            prefetch={false}
             className="flex min-h-16 flex-col items-center justify-center bg-white p-2 transition-colors hover:bg-stone-200"
             aria-label={
               count > 0

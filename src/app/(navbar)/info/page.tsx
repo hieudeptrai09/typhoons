@@ -61,8 +61,10 @@ export default async function InfoIndexPage() {
               <ul className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3 md:grid-cols-5">
                 {byLetter.get(letter)!.map((name) => (
                   <li key={name}>
+                    {/* Hundreds of these: prefetching each one on sight costs an ISR read apiece. */}
                     <Link
                       href={`/info/${encodeURIComponent(name.toLowerCase())}/`}
+                      prefetch={false}
                       className="text-foreground hover:text-sky-700 hover:underline"
                     >
                       {name}
