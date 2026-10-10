@@ -63,12 +63,17 @@ export default async function YearPage({ params }: YearPageProps) {
     notFound();
   }
 
+  const storms = getSeasonStorms(result.data, yearNum);
+  // The table only looks up the meanings of names this season used. Sending the whole naming
+  // list would make it most of every season's payload, which is billed per byte read.
+  const seasonNames = new Set(storms.map((storm) => storm.name.toLowerCase()));
+
   return (
     <YearPageContent
       year={yearNum}
-      storms={getSeasonStorms(result.data, yearNum)}
+      storms={storms}
       years={years}
-      names={namesResult.data}
+      names={namesResult.data.filter((name) => seasonNames.has(name.name.toLowerCase()))}
       // lastYear is set only once a name leaves the rotation.
       retiredNames={namesResult.data.filter((name) => name.lastYear === yearNum)}
       debuts={getSeasonDebuts(result.data, yearNum)}

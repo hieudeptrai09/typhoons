@@ -36,6 +36,8 @@ interface StormNameTableProps {
   showYear?: boolean;
 }
 
+// Links are not prefetched: a season or country table shows dozens of rows, two links each,
+// and every prefetch is an ISR read whether or not the link is ever clicked.
 const buildColumns = (showCountry: boolean, showYear: boolean): ColumnsType<StormNameRow> => [
   {
     title: "Name",
@@ -47,6 +49,7 @@ const buildColumns = (showCountry: boolean, showYear: boolean): ColumnsType<Stor
     render: (_: unknown, row: StormNameRow) => (
       <Link
         href={`/info/${encodeURIComponent(row.name.toLowerCase())}/`}
+        prefetch={false}
         className="font-semibold hover:text-sky-700 hover:underline"
       >
         {row.name}
@@ -102,6 +105,7 @@ const buildColumns = (showCountry: boolean, showYear: boolean): ColumnsType<Stor
     render: (_: unknown, row: StormNameRow) => (
       <Link
         href={`/positions/${getPositionSlug(row.position)}/`}
+        prefetch={false}
         className="whitespace-nowrap hover:text-sky-700 hover:underline"
       >
         {getPositionTitle(row.position)}

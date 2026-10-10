@@ -1,8 +1,11 @@
 -- Refreshes typhoons.vercel.app whenever the data changes.
 --
 -- Every cached query is `revalidate: false`, so the site keeps serving what it rendered until
--- /api/revalidate is called. These triggers call it after each committed change, one request per
--- statement (a bulk UPDATE sends one request, not one per row). pg_net queues the request inside
+-- /api/revalidate is called. These triggers call it after each committed change, at most once per
+-- tag per transaction: a bulk UPDATE sends one request, not one per row, and so does a script of
+-- many statements run inside one transaction. Each request empties the CDN cache for every page
+-- under its tag, and the next visit to each is read back from ISR storage, so wrap a batch of
+-- edits in begin/commit rather than running them one by one. pg_net queues the request inside
 -- the transaction, so a rolled-back edit sends nothing.
 --
 -- Run once on the PRODUCTION database only: the URL is the production site, so a trigger on the
@@ -28,7 +31,17 @@ as $$
 declare
   secret text;
   params jsonb;
+  sent_flag text;
 begin
+  -- Transaction-local flag; a custom setting needs a dotted name.
+  sent_flag := 'revalidate_site.sent_' || coalesce(tg_argv[0], 'all');
+
+  -- An earlier statement in this transaction already queued this tag, or everything.
+  if current_setting(sent_flag, true) = '1'
+     or current_setting('revalidate_site.sent_all', true) = '1' then
+    return null;
+  end if;
+
   select decrypted_secret into secret
   from vault.decrypted_secrets
   where name = 'revalidate_secret';
@@ -48,6 +61,7 @@ begin
     params := params,
     timeout_milliseconds := 10000
   );
+  perform set_config(sent_flag, '1', true);
 
   return null;
 end;

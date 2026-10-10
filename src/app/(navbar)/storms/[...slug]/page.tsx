@@ -1,7 +1,7 @@
 import { getStorms } from "@/lib/db/api/getStorms";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { getDashboardDescription, getDashboardTitle } from "../_utils/metadata";
+import { getDashboardDescription, getDashboardPageTitle } from "../_utils/metadata";
 import {
   getCanonicalStormsSlugs,
   isValidStormsSlug,
@@ -28,13 +28,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const dashboardParams = slugToParams(slug);
 
-  const titleParts = getDashboardTitle(dashboardParams);
-  const title = titleParts ? `${titleParts} | Dashboard` : "Dashboard";
-  const description = getDashboardDescription(dashboardParams);
-
   return {
-    title: title,
-    description: description,
+    title: getDashboardPageTitle(dashboardParams),
+    description: getDashboardDescription(dashboardParams),
     alternates: {
       canonical: paramsToPath(dashboardParams),
     },

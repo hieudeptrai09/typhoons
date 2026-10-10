@@ -12,7 +12,7 @@ interface YearPageContentProps {
   // Already in start-date order.
   storms: Storm[] | null;
   years: number[];
-  // The full naming list, for the meaning each storm's name carries.
+  // The naming-list entries of this season's storms, for the meaning each name carries.
   names: RetiredName[];
   // Names whose last season this was.
   retiredNames: RetiredName[];
