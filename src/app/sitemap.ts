@@ -9,10 +9,10 @@ import {
 } from "@/app/(navbar)/storms/_utils/routing";
 import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
 import { getNameList } from "@/lib/db/api/getNameList";
-import { getStorms } from "@/lib/db/api/getStorms";
+import { getStormYears } from "@/lib/db/api/getStormYears";
 import { getCountrySlug } from "@/lib/utils/country";
 import { getPositionSlug } from "@/lib/utils/position";
-import { getSeasonYears } from "@/lib/utils/storms";
+import { isSeasonYear } from "@/lib/utils/storms";
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://typhoons.vercel.app";
@@ -21,7 +21,7 @@ const pathDepth = (path: string): number => path.split("/").filter(Boolean).leng
 const priorityForPath = (path: string): number => (10 - pathDepth(path)) / 10;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [nameList, stormList] = await Promise.all([getNameList(), getStorms()]);
+  const [nameList, stormYears] = await Promise.all([getNameList(), getStormYears()]);
 
   const stormsPages: MetadataRoute.Sitemap = getCanonicalStormsSlugs().map((slug) => {
     const path = paramsToPath(slugToParams(slug));
@@ -79,12 +79,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const yearPages: MetadataRoute.Sitemap = getSeasonYears(stormList?.data ?? []).map((year) => ({
-    url: `${BASE_URL}/years/${year}/`,
-    lastModified: new Date("2026-09-14"),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+  const yearPages: MetadataRoute.Sitemap = (stormYears?.data ?? [])
+    .filter(isSeasonYear)
+    .map((year) => ({
+      url: `${BASE_URL}/years/${year}/`,
+      lastModified: new Date("2026-09-14"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
 
   return [
     {
