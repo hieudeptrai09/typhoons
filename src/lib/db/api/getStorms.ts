@@ -25,5 +25,5 @@ async function queryStorms(position: number | null = null): Promise<ApiListRespo
 
 export const getStorms = unstable_cache(queryStorms, ["getStorms"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.storms],
 });

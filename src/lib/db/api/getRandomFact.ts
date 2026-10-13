@@ -15,7 +15,7 @@ async function queryFacts(): Promise<string[]> {
 // happens per call — every click still gets a fresh fact.
 const getFacts = unstable_cache(queryFacts, ["getFacts"], {
   revalidate: false,
-  tags: [CACHE_TAGS.facts],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.facts],
 });
 
 export async function getRandomFact(): Promise<{ data: string | null }> {

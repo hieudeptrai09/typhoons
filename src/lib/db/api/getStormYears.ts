@@ -18,5 +18,5 @@ async function queryStormYears(): Promise<ApiListResponse<number[]>> {
 
 export const getStormYears = unstable_cache(queryStormYears, ["getStormYears"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.stormYears],
 });

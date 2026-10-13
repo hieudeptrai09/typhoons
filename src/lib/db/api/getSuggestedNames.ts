@@ -48,5 +48,5 @@ async function queryAllSuggestedNames(): Promise<ApiListResponse<SuggestionWithN
 export const getAllSuggestedNames = unstable_cache(
   queryAllSuggestedNames,
   ["getAllSuggestedNames"],
-  { revalidate: false, tags: [CACHE_TAGS.names] },
+  { revalidate: false, tags: [CACHE_TAGS.all, CACHE_TAGS.suggestions] },
 );

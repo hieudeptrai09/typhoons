@@ -21,5 +21,5 @@ async function queryNameList(): Promise<ApiListResponse<string[]>> {
 
 export const getNameList = unstable_cache(queryNameList, ["getNameList"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.nameList],
 });

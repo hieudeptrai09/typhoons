@@ -56,5 +56,5 @@ async function queryStormHighlights(): Promise<ApiResponse<StormHighlight[]>> {
 
 export const getStormHighlights = unstable_cache(queryStormHighlights, ["getStormHighlights"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.storms, CACHE_TAGS.names],
 });

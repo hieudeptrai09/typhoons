@@ -1,45 +1,53 @@
--- Refreshes typhoons.vercel.app whenever the data changes.
+-- On each data change, calls /api/revalidate with only the cache tags it touches.
+-- Tags must mirror src/lib/db/cacheTags.ts.
 --
--- Every cached query is `revalidate: false`, so the site keeps serving what it rendered until
--- /api/revalidate is called. These triggers call it after each committed change, at most once per
--- tag per transaction: a bulk UPDATE sends one request, not one per row, and so does a script of
--- many statements run inside one transaction. Each request empties the CDN cache for every page
--- under its tag, and the next visit to each is read back from ISR storage, so wrap a batch of
--- edits in begin/commit rather than running them one by one. pg_net queues the request inside
--- the transaction, so a rolled-back edit sends nothing.
+-- Each tag is sent once per transaction, so wrap a batch of edits in begin/commit.
 --
--- Run once on the PRODUCTION database only: the URL is the production site, so a trigger on the
--- dev database would revalidate production from dev edits.
---
+-- Run on the PRODUCTION database only (the URL is production); re-running is safe.
 -- Before running:
---   1. Set REVALIDATE_SECRET in Vercel (Production) and deploy the code that adds /api/revalidate.
---   2. Store the same value in Vault (SQL editor, once — never commit the real value):
+--   1. Set REVALIDATE_SECRET in Vercel (Production) and deploy the tag-based /api/revalidate.
+--   2. Store the same value in Vault (never commit it):
 --        select vault.create_secret('<the secret>', 'revalidate_secret');
---      To rotate it later:
---        select vault.update_secret(
---          (select id from vault.secrets where name = 'revalidate_secret'), '<new secret>');
 
 create extension if not exists pg_net with schema extensions;
 
--- TG_ARGV[0] is the cache tag to revalidate; no argument revalidates every tag.
-create or replace function catfisha_typhoons.revalidate_site()
-returns trigger
+-- Previous version's triggers.
+drop trigger if exists revalidate_storms on catfisha_typhoons.storms;
+drop trigger if exists revalidate_typhoonnames on catfisha_typhoons.typhoonnames;
+drop trigger if exists revalidate_suggestednames on catfisha_typhoons.suggestednames;
+drop trigger if exists revalidate_facts on catfisha_typhoons.facts;
+drop trigger if exists revalidate_positions on catfisha_typhoons.positions;
+drop trigger if exists revalidate_imagelicenses on catfisha_typhoons.imagelicenses;
+drop function if exists catfisha_typhoons.revalidate_site();
+
+-- POSTs the tags this transaction has not sent yet.
+create or replace function catfisha_typhoons.revalidate_tags(tags text[])
+returns void
 language plpgsql
 security definer
 set search_path = ''
 as $$
 declare
+  -- Tags already queued in this transaction.
+  sent jsonb := coalesce(nullif(current_setting('revalidate_site.sent', true), ''), '[]')::jsonb;
+  pending text[];
   secret text;
-  params jsonb;
-  sent_flag text;
 begin
-  -- Transaction-local flag; a custom setting needs a dotted name.
-  sent_flag := 'revalidate_site.sent_' || coalesce(tg_argv[0], 'all');
+  -- "db" covers every cached query.
+  if sent ? 'db' then
+    return;
+  end if;
 
-  -- An earlier statement in this transaction already queued this tag, or everything.
-  if current_setting(sent_flag, true) = '1'
-     or current_setting('revalidate_site.sent_all', true) = '1' then
-    return null;
+  if 'db' = any(tags) or cardinality(tags) > 100 then
+    tags := array['db'];
+  end if;
+
+  select coalesce(array_agg(distinct t), '{}') into pending
+  from unnest(tags) as t
+  where t is not null and not (sent ? t);
+
+  if cardinality(pending) = 0 then
+    return;
   end if;
 
   select decrypted_secret into secret
@@ -47,57 +55,230 @@ begin
   where name = 'revalidate_secret';
 
   if secret is null then
-    raise warning 'revalidate_site: vault secret "revalidate_secret" is missing; site not revalidated';
-    return null;
-  end if;
-
-  params := jsonb_build_object('secret', secret);
-  if tg_nargs > 0 then
-    params := params || jsonb_build_object('tag', tg_argv[0]);
+    raise warning 'revalidate_tags: vault secret "revalidate_secret" is missing; site not revalidated';
+    return;
   end if;
 
   perform net.http_post(
     url := 'https://typhoons.vercel.app/api/revalidate/',
-    params := params,
+    body := jsonb_build_object('tags', to_jsonb(pending)),
+    params := jsonb_build_object('secret', secret),
     timeout_milliseconds := 10000
   );
-  perform set_config(sent_flag, '1', true);
+  perform set_config('revalidate_site.sent', (sent || to_jsonb(pending))::text, true);
+end;
+$$;
 
+-- For tables whose pages are refreshed as a whole: TG_ARGV lists the tags.
+create or replace function catfisha_typhoons.revalidate_static()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform catfisha_typhoons.revalidate_tags(tg_argv::text[]);
   return null;
 end;
 $$;
 
--- Mirrors the tag map in src/lib/db/cacheTags.ts.
-drop trigger if exists revalidate_storms on catfisha_typhoons.storms;
-create trigger revalidate_storms
-  after insert or update or delete or truncate on catfisha_typhoons.storms
-  for each statement execute function catfisha_typhoons.revalidate_site('storms');
+create or replace function catfisha_typhoons.revalidate_storms()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  changed jsonb;
+  tags text[];
+begin
+  -- moved: name, position or year changed (always true for inserts and deletes).
+  if tg_op = 'INSERT' then
+    select jsonb_agg(jsonb_build_object(
+      'img', 'new', 'name', name, 'position', position, 'year', year, 'moved', true))
+    into changed from new_rows;
+  elsif tg_op = 'DELETE' then
+    select jsonb_agg(jsonb_build_object(
+      'img', 'old', 'name', name, 'position', position, 'year', year, 'moved', true))
+    into changed from old_rows;
+  else
+    select jsonb_agg(r) into changed
+    from (
+      select 'old' as img, o.name, o.position, o.year,
+             (o.name, o.position, o.year) is distinct from (n.name, n.position, n.year) as moved
+      from old_rows o join new_rows n on n.id = o.id
+      union all
+      select 'new', n.name, n.position, n.year,
+             (o.name, o.position, o.year) is distinct from (n.name, n.position, n.year)
+      from old_rows o join new_rows n on n.id = o.id
+    ) as r;
+  end if;
 
-drop trigger if exists revalidate_typhoonnames on catfisha_typhoons.typhoonnames;
-create trigger revalidate_typhoonnames
-  after insert or update or delete or truncate on catfisha_typhoons.typhoonnames
-  for each statement execute function catfisha_typhoons.revalidate_site('names');
+  if changed is null then
+    return null;
+  end if;
 
-drop trigger if exists revalidate_suggestednames on catfisha_typhoons.suggestednames;
-create trigger revalidate_suggestednames
+  with c as (
+    select *
+    from jsonb_to_recordset(changed) as x(img text, name text, position int, year int, moved boolean)
+  )
+  select array_agg(distinct tag) into tags
+  from (
+    select 'storms' as tag
+    union all select 'name:' || lower(c.name) from c
+    union all select 'position:' || c.position from c
+    union all select 'year:' || c.year from c
+    union all select 'storm-index' from c where c.moved
+    -- Every season using the name (its debut season may change).
+    union all
+    select 'year:' || s.year
+    from catfisha_typhoons.storms s
+    where s.name in (select c.name from c where c.moved)
+    -- Agency storms (navbar search).
+    union all select 'name-list' from c where c.moved and c.position between 141 and 143
+    -- A year lost its last storm...
+    union all
+    select 'storm-years'
+    from c
+    where c.moved and c.img = 'old'
+      and not exists (select 1 from catfisha_typhoons.storms s where s.year = c.year)
+    -- ...or gained its first.
+    union all
+    select 'storm-years'
+    from c
+    where c.moved and c.img = 'new'
+    group by c.year
+    having count(*) >= (select count(*) from catfisha_typhoons.storms s where s.year = c.year)
+  ) as t;
+
+  perform catfisha_typhoons.revalidate_tags(tags);
+  return null;
+end;
+$$;
+
+create or replace function catfisha_typhoons.revalidate_typhoonnames()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  changed jsonb;
+  tags text[];
+begin
+  if tg_op = 'INSERT' then
+    select jsonb_agg(jsonb_build_object(
+      'name', name, 'position', position, 'lastyear', lastyear, 'renamed', true))
+    into changed from new_rows;
+  elsif tg_op = 'DELETE' then
+    select jsonb_agg(jsonb_build_object(
+      'name', name, 'position', position, 'lastyear', lastyear, 'renamed', true))
+    into changed from old_rows;
+  else
+    select jsonb_agg(r) into changed
+    from (
+      select o.name, o.position, o.lastyear, o.name is distinct from n.name as renamed
+      from old_rows o join new_rows n on n.id = o.id
+      union all
+      select n.name, n.position, n.lastyear, o.name is distinct from n.name
+      from old_rows o join new_rows n on n.id = o.id
+    ) as r;
+  end if;
+
+  if changed is null then
+    return null;
+  end if;
+
+  with c as (
+    select *
+    from jsonb_to_recordset(changed) as x(name text, position int, lastyear int, renamed boolean)
+  )
+  select array_agg(distinct tag) into tags
+  from (
+    select 'names' as tag
+    union all select 'name:' || lower(c.name) from c
+    union all select 'position:' || c.position from c
+    -- Season it was retired after, and every season that used it.
+    union all select 'year:' || c.lastyear from c where c.lastyear is not null
+    union all
+    select 'year:' || s.year
+    from catfisha_typhoons.storms s
+    where lower(s.name) in (select lower(c.name) from c)
+    union all select 'name-list' from c where c.renamed
+  ) as t;
+
+  perform catfisha_typhoons.revalidate_tags(tags);
+  return null;
+end;
+$$;
+
+-- Transition tables allow one event per trigger; TRUNCATE has none, so it refreshes everything.
+drop trigger if exists revalidate_storms_insert on catfisha_typhoons.storms;
+create trigger revalidate_storms_insert
+  after insert on catfisha_typhoons.storms
+  referencing new table as new_rows
+  for each statement execute function catfisha_typhoons.revalidate_storms();
+
+drop trigger if exists revalidate_storms_update on catfisha_typhoons.storms;
+create trigger revalidate_storms_update
+  after update on catfisha_typhoons.storms
+  referencing old table as old_rows new table as new_rows
+  for each statement execute function catfisha_typhoons.revalidate_storms();
+
+drop trigger if exists revalidate_storms_delete on catfisha_typhoons.storms;
+create trigger revalidate_storms_delete
+  after delete on catfisha_typhoons.storms
+  referencing old table as old_rows
+  for each statement execute function catfisha_typhoons.revalidate_storms();
+
+drop trigger if exists revalidate_storms_truncate on catfisha_typhoons.storms;
+create trigger revalidate_storms_truncate
+  after truncate on catfisha_typhoons.storms
+  for each statement execute function catfisha_typhoons.revalidate_static('db');
+
+drop trigger if exists revalidate_typhoonnames_insert on catfisha_typhoons.typhoonnames;
+create trigger revalidate_typhoonnames_insert
+  after insert on catfisha_typhoons.typhoonnames
+  referencing new table as new_rows
+  for each statement execute function catfisha_typhoons.revalidate_typhoonnames();
+
+drop trigger if exists revalidate_typhoonnames_update on catfisha_typhoons.typhoonnames;
+create trigger revalidate_typhoonnames_update
+  after update on catfisha_typhoons.typhoonnames
+  referencing old table as old_rows new table as new_rows
+  for each statement execute function catfisha_typhoons.revalidate_typhoonnames();
+
+drop trigger if exists revalidate_typhoonnames_delete on catfisha_typhoons.typhoonnames;
+create trigger revalidate_typhoonnames_delete
+  after delete on catfisha_typhoons.typhoonnames
+  referencing old table as old_rows
+  for each statement execute function catfisha_typhoons.revalidate_typhoonnames();
+
+drop trigger if exists revalidate_typhoonnames_truncate on catfisha_typhoons.typhoonnames;
+create trigger revalidate_typhoonnames_truncate
+  after truncate on catfisha_typhoons.typhoonnames
+  for each statement execute function catfisha_typhoons.revalidate_static('db');
+
+drop trigger if exists revalidate_suggestednames_all on catfisha_typhoons.suggestednames;
+create trigger revalidate_suggestednames_all
   after insert or update or delete or truncate on catfisha_typhoons.suggestednames
-  for each statement execute function catfisha_typhoons.revalidate_site('names');
+  for each statement execute function catfisha_typhoons.revalidate_static('suggestions');
 
-drop trigger if exists revalidate_facts on catfisha_typhoons.facts;
-create trigger revalidate_facts
+drop trigger if exists revalidate_facts_all on catfisha_typhoons.facts;
+create trigger revalidate_facts_all
   after insert or update or delete or truncate on catfisha_typhoons.facts
-  for each statement execute function catfisha_typhoons.revalidate_site('facts');
+  for each statement execute function catfisha_typhoons.revalidate_static('facts');
 
--- Joined into both storm and name queries, so these refresh everything.
-drop trigger if exists revalidate_positions on catfisha_typhoons.positions;
-create trigger revalidate_positions
+-- Joined into almost every query.
+drop trigger if exists revalidate_positions_all on catfisha_typhoons.positions;
+create trigger revalidate_positions_all
   after insert or update or delete or truncate on catfisha_typhoons.positions
-  for each statement execute function catfisha_typhoons.revalidate_site();
+  for each statement execute function catfisha_typhoons.revalidate_static('db');
 
-drop trigger if exists revalidate_imagelicenses on catfisha_typhoons.imagelicenses;
-create trigger revalidate_imagelicenses
+drop trigger if exists revalidate_imagelicenses_all on catfisha_typhoons.imagelicenses;
+create trigger revalidate_imagelicenses_all
   after insert or update or delete or truncate on catfisha_typhoons.imagelicenses
-  for each statement execute function catfisha_typhoons.revalidate_site();
+  for each statement execute function catfisha_typhoons.revalidate_static('db');
 
--- Check delivery after an edit (most recent first):
+-- Check delivery:
 --   select id, status_code, error_msg, created from net._http_response order by created desc limit 5;

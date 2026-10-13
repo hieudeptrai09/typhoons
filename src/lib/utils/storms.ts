@@ -83,7 +83,7 @@ export const sortNamesByFirstYear = (entries: [string, Storm[]][]): [string, Sto
 export const isSeasonYear = (year: number): boolean => year >= NAMING_LIST_FIRST_YEAR;
 
 // The seasons with their own page, from the start of the naming list, ascending.
-export const getSeasonYears = (storms: Storm[]): number[] =>
+export const getSeasonYears = (storms: Pick<Storm, "year">[]): number[] =>
   [...new Set(storms.map((storm) => storm.year))].filter(isSeasonYear).sort((a, b) => a - b);
 
 // One season's storms in the order they formed.
@@ -108,8 +108,16 @@ export const getSeasonDebuts = (storms: Storm[], year: number): Storm[] => {
   });
 };
 
-// Storm count per group, for index pages that only show the headline.
-export const getGroupCounts = (storms: Storm[], groupBy: string): Record<string, number> =>
-  Object.fromEntries(
-    Object.entries(getGroupedStorms(storms, groupBy)).map(([key, group]) => [key, group.length]),
-  );
+// Storm count per group, for index pages that only show the headline. Takes any storm-shaped
+// row, so those pages can count from the storm history instead of the full storms table.
+export const getGroupCounts = <T extends object>(
+  storms: T[],
+  groupBy: keyof T,
+): Record<string, number> => {
+  const counts: Record<string, number> = {};
+  storms.forEach((storm) => {
+    const key = storm[groupBy]?.toString() || "";
+    counts[key] = (counts[key] ?? 0) + 1;
+  });
+  return counts;
+};

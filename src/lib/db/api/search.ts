@@ -76,5 +76,5 @@ async function querySearch(query: string): Promise<ApiListResponse<SearchResult[
 
 export const search = unstable_cache(querySearch, ["search"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms, CACHE_TAGS.names],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.storms, CACHE_TAGS.names],
 });

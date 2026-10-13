@@ -1,6 +1,6 @@
-import { getStorms } from "@/lib/db/api/getStorms";
-import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
-import { getSeasonDebuts, getSeasonStorms, getSeasonYears } from "@/lib/utils/storms";
+import { getSeasonDetails } from "@/lib/db/api/getSeasonDetails";
+import { getStormYears } from "@/lib/db/api/getStormYears";
+import { getSeasonDebuts, getSeasonStorms, isSeasonYear } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import YearPageContent from "./YearPageContent";
@@ -10,8 +10,8 @@ interface YearPageProps {
 }
 
 export async function generateStaticParams() {
-  const result = await getStorms();
-  return getSeasonYears(result?.data ?? []).map((year) => ({ year: String(year) }));
+  const result = await getStormYears();
+  return (result?.data ?? []).filter(isSeasonYear).map((year) => ({ year: String(year) }));
 }
 
 export async function generateMetadata({ params }: YearPageProps): Promise<Metadata> {
@@ -44,8 +44,8 @@ export default async function YearPage({ params }: YearPageProps) {
     permanentRedirect(`/years/${yearNum}/`);
   }
 
-  const [result, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
-  if (!result?.data || !namesResult?.data) {
+  const [yearsResult, result] = await Promise.all([getStormYears(), getSeasonDetails(yearNum)]);
+  if (!yearsResult?.data || !result?.data) {
     return (
       <YearPageContent
         year={yearNum}
@@ -58,12 +58,12 @@ export default async function YearPage({ params }: YearPageProps) {
     );
   }
 
-  const years = getSeasonYears(result.data);
+  const years = yearsResult.data.filter(isSeasonYear);
   if (!years.includes(yearNum)) {
     notFound();
   }
 
-  const storms = getSeasonStorms(result.data, yearNum);
+  const storms = getSeasonStorms(result.data.storms, yearNum);
   // The table only looks up the meanings of names this season used. Sending the whole naming
   // list would make it most of every season's payload, which is billed per byte read.
   const seasonNames = new Set(storms.map((storm) => storm.name.toLowerCase()));
@@ -73,10 +73,10 @@ export default async function YearPage({ params }: YearPageProps) {
       year={yearNum}
       storms={storms}
       years={years}
-      names={namesResult.data.filter((name) => seasonNames.has(name.name.toLowerCase()))}
+      names={result.data.names.filter((name) => seasonNames.has(name.name.toLowerCase()))}
       // lastYear is set only once a name leaves the rotation.
-      retiredNames={namesResult.data.filter((name) => name.lastYear === yearNum)}
-      debuts={getSeasonDebuts(result.data, yearNum)}
+      retiredNames={result.data.names.filter((name) => name.lastYear === yearNum)}
+      debuts={getSeasonDebuts(result.data.storms, yearNum)}
     />
   );
 }

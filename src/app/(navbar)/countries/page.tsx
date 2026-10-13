@@ -2,8 +2,9 @@ import CountryFlag, { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
 import FrownError from "@/lib/components/FrownError";
 import IndexTile from "@/lib/components/IndexTile";
 import PageHeader from "@/lib/components/PageHeader";
-import { getStorms } from "@/lib/db/api/getStorms";
-import { getCountrySlug, getCountryStorms } from "@/lib/utils/country";
+import { getAllStormHistory } from "@/lib/db/api/getStormHistory";
+import { getCountryPositions, getCountrySlug } from "@/lib/utils/country";
+import { getGroupCounts } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,11 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function CountriesPage() {
-  const result = await getStorms();
+  const result = await getAllStormHistory();
   if (!result?.data) {
     return <FrownError />;
   }
-  const storms = result.data;
+  // A member's storms are the ones on its grid column; agency positions belong to no member.
+  const counts = getGroupCounts(result.data, "position");
+  const countryCount = (country: string) =>
+    getCountryPositions(country).reduce((sum, position) => sum + (counts[position] ?? 0), 0);
 
   return (
     <PageHeader title="Countries">
@@ -29,7 +33,7 @@ export default async function CountriesPage() {
               href={`/countries/${getCountrySlug(country)}/`}
               label={country}
               icon={<CountryFlag country={country} className="h-6 w-9 shrink-0" />}
-              count={getCountryStorms(storms, country).length}
+              count={countryCount(country)}
             />
           </li>
         ))}

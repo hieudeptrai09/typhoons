@@ -1,7 +1,11 @@
 import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import { getStorms } from "@/lib/db/api/getStorms";
-import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
-import { getCountryFromSlug, getCountrySlug, getCountryStorms } from "@/lib/utils/country";
+import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
+import {
+  getCountryFromSlug,
+  getCountryPositions,
+  getCountrySlug,
+  getCountryStorms,
+} from "@/lib/utils/country";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import CountryPageContent from "./CountryPageContent";
@@ -44,9 +48,17 @@ export default async function CountryPage({ params }: CountryPageProps) {
     permanentRedirect(`/countries/${getCountrySlug(country)}/`);
   }
 
-  const [stormsResult, namesResult] = await Promise.all([getStorms(), getTyphoonNames()]);
-  const storms = stormsResult?.data ? getCountryStorms(stormsResult.data, country) : null;
-  const names = namesResult?.data?.filter((name) => name.country === country) ?? null;
+  // Built from the member's positions, which the position pages already cache, so the page only
+  // depends on those positions: an edit elsewhere in the table leaves it alone.
+  const positions = await Promise.all(
+    getCountryPositions(country).map((position) => getPositionDetails(position)),
+  );
+  const details = positions.flatMap((result) => (result?.data ? [result.data] : []));
+  const storms = getCountryStorms(
+    details.flatMap((detail) => detail.storms),
+    country,
+  ).sort((a, b) => a.year - b.year || a.position - b.position);
+  const names = details.flatMap((detail) => detail.names).sort((a, b) => a.id - b.id);
 
   return <CountryPageContent country={country} storms={storms} names={names} />;
 }

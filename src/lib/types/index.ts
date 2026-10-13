@@ -129,8 +129,16 @@ export interface StormHistoryEntry {
 
 export interface PositionDetail {
   country: string;
-  names: TyphoonName[];
+  names: RetiredName[];
   storms: Storm[];
+}
+
+// One season's page data. storms also holds the earlier storms that reused this season's names,
+// which is what getSeasonDebuts needs to tell a debut from a reuse; names holds this season's
+// names plus the names retired after it.
+export interface SeasonDetail {
+  storms: Storm[];
+  names: RetiredName[];
 }
 
 export type StormHighlightStatus = "active" | "next";

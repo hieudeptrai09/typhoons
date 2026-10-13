@@ -1,5 +1,5 @@
 import sql, { type ApiResponse } from "@/lib/db";
-import { CACHE_TAGS } from "@/lib/db/cacheTags";
+import { CACHE_TAGS, nameTag } from "@/lib/db/cacheTags";
 import { stormColumns, stormJoin, toStorm, type StormRow } from "@/lib/db/module/storm";
 import {
   toRetiredName,
@@ -42,11 +42,12 @@ async function queryTyphoonNameByName(name: string): Promise<ApiResponse<SearchD
   };
 }
 
-export const getTyphoonNameByName = unstable_cache(
-  queryTyphoonNameByName,
-  ["getTyphoonNameByName"],
-  { revalidate: false, tags: [CACHE_TAGS.storms, CACHE_TAGS.names] },
-);
+// The tag names the name, so the wrapper is built per call; the cache key is unchanged.
+export const getTyphoonNameByName = (name: string) =>
+  unstable_cache(queryTyphoonNameByName, ["getTyphoonNameByName"], {
+    revalidate: false,
+    tags: [CACHE_TAGS.all, nameTag(name)],
+  })(name);
 
 // The name exists nowhere: not in rotation, and never used by a storm.
 export const isNameNotFound = (result: ApiResponse<SearchDetail> | null) =>

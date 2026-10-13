@@ -30,5 +30,5 @@ async function queryAllStormHistory(): Promise<ApiListResponse<StormHistoryEntry
 
 export const getAllStormHistory = unstable_cache(queryAllStormHistory, ["getAllStormHistory"], {
   revalidate: false,
-  tags: [CACHE_TAGS.storms],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.stormIndex],
 });

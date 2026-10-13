@@ -25,5 +25,5 @@ async function queryTyphoonNames(): Promise<ApiListResponse<RetiredName[]>> {
 
 export const getTyphoonNames = unstable_cache(queryTyphoonNames, ["getTyphoonNames"], {
   revalidate: false,
-  tags: [CACHE_TAGS.names],
+  tags: [CACHE_TAGS.all, CACHE_TAGS.names],
 });

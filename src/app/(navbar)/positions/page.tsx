@@ -1,7 +1,7 @@
 import FrownError from "@/lib/components/FrownError";
 import IndexTile from "@/lib/components/IndexTile";
 import PageHeader from "@/lib/components/PageHeader";
-import { getStorms } from "@/lib/db/api/getStorms";
+import { getAllStormHistory } from "@/lib/db/api/getStormHistory";
 import { getPositionSlug, SPECIAL_POSITIONS } from "@/lib/utils/position";
 import { getGroupCounts } from "@/lib/utils/storms";
 import type { Metadata } from "next";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PositionsPage() {
-  const result = await getStorms();
+  const result = await getAllStormHistory();
   if (!result?.data) {
     return <FrownError />;
   }
