@@ -1,4 +1,4 @@
-import { topSuggestions } from "@/lib/utils/fuzzy";
+import { topSuggestions } from "./fuzzy";
 
 // A slice of the real name pool: the crowded N- cluster that motivated edit distance over
 // trigrams, plus a few longer names and the hyphenated spellings.

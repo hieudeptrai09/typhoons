@@ -1,5 +1,6 @@
-import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
+import { COUNTRY_NAMES } from "@/lib/components/position/CountryFlag";
+import { getPositionDetails } from "@/lib/db/queries/getPositionDetails";
+import CountryPageContent from "@/lib/features/countries/components/CountryPageContent";
 import {
   getCountryFromSlug,
   getCountryPositions,
@@ -8,7 +9,6 @@ import {
 } from "@/lib/utils/country";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import CountryPageContent from "./CountryPageContent";
 
 interface CountryPageProps {
   params: Promise<{ country: string }>;

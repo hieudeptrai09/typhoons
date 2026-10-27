@@ -29,22 +29,30 @@ db/
 └── schema.sql              # Postgres schema for the storm data
 
 src/
-├── app/                    # Next.js App Router
+├── app/                    # Next.js App Router — only the files Next.js requires here
 │   ├── (home)/             # Home page
 │   ├── (navbar)/           # storms, names, positions, info, search, about
-│   └── @modal/             # Intercepting-route modals for info & positions
+│   ├── @modal/             # Intercepting-route modals for info & positions
+│   └── api/revalidate/     # On-demand ISR revalidation webhook
 └── lib/
-    ├── db/                 # Postgres client, queries (api/), and row mappers (module/)
-    ├── components/         # Shared UI components
-    ├── constants/          # Shared constants
-    ├── fonts/              # Font setup
+    ├── features/           # Route-specific code: <route>/components/, <route>/utils/
+    ├── components/
+    │   ├── ui/             # Generic, domain-agnostic building blocks
+    │   ├── layout/         # Navbar and footer
+    │   └── storm/ name/ position/ statistics/   # Shared domain components
+    ├── db/                 # client.ts, queries/, row mappers/, cache tags
+    ├── providers/          # AntD provider and style registry
+    ├── styles/             # Global CSS, generated antd.css, AntD theme
+    ├── config/             # App navigation config
+    ├── assets/fonts/       # Fonts for the OG image routes
     ├── hooks/              # Reusable hooks
-    ├── layout/             # Navbar, footer, and AntD provider
-    ├── types/              # Shared TypeScript types
-    └── utils/              # Helpers (colors, a11y, OG images, misc)
+    ├── utils/              # Pure helpers (colors, dates, positions, OG images, …)
+    ├── testing/            # Shared test fixtures
+    ├── constants.ts        # Shared constants
+    └── types.ts            # Shared TypeScript types
 ```
 
-Pages fetch data directly in server components through `src/lib/db` — there are no API route handlers.
+Pages fetch data directly in server components through `src/lib/db/queries`; the only route handler is the revalidation webhook.
 
 ## Development
 

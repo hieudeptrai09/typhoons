@@ -1,4 +1,4 @@
-import { capitalize } from "@/lib/utils/format";
+import { capitalize } from "./format";
 
 describe("capitalize", () => {
   it("uppercases the first character only", () => {

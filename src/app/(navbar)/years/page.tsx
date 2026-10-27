@@ -1,7 +1,7 @@
-import FrownError from "@/lib/components/FrownError";
-import IndexTile from "@/lib/components/IndexTile";
-import PageHeader from "@/lib/components/PageHeader";
-import { getAllStormHistory } from "@/lib/db/api/getStormHistory";
+import FrownError from "@/lib/components/ui/FrownError";
+import IndexTile from "@/lib/components/ui/IndexTile";
+import PageHeader from "@/lib/components/ui/PageHeader";
+import { getAllStormHistory } from "@/lib/db/queries/getStormHistory";
 import { getGroupCounts, getSeasonYears } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 

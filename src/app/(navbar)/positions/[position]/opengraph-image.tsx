@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { TITLE_COMMON } from "@/lib/constants";
-import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
+import { getPositionDetails } from "@/lib/db/queries/getPositionDetails";
 import type { RetiredName, Storm, TyphoonName } from "@/lib/types";
 import { getNameStatusColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
 import { fetchImageAsDataUri, flagDataUri } from "@/lib/utils/og";
@@ -122,8 +122,8 @@ export default async function OpengraphImage({ params }: OgImageProps) {
     parsed !== null && Number.isInteger(parsed) && parsed >= 1 && parsed <= 143 ? parsed : null;
 
   const [regular, bold, logo, result] = await Promise.all([
-    readFile(join(process.cwd(), "src", "lib", "fonts", "OpenSans-Regular.ttf")),
-    readFile(join(process.cwd(), "src", "lib", "fonts", "OpenSans-Bold.ttf")),
+    readFile(join(process.cwd(), "src", "lib", "assets", "fonts", "OpenSans-Regular.ttf")),
+    readFile(join(process.cwd(), "src", "lib", "assets", "fonts", "OpenSans-Bold.ttf")),
     readFile(join(process.cwd(), "public", "web-app-manifest-512x512.png")),
     positionNum === null ? null : getPositionDetails(positionNum).catch(() => null),
   ]);

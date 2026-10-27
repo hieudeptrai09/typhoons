@@ -1,6 +1,6 @@
 import type { Storm } from "@/lib/types";
-import { daysBetween, parseStormDate } from "@/lib/utils/date";
-import { getGroupedStorms } from "@/lib/utils/storms";
+import { daysBetween, parseStormDate } from "./date";
+import { getGroupedStorms } from "./storms";
 
 // Averaged storm timing: when a group's storms typically start, end, and how long they last.
 

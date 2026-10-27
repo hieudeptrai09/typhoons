@@ -1,6 +1,6 @@
 import { INTENSITY_RANK, NAMING_LIST_FIRST_YEAR, SORTING_RANK } from "@/lib/constants";
 import type { IntensityType, Storm } from "@/lib/types";
-import { isExternalPosition } from "@/lib/utils/position";
+import { isExternalPosition } from "./position";
 
 // The inverse of INTENSITY_RANK: turns an averaged rank back into the intensity it represents.
 export const getIntensityFromNumber = (avgNumber: number): IntensityType => {

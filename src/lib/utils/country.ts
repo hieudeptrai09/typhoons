@@ -1,6 +1,6 @@
-import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
+import { COUNTRY_NAMES } from "@/lib/components/position/CountryFlag";
 import type { Storm } from "@/lib/types";
-import { GRID_COLS, GRID_ROWS, isExternalPosition } from "@/lib/utils/position";
+import { GRID_COLS, GRID_ROWS, isExternalPosition } from "./position";
 
 // "HK, China" → "hk-china", "U.S.A." → "usa": dots vanish so abbreviations stay one word.
 export const getCountrySlug = (country: string): string =>

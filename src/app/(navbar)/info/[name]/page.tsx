@@ -1,12 +1,12 @@
-import DidYouMean from "@/lib/components/DidYouMean";
-import EmptyResults from "@/lib/components/EmptyResults";
-import PageHeader from "@/lib/components/PageHeader";
-import { getNameList } from "@/lib/db/api/getNameList";
-import { getSimilarNames } from "@/lib/db/api/getSimilarNames";
-import { getTyphoonNameByName, isNameNotFound } from "@/lib/db/api/getTyphoonNameByName";
+import DidYouMean from "@/lib/components/ui/DidYouMean";
+import EmptyResults from "@/lib/components/ui/EmptyResults";
+import PageHeader from "@/lib/components/ui/PageHeader";
+import { getNameList } from "@/lib/db/queries/getNameList";
+import { getSimilarNames } from "@/lib/db/queries/getSimilarNames";
+import { getTyphoonNameByName, isNameNotFound } from "@/lib/db/queries/getTyphoonNameByName";
+import InfoPageContent from "@/lib/features/info/components/InfoPageContent";
 import { SearchX } from "lucide-react";
 import type { Metadata } from "next";
-import InfoPageContent from "./InfoPageContent";
 
 interface InfoPageProps {
   params: Promise<{ name: string }>;

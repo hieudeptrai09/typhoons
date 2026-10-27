@@ -1,19 +1,19 @@
-import { getAllStormHistory } from "@/lib/db/api/getStormHistory";
-import { getAllSuggestedNames } from "@/lib/db/api/getSuggestedNames";
-import { getTyphoonNames } from "@/lib/db/api/getTyphoonNames";
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import { NAMES_DISPLAY_COOKIE, parseDisplayPrefs } from "../_utils/displayPrefs";
-import { getNamesDescription, getNamesTitle } from "../_utils/metadata";
+import { getAllStormHistory } from "@/lib/db/queries/getStormHistory";
+import { getAllSuggestedNames } from "@/lib/db/queries/getSuggestedNames";
+import { getTyphoonNames } from "@/lib/db/queries/getTyphoonNames";
+import NamesPageContent from "@/lib/features/names/components/NamesPageContent";
+import { NAMES_DISPLAY_COOKIE, parseDisplayPrefs } from "@/lib/features/names/utils/displayPrefs";
+import { getNamesDescription, getNamesTitle } from "@/lib/features/names/utils/metadata";
 import {
   isHistoryScope,
   isValidNamesSlug,
   paramsToPath,
   slugToParams,
   slugToPath,
-} from "../_utils/routing";
-import NamesPageContent from "../NamesPageContent";
+} from "@/lib/features/names/utils/routing";
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;

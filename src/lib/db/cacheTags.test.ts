@@ -1,4 +1,4 @@
-import { CACHE_TAGS, isCacheTag, nameTag, positionTag, yearTag } from "@/lib/db/cacheTags";
+import { CACHE_TAGS, isCacheTag, nameTag, positionTag, yearTag } from "./cacheTags";
 
 describe("isCacheTag", () => {
   it("accepts every static tag", () => {

@@ -11,7 +11,7 @@ import {
   shiftMonthDay,
   todayISO,
   toMonthDay,
-} from "@/lib/utils/date";
+} from "./date";
 
 describe("parseDateParts", () => {
   it("splits a YYYY-MM-DD string", () => {

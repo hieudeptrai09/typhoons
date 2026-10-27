@@ -1,6 +1,6 @@
-import FrownError from "@/lib/components/FrownError";
-import PageHeader from "@/lib/components/PageHeader";
-import { getNameList } from "@/lib/db/api/getNameList";
+import FrownError from "@/lib/components/ui/FrownError";
+import PageHeader from "@/lib/components/ui/PageHeader";
+import { getNameList } from "@/lib/db/queries/getNameList";
 import type { Metadata } from "next";
 import Link from "next/link";
 

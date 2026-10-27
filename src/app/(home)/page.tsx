@@ -1,9 +1,9 @@
-import SearchBar from "@/lib/components/SearchBar";
-import { getNameList } from "@/lib/db/api/getNameList";
-import { getStormHighlights } from "@/lib/db/api/getStormHighlights";
-import Footer from "@/lib/layout/Footer";
+import Footer from "@/lib/components/layout/Footer";
+import SearchBar from "@/lib/components/ui/SearchBar";
+import { getNameList } from "@/lib/db/queries/getNameList";
+import { getStormHighlights } from "@/lib/db/queries/getStormHighlights";
+import MainMenu from "@/lib/features/home/components/MainMenu";
 import Image from "next/image";
-import MainMenu from "./_components/MainMenu";
 
 const HomePage = async () => {
   // Search is a nav aid and the storms button is a glance: a database hiccup should empty them, not fail the homepage.

@@ -5,7 +5,7 @@ import {
   INTENSITIES_BY_STRENGTH,
   INTENSITY_SLUGS_BY_STRENGTH,
   intensityFromSlug,
-} from "@/lib/utils/intensity";
+} from "./intensity";
 
 describe("intensity slugs", () => {
   it("round-trips every intensity in the enum", () => {

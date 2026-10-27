@@ -1,4 +1,4 @@
-import { storm } from "@/lib/testFixtures";
+import { storm } from "@/lib/testing/fixtures";
 import {
   calculateAvgDates,
   calculateAvgDatesByGroup,
@@ -6,7 +6,7 @@ import {
   formatDayOfYear,
   getDoyMonth,
   getSeasonMonthGroups,
-} from "@/lib/utils/stormDates";
+} from "./stormDates";
 
 describe("average storm dates", () => {
   it("round-trips a single storm's dates through the day-of-year math", () => {

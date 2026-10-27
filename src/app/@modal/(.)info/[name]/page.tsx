@@ -1,5 +1,5 @@
-import { getTyphoonNameByName } from "@/lib/db/api/getTyphoonNameByName";
-import InfoModal from "./InfoModal";
+import { getTyphoonNameByName } from "@/lib/db/queries/getTyphoonNameByName";
+import InfoModal from "@/lib/features/info/components/InfoModal";
 
 interface InfoModalPageProps {
   params: Promise<{ name: string }>;

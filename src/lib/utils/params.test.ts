@@ -1,4 +1,4 @@
-import { DELIMITER, normalizeParam, toArr, toStr } from "@/lib/utils/params";
+import { DELIMITER, normalizeParam, toArr, toStr } from "./params";
 
 describe("normalizeParam", () => {
   it("takes the first entry of a repeated query param", () => {

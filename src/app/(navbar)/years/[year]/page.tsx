@@ -1,9 +1,9 @@
-import { getSeasonDetails } from "@/lib/db/api/getSeasonDetails";
-import { getStormYears } from "@/lib/db/api/getStormYears";
+import { getSeasonDetails } from "@/lib/db/queries/getSeasonDetails";
+import { getStormYears } from "@/lib/db/queries/getStormYears";
+import YearPageContent from "@/lib/features/years/components/YearPageContent";
 import { getSeasonDebuts, getSeasonStorms, isSeasonYear } from "@/lib/utils/storms";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import YearPageContent from "./YearPageContent";
 
 interface YearPageProps {
   params: Promise<{ year: string }>;

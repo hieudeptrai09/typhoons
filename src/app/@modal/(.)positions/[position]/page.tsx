@@ -1,7 +1,7 @@
-import { getPositionDetails } from "@/lib/db/api/getPositionDetails";
+import { getPositionDetails } from "@/lib/db/queries/getPositionDetails";
+import PositionModal from "@/lib/features/positions/components/PositionModal";
 import { getPositionFromSlug, getPositionSlug } from "@/lib/utils/position";
 import { notFound, permanentRedirect } from "next/navigation";
-import PositionModal from "./PositionModal";
 
 interface PositionModalPageProps {
   params: Promise<{ position: string }>;

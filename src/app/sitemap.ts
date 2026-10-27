@@ -1,15 +1,15 @@
+import { COUNTRY_NAMES } from "@/lib/components/position/CountryFlag";
+import { getNameList } from "@/lib/db/queries/getNameList";
+import { getStormYears } from "@/lib/db/queries/getStormYears";
 import {
   getCanonicalNamesSlugs,
   slugToPath as namesSlugToPath,
-} from "@/app/(navbar)/names/_utils/routing";
+} from "@/lib/features/names/utils/routing";
 import {
   getCanonicalStormsSlugs,
   paramsToPath,
   slugToParams,
-} from "@/app/(navbar)/storms/_utils/routing";
-import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import { getNameList } from "@/lib/db/api/getNameList";
-import { getStormYears } from "@/lib/db/api/getStormYears";
+} from "@/lib/features/storms/utils/routing";
 import { getCountrySlug } from "@/lib/utils/country";
 import { getPositionSlug } from "@/lib/utils/position";
 import { isSeasonYear } from "@/lib/utils/storms";

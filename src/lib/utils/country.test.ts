@@ -1,12 +1,12 @@
-import { COUNTRY_NAMES } from "@/lib/components/CountryFlag";
-import { storm } from "@/lib/testFixtures";
+import { COUNTRY_NAMES } from "@/lib/components/position/CountryFlag";
+import { storm } from "@/lib/testing/fixtures";
 import {
   getCountryFromSlug,
   getCountryPositionGroups,
   getCountryPositions,
   getCountrySlug,
   getCountryStorms,
-} from "@/lib/utils/country";
+} from "./country";
 
 describe("getCountrySlug", () => {
   it("lowercases and hyphenates multi-word names", () => {

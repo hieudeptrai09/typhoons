@@ -8,7 +8,7 @@ import {
   positionColumnLetter,
   positionFromValue,
   positionToValue,
-} from "@/lib/utils/position";
+} from "./position";
 
 describe("positionColumnLetter", () => {
   it("letters the grid columns A through N", () => {
