@@ -1,14 +1,25 @@
 import type { Storm } from "@/lib/types";
 import { getDistanceColor } from "@/lib/utils/colors";
-import { formatStormDateRange } from "@/lib/utils/date";
+import {
+  calendarDuration,
+  daysBetween,
+  formatDayCount,
+  formatDuration,
+  formatStormDateRange,
+} from "@/lib/utils/date";
 
 const formatGapLabel = (gap: number): string => {
   if (gap === 0) return "same year";
   return gap === 1 ? "1 year" : `${gap} years`;
 };
 
+// "2193 days (6 years 3 days)": the exact distance between the two start dates.
+const formatDayGapLabel = (from: string, to: string): string =>
+  `${formatDayCount(daysBetween(from, to) ?? 0)} (${formatDuration(calendarDuration(from, to))})`;
+
 const RecurrenceTimeline = ({ storms }: { storms: Storm[] }) => {
-  const timeline = [...storms].sort((a, b) => a.year - b.year);
+  // Start dates order storms within a year too, so each day gap runs forward.
+  const timeline = [...storms].sort((a, b) => a.dateStart.localeCompare(b.dateStart));
 
   return (
     <div>
@@ -38,6 +49,10 @@ const RecurrenceTimeline = ({ storms }: { storms: Storm[] }) => {
                     </div>
                     <span className="py-1 text-xs font-semibold" style={{ color }}>
                       {formatGapLabel(gap)}
+                      <span className="font-normal">
+                        {" · "}
+                        {formatDayGapLabel(timeline[index - 1].dateStart, storm.dateStart)}
+                      </span>
                     </span>
                   </div>
                 )}

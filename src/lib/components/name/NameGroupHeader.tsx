@@ -5,9 +5,11 @@ import {
   getDistanceColor,
   TEXT_COLOR_WHITE_BACKGROUND,
 } from "@/lib/utils/colors";
+import { durationFromDays, formatDayCount, formatDuration } from "@/lib/utils/date";
 import {
   calculateAverage,
   calculateGapAverage,
+  calculateGapDaysAverage,
   formatDistance,
   getIntensityFromNumber,
 } from "@/lib/utils/storms";
@@ -24,6 +26,7 @@ const NameGroupHeader = ({ label, storms, showRecurrence = true }: NameGroupHead
   const average = calculateAverage(storms);
   const intensity = getIntensityFromNumber(average);
   const recurrence = calculateGapAverage(storms);
+  const recurrenceDays = calculateGapDaysAverage(storms);
 
   return (
     <div
@@ -43,12 +46,12 @@ const NameGroupHeader = ({ label, storms, showRecurrence = true }: NameGroupHead
         </span>
         {/* A lone storm leaves no gap to measure, so the stat is left off entirely. */}
         {showRecurrence && recurrence >= 0 && (
-          <span>
+          <span title={`≈ ${formatDuration(durationFromDays(recurrenceDays))}`}>
             Every:{" "}
             <span className="font-bold" style={{ color: getDistanceColor(recurrence) }}>
               {formatDistance(recurrence)}
             </span>{" "}
-            yrs
+            yrs · {formatDayCount(recurrenceDays)}
           </span>
         )}
       </span>

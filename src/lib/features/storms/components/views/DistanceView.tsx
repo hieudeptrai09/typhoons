@@ -5,8 +5,14 @@ import SpecialButtons from "@/lib/features/storms/components/widgets/SpecialButt
 import type { DashboardParams, Storm } from "@/lib/types";
 import { clickableRowProps } from "@/lib/utils/a11y";
 import { getDistanceColor } from "@/lib/utils/colors";
+import { durationFromDays, formatDayCount, formatDuration } from "@/lib/utils/date";
 import { getPositionTitle } from "@/lib/utils/position";
-import { calculateDistances, formatDistance, getGroupedStorms } from "@/lib/utils/storms";
+import {
+  calculateDistances,
+  calculateGapDaysAverage,
+  formatDistance,
+  getGroupedStorms,
+} from "@/lib/utils/storms";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 import DistanceNameGrid from "./DistanceNameGrid";
@@ -24,6 +30,7 @@ interface DistanceRow {
   count: number;
   distanceNumber: number;
   distance: string;
+  dayDistance: number; // -1 when there is no gap to measure
 }
 
 const DistanceCell = ({
@@ -72,6 +79,25 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceRow> 
     sorter: (a, b) => a.count - b.count,
   };
 
+  const dayDistanceCol: ColumnsType<DistanceRow>[number] = {
+    title: "Avg Recurrence (days)",
+    dataIndex: "dayDistance",
+    key: "dayDistance",
+    sorter: (a, b) => a.dayDistance - b.dayDistance,
+    render: (_: unknown, row: DistanceRow) =>
+      row.dayDistance < 0 ? (
+        <DistanceCell distanceNumber={row.distanceNumber} distance="N/A" />
+      ) : (
+        <div>
+          <DistanceCell
+            distanceNumber={row.distanceNumber}
+            distance={formatDayCount(row.dayDistance)}
+          />
+          <div className="text-xs">≈ {formatDuration(durationFromDays(row.dayDistance))}</div>
+        </div>
+      ),
+  };
+
   const distanceCol: ColumnsType<DistanceRow>[number] = {
     title: "Avg Recurrence (years)",
     dataIndex: "distance",
@@ -98,6 +124,7 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceRow> 
       positionCol,
       countCol,
       distanceCol,
+      dayDistanceCol,
     ];
   }
 
@@ -107,12 +134,14 @@ const makeColumns = (filterType: "position" | "name"): ColumnsType<DistanceRow> 
     countryCol,
     countCol,
     distanceCol,
+    dayDistanceCol,
   ];
 };
 
 const buildRows = (
   filterType: "position" | "name",
   distanceMap: Record<string, number>,
+  dayDistanceMap: Record<string, number>,
   groupedStorms: Record<string, Storm[]>,
 ): DistanceRow[] =>
   Object.entries(distanceMap).map(([key, dist]) => {
@@ -122,11 +151,15 @@ const buildRows = (
       count: storms.length,
       distanceNumber: dist,
       distance: formatDistance(dist),
+      dayDistance: dayDistanceMap[key] ?? -1,
     };
     return filterType === "name"
       ? { name: key, position: storms[0]?.position ?? 0, ...base }
       : { position: parseInt(key), ...base };
   });
+
+const byPosition = (map: Record<string, number>): Record<number, number> =>
+  Object.fromEntries(Object.entries(map).map(([k, v]) => [Number(k), v]));
 
 const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) => {
   const filterType = (params.filter || "position") as "position" | "name";
@@ -136,19 +169,25 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
     [stormsData, filterType],
   );
 
+  const dayDistanceMap = useMemo(
+    () => calculateDistances(stormsData, filterType, calculateGapDaysAverage),
+    [stormsData, filterType],
+  );
+
   const groupedStorms = useMemo(
     () => getGroupedStorms(stormsData, filterType),
     [stormsData, filterType],
   );
 
-  const distanceValuesForGrid = useMemo<Record<number, number>>(() => {
-    if (filterType !== "position") return {};
-    const result: Record<number, number> = {};
-    Object.entries(distanceMap).forEach(([k, v]) => {
-      result[Number(k)] = v;
-    });
-    return result;
-  }, [distanceMap, filterType]);
+  const distanceValuesForGrid = useMemo(
+    () => (filterType === "position" ? byPosition(distanceMap) : {}),
+    [distanceMap, filterType],
+  );
+
+  const dayDistanceValuesForGrid = useMemo(
+    () => (filterType === "position" ? byPosition(dayDistanceMap) : {}),
+    [dayDistanceMap, filterType],
+  );
 
   if (params.mode === "table" && filterType === "name") {
     return <DistanceNameGrid stormsData={stormsData} onCellClick={onCellClick} />;
@@ -162,6 +201,7 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           onCellClick={onCellClick}
           stormsData={stormsData}
           distanceValues={distanceValuesForGrid}
+          dayDistanceValues={dayDistanceValuesForGrid}
           isClickable
         />
         <SpecialButtons
@@ -169,17 +209,18 @@ const DistanceView = ({ params, stormsData, onCellClick }: DistanceViewProps) =>
           isAverageView={false}
           averageValues={null}
           distanceValues={distanceValuesForGrid}
+          dayDistanceValues={dayDistanceValuesForGrid}
         />
       </div>
     );
   }
 
   // position / name list → sortable distance table
-  const data = buildRows(filterType, distanceMap, groupedStorms);
+  const data = buildRows(filterType, distanceMap, dayDistanceMap, groupedStorms);
 
   return (
     <DefTable<DistanceRow>
-      maxWidth="max-w-2xl"
+      maxWidth={filterType === "name" ? "max-w-5xl" : "max-w-4xl"}
       tableKey={filterType}
       dataSource={data}
       columns={makeColumns(filterType)}

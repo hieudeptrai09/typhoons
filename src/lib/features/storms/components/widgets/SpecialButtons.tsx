@@ -1,4 +1,5 @@
 import { getAvgDateColor, getDistanceColor, TEXT_COLOR_WHITE_BACKGROUND } from "@/lib/utils/colors";
+import { formatDayNumber } from "@/lib/utils/date";
 import { SPECIAL_POSITIONS } from "@/lib/utils/position";
 import { formatDayOfYear, getDoyMonth, type AvgDates } from "@/lib/utils/stormDates";
 import { getIntensityFromNumber } from "@/lib/utils/storms";
@@ -9,14 +10,19 @@ interface SpecialButtonsProps {
   isAverageView?: boolean;
   averageValues?: Record<number, number> | null;
   distanceValues?: Record<number, number> | null;
+  dayDistanceValues?: Record<number, number> | null;
   avgDateValues?: Record<number, AvgDates> | null;
 }
+
+const daysSuffix = (days?: number): string =>
+  days === undefined || days < 0 ? "" : ` · ${formatDayNumber(days)}d`;
 
 const SpecialButtons = ({
   onCellClick,
   isAverageView = false,
   averageValues = null,
   distanceValues = null,
+  dayDistanceValues = null,
   avgDateValues = null,
 }: SpecialButtonsProps) => {
   const getButtonContent = (buttonId: number): { color: string; suffix: string } => {
@@ -34,7 +40,8 @@ const SpecialButtons = ({
       const dist = distanceValues[buttonId];
       return {
         color: getDistanceColor(dist),
-        suffix: dist < 0 ? "" : ` · ${dist.toFixed(2)}y`,
+        suffix:
+          dist < 0 ? "" : ` · ${dist.toFixed(2)}y${daysSuffix(dayDistanceValues?.[buttonId])}`,
       };
     }
     if (isAverageView && averageValues && averageValues[buttonId]) {

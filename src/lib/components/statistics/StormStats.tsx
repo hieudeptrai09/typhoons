@@ -13,10 +13,12 @@ import {
 import {
   calculateAverage,
   calculateGapAverage,
+  calculateGapDaysAverage,
   formatDistance,
   getIntensityFromNumber,
 } from "@/lib/utils/storms";
 import AverageFormulaPopover from "./AverageFormulaPopover";
+import RecurrenceDaysPopover from "./RecurrenceDaysPopover";
 
 const DatePart = ({ doy }: { doy: number }) => (
   <span style={{ color: getAvgDateColor(getDoyMonth(doy)) }}>{formatDayOfYear(doy)}</span>
@@ -35,6 +37,7 @@ const StormStats = ({ storms, showRecurrence = true }: StormStatsProps) => {
   const average = calculateAverage(storms);
   const intensity = getIntensityFromNumber(average);
   const recurrence = calculateGapAverage(storms);
+  const recurrenceDays = calculateGapDaysAverage(storms);
   const { startDoy, endDoy } = calculateAvgDates(storms, today);
   const duration = calculateAvgDuration(storms, today);
 
@@ -61,10 +64,15 @@ const StormStats = ({ storms, showRecurrence = true }: StormStatsProps) => {
                 : "Average years between appearances"
             }
           >
-            <span style={{ color: getDistanceColor(recurrence) }}>
-              {formatDistance(recurrence)}
+            <span className="inline-flex items-center gap-1.5">
+              <span>
+                <span style={{ color: getDistanceColor(recurrence) }}>
+                  {formatDistance(recurrence)}
+                </span>
+                {recurrence >= 0 && <span className="ml-1 text-xs text-foreground">yrs</span>}
+              </span>
+              <RecurrenceDaysPopover days={recurrenceDays} />
             </span>
-            {recurrence >= 0 && <span className="ml-1 text-xs text-foreground">yrs</span>}
           </StatTile>
         )}
 
